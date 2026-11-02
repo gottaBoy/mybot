@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f7fb" />
+    <title>AI-native Workbench</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="主导航">
+        <div class="brand">
+          <span class="brand-mark">A</span>
+          <div>
+            <strong>Workbench</strong>
+            <span>AI-native delivery</span>
+          </div>
+        </div>
+
+        <div class="workspace-switcher">
+          <span class="eyebrow">WORKSPACE</span>
+          <button class="workspace-button" type="button">
+            <span class="workspace-avatar">N</span>
+            <span class="workspace-name">Northstar Labs</span>
+            <span class="chevron">⌄</span>
+          </button>
+        </div>
+
+        <nav class="nav-section">
+          <span class="eyebrow">WORK</span>
+          <button class="nav-item active" type="button" data-view="home"><span class="nav-icon">⌂</span>Home</button>
+          <button class="nav-item" type="button" data-view="projects"><span class="nav-icon">▦</span>Projects</button>
+          <button class="nav-item" type="button" data-view="tasks"><span class="nav-icon">✓</span>Tasks <span class="nav-count">4</span></button>
+          <button class="nav-item" type="button" data-view="artifacts"><span class="nav-icon">◇</span>Artifacts</button>
+        </nav>
+
+        <nav class="nav-section">
+          <span class="eyebrow">SYSTEM</span>
+          <button class="nav-item" type="button" data-view="agents"><span class="nav-icon">◌</span>Agents</button>
+          <button class="nav-item" type="button" data-view="environments"><span class="nav-icon">⌘</span>Environments</button>
+          <button class="nav-item" type="button" data-view="evaluations"><span class="nav-icon">◒</span>Evaluations</button>
+          <button class="nav-item" type="button" data-view="operations"><span class="nav-icon">⌁</span>Operations</button>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <div class="usage">
+            <div class="usage-head"><span>Monthly usage</span><strong>64%</strong></div>
+            <div class="meter"><span style="width: 64%"></span></div>
+            <small>$128.40 of $200 budget</small>
+          </div>
+          <button class="profile-button" type="button">
+            <span class="profile-avatar">MC</span>
+            <span><strong>Mei Chen</strong><small>Project lead</small></span>
+            <span class="chevron">⌄</span>
+          </button>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="breadcrumbs">
+            <span>Projects</span><span class="slash">/</span><strong>Checkout redesign</strong>
+          </div>
+          <div class="topbar-actions">
+            <button class="icon-button" type="button" aria-label="Search">⌕</button>
+            <button class="icon-button" type="button" aria-label="Notifications">♢<span class="notification-dot"></span></button>
+            <button class="topbar-help" type="button">?</button>
+          </div>
+        </header>
+
+        <div class="content">
+          <section class="page-heading">
+            <div>
+              <div class="status-line"><span class="status-dot green"></span>Project active <span class="separator">·</span> Updated 2 min ago</div>
+              <h1>AI-native delivery workspace</h1>
+              <p>Coordinate design, engineering, QA, and release work from one project timeline.</p>
+            </div>
+            <div class="heading-actions">
+              <button class="button secondary" type="button" id="openPlan">View plan</button>
+              <button class="button primary" type="button" id="newRun">+ New run</button>
+            </div>
+          </section>
+
+          <div class="project-tabs" role="tablist">
+            <button class="tab active" type="button">Overview</button>
+            <button class="tab" type="button">Runs <span>8</span></button>
+            <button class="tab" type="button">Artifacts <span>24</span></button>
+            <button class="tab" type="button">Agents <span>7</span></button>
+            <button class="tab" type="button">Deployments</button>
+          </div>
+
+          <section class="command-bar">
+            <div class="command-symbol">✦</div>
+            <input id="taskInput" type="text" value="Continue the checkout redesign and prepare a staging build" aria-label="Describe a task" />
+            <button class="button primary compact" type="button" id="runWorkflow">Run workflow <span>↗</span></button>
+          </section>
+
+          <div class="workspace-grid">
+            <div class="main-column">
+              <section class="section-block">
+                <div class="section-heading">
+                  <div>
+                    <span class="eyebrow">ACTIVE RUN</span>
+                    <h2 id="runTitle">Checkout redesign · staging candidate</h2>
+                  </div>
+                  <span class="pill running" id="runStatus">Running</span>
+                </div>
+
+                <div class="run-meta">
+                  <span><span class="mini-avatar dark">M</span> Managed by <strong>Project Manager</strong></span>
+                  <span>Started 09:42</span>
+                  <span>Budget $4.80</span>
+                  <span>Step <strong id="stepCount">4</strong> of 8</span>
+                </div>
+
+                <div class="timeline" id="timeline">
+                  <div class="timeline-item complete">
+                    <span class="timeline-marker">✓</span>
+                    <div><strong>Clarify requirements</strong><span>Project Manager · 2 min</span></div>
+                    <span class="timeline-state">Complete</span>
+                  </div>
+                  <div class="timeline-item complete">
+                    <span class="timeline-marker">✓</span>
+                    <div><strong>Review interaction design</strong><span>Designer · 6 min</span></div>
+                    <span class="timeline-state">Complete</span>
+                  </div>
+                  <div class="timeline-item complete">
+                    <span class="timeline-marker">✓</span>
+                    <div><strong>Implement checkout flow</strong><span>Developer · 18 min</span></div>
+                    <span class="timeline-state">Complete</span>
+                  </div>
+                  <div class="timeline-item current">
+                    <span class="timeline-marker pulse">↻</span>
+                    <div><strong>Run regression suite</strong><span>QA · 12 tests remaining</span></div>
+                    <span class="timeline-state">In progress</span>
+                  </div>
+                  <div class="timeline-item pending">
+                    <span class="timeline-marker">5</span>
+                    <div><strong>Review diff and risk</strong><span>Reviewer · waiting</span></div>
+                    <span class="timeline-state">Queued</span>
+                  </div>
+                  <div class="timeline-item pending">
+                    <span class="timeline-marker">6</span>
+                    <div><strong>Approve staging deploy</strong><span>You · approval gate</span></div>
+                    <span class="timeline-state">Needs approval</span>
+                  </div>
+                  <div class="timeline-item pending">
+                    <span class="timeline-marker">7</span>
+                    <div><strong>Deploy and smoke test</strong><span>Release Engineer · waiting</span></div>
+                    <span class="timeline-state">Queued</span>
+                  </div>
+                </div>
+              </section>
+
+              <section class="section-block split-block">
+                <div class="section-heading">
+                  <div><span class="eyebrow">RECENT ARTIFACTS</span><h2>What changed</h2></div>
+                  <button class="text-button" type="button">View all →</button>
+                </div>
+                <div class="artifact-list">
+                  <button class="artifact-row" type="button">
+                    <span class="artifact-icon blue">⌘</span>
+                    <span><strong>checkout-flow.diff</strong><small>Developer · 14 files changed</small></span>
+                    <span class="artifact-type">DIFF</span>
+                  </button>
+                  <button class="artifact-row" type="button">
+                    <span class="artifact-icon violet">◇</span>
+                    <span><strong>checkout-interaction-spec</strong><small>Designer · updated 8 min ago</small></span>
+                    <span class="artifact-type">DESIGN</span>
+                  </button>
+                  <button class="artifact-row" type="button">
+                    <span class="artifact-icon green">✓</span>
+                    <span><strong>regression-report</strong><small>QA · running now</small></span>
+                    <span class="artifact-type">REPORT</span>
+                  </button>
+                </div>
+              </section>
+            </div>
+
+            <aside class="inspector">
+              <section class="inspector-section">
+                <div class="section-heading compact-heading">
+                  <div><span class="eyebrow">ACTION REQUIRED</span><h2>Approvals</h2></div>
+                  <span class="counter">1</span>
+                </div>
+                <div class="approval-item">
+                  <div class="approval-icon">!</div>
+                  <div>
+                    <strong>Staging deploy</strong>
+                    <p>Release Engineer wants to publish build <code>8b41c2</code>.</p>
+                    <div class="approval-meta">2 files · low risk · rollback ready</div>
+                  </div>
+                  <div class="approval-actions">
+                    <button class="button primary compact" type="button" id="approveButton">Approve</button>
+                    <button class="button ghost compact" type="button">Review</button>
+                  </div>
+                </div>
+              </section>
+
+              <section class="inspector-section">
+                <div class="section-heading compact-heading">
+                  <div><span class="eyebrow">AGENTS</span><h2>On this project</h2></div>
+                  <button class="text-button" type="button">Manage</button>
+                </div>
+                <div class="agent-list">
+                  <div class="agent-row"><span class="agent-avatar pm">PM</span><span><strong>Project Manager</strong><small>Planning · active</small></span><span class="agent-state online"></span></div>
+                  <div class="agent-row"><span class="agent-avatar dev">DE</span><span><strong>Developer</strong><small>Code workspace · done</small></span><span class="agent-state online"></span></div>
+                  <div class="agent-row"><span class="agent-avatar qa">QA</span><span><strong>QA Engineer</strong><small>Regression · running</small></span><span class="agent-state busy"></span></div>
+                  <div class="agent-row"><span class="agent-avatar sre">SR</span><span><strong>SRE</strong><small>Staging · standby</small></span><span class="agent-state idle"></span></div>
+                </div>
+              </section>
+
+              <section class="inspector-section">
+                <div class="section-heading compact-heading">
+                  <div><span class="eyebrow">RUN HEALTH</span><h2>Quality signals</h2></div>
+                </div>
+                <div class="signal-grid">
+                  <div><strong>96%</strong><span>Tests passing</span></div>
+                  <div><strong>0</strong><span>Blocking issues</span></div>
+                  <div><strong>18m</strong><span>Elapsed time</span></div>
+                  <div><strong>$2.14</strong><span>Run cost</span></div>
+                </div>
+              </section>
+            </aside>
+          </div>
+        </div>
+      </main>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
