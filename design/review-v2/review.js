@@ -45,9 +45,9 @@ const callData = [
 
 function navigation(active) {
   const routes = [["workbench", "layout-dashboard", "工作台"], ["project", "folder-git-2", "项目"], ["artifacts", "files", "成果"], ["setup", "blocks", "能力"]];
-  return `<a class="brand" href="#workbench"><span class="brand-mark">${icon("command")}</span><strong>Workbench<span class="brand-version">LAB</span></strong></a>
+  return `<a class="brand" href="#task"><span class="brand-mark">${icon("command")}</span><strong>Workbench<span class="brand-version">AI</span></strong></a>
     <div class="workspace-switch"><span class="workspace-avatar">研</span><span>研发工作空间<small>个人试点</small></span>${icon("chevron-down")}</div>
-    <a class="nav-new" href="#new-task">${icon("plus")}<span>发起工作</span><span class="key-hint">↵</span></a>
+    <a class="nav-new" href="#new-task">${icon("plus")}<span>发起工作</span></a>
     <nav class="primary-nav">${routes.map(([route, glyph, title]) => `<a class="nav-item ${active === route ? "is-active" : ""}" href="#${route}" ${active === route ? 'aria-current="page"' : ""}>${icon(glyph)}<span>${title}</span>${route === "workbench" ? '<span class="nav-count">2</span>' : ""}</a>`).join("")}</nav>
     <div class="nav-projects"><div class="nav-section-heading"><span>项目</span>${iconLink("new-task", "plus", "新建项目草稿")}</div>
       <a class="nav-project" href="#project"><span class="project-monogram">P</span><span>支付服务</span><i class="attention-dot"></i></a>
@@ -123,25 +123,53 @@ function project() {
 }
 
 function taskSidebar() {
-  return `<aside class="task-context"><section>${section("本次协作", '<span class="count-text">4</span>')}
-    ${[["S", "协调 Agent", "推理模型 B", "neutral"], ["R", "研究 Agent", "推理模型 B", "blue"], ["D", "开发 Agent", "代码模型 A", "green"], ["T", "测试 Agent", "代码模型 A", "red"]].map(([initial, title, model, tone]) => `<a href="#delegation" class="collaborator">${avatar(initial, tone)}<div><strong>${title}</strong><small>${model}</small></div><i class="collaborator-dot dot-${tone}"></i></a>`).join("")}</section>
-    <section class="context-section">${section("运行上下文")}<dl class="compact-facts"><div><dt>工作区</dt><dd>${icon("lock-keyhole")}ws-02</dd></div><div><dt>候选版本</dt><dd><code>d4e5f6</code></dd></div><div><dt>耗时</dt><dd class="mono">08:12</dd></div><div><dt>已返回 Token</dt><dd class="mono">10,650*</dd></div><div><dt>估算成本</dt><dd>未知</dd></div></dl><p class="context-caption">* 当前调用片段，未包含无用量返回的请求。</p>${link("calls", "检查调用与用量", "arrow-up-right", "text-link")}</section>
-    <section class="context-section">${section("本次成果")}<a class="mini-artifact" href="#artifacts">${icon("file-diff")}<span>候选代码变更<small>2 个文件 · 未应用</small></span>${icon("arrow-up-right")}</a><a class="mini-artifact" href="#tests">${icon("file-check-2")}<span>验证报告<small>2 通过 · 1 失败</small></span>${icon("arrow-up-right")}</a></section>
-    <div class="context-boundary">${icon("shield-check")}<div><strong>主工作区未修改</strong><p>应用变更需要独立授权。</p></div></div></aside>`;
+  return `<aside id="inspector-pane" class="evidence-inspector" aria-label="成果检查">
+    <div class="inspector-toolbar"><div class="evidence-tabs" role="tablist" aria-label="成果类型"><button id="evidence-code-tab" role="tab" aria-selected="true" aria-controls="evidence-code" tabindex="0" data-evidence-tab="code">${icon("file-diff")}代码变更<span>2</span></button><button id="evidence-tests-tab" role="tab" aria-selected="false" aria-controls="evidence-tests" tabindex="-1" data-evidence-tab="tests">${icon("file-check-2")}验证<span class="failed-count">1</span></button></div>${iconLink("artifacts", "arrow-up-right", "独立查看成果")}</div>
+    <div class="evidence-version"><span>${icon("git-branch")}<code>a1b2c3</code>${icon("arrow-right")}<code>d4e5f6</code></span><span class="diff-stats">+5 <span>−2</span></span></div>
+    <div id="evidence-code" role="tabpanel" aria-labelledby="evidence-code-tab" class="evidence-panel">
+      <div class="editor-file">${icon("file-code-2")}<span>src / retry / <strong>policy.ts</strong></span><span class="language-tag">TS</span></div>
+      ${studioCode()}
+      <div class="inline-code-review">${avatar("T", "red")}<div><strong>幂等键没有在重试间复用</strong><p>每次循环创建新标识，导致同一请求重复扣款。</p>${link("tests", "检查测试证据", "arrow-up-right", "text-link")}</div></div>
+    </div>
+    <div id="evidence-tests" role="tabpanel" aria-labelledby="evidence-tests-tab" class="evidence-panel" hidden><div class="studio-tests">${testEvidence()}</div></div>
+    <div class="inspector-settlement"><span>${icon("lock-keyhole")}候选变更未应用</span>${inert("应用变更", "git-merge")}</div>
+  </aside>`;
 }
 
 function task() {
-  return `<div class="task-page">${taskHeader("task")}<div class="task-columns"><div class="task-primary">
-    ${notice("red", "幂等性验证未通过", "重试后重复扣款。候选变更已保留，暂不能应用。", link("tests", "查看证据", "arrow-up-right", "text-link"))}
-    <section class="plan-section">${section("执行计划", link("dispatch", "打开调度", "git-branch", "text-link"))}<div class="plan-meta"><span>计划 v2</span><span>3 步完成</span><span class="tone-red-text">1 项验证失败</span></div>
-      <div class="plan-list">${planData.map(([title, role, model, permission, state, tone], index) => `<a class="plan-row ${tone === "red" ? "plan-row-failed" : ""}" href="#${tone === "red" ? "tests" : "dispatch"}"><span class="step-marker step-${tone}">${icon(tone === "green" ? "check" : tone === "red" ? "x" : "minus")}</span><div><strong>${title}</strong><span>${role} <i>·</i> ${model}</span></div><span class="permission-label">${permission}</span><span class="plan-status ${tone === "red" ? "tone-red-text" : ""}">${state}</span><span class="step-number mono">0${index + 1}</span></a>`).join("")}</div>
-    </section>
-    <section class="activity-section">${section("工作记录", link("audit", "完整记录", "arrow-right", "text-link"))}
-      <article class="activity-item">${avatar("T", "red")}<div class="activity-content"><div class="activity-heading"><strong>测试 Agent</strong><span>代码模型 A</span><time>10:24</time></div><p>已完成本轮验证。重试上限、接口兼容通过；重复扣款保护未通过。</p><a href="#tests" class="result-file">${icon("file-check-2")}<div><strong>幂等性验证报告</strong><span>2 passed <i>·</i> 1 failed <i>·</i> 退出码 1</span></div>${icon("arrow-up-right")}</a></div></article>
-      <article class="activity-item">${avatar("D", "green")}<div class="activity-content"><div class="activity-heading"><strong>开发 Agent</strong><span>代码模型 A</span><time>10:21</time></div><p>候选变更已保存，主工作区未修改。</p><a class="inline-artifact" href="#artifacts">${icon("file-diff")}retry-policy.diff <span>+5 −2</span>${icon("arrow-up-right")}</a></div></article>
-    </section>
-    <div class="composer"><label for="task-follow-up" class="sr-only">补充任务要求</label><textarea id="task-follow-up" readonly rows="2" placeholder="补充要求，或让 Agent 修改这次结果…"></textarea><div class="composer-actions"><span>${icon("paperclip")}引用项目资料</span><span class="composer-mode">${icon("shield-check")}先检查，再写入</span>${inert("发送", "arrow-up", "button button-primary")}</div></div>
-    </div>${taskSidebar()}</div></div>`;
+  return `<div class="task-page studio-page">${taskHeader("task")}
+    <div class="studio-view-switch" role="tablist" aria-label="工作区面板"><button role="tab" aria-selected="true" aria-controls="work-pane" tabindex="0" data-studio-view="work">工作记录</button><button role="tab" aria-selected="false" aria-controls="inspector-pane" tabindex="-1" data-studio-view="evidence">成果检查<span>2</span></button></div>
+    <div class="task-studio" data-view="work"><section id="work-pane" class="work-pane" aria-label="工作记录">
+      <div class="work-pane-heading"><span class="pane-label">工作记录</span>${link("calls", "4 次模型调用", "network", "text-link")}</div>
+      <div class="workstream">
+        <details class="original-request"><summary><span>${icon("file-text")}原始目标</span><span>林然 · 10:15${icon("chevron-down")}</span></summary><div><p>为重试设置上限，保持接口兼容，并确保同一个请求只扣款一次。</p><div class="context-reference">${icon("folder-git-2")}payment-service<span>src/retry · tests/retry</span></div></div></details>
+        <article class="activity-item">${avatar("", "neutral", "command")}<div class="activity-content"><div class="activity-heading"><strong>Super-agent</strong><span>推理模型 B</span><time>10:16</time></div><p>研究调用点与设计验证条件并行进行。代码修改由一个开发 Agent 在隔离工作区执行。</p>
+          <div class="agent-assignment"><a href="#delegation">${avatar("R", "blue")}<span>研究</span></a><a href="#delegation">${avatar("D", "green")}<span>开发</span></a><a href="#delegation">${avatar("T", "amber")}<span>测试</span></a><a href="#calls" class="assignment-models">2 种模型${icon("arrow-up-right")}</a></div>
+          <details class="compact-plan"><summary><span>${icon("git-branch")}执行计划 v2</span><span>3 / 5 完成${icon("chevron-down")}</span></summary><div class="compact-plan-rows">${planData.map(([title, role, model, permission, state, tone]) => `<a href="#${tone === "red" ? "tests" : "dispatch"}"><span>${icon(tone === "green" ? "check" : tone === "red" ? "x" : "minus")}${title}</span>${pill(state, tone)}</a>`).join("")}</div></details>
+        </div></article>
+        <article class="activity-item">${avatar("D", "green")}<div class="activity-content"><div class="activity-heading"><strong>开发 Agent</strong><span>代码模型 A</span><time>10:21</time></div><p>候选变更已保存，正在交给测试 Agent 验证。</p><a href="#artifacts" class="inline-artifact">${icon("file-diff")}2 个文件变更<span>+5 −2</span>${icon("arrow-up-right")}</a></div></article>
+        <article class="activity-item verification-activity">${avatar("T", "red")}<div class="activity-content"><div class="activity-heading"><strong>测试 Agent</strong><span>代码模型 A</span><time>10:24</time></div><p>重试上限与接口兼容验证通过，但<strong class="tone-red-text">重复扣款保护未通过</strong>。</p><a href="#tests" class="verification-result"><span class="verification-count"><strong>2</strong> 通过<span></span><strong class="tone-red-text">1</strong> 失败</span><span>查看证据${icon("arrow-up-right")}</span></a><p class="failure-explanation">幂等键在每次重试时重新生成。修复后需要重新执行验证，当前变更尚未应用。</p></div></article>
+      </div>
+      <div class="composer"><label for="task-follow-up" class="sr-only">补充任务要求</label><textarea id="task-follow-up" readonly rows="2" placeholder="补充要求，或要求 Agent 修复这次结果…"></textarea><div class="composer-actions"><span>${icon("paperclip")}项目上下文</span><span class="composer-mode">${icon("shield-check")}写入前确认</span>${inert("发送", "arrow-up", "button button-primary")}</div></div>
+    </section>${taskSidebar()}</div>
+    <div class="workspace-status"><span>${icon("shield-check")}ws-02 · 隔离工作区</span><span>${icon("git-branch")}候选 d4e5f6</span><span>主工作区未修改</span></div></div>`;
+}
+
+function studioCode() {
+  return `<pre class="studio-code" tabindex="0" aria-label="候选代码变更"><code><span class="editor-line"><i>18</i><span><b class="syntax-violet">export async function</b> <b class="syntax-blue">retryPayment</b>(request) {</span></span>
+<span class="editor-line code-add"><i>19</i><span>  <b class="syntax-violet">const</b> maxAttempts = <b class="syntax-amber">3</b>;</span></span>
+<span class="editor-line code-add"><i>20</i><span>  <b class="syntax-violet">for</b> (<b class="syntax-violet">let</b> attempt = <b class="syntax-amber">0</b>;</span></span>
+<span class="editor-line code-add"><i>21</i><span>       attempt &lt; maxAttempts; attempt++) {</span></span>
+<span class="editor-line"><i>22</i><span>    <b class="syntax-violet">try</b> {</span></span>
+<span class="editor-line code-add line-selected"><i>23</i><span>      <b class="syntax-violet">const</b> key = <b class="syntax-blue">createIdempotencyKey</b>();</span></span>
+<span class="editor-line code-add"><i>24</i><span>      <b class="syntax-violet">return await</b> <b class="syntax-blue">charge</b>(request, key);</span></span>
+<span class="editor-line"><i>25</i><span>    } <b class="syntax-violet">catch</b> (error) {</span></span>
+<span class="editor-line code-add"><i>26</i><span>      <b class="syntax-violet">if</b> (!<b class="syntax-blue">shouldRetry</b>(error)) {</span></span>
+<span class="editor-line"><i>27</i><span>        <b class="syntax-violet">throw</b> error;</span></span>
+<span class="editor-line"><i>28</i><span>      }</span></span>
+<span class="editor-line"><i>29</i><span>    }</span></span>
+<span class="editor-line"><i>30</i><span>  }</span></span>
+<span class="editor-line"><i>31</i><span>}</span></span></code></pre>`;
 }
 
 function node(title, subtitle, state, tone = "green", route = "calls", glyph = "bot") {
@@ -158,15 +186,20 @@ function dispatch(delegation = false) {
     <section class="selection-panel"><div><div class="eyebrow">当前检查的步骤</div><h2>验证扣款幂等性</h2><p>同一请求的重试必须复用幂等键。</p></div><dl class="selection-facts"><div><dt>负责 Agent</dt><dd>测试 Agent</dd></div><div><dt>模型配置</dt><dd>代码模型 A</dd></div><div><dt>候选版本</dt><dd><code>d4e5f6</code></dd></div><div><dt>验证结果</dt><dd class="tone-red-text">重复扣款保护失败</dd></div></dl><div class="panel-actions">${link("tests", "查看验证证据", "arrow-up-right", "button button-primary")}${link("calls", "关联调用", "network")}</div></section></div>`;
 }
 
+function callRows(filter = "all") {
+  return callData.filter(([id, , , , tone]) => filter === "failed" ? tone === "red" : filter === "model" ? id.startsWith("mc") : filter === "tool" ? id.startsWith("tc") : true)
+    .map(([id, role, model, status, tone, duration, input, output]) => `<tr class="${tone === "red" ? "row-failed" : ""}"><td>${id === "mc-023" ? `<a href="#call-detail" class="mono text-link">${id}${icon("arrow-up-right")}</a>` : `<span class="mono">${id}</span>`}</td><td>${role}</td><td><span class="model-cell">${icon(id.startsWith("tc") ? "terminal" : "blocks")}${model}</span></td><td>${pill(status, tone)}</td><td class="mono">${duration}</td><td class="mono">${input}</td><td class="mono">${output}</td></tr>`).join("");
+}
+
 function calls(detail = false) {
   return `<div class="task-page">${taskHeader("calls")}<div class="call-layout ${detail ? "has-inspector" : ""}"><div class="calls-primary">
     <div class="metric-band"><div><span>运行耗时</span><strong>8<span>m</span> 12<span>s</span></strong><small>墙钟时间</small></div><div><span>本页模型调用</span><strong>4 <span>次</span></strong><small><i class="alert-dot"></i>1 次失败</small></div><div><span>本页已返回 Token</span><strong>10,650</strong><small>未包含用量缺失请求</small></div><div><span>估算成本</span><strong class="metric-unknown">未知</strong><small>价格未配置</small></div></div>
-    <section class="timeline-section">${section("执行时间线", '<span class="subtle">样例时间 / UTC+8</span>')}<div class="time-ruler"><span>10:16</span><span>10:18</span><span>10:20</span><span>10:22</span><span>10:24</span></div>
+    <section class="timeline-section">${section("Agent 执行时间线", '<span class="subtle">样例时间 / UTC+8</span>')}<div class="time-ruler"><span>10:16</span><span>10:18</span><span>10:20</span><span>10:22</span><span>10:24</span></div>
     <div class="swimlane"><span><i class="legend-dot dot-blue"></i>研究 Agent</span><div class="lane-track"><span class="time-bar bar-blue" style="--start:2%;--length:19%">研究</span></div></div>
     <div class="swimlane"><span><i class="legend-dot dot-neutral"></i>测试 Agent</span><div class="lane-track"><span class="time-bar bar-neutral" style="--start:3%;--length:18%">测试设计</span><a href="#call-detail" title="mc-023 请求超时" class="time-bar bar-red" style="--start:74%;--length:10%">失败</a><span class="time-bar bar-amber" style="--start:86%;--length:12%">验证</span></div></div>
     <div class="swimlane"><span><i class="legend-dot dot-green"></i>开发 Agent</span><div class="lane-track"><span class="time-bar bar-green" style="--start:24%;--length:44%">修改与自测</span></div></div></section>
-    <div class="table-toolbar">${section("调用明细", '<span class="count-text">05</span>')}<div>${inert("所有步骤", "chevron-down", "button button-quiet")}${inert("所有状态", "sliders-horizontal", "button button-quiet")}</div></div>
-    <div class="table-scroll" tabindex="0" aria-label="调用明细，可横向滚动"><table class="calls-table"><thead><tr><th>调用 ID</th><th>Agent</th><th>模型 / 工具</th><th>状态</th><th>耗时</th><th>输入</th><th>输出</th></tr></thead><tbody>${callData.map(([id, role, model, status, tone, duration, input, output]) => `<tr class="${tone === "red" ? "row-failed" : ""}"><td>${id === "mc-023" ? `<a href="#call-detail" class="mono text-link">${id}${icon("arrow-up-right")}</a>` : `<span class="mono">${id}</span>`}</td><td>${role}</td><td><span class="model-cell">${icon(id.startsWith("tc") ? "terminal" : "blocks")}${model}</span></td><td>${pill(status, tone)}</td><td class="mono">${duration}</td><td class="mono">${input}</td><td class="mono">${output}</td></tr>`).join("")}</tbody></table></div>
+    <div class="table-toolbar">${section("调用明细", '<span class="count-text" id="call-count">5 条</span>')}<div class="call-filters" role="group" aria-label="筛选调用">${[["all", "全部"], ["failed", "失败"], ["model", "模型"], ["tool", "工具"]].map(([value, label]) => `<button type="button" data-call-filter="${value}" aria-pressed="${value === "all"}">${label}</button>`).join("")}</div></div>
+    <div class="table-scroll" tabindex="0" aria-label="调用明细，可横向滚动"><table class="calls-table"><thead><tr><th>调用 ID</th><th>Agent</th><th>模型 / 工具</th><th>状态</th><th>耗时</th><th>输入</th><th>输出</th></tr></thead><tbody>${callRows()}</tbody></table></div>
     <p class="table-footnote">${icon("circle-help")}当前为调用片段；只汇总已返回的叶子调用，不重复计入 Agent 汇总值。</p></div>${detail ? callInspector() : ""}</div></div>`;
 }
 
@@ -254,7 +287,7 @@ const renderers = { workbench: () => home(), project, task, dispatch: () => disp
 function render() {
   const route = location.hash.slice(1);
   if (route === "main") { $("#main").focus(); return; }
-  const id = Object.hasOwn(renderers, route) ? route : "workbench";
+  const id = Object.hasOwn(renderers, route) ? route : "task";
   const [, name, title, context] = screens.find(([screen]) => screen === id);
   const active = ["workbench", "empty"].includes(id) ? "workbench" : id === "setup" ? "setup" : ["artifacts", "tests"].includes(id) ? "artifacts" : "project";
   $("#app-nav").innerHTML = navigation(active);
@@ -273,6 +306,45 @@ document.addEventListener("change", (event) => { if (event.target.id === "screen
 document.addEventListener("click", (event) => {
   if (event.target.closest("[data-open-navigation]")) $("#navigation-dialog").showModal();
   if (event.target.closest("[data-close-navigation]")) $("#navigation-dialog").close();
+  const evidenceTab = event.target.closest("[data-evidence-tab]");
+  if (evidenceTab) {
+    const selected = evidenceTab.dataset.evidenceTab;
+    document.querySelectorAll("[data-evidence-tab]").forEach((tab) => {
+      const active = tab.dataset.evidenceTab === selected;
+      tab.setAttribute("aria-selected", String(active));
+      tab.tabIndex = active ? 0 : -1;
+    });
+    $("#evidence-code").hidden = selected !== "code";
+    $("#evidence-tests").hidden = selected !== "tests";
+  }
+  const studioTab = event.target.closest("button[data-studio-view]");
+  if (studioTab) {
+    const selected = studioTab.dataset.studioView;
+    $(".task-studio").dataset.view = selected;
+    document.querySelectorAll("[data-studio-view]").forEach((tab) => {
+      const active = tab.dataset.studioView === selected;
+      tab.setAttribute("aria-selected", String(active));
+      tab.tabIndex = active ? 0 : -1;
+    });
+  }
+  const callFilter = event.target.closest("[data-call-filter]");
+  if (callFilter) {
+    document.querySelectorAll("[data-call-filter]").forEach((button) => button.setAttribute("aria-pressed", String(button === callFilter)));
+    $(".calls-table tbody").innerHTML = callRows(callFilter.dataset.callFilter);
+    $("#call-count").textContent = `${$(".calls-table tbody").children.length} 条`;
+  }
+});
+document.addEventListener("keydown", (event) => {
+  const tab = event.target.closest('button[role="tab"]');
+  if (!tab || !["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+  const list = tab.closest('[role="tablist"]');
+  const tabs = Array.from(list.querySelectorAll('button[role="tab"]'));
+  const index = tabs.indexOf(tab);
+  const next = event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1
+    : (index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+  event.preventDefault();
+  tabs[next].click();
+  tabs[next].focus();
 });
 document.addEventListener("submit", (event) => event.preventDefault());
 render();

@@ -45,7 +45,10 @@
 - 用户要求代码提交 Git；本轮基线提交范围为设计稿、文档和验证证据，不推送远端。下次使用 `git log -1 --oneline` 检查实际提交。
 - 用户对 V1 的负面评审已记录；V1 的技术检查通过不等于视觉被接受。
 - 新参考已核对：gottaBoy 是 DeepSeek 官方 fork，本次 HEAD 相同；用户最后指定的 Cyrene 是 Playa-Cyrene/Cyrene-Agent，不能与 Yongchu-Yitao/Cyrene 混用。
-- 新建 `design/review-v2/` 视觉草稿，但收到参考后暂停定稿，尚无浏览器检查或截图。只做过 JS 语法检查。
+- V2 曾在收到参考后暂停；现已重做任务与调用重点画面，并新增 `studio.css`，原始样式文件已恢复保留。
+- V2 默认打开任务，桌面工作记录与代码/验证并列，手机使用面板切换；调用筛选和页签是可用的静态交互。
+- 新增 V2 浏览器检查和截图，实际结果见 `design/review-v2/evidence/verification.json`；不代表用户已认可。
+- 用户要求不断迭代、加强 UI 体验。反馈与下轮优先级保存在 `docs/UI_ITERATIONS.md`。
 
 尚未完成：
 
@@ -57,7 +60,7 @@
 
 `prototype/` 是未采用的早期静态草图，保留但不作为当前界面或工程起点。本轮没有启动开发服务。
 
-`design/review-v1/` 是被用户否定的低保真，不是业务应用或当前视觉基线。`design/review-v2/` 尚未完成和浏览器验证，不要声称已交付新版。所有样例都未真实执行。
+`design/review-v1/` 是被用户否定的低保真，不是当前视觉基线。`design/review-v2/` 是当前两个关键画面的视觉提案，已做静态检查但未视觉定版；所有样例都未真实执行。
 
 ## 4. 推荐阅读顺序
 
@@ -65,7 +68,7 @@
 2. [现代研发工作台定义](docs/MODERN_RND_WORKBENCH.md)。
 3. [源码链路对照](docs/SOURCE_CHAIN_ANALYSIS.md)，必要时回看 [调研与 commit](docs/OPEN_SOURCE_RESEARCH.md)。
 4. [首版范围](docs/MVP_SCOPE.md)。
-5. 必要时回看 V1 和文字线框理解交互；V1 视觉被否定，不按它继续定稿。V2 草稿说明在 design/review-v2/README.md。
+5. [V2 当前预览](design/review-v2/index.html) 与 [UI 迭代日志](docs/UI_ITERATIONS.md)，必要时回看文字线框；V1 仅作对照。
 6. [界面与六条旅程](docs/UI_DESIGN.md)、[可视化调度](docs/VISUAL_SCHEDULING.md)。
 7. [执行计划](docs/EXECUTION_PLAN.md) 与 [评审清单](docs/DESIGN_REVIEW.md)，需要时回看产品基线和完整能力地图。
 
@@ -91,7 +94,11 @@ OpenHands 优先看会话事件、Agent Server、工作区和用量；OpenBot �
 
 ### N3：V1 视觉被否定，按用户参考重做 V2
 
-保留任务/调用/成果事实关联，不保留 V1 的低对比小字与通用后台观感。先以 Cyrene-Agent 的已看公开代码工作截图研究并列检查空间和输入区，再重新出 V2 主任务和调用画面；不复制角色插画和陪伴功能。V2 当前草稿尚未测试，必须检查后才推荐给用户。
+本轮已形成石墨色双栏任务工作区和调用检查提案，不复制角色插画或陪伴功能。代码和测试可切换，手机有面板与列表替代。默认折叠原始目标，优先展示协作与问题；调用可按全部、失败、模型、工具筛选。
+
+下一轮先看用户对两张重点画面的反馈，再增强选中上下文保持、计划修改和模型切换。其余页面虽做了渲染回归，不代表全部体验已打磨完成。
+
+用户曾担心大量删除：当时只是 V2 旧 CSS 在中断时暂缺，已经从本仓库提交恢复，改为新增 `studio.css`。不要再先删整个样式文件，也不要误称删过业务模块。
 
 微信原文无法读取，未判断其风格。AgentsPulse 教程能读，但技术结论回到一手源码；原文截图可以请求，不能假装已读。
 
@@ -134,4 +141,4 @@ OpenHands 优先看会话事件、Agent Server、工作区和用量；OpenBot �
 
 ## 8. 对下次会话的最短交接
 
-> 请先阅读 CONTINUE.md 和 docs/USER_REFERENCES_2026-11-02.md。用户否定 V1 视觉，已指定 gottaBoy/dsh-superagent-prototype 与 Playa-Cyrene/Cyrene-Agent 等公开参考。下一步重做并检查 V2 的任务与调用关键画面；V2 只有未验证草稿，不得声称已完成。仍只做原创设计，不接业务服务。保留追踪、安全与样例边界，记得提交和交接。
+> 请先阅读 CONTINUE.md 和 docs/UI_ITERATIONS.md。V1 视觉被否定；V2 两个重点画面已重做并静态检查，预览 design/review-v2/index.html。继续按用户反馈迭代任务、成果检查与调用分析，优先加强上下文保持和计划/模型变更体验。尚未视觉定版，不接真实服务，不删除整份样式再替换，记得提交和更新交接。

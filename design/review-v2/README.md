@@ -1,11 +1,40 @@
-# V2 草稿：尚未完成或验证
+# V2：研发工作区视觉提案
 
-2026-11-02：用户否定 V1 视觉后，开始独立重设计。其后用户提供新的公开参考，视觉定稿已暂停，需先按参考重新检查关键画面。
+日期：2026-11-02。状态：两个关键画面已重做、已做静态浏览器检查；等待用户视觉与交互评审，不是定版或业务实现。
 
-本目录只是保存中的 HTML/CSS/JS 草稿。仅对 `review.js` 做过语法检查，没有 Playwright 检查或截图验收，不作为推荐预览入口，也不是完成稿。
+## 查看
 
-业务操作禁用，内容均为静态样例；未接模型、后端、执行器或网络服务。
+直接打开 [index.html](index.html)，不需要启动服务。默认进入任务工作区。
 
-使用 V1 目录保留的本地 Lucide SVG 作为公共设计素材，许可见 `../review-v1/assets/LUCIDE-LICENSE`。这不表示沿用 V1 的布局或获得视觉认可。
+- [任务工作区截图](evidence/screenshots/desktop-task.png)
+- [调用分析截图](evidence/screenshots/desktop-calls.png)
+- [手机成果检查截图](evidence/screenshots/mobile-task-evidence.png)
 
-下一步与正确的参考对象见 [用户参考记录](../../docs/USER_REFERENCES_2026-11-02.md)。
+## 这轮改变
+
+- 石墨色工作空间，薄荷绿主操作，验证失败保留独立红色语义。
+- 桌面左侧推进任务，右侧同时检查候选代码与测试证据。
+- 手机在工作记录和成果检查间切换，不把两栏缩小硬塞。
+- 原始目标、执行计划可展开，优先保留当前协作与验证结果。
+- 调用可筛选全部、失败、模型、工具；失败尝试关联具体详情。
+- 成果页签支持键盘左右键、Home/End，手机导航关闭后恢复焦点。
+
+只有画面切换、筛选和静态详情等展示交互可用。真实模型调用、任务发送、审批、写入与应用变更均禁用，所有数据是样例。
+
+## 范围与验证
+
+任务与调用是本轮重点；其余画面共用新视觉层并做渲染回归，不等于 18 个画面的完整用户体验均已通过评审。
+
+[verify.mjs](verify.mjs) 检查 18 个画面、6 个视口和 9 条交互；实际结果见 [verification.json](evidence/verification.json)。没有外网请求、模型执行或后端接入。
+
+```bash
+PLAYWRIGHT_MODULE=/path/to/playwright/index.mjs \
+CHROME_PATH=/path/to/chrome \
+node design/review-v2/verify.mjs
+```
+
+新视觉位于 `studio.css`。早期 `review.css` 已恢复并保留，未删除 V1、文档或任何业务模块；后续在视觉方向获认可后再整理样式层。
+
+图标复用仓库内已保留的 Lucide 素材，许可见 `../review-v1/assets/LUCIDE-LICENSE`。不引入外部品牌或角色素材。
+
+后续迭代、缺口和用户反馈见 [UI_ITERATIONS.md](../../docs/UI_ITERATIONS.md)。
