@@ -4,6 +4,8 @@
 
 状态：已有原创图形化低保真初稿，尚未通过用户评审、最终视觉定版或用户测试。目标用户为研发团队，先单人试点，不继续沿用旧原型。研发定位补充见 [MODERN_RND_WORKBENCH.md](MODERN_RND_WORKBENCH.md)。
 
+最新反馈：V1 视觉被用户明确否定，本页配色提案不再作为默认方向。V2 按用户指定公开参考重做，尚未完成或验证，见 [最新参考记录](USER_REFERENCES_2026-11-02.md)。
+
 本轮新增 [原创文字线框 V1](LOW_FIDELITY_V1.md)，具体工作流以该提案评审。此文继续规定六条旅程、状态与视觉约束；文字线框不等于视觉完成。
 
 图形化稿见 [design/review-v1/index.html](../design/review-v1/index.html)，范围、截图和检查记录见 [GRAPHICAL_LOW_FIDELITY_V1.md](GRAPHICAL_LOW_FIDELITY_V1.md)。这只是设计评审，不代表任何 Agent 或模型已实际运行。

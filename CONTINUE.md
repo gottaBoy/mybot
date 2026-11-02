@@ -8,12 +8,17 @@
 
 用户希望通过 Super-agent / Subagent 把工作分配给适合的模型，追踪每个 Agent、模型和工具调用，具备好用、原创的界面，以及可视化、审计和运行分析。
 
+**最新视觉反馈：用户明确否定 V1“太丑了，不高级”。不要继续把 V1 作为推荐方案或只作轻微美化。**
+
+用户新指定参考：`gottaBoy/dsh-superagent-prototype`、`Playa-Cyrene/Cyrene-Agent`、AgentsPulse Super-agent 架构教程，以及微信文章。身份、commit、已读资料和视觉边界见 [USER_REFERENCES_2026-11-02.md](docs/USER_REFERENCES_2026-11-02.md)。
+
 注意：用户先说“先个人”，后明确“主要用于研发团队”。最新含义是团队产品、单人试点，不要再退回通用个人助手，也不要立即堆完整企业平台。
 
 ## 2. 不可丢失的约束
 
 - 先分析、方案与界面设计，不急于业务实现。
 - UI 全新设计，不借鉴 `/home/my/workspace/ainfra` 下任何项目的视觉、布局或交互。
+- 可以参考用户指定的公开产品风格与能力，不复制品牌、角色图或整套页面。此项不解除本地 UI 禁借鉴要求。
 - 可以分析公开开源产品的能力与架构，不复制界面。
 - 本地项目仅作可选后端能力；存在源码不代表已验证或已接入。
 - 多 Agent 按需使用；角色不等于模型，不强制全部角色参与。
@@ -38,6 +43,9 @@
 - 原创图形化低保真 `design/review-v1/index.html`：18 个静态画面，支持本地文件打开，不需要开发服务。
 - 6 个视口的浏览器检查、5 条设计导航/状态检查和 16 张选定截图，实际结果在 `design/review-v1/evidence/verification.json`。
 - 用户要求代码提交 Git；本轮基线提交范围为设计稿、文档和验证证据，不推送远端。下次使用 `git log -1 --oneline` 检查实际提交。
+- 用户对 V1 的负面评审已记录；V1 的技术检查通过不等于视觉被接受。
+- 新参考已核对：gottaBoy 是 DeepSeek 官方 fork，本次 HEAD 相同；用户最后指定的 Cyrene 是 Playa-Cyrene/Cyrene-Agent，不能与 Yongchu-Yitao/Cyrene 混用。
+- 新建 `design/review-v2/` 视觉草稿，但收到参考后暂停定稿，尚无浏览器检查或截图。只做过 JS 语法检查。
 
 尚未完成：
 
@@ -49,15 +57,15 @@
 
 `prototype/` 是未采用的早期静态草图，保留但不作为当前界面或工程起点。本轮没有启动开发服务。
 
-`design/review-v1/` 是新的静态设计评审稿，不是业务应用。示例模型、命令、Diff、时间、Token 和状态均未真实执行；不要删除静态标记或将禁用操作接入后端。
+`design/review-v1/` 是被用户否定的低保真，不是业务应用或当前视觉基线。`design/review-v2/` 尚未完成和浏览器验证，不要声称已交付新版。所有样例都未真实执行。
 
 ## 4. 推荐阅读顺序
 
-1. [最新定位 ADR-0002](docs/decisions/ADR-0002-rnd-team-single-user-pilot.md)。
+1. [最新参考与视觉反馈](docs/USER_REFERENCES_2026-11-02.md) 和 [定位 ADR-0002](docs/decisions/ADR-0002-rnd-team-single-user-pilot.md)。
 2. [现代研发工作台定义](docs/MODERN_RND_WORKBENCH.md)。
 3. [源码链路对照](docs/SOURCE_CHAIN_ANALYSIS.md)，必要时回看 [调研与 commit](docs/OPEN_SOURCE_RESEARCH.md)。
 4. [首版范围](docs/MVP_SCOPE.md)。
-5. [图形化低保真入口](design/review-v1/index.html) 与 [评审说明](docs/GRAPHICAL_LOW_FIDELITY_V1.md)，必要时回看文字线框。
+5. 必要时回看 V1 和文字线框理解交互；V1 视觉被否定，不按它继续定稿。V2 草稿说明在 design/review-v2/README.md。
 6. [界面与六条旅程](docs/UI_DESIGN.md)、[可视化调度](docs/VISUAL_SCHEDULING.md)。
 7. [执行计划](docs/EXECUTION_PLAN.md) 与 [评审清单](docs/DESIGN_REVIEW.md)，需要时回看产品基线和完整能力地图。
 
@@ -81,9 +89,11 @@ OpenHands 优先看会话事件、Agent Server、工作区和用量；OpenBot �
 
 首版范围已写入 MVP_SCOPE.md。共享访问开启前具备身份、项目访问与凭证边界。先评审 P01-P10，不将全部长期能力变成首版依赖。
 
-### N3：图形化低保真已出稿，当前待评审
+### N3：V1 视觉被否定，按用户参考重做 V2
 
-design/review-v1 已绘制 18 个画面，包括 W01-W08 和 S01-S06。设计导航可从任务到调度、调用详情再回成果；业务操作禁用。接下来评审信息密度、任务流与异常表达，细化计划修改、模型切换、授权失效，然后定最终原创视觉。不要重新退回纯文字调研，也不要直接启动业务实现。
+保留任务/调用/成果事实关联，不保留 V1 的低对比小字与通用后台观感。先以 Cyrene-Agent 的已看公开代码工作截图研究并列检查空间和输入区，再重新出 V2 主任务和调用画面；不复制角色插画和陪伴功能。V2 当前草稿尚未测试，必须检查后才推荐给用户。
+
+微信原文无法读取，未判断其风格。AgentsPulse 教程能读，但技术结论回到一手源码；原文截图可以请求，不能假装已读。
 
 ### 本轮工具与验证
 
@@ -124,4 +134,4 @@ design/review-v1 已绘制 18 个画面，包括 W01-W08 和 S01-S06。设计导
 
 ## 8. 对下次会话的最短交接
 
-> 请先阅读 CONTINUE.md。源码对照、首版范围和原创图形化低保真 V1 已出稿。先打开 design/review-v1/index.html，评审 18 个画面的桌面/手机布局及异常流程，再细化视觉与执行契约。重点分工、追踪、可视化、审计和分析。业务按钮禁用；仍是设计阶段，不接模型/后端/执行器。用户已要求提交 Git，检查现有提交，不要遗漏交接记录。
+> 请先阅读 CONTINUE.md 和 docs/USER_REFERENCES_2026-11-02.md。用户否定 V1 视觉，已指定 gottaBoy/dsh-superagent-prototype 与 Playa-Cyrene/Cyrene-Agent 等公开参考。下一步重做并检查 V2 的任务与调用关键画面；V2 只有未验证草稿，不得声称已完成。仍只做原创设计，不接业务服务。保留追踪、安全与样例边界，记得提交和交接。

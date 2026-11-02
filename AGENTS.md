@@ -15,7 +15,9 @@ Read `CONTINUE.md` before making assumptions about the project. Then read the la
 
 - Create an original UI. Do not copy or borrow visual style, layout, or interaction design from sibling projects under `/home/my/workspace/ainfra`.
 - `prototype/` is an unadopted early sketch, not the visual or engineering baseline.
-- `design/review-v1/` is the new static low-fidelity review artifact, not a live app. Its mock data and disabled business actions must not be presented as executed work.
+- The user rejected the visual quality of `design/review-v1/`. Preserve it for comparison, not as the accepted baseline.
+- `design/review-v2/` is an incomplete, unverified draft. Read `docs/USER_REFERENCES_2026-11-02.md` before continuing it.
+- Static mock data and disabled business actions must not be presented as executed work.
 - Public open-source projects may be studied for architecture and capabilities; do not turn that into copying their UI.
 
 ## Research And Records

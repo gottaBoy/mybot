@@ -2,6 +2,8 @@
 
 查阅日期：2026-11-01；2026-11-02 增补第一轮链路对照。
 
+2026-11-02 用户新指定 `gottaBoy/dsh-superagent-prototype` 和 `Playa-Cyrene/Cyrene-Agent`，身份与资料阅读见 [USER_REFERENCES_2026-11-02.md](USER_REFERENCES_2026-11-02.md)。不要将后者与曾查看架构图的 `Yongchu-Yitao/Cyrene` 混用。
+
 目的：分析公开源码与官方文档中的产品结构、执行与交互机制，服务于原创研发工作台设计。不是复制界面，也不是逆向私有服务。
 
 ## 1. 证据等级与范围
