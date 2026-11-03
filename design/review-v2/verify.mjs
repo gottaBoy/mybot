@@ -14,7 +14,7 @@ const browser = await chromium.launch({
   args: ["--no-sandbox"],
 });
 const screens = [
-  "task", "calls", "call-detail", "workbench", "project", "dispatch", "delegation",
+  "task", "super-agent", "control", "control-review", "calls", "call-detail", "workbench", "project", "dispatch", "delegation",
   "artifacts", "tests", "approval", "recovery", "audit", "setup",
   "new-task", "empty", "queued", "offline", "budget",
 ];
@@ -29,8 +29,9 @@ const viewports = [
 const shots = new Set([
   "desktop/task", "desktop/calls", "desktop/call-detail", "desktop/workbench",
   "desktop/dispatch", "desktop/artifacts", "desktop/tests", "desktop/approval",
+  "desktop/super-agent", "desktop/control",
   "mobile/task", "mobile/calls", "mobile/call-detail", "mobile/dispatch",
-  "mobile/approval", "mobile/recovery",
+  "mobile/approval", "mobile/recovery", "mobile/super-agent", "mobile/control",
 ]);
 const out = path.join(root, "evidence");
 await mkdir(path.join(out, "screenshots"), { recursive: true });
@@ -79,6 +80,12 @@ try {
           .filter((el) => visible(el) && el.scrollWidth > el.clientWidth + 2).map((el) => el.textContent.trim());
         const marker = document.querySelector(".review-label");
         const primary = document.querySelector(".workstream p") || document.querySelector("main p");
+        const overlappingFields = Array.from(document.querySelectorAll("#control-form input[type=number]")).filter((input) => {
+          input.scrollIntoView({ block: "center" });
+          const r = input.getBoundingClientRect();
+          return document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2) !== input;
+        }).map((input) => input.id);
+        window.scrollTo(0, 0);
         return {
           viewport: window.innerWidth,
           documentWidth: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth),
@@ -88,12 +95,14 @@ try {
           mainTextLength: document.querySelector("main").textContent.trim().length,
           markerVisible: visible(marker) && marker.textContent.includes("静态"),
           primaryTextSize: primary ? getComputedStyle(primary).fontSize : null,
+          overlappingFields,
         };
       });
       const failures = [];
       if (layout.documentWidth > layout.viewport + 1) failures.push("page-horizontal-overflow");
       if (layout.brokenImages.length) failures.push("broken-images");
       if (layout.clippedControls.length) failures.push("clipped-controls");
+      if (layout.overlappingFields.length) failures.push("obscured-form-fields");
       if (layout.headings !== 1 || layout.mainTextLength < 50) failures.push("invalid-main");
       if (!layout.markerVisible) failures.push("missing-visible-static-marker");
       if (screen === "task" && parseFloat(layout.primaryTextSize) < 13) failures.push("task-text-too-small");
@@ -191,6 +200,84 @@ try {
     assert.equal(await page.locator("main button:not(:disabled)").count(), 0);
     assert.equal(report.externalRequests.length, 0);
   });
+  await check("super-agent-is-project-scoped-not-a-live-run", async () => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await open("super-agent");
+    assert.match(await page.locator(".coordination-scope").innerText(), /Run 02 已结束/);
+    assert.equal(await page.locator(".delegation-roster-row").count(), 4);
+    assert.match(await page.locator(".next-decision").innerText(), /未执行/);
+    await page.locator('.next-decision a[href="#control"]').click();
+    await page.waitForFunction(() => document.body.dataset.screen === "control");
+    assert.equal(await page.getByRole("button", { name: "预览调整" }).isDisabled(), true);
+  });
+  await check("local-model-budget-draft-preview-and-reset", async () => {
+    await open("control");
+    await page.selectOption("#model-developer", "reasoning-b");
+    await page.locator("#draft-calls").fill("16");
+    assert.match(await page.locator("#draft-status").innerText(), /2 项调整 · 未应用/);
+    await page.getByRole("button", { name: "预览调整" }).click();
+    await page.waitForFunction(() => document.body.dataset.screen === "control-review");
+    assert.equal(await page.locator(".draft-diff-row").count(), 2);
+    assert.match(await page.locator(".draft-diff").innerText(), /开发 Agent 模型/);
+    assert.match(await page.locator(".draft-diff").innerText(), /16 次/);
+    assert.equal(await page.getByRole("button", { name: "应用配置" }).isDisabled(), true);
+    for (const [name, width, height] of [["desktop", 1440, 1000], ["mobile", 390, 844]]) {
+      await page.setViewportSize({ width, height });
+      const shot = `screenshots/${name}-control-review.png`;
+      await page.screenshot({ path: path.join(out, shot), fullPage: true });
+      report.screenshots.push(shot);
+    }
+    await page.locator('.draft-context a[href="#control"]').click();
+    await page.waitForFunction(() => document.body.dataset.screen === "control");
+    assert.equal(await page.locator("#draft-calls").inputValue(), "16");
+    assert.equal(await page.locator("#model-developer").inputValue(), "reasoning-b");
+    await page.getByRole("button", { name: "撤销调整" }).click();
+    assert.equal(await page.locator("#draft-calls").inputValue(), "12");
+    assert.equal(await page.locator("#model-developer").inputValue(), "coding-a");
+    assert.equal(await page.getByRole("button", { name: "预览调整" }).isDisabled(), true);
+    await page.reload();
+    assert.equal(await page.locator("#draft-calls").inputValue(), "12");
+  });
+  await check("invalid-budget-is-visible-and-blocks-preview", async () => {
+    await open("control");
+    for (const [selector, value] of [["#draft-parallel", "3"], ["#draft-calls", ""], ["#draft-minutes", "1.5"]]) {
+      await page.locator(selector).fill(value);
+      assert.equal(await page.locator(selector).getAttribute("aria-invalid"), "true");
+      const field = await page.locator(selector).getAttribute("data-draft-field");
+      assert.match(await page.locator(`#${field}-error`).innerText(), /整数/);
+      assert.equal(await page.locator(`#${field}-error`).isVisible(), true);
+      assert.equal(await page.getByRole("button", { name: "预览调整" }).isDisabled(), true);
+      assert.ok((await page.locator("#draft-error").innerText()).length > 0);
+    }
+    await page.getByRole("button", { name: "撤销调整" }).click();
+    assert.equal(await page.locator("#draft-error").innerText(), "");
+  });
+  await check("call-filter-and-inspector-state-survive-navigation", async () => {
+    await open("calls");
+    await page.locator('[data-call-filter="failed"]').click();
+    await page.locator('td a[href="#call-detail"]').click();
+    await page.waitForFunction(() => document.body.dataset.screen === "call-detail");
+    await page.getByRole("link", { name: "关闭调用详情" }).click();
+    await page.waitForFunction(() => document.body.dataset.screen === "calls");
+    assert.equal(await page.locator(".calls-table tbody tr").count(), 1);
+    assert.equal(await page.locator('[data-call-filter="failed"]').getAttribute("aria-pressed"), "true");
+  });
+  await check("task-panel-and-expanded-plan-survive-navigation", async () => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await open("task");
+    await page.locator(".compact-plan summary").click();
+    await page.locator('[data-studio-view="evidence"]').click();
+    await page.locator('[data-evidence-tab="tests"]').click();
+    await page.selectOption("#screen-picker", "super-agent");
+    await page.waitForFunction(() => document.body.dataset.screen === "super-agent");
+    await page.locator('.page-heading a[href="#task"]').click();
+    await page.waitForFunction(() => document.body.dataset.screen === "task");
+    assert.equal(await page.locator("#evidence-tests").isVisible(), true);
+    assert.equal(await page.locator(".task-studio").getAttribute("data-view"), "evidence");
+    await page.locator('[data-studio-view="work"]').click();
+    assert.equal(await page.locator(".compact-plan").getAttribute("open"), "");
+    assert.equal(report.externalRequests.length, 0);
+  });
 } catch (error) {
   report.errors.push(error.stack || String(error));
 } finally {
@@ -204,7 +291,7 @@ report.summary = {
   failedInteractions: report.interactions.filter((item) => !item.passed).length,
   errors: report.errors.length,
   externalRequests: report.externalRequests.length,
-  complete: report.cases.length === screens.length * viewports.length && report.interactions.length === 9,
+  complete: report.cases.length === screens.length * viewports.length && report.interactions.length === 14,
 };
 await writeFile(path.join(out, "verification.json"), `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify(report.summary, null, 2));

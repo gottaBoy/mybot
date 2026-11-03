@@ -49,6 +49,10 @@
 - V2 默认打开任务，桌面工作记录与代码/验证并列，手机使用面板切换；调用筛选和页签是可用的静态交互。
 - 新增 V2 浏览器检查和截图，实际结果见 `design/review-v2/evidence/verification.json`；不代表用户已认可。
 - 用户要求不断迭代、加强 UI 体验。反馈与下轮优先级保存在 `docs/UI_ITERATIONS.md`。
+- 本轮用户要求 Super-agent、Control Panel，并要求继续改善排版、操作与风格，完成后提交。
+- 已新增任务协调、Control Panel、本地配置差异三个画面。当前共 21 个画面、6 视口（126 项渲染）与 14 条交互；实际结果见 V2 evidence/verification.json。
+- 模型/资源草稿可本地编辑、校验、预览、撤销；不写历史运行，刷新重置，真实应用禁用。
+- 当前文档内导航保留调用筛选、成果/手机面板、展开状态与滚动位置，不承诺刷新或跨设备恢复。
 
 尚未完成：
 
@@ -68,7 +72,7 @@
 2. [现代研发工作台定义](docs/MODERN_RND_WORKBENCH.md)。
 3. [源码链路对照](docs/SOURCE_CHAIN_ANALYSIS.md)，必要时回看 [调研与 commit](docs/OPEN_SOURCE_RESEARCH.md)。
 4. [首版范围](docs/MVP_SCOPE.md)。
-5. [V2 当前预览](design/review-v2/index.html) 与 [UI 迭代日志](docs/UI_ITERATIONS.md)，必要时回看文字线框；V1 仅作对照。
+5. [V2 当前预览](design/review-v2/index.html)、[UI 迭代日志](docs/UI_ITERATIONS.md)、[协调与控制设计](docs/SUPER_AGENT_CONTROL_PANEL.md)，必要时回看文字线框；V1 仅作对照。
 6. [界面与六条旅程](docs/UI_DESIGN.md)、[可视化调度](docs/VISUAL_SCHEDULING.md)。
 7. [执行计划](docs/EXECUTION_PLAN.md) 与 [评审清单](docs/DESIGN_REVIEW.md)，需要时回看产品基线和完整能力地图。
 
@@ -96,7 +100,9 @@ OpenHands 优先看会话事件、Agent Server、工作区和用量；OpenBot �
 
 本轮已形成石墨色双栏任务工作区和调用检查提案，不复制角色插画或陪伴功能。代码和测试可切换，手机有面板与列表替代。默认折叠原始目标，优先展示协作与问题；调用可按全部、失败、模型、工具筛选。
 
-下一轮先看用户对两张重点画面的反馈，再增强选中上下文保持、计划修改和模型切换。其余页面虽做了渲染回归，不代表全部体验已打磨完成。
+已补 Super-agent 与 Control Panel，在任务内有协调页签，标题旁控制图标可进面板。Control Panel 作用于下一次运行草稿，不是全局管理员权限界面。表单操作栏曾遮挡输入，已撤回吸底，新增实际遮挡检测。
+
+下一轮先评审新入口、编辑密度与草稿流程，再设计计划修订、调用到精确步骤，以及模型切换前的能力与数据边界检查。其余页面虽做渲染回归，不代表全部体验已打磨完成。
 
 用户曾担心大量删除：当时只是 V2 旧 CSS 在中断时暂缺，已经从本仓库提交恢复，改为新增 `studio.css`。不要再先删整个样式文件，也不要误称删过业务模块。
 
@@ -141,4 +147,4 @@ OpenHands 优先看会话事件、Agent Server、工作区和用量；OpenBot �
 
 ## 8. 对下次会话的最短交接
 
-> 请先阅读 CONTINUE.md 和 docs/UI_ITERATIONS.md。V1 视觉被否定；V2 两个重点画面已重做并静态检查，预览 design/review-v2/index.html。继续按用户反馈迭代任务、成果检查与调用分析，优先加强上下文保持和计划/模型变更体验。尚未视觉定版，不接真实服务，不删除整份样式再替换，记得提交和更新交接。
+> 请先阅读 CONTINUE.md、docs/UI_ITERATIONS.md 和 docs/SUPER_AGENT_CONTROL_PANEL.md。V2 已有任务/调用、Super-agent、Control Panel 与配置差异；本地草稿可改但应用禁用，21 画面做静态回归。下一步按用户反馈迭代排版和操作，重点计划修订、精确追踪、模型能力与数据边界。没有真实服务或执行器，不删除整份样式再替换，记得提交和交接。

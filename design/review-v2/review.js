@@ -3,6 +3,9 @@ const screens = [
   ["workbench", "工作台", "工作台", "Run 02 / 测试失败后的工作总览"],
   ["project", "研发项目", "支付服务", "项目上下文与任务"],
   ["task", "任务工作区", "重试策略调整", "Run 02 / 执行结束，测试未通过"],
+  ["super-agent", "Super-agent", "Super-agent", "支付服务 / 任务协调，未发起新运行"],
+  ["control", "Control Panel", "Control Panel", "支付服务 / 下一次运行的本地草稿，未应用"],
+  ["control-review", "配置调整预览", "Control Panel", "支付服务 / 草稿差异，未应用到执行器"],
   ["dispatch", "任务依赖", "重试策略调整", "Run 02 / 计划 v2"],
   ["delegation", "Agent 委派", "重试策略调整", "Run 02 / 按需协作"],
   ["calls", "调用分析", "重试策略调整", "Run 02 / 调用片段"],
@@ -42,9 +45,57 @@ const callData = [
   ["mc-023", "测试", "代码模型 A", "失败", "red", "30.0s", "未返回", "未返回", "10:22:03", "1"],
   ["mc-024", "测试", "代码模型 A", "完成", "green", "18.6s", "2,120", "760", "10:22:35", "2"],
 ];
+const modelChoices = [["reasoning-b", "推理模型 B"], ["coding-a", "代码模型 A"]];
+const roleDefinitions = [
+  ["coordinator", "Super-agent", "计划与汇总", "command", "neutral", "reasoning-b"],
+  ["researcher", "研究 Agent", "读取限定资料", "file-search", "blue", "reasoning-b"],
+  ["developer", "开发 Agent", "隔离工作区写入", "code-xml", "green", "coding-a"],
+  ["tester", "测试 Agent", "执行验证", "file-check-2", "amber", "coding-a"],
+];
+const initialDraft = {
+  models: Object.fromEntries(roleDefinitions.map(([id, , , , , model]) => [id, model])),
+  parallel: 2,
+  calls: 12,
+  minutes: 20,
+  stopOnFailure: true,
+};
+const draftLimits = [
+  ["parallel", "只读并行上限", 1, 2],
+  ["calls", "模型调用上限", 1, 24],
+  ["minutes", "运行时间上限", 1, 60],
+];
+const freshDraft = () => ({ ...initialDraft, models: { ...initialDraft.models } });
+const uiState = {
+  evidence: "code",
+  studio: "work",
+  callFilter: "all",
+  details: {},
+  scroll: {},
+  draft: freshDraft(),
+};
+let currentScreen = null;
+const modelLabel = (id) => modelChoices.find(([value]) => id === value)?.[1] || "未选择";
+function draftChanges() {
+  const changes = roleDefinitions.flatMap(([id, label]) => uiState.draft.models[id] === initialDraft.models[id] ? [] : [{
+    name: `${label} 模型`, before: modelLabel(initialDraft.models[id]), after: modelLabel(uiState.draft.models[id]),
+  }]);
+  for (const [field, name, unit] of [["parallel", "只读并行上限", "个"], ["calls", "模型调用上限", "次"], ["minutes", "运行时间上限", "分钟"]]) {
+    if (Number(uiState.draft[field]) !== initialDraft[field]) changes.push({ name, before: `${initialDraft[field]} ${unit}`, after: `${uiState.draft[field]} ${unit}` });
+  }
+  if (uiState.draft.stopOnFailure !== initialDraft.stopOnFailure) changes.push({ name: "验证失败后停止", before: "开启", after: "关闭" });
+  return changes;
+}
+function draftErrors() {
+  const errors = [];
+  for (const [name, label, minimum, maximum] of draftLimits) {
+    const value = Number(uiState.draft[name]);
+    if (!Number.isInteger(value) || value < minimum || value > maximum) errors.push(`${label}须为 ${minimum}–${maximum} 的整数`);
+  }
+  return errors;
+}
 
 function navigation(active) {
-  const routes = [["workbench", "layout-dashboard", "工作台"], ["project", "folder-git-2", "项目"], ["artifacts", "files", "成果"], ["setup", "blocks", "能力"]];
+  const routes = [["workbench", "layout-dashboard", "工作台"], ["super-agent", "command", "Super-agent"], ["project", "folder-git-2", "项目"], ["artifacts", "files", "成果"]];
   return `<a class="brand" href="#task"><span class="brand-mark">${icon("command")}</span><strong>Workbench<span class="brand-version">AI</span></strong></a>
     <div class="workspace-switch"><span class="workspace-avatar">研</span><span>研发工作空间<small>个人试点</small></span>${icon("chevron-down")}</div>
     <a class="nav-new" href="#new-task">${icon("plus")}<span>发起工作</span></a>
@@ -53,7 +104,7 @@ function navigation(active) {
       <a class="nav-project" href="#project"><span class="project-monogram">P</span><span>支付服务</span><i class="attention-dot"></i></a>
       <span class="nav-project muted" aria-disabled="true"><span class="project-monogram">D</span><span>发布工具</span></span>
     </div>
-    <div class="nav-bottom"><div class="scope-note">${icon("shield-check")}<div>受控工作空间<small>仅访问已授权的项目范围</small></div></div>
+    <div class="nav-bottom"><a class="nav-item ${active === "control" ? "is-active" : ""}" href="#control" ${active === "control" ? 'aria-current="page"' : ""}>${icon("sliders-horizontal")}<span>Control Panel</span></a><div class="scope-note">${icon("shield-check")}<div>受控工作空间<small>仅访问已授权的项目范围</small></div></div>
       <a class="nav-item" href="#setup">${icon("settings-2")}<span>连接与设置</span></a>
       <div class="identity"><span class="person-avatar">林</span><span><strong>林然</strong><small>项目所有者</small></span>${icon("chevron-down")}</div>
     </div>`;
@@ -86,10 +137,71 @@ function taskHeader(active, scenario = "normal") {
   const action = scenario === "normal" ? link("new-task", "要求修改", "pencil", "button button-primary")
     : scenario === "approval" ? inert("批准本次", "check", "button button-primary")
       : inert(scenario === "recovery" ? "取消已请求" : "暂停", "pause");
-  const tabs = [["task", "工作", "blocks"], ["dispatch", "调度", "git-branch"], ["calls", "调用", "network"], ["audit", "审计", "shield-check"]];
-  return `<div class="task-heading"><div><div class="task-eyebrow"><span class="project-symbol-small">P</span><a href="#project">支付服务</a><span class="eyebrow-divider">/</span><span class="mono">RUN ${run}</span></div><h1>重试策略调整</h1><p class="task-description">限制重试次数，验证扣款幂等性，保持现有接口。</p></div><div class="heading-actions">${action}${inert("更多", "ellipsis", "button button-icon-text")}</div></div>
+  const tabs = [["task", "工作", "blocks"], ["super-agent", "协调", "command"], ["dispatch", "调度", "git-branch"], ["calls", "调用", "network"], ["audit", "审计", "shield-check"]];
+  return `<div class="task-heading"><div><div class="task-eyebrow"><span class="project-symbol-small">P</span><a href="#project">支付服务</a><span class="eyebrow-divider">/</span><span class="mono">RUN ${run}</span></div><h1>重试策略调整</h1><p class="task-description">限制重试次数，验证扣款幂等性，保持现有接口。</p></div><div class="heading-actions">${scenario === "normal" ? iconLink("control", "sliders-horizontal", "打开 Control Panel") : ""}${action}${inert("更多", "ellipsis", "button button-icon-text")}</div></div>
     <div class="fact-axes"><div><span>执行</span>${pill(execution, tone)}</div><div><span>验证</span>${pill(validation, qualityTone)}</div><div><span>人工决定</span>${pill(decision)}</div><a class="run-version" href="#project">${icon("git-branch")}<code>a1b2c3</code>${scenario === "normal" ? '<span>基线未变更</span>' : ""}</a></div>
     ${scenario === "normal" ? `<nav class="task-tabs" aria-label="任务视图">${tabs.map(([route, label, glyph]) => `<a class="${active === route ? "is-active" : ""}" href="#${route}" ${active === route ? 'aria-current="page"' : ""}>${icon(glyph)}<span>${label}</span>${route === "calls" ? '<span class="tab-count">5</span>' : ""}</a>`).join("")}${link("artifacts", "查看成果", "arrow-up-right", "task-result-link")}</nav>` : `<div class="snapshot-stage"><span>${scenario === "approval" ? "应用候选变更 f7a8b9" : scenario === "recovery" ? "核查工作区 ws-04 的写入结果" : "本次运行状态"}</span>${link("project", "返回项目", "arrow-up-right", "text-link")}</div>`}`;
+}
+
+function coordinationHeader(title, description, active) {
+  return `${heading(title, description, link("task", "返回任务", "arrow-right", "button button-secondary"), "支付服务 / 重试策略调整")}
+    <div class="coordination-scope"><span>${icon("folder-git-2")}payment-service</span><span>${icon("git-branch")}<code>a1b2c3</code></span><span>Run 02 已结束</span><span class="scope-sample">${icon("lock-keyhole")}示例工作空间 · 未连接执行器</span></div>
+    <nav class="coordination-tabs" aria-label="协调与控制"><a href="#super-agent" ${active === "super-agent" ? 'aria-current="page"' : ""}>${icon("command")}Super-agent</a><a href="#control" ${active === "control" ? 'aria-current="page"' : ""}>${icon("sliders-horizontal")}Control Panel<span id="coordination-draft-dot" class="draft-indicator" ${draftChanges().length ? "" : "hidden"}></span></a></nav>`;
+}
+
+function superAgent() {
+  return `<div class="page coordination-page">${coordinationHeader("Super-agent", "目标、委派和下一步决定。", "super-agent")}
+    <div class="coordination-layout"><div class="coordination-main">
+      <section class="coordinator-brief"><div class="coordinator-identity">${avatar("", "neutral", "command")}<div><h2>任务协调</h2><span>推理模型 B · 计划 v2 · Run 02</span></div>${pill("等待你决定", "amber")}</div>
+      <p class="coordinator-goal">增加可控的重试，不让同一个请求重复扣款。</p>
+      <div class="acceptance-strip"><span>${icon("check")}最多重试 3 次</span><span>${icon("check")}现有接口兼容</span><span class="tone-red-text">${icon("x")}请求扣款幂等</span></div></section>
+      <section class="next-decision">${section("下一步建议", pill("未执行"))}<div class="recommendation"><span class="recommendation-symbol">${icon("pencil")}</span><div><h3>先修复幂等键，再重新验证</h3><p>测试证据显示幂等键在循环内重新生成。把标识移到重试循环外，保留现有接口，再检查三项验收条件。</p><div class="recommendation-source">${icon("file-check-2")}test-report · 候选 d4e5f6${link("tests", "查看依据", "arrow-up-right", "text-link")}</div></div></div>
+      <div class="proposal-sequence"><div><span class="sequence-number">01</span><div><strong>开发修复</strong><small>代码模型 A · 独占隔离写入</small></div></div><span class="sequence-arrow">${icon("arrow-right")}</span><div><span class="sequence-number">02</span><div><strong>重新验证</strong><small>测试 Agent · 读取实际结果</small></div></div></div>
+      <div class="panel-actions">${link("new-task", "准备修改要求", "pencil", "button button-primary")}${link("control", "调整下一次运行", "sliders-horizontal")}</div></section>
+      <section class="delegation-roster">${section("本轮分工", link("delegation", "查看委派关系", "git-branch", "text-link"))}
+      ${planData.slice(0, 4).map(([title, role, model, permission, state, tone, glyph], index) => `<a href="#${tone === "red" ? "tests" : "calls"}" class="delegation-roster-row">${avatar("", ["blue", "amber", "green", "red"][index], glyph)}<div><strong>${title}</strong><small>${role} · ${model}</small></div><span class="roster-permission">${permission}</span>${pill(state, tone)}${icon("arrow-up-right")}</a>`).join("")}</section>
+    </div><aside class="coordination-aside"><section>${section("不能自动越过的边界")}<ul class="control-boundaries"><li>${icon("shield-check")}代码写入需要本次授权</li><li>${icon("lock-keyhole")}只有一个工作区写入者</li><li>${icon("circle-x")}验证失败不能应用变更</li><li>${icon("user-round")}提交、合并、发布由人决定</li></ul></section>
+      <section class="coordination-history">${section("最近决定")}<div><span class="decision-time">10:24</span><p>验证失败，候选成果保留，等待修复。</p></div><div><span class="decision-time">10:18 · 林然</span><p>授权在限定目录中隔离写入。</p></div><div><span class="decision-time">10:15 · 林然</span><p>确认计划 v2，新增幂等性验证。</p></div>${link("audit", "检查完整记录", "arrow-up-right", "text-link")}</section>
+      <div class="coordinator-footnote">${icon("circle-help")}模型提出建议；权限与执行状态不由自然语言决定。</div></aside></div></div>`;
+}
+
+function modelSelect(role, model) {
+  return `<select id="model-${role}" data-draft-model="${role}" aria-label="${roleDefinitions.find(([id]) => id === role)[1]} 模型配置">${modelChoices.map(([value, label]) => `<option value="${value}" ${value === model ? "selected" : ""}>${label}</option>`).join("")}</select>`;
+}
+
+function controlPanel() {
+  const { draft } = uiState;
+  const changeCount = draftChanges().length;
+  return `<div class="page coordination-page">${coordinationHeader("Control Panel", "调整下一次运行的模型、资源与边界。", "control")}
+    <div class="draft-context"><div><span class="draft-version">草稿</span><strong>下一次运行</strong><span>不改写 Run 02 的历史配置</span></div><span id="draft-status" role="status" aria-live="polite">${changeCount ? `${changeCount} 项调整 · 未应用` : "无调整 · 未应用"}</span></div>
+    <form id="control-form" class="control-layout" aria-label="下一次运行配置草稿" novalidate><div class="control-main">
+      <section class="control-section">${section("模型分工", '<span class="control-section-note">样例配置 · 均未连接</span>')}
+        <div class="routing-heading"><span>角色与职责</span><span>模型配置</span><span>权限范围</span></div>
+        <div class="routing-list">${roleDefinitions.map(([id, title, duty, glyph, tone]) => `<div class="routing-row">${avatar("", tone, glyph)}<div class="routing-role"><label for="model-${id}">${title}</label><small>${duty}</small></div><div class="routing-select">${modelSelect(id, draft.models[id])}</div><span class="routing-permission">${id === "developer" ? "隔离写入" : id === "tester" ? "运行测试" : "只读"}</span></div>`).join("")}</div>
+        <p class="control-inline-note">${icon("lock-keyhole")}切换模型不增加工具权限，也不自动扩大资料发送范围。</p>
+      </section>
+      <section class="control-section">${section("资源上限")}<div class="budget-fields">
+        <label for="draft-parallel"><span>只读任务并行</span><div><input id="draft-parallel" data-draft-field="parallel" type="number" min="1" max="2" step="1" required aria-describedby="parallel-help parallel-error" value="${draft.parallel}" /><span>个</span></div><small id="parallel-help">1–2；代码写入保持独占</small><small class="field-error" id="parallel-error" aria-live="polite"></small></label>
+        <label for="draft-calls"><span>模型调用上限</span><div><input id="draft-calls" data-draft-field="calls" type="number" min="1" max="24" step="1" required aria-describedby="calls-help calls-error" value="${draft.calls}" /><span>次</span></div><small id="calls-help">1–24；达到后停止新增调度</small><small class="field-error" id="calls-error" aria-live="polite"></small></label>
+        <label for="draft-minutes"><span>运行时间上限</span><div><input id="draft-minutes" data-draft-field="minutes" type="number" min="1" max="60" step="1" required aria-describedby="minutes-help minutes-error" value="${draft.minutes}" /><span>分钟</span></div><small id="minutes-help">1–60；不含等待人工的时间</small><small class="field-error" id="minutes-error" aria-live="polite"></small></label>
+      </div><div class="control-toggle-row"><div><label for="draft-stop">验证失败后暂停后续调度</label><p>关闭时只允许继续收集诊断证据；仍不能应用失败的变更。</p></div><label class="toggle" title="仅修改本地草稿"><input id="draft-stop" data-draft-toggle="stopOnFailure" type="checkbox" role="switch" ${draft.stopOnFailure ? "checked" : ""} /><span></span></label></div></section>
+      <section class="control-section control-policy-section">${section("项目授权")}<dl class="control-policy"><div><dt>读取范围</dt><dd><code>src/retry/**</code><code>tests/retry/**</code></dd></div><div><dt>写入范围</dt><dd>上述路径的隔离工作区，需要单独授权</dd></div><div><dt>生产环境</dt><dd>${pill("不可访问")}</dd></div><div><dt>提交与发布</dt><dd>${pill("未授权")}</dd></div></dl></section>
+      <div class="draft-actions"><p id="draft-error" class="draft-error" role="alert">${draftErrors().join("；")}</p><div><button class="button button-quiet" type="button" data-reset-draft ${changeCount ? "" : "disabled"}>${icon("refresh-cw")}撤销调整</button><button class="button button-primary" type="submit" id="preview-draft" ${changeCount && !draftErrors().length ? "" : "disabled"}>${icon("file-diff")}预览调整</button></div></div>
+    </div><aside class="control-aside"><section>${section("本次配置的边界")}<div class="control-scope-item">${icon("folder-git-2")}<div><strong>payment-service</strong><small>项目固定，不能在这里跨项目授权</small></div></div><div class="control-scope-item">${icon("git-branch")}<div><strong>基线 a1b2c3</strong><small>执行前需要重新检查</small></div></div><div class="control-scope-item">${icon("shield-check")}<div><strong>授权不继承为永久允许</strong><small>模型、计划或成果变化要重新确认</small></div></div></section>
+      <section class="budget-note">${section("用量与费用")}<dl><div><dt>Run 02 已返回 Token</dt><dd>10,650<span>仅调用片段</span></dd></div><div><dt>估算成本</dt><dd>未知<span>价格未配置</span></dd></div></dl><p>Token、调用数与时间可受限；金额未知时不保证精确费用上限。在途调用可能继续产生消耗。</p>${link("calls", "查看调用计量", "arrow-up-right", "text-link")}</section>
+      <div class="local-draft-note">${icon("file-text")}本地草稿，刷新后重置。不会发送到模型或执行器。</div></aside></form></div>`;
+}
+
+function controlReview() {
+  const errors = draftErrors();
+  const changes = draftChanges();
+  return `<div class="page coordination-page">${coordinationHeader("配置调整预览", "检查下一次运行的变更与影响。", "control")}
+    <div class="draft-context"><div><span class="draft-version">草稿</span><strong>${changes.length} 项调整</strong><span>下一次运行 · 未应用</span></div>${link("control", "返回编辑", "pencil", "text-link")}</div>
+    ${errors.length ? notice("amber", "草稿需要修正", errors.join("；"), link("control", "返回修正", "arrow-right", "text-link")) : ""}
+    <div class="review-layout"><section>${section("配置差异")}<div class="draft-diff">${changes.length ? changes.map(({ name, before, after }) => `<div class="draft-diff-row"><strong>${name}</strong><span class="before-value">${before}</span>${icon("arrow-right")}<span class="after-value">${after}</span></div>`).join("") : '<div class="draft-no-change">没有配置调整。Run 02 的配置保持不变。</div>'}</div>
+      <div class="draft-impact">${section("应用前仍需检查")}<ul><li>${icon("check")}确认模型连接、数据范围与必要能力</li><li>${icon("check")}检查代码基线和计划版本</li><li>${icon("check")}任何写入仍需单独授权</li></ul></div>
+      <div class="draft-review-actions">${link("control", "继续编辑", "pencil")}${inert("应用配置", "check", "button button-primary")}</div><p class="unapplied-note">${icon("lock-keyhole")}未连接执行器，不能应用配置或开始新运行。</p>
+    </section><aside class="review-unchanged">${section("未改变")}<p>${icon("shield-check")}项目权限与目录范围</p><p>${icon("git-branch")}Run 02 历史与成果</p><p>${icon("user-round")}人工审批与验证门槛</p>${link("super-agent", "返回任务协调", "arrow-up-right", "text-link")}</aside></div></div>`;
 }
 
 function home(empty = false) {
@@ -143,7 +255,7 @@ function task() {
       <div class="work-pane-heading"><span class="pane-label">工作记录</span>${link("calls", "4 次模型调用", "network", "text-link")}</div>
       <div class="workstream">
         <details class="original-request"><summary><span>${icon("file-text")}原始目标</span><span>林然 · 10:15${icon("chevron-down")}</span></summary><div><p>为重试设置上限，保持接口兼容，并确保同一个请求只扣款一次。</p><div class="context-reference">${icon("folder-git-2")}payment-service<span>src/retry · tests/retry</span></div></div></details>
-        <article class="activity-item">${avatar("", "neutral", "command")}<div class="activity-content"><div class="activity-heading"><strong>Super-agent</strong><span>推理模型 B</span><time>10:16</time></div><p>研究调用点与设计验证条件并行进行。代码修改由一个开发 Agent 在隔离工作区执行。</p>
+        <article class="activity-item">${avatar("", "neutral", "command")}<div class="activity-content"><div class="activity-heading"><a href="#super-agent" class="agent-profile-link">Super-agent${icon("arrow-up-right")}</a><span>推理模型 B</span><time>10:16</time></div><p>研究调用点与设计验证条件并行进行。代码修改由一个开发 Agent 在隔离工作区执行。</p>
           <div class="agent-assignment"><a href="#delegation">${avatar("R", "blue")}<span>研究</span></a><a href="#delegation">${avatar("D", "green")}<span>开发</span></a><a href="#delegation">${avatar("T", "amber")}<span>测试</span></a><a href="#calls" class="assignment-models">2 种模型${icon("arrow-up-right")}</a></div>
           <details class="compact-plan"><summary><span>${icon("git-branch")}执行计划 v2</span><span>3 / 5 完成${icon("chevron-down")}</span></summary><div class="compact-plan-rows">${planData.map(([title, role, model, permission, state, tone]) => `<a href="#${tone === "red" ? "tests" : "dispatch"}"><span>${icon(tone === "green" ? "check" : tone === "red" ? "x" : "minus")}${title}</span>${pill(state, tone)}</a>`).join("")}</div></details>
         </div></article>
@@ -282,14 +394,72 @@ function stateScreen(state) {
   return `<div class="task-page">${taskHeader("task", state)}<div class="state-page"><div class="state-symbol ${tone === "amber" ? "tone-amber" : "tone-blue"}">${icon(glyph)}</div><h2>${title}</h2><p class="state-description">${detail}</p><dl class="state-facts">${facts.map(([key, value]) => `<div><dt>${key}</dt><dd>${value}</dd></div>`).join("")}</dl><div class="panel-actions">${inert(state === "offline" ? "重新同步" : state === "budget" ? "调整本次上限" : "取消排队", state === "offline" ? "refresh-cw" : state === "budget" ? "sliders-horizontal" : "square", "button button-primary")}${inert("查看已有成果", "files")}</div></div></div>`;
 }
 
-const renderers = { workbench: () => home(), project, task, dispatch: () => dispatch(false), delegation: () => dispatch(true), calls: () => calls(false), "call-detail": () => calls(true), artifacts: () => artifacts(false), tests: () => artifacts(true), approval, recovery, audit, setup, "new-task": newTask, empty: () => home(true), queued: () => stateScreen("queued"), offline: () => stateScreen("offline"), budget: () => stateScreen("budget") };
+const renderers = { workbench: () => home(), project, task, "super-agent": superAgent, control: controlPanel, "control-review": controlReview, dispatch: () => dispatch(false), delegation: () => dispatch(true), calls: () => calls(false), "call-detail": () => calls(true), artifacts: () => artifacts(false), tests: () => artifacts(true), approval, recovery, audit, setup, "new-task": newTask, empty: () => home(true), queued: () => stateScreen("queued"), offline: () => stateScreen("offline"), budget: () => stateScreen("budget") };
+
+function rememberView() {
+  if (!currentScreen) return;
+  uiState.details[currentScreen] = Array.from(document.querySelectorAll("main details"), (element) => element.open);
+  uiState.scroll[currentScreen] = {
+    page: window.scrollY,
+    work: $(".workstream")?.scrollTop || 0,
+    code: $("#evidence-code")?.scrollTop || 0,
+    tests: $("#evidence-tests")?.scrollTop || 0,
+  };
+}
+
+function selectEvidence(selected) {
+  uiState.evidence = selected;
+  document.querySelectorAll("[data-evidence-tab]").forEach((tab) => {
+    const active = tab.dataset.evidenceTab === selected;
+    tab.setAttribute("aria-selected", String(active));
+    tab.tabIndex = active ? 0 : -1;
+  });
+  if ($("#evidence-code")) $("#evidence-code").hidden = selected !== "code";
+  if ($("#evidence-tests")) $("#evidence-tests").hidden = selected !== "tests";
+}
+
+function selectStudio(selected) {
+  uiState.studio = selected;
+  if ($(".task-studio")) $(".task-studio").dataset.view = selected;
+  document.querySelectorAll("[data-studio-view]").forEach((tab) => {
+    const active = tab.dataset.studioView === selected;
+    tab.setAttribute("aria-selected", String(active));
+    tab.tabIndex = active ? 0 : -1;
+  });
+}
+
+function filterCalls(selected) {
+  uiState.callFilter = selected;
+  document.querySelectorAll("[data-call-filter]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.callFilter === selected)));
+  if ($(".calls-table tbody")) {
+    $(".calls-table tbody").innerHTML = callRows(selected);
+    $("#call-count").textContent = `${$(".calls-table tbody").children.length} 条`;
+  }
+}
+
+function updateDraftStatus() {
+  const changes = draftChanges();
+  const errors = draftErrors();
+  if ($("#draft-status")) $("#draft-status").textContent = changes.length ? `${changes.length} 项调整 · 未应用` : "无调整 · 未应用";
+  if ($("#draft-error")) $("#draft-error").textContent = errors.join("；");
+  if ($("#preview-draft")) $("#preview-draft").disabled = !changes.length || errors.length > 0;
+  if ($("[data-reset-draft]")) $("[data-reset-draft]").disabled = !changes.length;
+  if ($("#coordination-draft-dot")) $("#coordination-draft-dot").hidden = !changes.length;
+  document.querySelectorAll("[data-draft-field]").forEach((input) => {
+    const invalid = !input.checkValidity();
+    input.setAttribute("aria-invalid", String(invalid));
+    const [name, , minimum, maximum] = draftLimits.find(([name]) => name === input.dataset.draftField);
+    $(`#${name}-error`).textContent = invalid ? `请输入 ${minimum}–${maximum} 的整数` : "";
+  });
+}
 
 function render() {
   const route = location.hash.slice(1);
   if (route === "main") { $("#main").focus(); return; }
+  rememberView();
   const id = Object.hasOwn(renderers, route) ? route : "task";
   const [, name, title, context] = screens.find(([screen]) => screen === id);
-  const active = ["workbench", "empty"].includes(id) ? "workbench" : id === "setup" ? "setup" : ["artifacts", "tests"].includes(id) ? "artifacts" : "project";
+  const active = ["workbench", "empty"].includes(id) ? "workbench" : id === "super-agent" ? "super-agent" : ["control", "control-review"].includes(id) ? "control" : id === "setup" ? "setup" : ["artifacts", "tests"].includes(id) ? "artifacts" : "project";
   $("#app-nav").innerHTML = navigation(active);
   $("#mobile-navigation").innerHTML = navigation(active);
   $("#app-header").innerHTML = header(title, !["workbench", "empty", "project", "setup"].includes(id));
@@ -298,40 +468,54 @@ function render() {
   $("#review-footer").innerHTML = `<span><strong>${name}</strong> <i>·</i> ${context}</span><span>${icon("lock-keyhole")}静态示例 · 无真实调用或操作</span>`;
   document.title = `${name} · Workbench 视觉提案 V2`;
   document.body.dataset.screen = id;
+  currentScreen = id;
+  selectEvidence(uiState.evidence);
+  selectStudio(uiState.studio);
+  filterCalls(uiState.callFilter);
+  updateDraftStatus();
+  document.querySelectorAll("main details").forEach((element, index) => { element.open = uiState.details[id]?.[index] || false; });
+  const savedScroll = uiState.scroll[id] || {};
+  if ($(".workstream")) $(".workstream").scrollTop = savedScroll.work || 0;
+  if ($("#evidence-code")) $("#evidence-code").scrollTop = savedScroll.code || 0;
+  if ($("#evidence-tests")) $("#evidence-tests").scrollTop = savedScroll.tests || 0;
   $("#navigation-dialog").close();
-  window.scrollTo(0, 0);
+  $("#main").focus({ preventScroll: true });
+  window.scrollTo(0, savedScroll.page || 0);
 }
 window.addEventListener("hashchange", render);
-document.addEventListener("change", (event) => { if (event.target.id === "screen-picker") location.hash = event.target.value; });
+document.addEventListener("change", (event) => {
+  if (event.target.id === "screen-picker") location.hash = event.target.value;
+  if (event.target.matches("[data-draft-model]")) {
+    uiState.draft.models[event.target.dataset.draftModel] = event.target.value;
+    updateDraftStatus();
+  }
+  if (event.target.matches("[data-draft-toggle]")) {
+    uiState.draft[event.target.dataset.draftToggle] = event.target.checked;
+    updateDraftStatus();
+  }
+});
+document.addEventListener("input", (event) => {
+  if (event.target.matches("[data-draft-field]")) {
+    uiState.draft[event.target.dataset.draftField] = event.target.value;
+    updateDraftStatus();
+  }
+});
 document.addEventListener("click", (event) => {
   if (event.target.closest("[data-open-navigation]")) $("#navigation-dialog").showModal();
   if (event.target.closest("[data-close-navigation]")) $("#navigation-dialog").close();
   const evidenceTab = event.target.closest("[data-evidence-tab]");
-  if (evidenceTab) {
-    const selected = evidenceTab.dataset.evidenceTab;
-    document.querySelectorAll("[data-evidence-tab]").forEach((tab) => {
-      const active = tab.dataset.evidenceTab === selected;
-      tab.setAttribute("aria-selected", String(active));
-      tab.tabIndex = active ? 0 : -1;
-    });
-    $("#evidence-code").hidden = selected !== "code";
-    $("#evidence-tests").hidden = selected !== "tests";
-  }
+  if (evidenceTab) selectEvidence(evidenceTab.dataset.evidenceTab);
   const studioTab = event.target.closest("button[data-studio-view]");
-  if (studioTab) {
-    const selected = studioTab.dataset.studioView;
-    $(".task-studio").dataset.view = selected;
-    document.querySelectorAll("[data-studio-view]").forEach((tab) => {
-      const active = tab.dataset.studioView === selected;
-      tab.setAttribute("aria-selected", String(active));
-      tab.tabIndex = active ? 0 : -1;
-    });
-  }
+  if (studioTab) selectStudio(studioTab.dataset.studioView);
   const callFilter = event.target.closest("[data-call-filter]");
-  if (callFilter) {
-    document.querySelectorAll("[data-call-filter]").forEach((button) => button.setAttribute("aria-pressed", String(button === callFilter)));
-    $(".calls-table tbody").innerHTML = callRows(callFilter.dataset.callFilter);
-    $("#call-count").textContent = `${$(".calls-table tbody").children.length} 条`;
+  if (callFilter) filterCalls(callFilter.dataset.callFilter);
+  if (event.target.closest("[data-reset-draft]")) {
+    uiState.draft = freshDraft();
+    $("#control-form").reset();
+    for (const [id, model] of Object.entries(uiState.draft.models)) $(`[data-draft-model="${id}"]`).value = model;
+    document.querySelectorAll("[data-draft-field]").forEach((input) => { input.value = uiState.draft[input.dataset.draftField]; });
+    $("[data-draft-toggle]").checked = uiState.draft.stopOnFailure;
+    updateDraftStatus();
   }
 });
 document.addEventListener("keydown", (event) => {
@@ -346,5 +530,11 @@ document.addEventListener("keydown", (event) => {
   tabs[next].click();
   tabs[next].focus();
 });
-document.addEventListener("submit", (event) => event.preventDefault());
+document.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (event.target.id === "control-form") {
+    updateDraftStatus();
+    if (draftChanges().length && !draftErrors().length) location.hash = "control-review";
+  }
+});
 render();

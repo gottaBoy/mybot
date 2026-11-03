@@ -6,6 +6,8 @@
 
 最新反馈：V1 视觉被用户明确否定，本页旧配色不再作为默认方向。V2 的任务与调用画面已重做和静态检查，但未获用户视觉确认，见 [UI 迭代日志](UI_ITERATIONS.md)。
 
+V2 当前已补 Super-agent 协调和 Control Panel。本页早期导航/配色为设计历程，不覆盖最新静态稿；当前结构与操作边界见 [SUPER_AGENT_CONTROL_PANEL.md](SUPER_AGENT_CONTROL_PANEL.md)。
+
 本轮新增 [原创文字线框 V1](LOW_FIDELITY_V1.md)，具体工作流以该提案评审。此文继续规定六条旅程、状态与视觉约束；文字线框不等于视觉完成。
 
 图形化稿见 [design/review-v1/index.html](../design/review-v1/index.html)，范围、截图和检查记录见 [GRAPHICAL_LOW_FIDELITY_V1.md](GRAPHICAL_LOW_FIDELITY_V1.md)。这只是设计评审，不代表任何 Agent 或模型已实际运行。

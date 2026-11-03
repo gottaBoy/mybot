@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-02T17:26:37.762Z",
+  "generatedAt": "2026-11-03T01:06:46.641Z",
   "kind": "static-visual-review-v2",
   "testedFile": "design/review-v2/index.html",
   "browserVersion": "154.0.8037.57",
@@ -45,9 +45,52 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 1512,
+      "mainTextLength": 1514,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 1920,
+      "screen": "super-agent",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 1920,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 701,
+      "markerVisible": true,
+      "primaryTextSize": "13px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 1920,
+      "screen": "control",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 1920,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 832,
+      "markerVisible": true,
+      "primaryTextSize": "13px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 1920,
+      "screen": "control-review",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 1920,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 310,
+      "markerVisible": true,
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -58,9 +101,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 519,
+      "mainTextLength": 521,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -71,9 +115,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 721,
+      "mainTextLength": 723,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -86,7 +131,8 @@
       "headings": 1,
       "mainTextLength": 440,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -99,7 +145,8 @@
       "headings": 1,
       "mainTextLength": 345,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -110,9 +157,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 456,
+      "mainTextLength": 458,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -123,9 +171,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 493,
+      "mainTextLength": 495,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -136,9 +185,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 753,
+      "mainTextLength": 755,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -149,9 +199,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 539,
+      "mainTextLength": 541,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -164,7 +215,8 @@
       "headings": 1,
       "mainTextLength": 483,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -177,7 +229,8 @@
       "headings": 1,
       "mainTextLength": 350,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -188,9 +241,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 356,
+      "mainTextLength": 358,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -203,7 +257,8 @@
       "headings": 1,
       "mainTextLength": 120,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -216,7 +271,8 @@
       "headings": 1,
       "mainTextLength": 249,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -229,7 +285,8 @@
       "headings": 1,
       "mainTextLength": 54,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -242,7 +299,8 @@
       "headings": 1,
       "mainTextLength": 187,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -255,7 +313,8 @@
       "headings": 1,
       "mainTextLength": 207,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1920,
@@ -268,7 +327,8 @@
       "headings": 1,
       "mainTextLength": 188,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -279,9 +339,52 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 1512,
+      "mainTextLength": 1514,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 1440,
+      "screen": "super-agent",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 1440,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 701,
+      "markerVisible": true,
+      "primaryTextSize": "13px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 1440,
+      "screen": "control",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 1440,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 832,
+      "markerVisible": true,
+      "primaryTextSize": "13px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 1440,
+      "screen": "control-review",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 1440,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 310,
+      "markerVisible": true,
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -292,9 +395,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 519,
+      "mainTextLength": 521,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -305,9 +409,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 721,
+      "mainTextLength": 723,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -320,7 +425,8 @@
       "headings": 1,
       "mainTextLength": 440,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -333,7 +439,8 @@
       "headings": 1,
       "mainTextLength": 345,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -344,9 +451,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 456,
+      "mainTextLength": 458,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -357,9 +465,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 493,
+      "mainTextLength": 495,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -370,9 +479,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 753,
+      "mainTextLength": 755,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -383,9 +493,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 539,
+      "mainTextLength": 541,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -398,7 +509,8 @@
       "headings": 1,
       "mainTextLength": 483,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -411,7 +523,8 @@
       "headings": 1,
       "mainTextLength": 350,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -422,9 +535,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 356,
+      "mainTextLength": 358,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -437,7 +551,8 @@
       "headings": 1,
       "mainTextLength": 120,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -450,7 +565,8 @@
       "headings": 1,
       "mainTextLength": 249,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -463,7 +579,8 @@
       "headings": 1,
       "mainTextLength": 54,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -476,7 +593,8 @@
       "headings": 1,
       "mainTextLength": 187,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -489,7 +607,8 @@
       "headings": 1,
       "mainTextLength": 207,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1440,
@@ -502,7 +621,8 @@
       "headings": 1,
       "mainTextLength": 188,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -513,9 +633,52 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 1512,
+      "mainTextLength": 1514,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 1024,
+      "screen": "super-agent",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 1024,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 701,
+      "markerVisible": true,
+      "primaryTextSize": "13px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 1024,
+      "screen": "control",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 1024,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 832,
+      "markerVisible": true,
+      "primaryTextSize": "13px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 1024,
+      "screen": "control-review",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 1024,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 310,
+      "markerVisible": true,
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -526,9 +689,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 519,
+      "mainTextLength": 521,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -539,9 +703,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 721,
+      "mainTextLength": 723,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -554,7 +719,8 @@
       "headings": 1,
       "mainTextLength": 440,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -567,7 +733,8 @@
       "headings": 1,
       "mainTextLength": 345,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -578,9 +745,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 456,
+      "mainTextLength": 458,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -591,9 +759,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 493,
+      "mainTextLength": 495,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -604,9 +773,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 753,
+      "mainTextLength": 755,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -617,9 +787,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 539,
+      "mainTextLength": 541,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -632,7 +803,8 @@
       "headings": 1,
       "mainTextLength": 483,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -645,7 +817,8 @@
       "headings": 1,
       "mainTextLength": 350,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -656,9 +829,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 356,
+      "mainTextLength": 358,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -671,7 +845,8 @@
       "headings": 1,
       "mainTextLength": 120,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -684,7 +859,8 @@
       "headings": 1,
       "mainTextLength": 249,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -697,7 +873,8 @@
       "headings": 1,
       "mainTextLength": 54,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -710,7 +887,8 @@
       "headings": 1,
       "mainTextLength": 187,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -723,7 +901,8 @@
       "headings": 1,
       "mainTextLength": 207,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 1024,
@@ -736,7 +915,8 @@
       "headings": 1,
       "mainTextLength": 188,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -747,9 +927,52 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 1512,
+      "mainTextLength": 1514,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 768,
+      "screen": "super-agent",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 768,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 701,
+      "markerVisible": true,
+      "primaryTextSize": "13px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 768,
+      "screen": "control",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 768,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 832,
+      "markerVisible": true,
+      "primaryTextSize": "13px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 768,
+      "screen": "control-review",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 768,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 310,
+      "markerVisible": true,
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -760,9 +983,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 519,
+      "mainTextLength": 521,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -773,9 +997,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 721,
+      "mainTextLength": 723,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -788,7 +1013,8 @@
       "headings": 1,
       "mainTextLength": 440,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -801,7 +1027,8 @@
       "headings": 1,
       "mainTextLength": 345,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -812,9 +1039,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 456,
+      "mainTextLength": 458,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -825,9 +1053,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 493,
+      "mainTextLength": 495,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -838,9 +1067,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 753,
+      "mainTextLength": 755,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -851,9 +1081,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 539,
+      "mainTextLength": 541,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -866,7 +1097,8 @@
       "headings": 1,
       "mainTextLength": 483,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -879,7 +1111,8 @@
       "headings": 1,
       "mainTextLength": 350,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -890,9 +1123,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 356,
+      "mainTextLength": 358,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -905,7 +1139,8 @@
       "headings": 1,
       "mainTextLength": 120,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -918,7 +1153,8 @@
       "headings": 1,
       "mainTextLength": 249,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -931,7 +1167,8 @@
       "headings": 1,
       "mainTextLength": 54,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -944,7 +1181,8 @@
       "headings": 1,
       "mainTextLength": 187,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -957,7 +1195,8 @@
       "headings": 1,
       "mainTextLength": 207,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 768,
@@ -970,7 +1209,8 @@
       "headings": 1,
       "mainTextLength": 188,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -981,9 +1221,52 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 1512,
+      "mainTextLength": 1514,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 390,
+      "screen": "super-agent",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 390,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 701,
+      "markerVisible": true,
+      "primaryTextSize": "12px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 390,
+      "screen": "control",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 390,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 832,
+      "markerVisible": true,
+      "primaryTextSize": "12px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 390,
+      "screen": "control-review",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 390,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 310,
+      "markerVisible": true,
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -994,9 +1277,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 519,
+      "mainTextLength": 521,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -1007,9 +1291,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 721,
+      "mainTextLength": 723,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -1022,7 +1307,8 @@
       "headings": 1,
       "mainTextLength": 440,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -1035,7 +1321,8 @@
       "headings": 1,
       "mainTextLength": 345,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -1046,9 +1333,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 456,
+      "mainTextLength": 458,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -1059,9 +1347,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 493,
+      "mainTextLength": 495,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -1072,9 +1361,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 753,
+      "mainTextLength": 755,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -1085,9 +1375,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 539,
+      "mainTextLength": 541,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -1100,7 +1391,8 @@
       "headings": 1,
       "mainTextLength": 483,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -1113,7 +1405,8 @@
       "headings": 1,
       "mainTextLength": 350,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -1124,9 +1417,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 356,
+      "mainTextLength": 358,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -1139,7 +1433,8 @@
       "headings": 1,
       "mainTextLength": 120,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -1152,7 +1447,8 @@
       "headings": 1,
       "mainTextLength": 249,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -1165,7 +1461,8 @@
       "headings": 1,
       "mainTextLength": 54,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -1178,7 +1475,8 @@
       "headings": 1,
       "mainTextLength": 187,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -1191,7 +1489,8 @@
       "headings": 1,
       "mainTextLength": 207,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 390,
@@ -1204,7 +1503,8 @@
       "headings": 1,
       "mainTextLength": 188,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1215,9 +1515,52 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 1512,
+      "mainTextLength": 1514,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 320,
+      "screen": "super-agent",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 320,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 701,
+      "markerVisible": true,
+      "primaryTextSize": "12px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 320,
+      "screen": "control",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 320,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 832,
+      "markerVisible": true,
+      "primaryTextSize": "12px",
+      "overlappingFields": []
+    },
+    {
+      "viewport": 320,
+      "screen": "control-review",
+      "passed": true,
+      "failures": [],
+      "documentWidth": 320,
+      "brokenImages": [],
+      "clippedControls": [],
+      "headings": 1,
+      "mainTextLength": 310,
+      "markerVisible": true,
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1228,9 +1571,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 519,
+      "mainTextLength": 521,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1241,9 +1585,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 721,
+      "mainTextLength": 723,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1256,7 +1601,8 @@
       "headings": 1,
       "mainTextLength": 440,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1269,7 +1615,8 @@
       "headings": 1,
       "mainTextLength": 345,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1280,9 +1627,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 456,
+      "mainTextLength": 458,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1293,9 +1641,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 493,
+      "mainTextLength": 495,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1306,9 +1655,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 753,
+      "mainTextLength": 755,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1319,9 +1669,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 539,
+      "mainTextLength": 541,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1334,7 +1685,8 @@
       "headings": 1,
       "mainTextLength": 483,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1347,7 +1699,8 @@
       "headings": 1,
       "mainTextLength": 350,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1358,9 +1711,10 @@
       "brokenImages": [],
       "clippedControls": [],
       "headings": 1,
-      "mainTextLength": 356,
+      "mainTextLength": 358,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1373,7 +1727,8 @@
       "headings": 1,
       "mainTextLength": 120,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1386,7 +1741,8 @@
       "headings": 1,
       "mainTextLength": 249,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1399,7 +1755,8 @@
       "headings": 1,
       "mainTextLength": 54,
       "markerVisible": true,
-      "primaryTextSize": "13px"
+      "primaryTextSize": "13px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1412,7 +1769,8 @@
       "headings": 1,
       "mainTextLength": 187,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1425,7 +1783,8 @@
       "headings": 1,
       "mainTextLength": 207,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     },
     {
       "viewport": 320,
@@ -1438,7 +1797,8 @@
       "headings": 1,
       "mainTextLength": 188,
       "markerVisible": true,
-      "primaryTextSize": "12px"
+      "primaryTextSize": "12px",
+      "overlappingFields": []
     }
   ],
   "interactions": [
@@ -1477,10 +1837,32 @@
     {
       "name": "unknown-outcome-cannot-retry",
       "passed": true
+    },
+    {
+      "name": "super-agent-is-project-scoped-not-a-live-run",
+      "passed": true
+    },
+    {
+      "name": "local-model-budget-draft-preview-and-reset",
+      "passed": true
+    },
+    {
+      "name": "invalid-budget-is-visible-and-blocks-preview",
+      "passed": true
+    },
+    {
+      "name": "call-filter-and-inspector-state-survive-navigation",
+      "passed": true
+    },
+    {
+      "name": "task-panel-and-expanded-plan-survive-navigation",
+      "passed": true
     }
   ],
   "screenshots": [
     "screenshots/desktop-task.png",
+    "screenshots/desktop-super-agent.png",
+    "screenshots/desktop-control.png",
     "screenshots/desktop-calls.png",
     "screenshots/desktop-call-detail.png",
     "screenshots/desktop-workbench.png",
@@ -1489,20 +1871,24 @@
     "screenshots/desktop-tests.png",
     "screenshots/desktop-approval.png",
     "screenshots/mobile-task.png",
+    "screenshots/mobile-super-agent.png",
+    "screenshots/mobile-control.png",
     "screenshots/mobile-calls.png",
     "screenshots/mobile-call-detail.png",
     "screenshots/mobile-dispatch.png",
     "screenshots/mobile-approval.png",
     "screenshots/mobile-recovery.png",
-    "screenshots/mobile-task-evidence.png"
+    "screenshots/mobile-task-evidence.png",
+    "screenshots/desktop-control-review.png",
+    "screenshots/mobile-control-review.png"
   ],
   "errors": [],
   "externalRequests": [],
   "summary": {
-    "total": 108,
-    "passed": 108,
+    "total": 126,
+    "passed": 126,
     "failed": 0,
-    "interactionChecks": 9,
+    "interactionChecks": 14,
     "failedInteractions": 0,
     "errors": 0,
     "externalRequests": 0,
