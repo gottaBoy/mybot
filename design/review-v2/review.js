@@ -6,6 +6,8 @@ const screens = [
   ["super-agent", "Super-agent", "Super-agent", "支付服务 / 任务协调，未发起新运行"],
   ["control", "Control Panel", "Control Panel", "支付服务 / 下一次运行的本地草稿，未应用"],
   ["control-review", "配置调整预览", "Control Panel", "支付服务 / 草稿差异，未应用到执行器"],
+  ["plan", "计划修订", "计划修订", "Run 02 → 下一次运行 / 计划 v3 草稿，未执行"],
+  ["plan-review", "修订影响预览", "计划修订", "计划 v3 草稿 / 未提交、未启动"],
   ["dispatch", "任务依赖", "重试策略调整", "Run 02 / 计划 v2"],
   ["delegation", "Agent 委派", "重试策略调整", "Run 02 / 按需协作"],
   ["calls", "调用分析", "重试策略调整", "Run 02 / 调用片段"],
@@ -52,6 +54,10 @@ const roleDefinitions = [
   ["developer", "开发 Agent", "隔离工作区写入", "code-xml", "green", "coding-a"],
   ["tester", "测试 Agent", "执行验证", "file-check-2", "amber", "coding-a"],
 ];
+const modelProfiles = {
+  "coding-a": { connection: "本地连接草稿", destination: "本机推理端点", transfer: "拟保留在本机；端点身份未验证", code: "声明用于代码工具调用", note: "连接、工具协议和上下文容量均未实测。" },
+  "reasoning-b": { connection: "远程连接草稿", destination: "外部推理服务", transfer: "拟发送到外部服务；需确认资料可外发", code: "声明用于分析与汇总", note: "结构化输出、代码工具能力与数据区域均未验证。" },
+};
 const initialDraft = {
   models: Object.fromEntries(roleDefinitions.map(([id, , , , , model]) => [id, model])),
   parallel: 2,
@@ -65,6 +71,16 @@ const draftLimits = [
   ["minutes", "运行时间上限", 1, 60],
 ];
 const freshDraft = () => ({ ...initialDraft, models: { ...initialDraft.models } });
+const initialPlan = {
+  goal: "修复重试中的幂等键复用问题，保持现有接口和最多 3 次重试。",
+  criteria: "相同请求只扣款一次；重试次数不超过 3 次；现有接口兼容验证通过。",
+  reason: "Run 02 的幂等性测试失败：期望扣款 1 次，实际为 2 次。",
+  steps: [
+    { title: "修复幂等键复用", output: "将幂等键移到重试循环外，保存最小代码变更。", role: "developer" },
+    { title: "重新执行三项验证", output: "保留完整命令、退出码和三项验收结果；失败则停止。", role: "tester" },
+  ],
+};
+const freshPlan = () => ({ ...initialPlan, steps: initialPlan.steps.map((step) => ({ ...step })) });
 const uiState = {
   evidence: "code",
   studio: "work",
@@ -72,8 +88,11 @@ const uiState = {
   details: {},
   scroll: {},
   draft: freshDraft(),
+  plan: freshPlan(),
+  planEdited: false,
 };
 let currentScreen = null;
+const escapeHTML = (value) => String(value).replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character]));
 const modelLabel = (id) => modelChoices.find(([value]) => id === value)?.[1] || "未选择";
 function draftChanges() {
   const changes = roleDefinitions.flatMap(([id, label]) => uiState.draft.models[id] === initialDraft.models[id] ? [] : [{
@@ -91,6 +110,19 @@ function draftErrors() {
     const value = Number(uiState.draft[name]);
     if (!Number.isInteger(value) || value < minimum || value > maximum) errors.push(`${label}须为 ${minimum}–${maximum} 的整数`);
   }
+  return errors;
+}
+
+function planErrors() {
+  const errors = [];
+  for (const [key, title, min, max] of [["goal", "修订目标", 8, 500], ["criteria", "验收要求", 8, 800], ["reason", "修订原因", 8, 500]]) {
+    const length = uiState.plan[key].trim().length;
+    if (length < min || length > max) errors.push([key, `${title}须为 ${min}–${max} 个字符`]);
+  }
+  uiState.plan.steps.forEach((step, index) => {
+    if (step.title.trim().length < 2 || step.title.trim().length > 60) errors.push([`step-${index}-title`, "步骤名称须为 2–60 个字符"]);
+    if (step.output.trim().length < 8 || step.output.trim().length > 300) errors.push([`step-${index}-output`, "交付要求须为 8–300 个字符"]);
+  });
   return errors;
 }
 
@@ -134,7 +166,7 @@ function taskHeader(active, scenario = "normal") {
     budget: ["01", "预算暂停", "amber", "尚未执行", "neutral", "未提交"],
   }[scenario];
   const [run, execution, tone, validation, qualityTone, decision] = spec;
-  const action = scenario === "normal" ? link("new-task", "要求修改", "pencil", "button button-primary")
+  const action = scenario === "normal" ? link("plan", "要求修改", "pencil", "button button-primary")
     : scenario === "approval" ? inert("批准本次", "check", "button button-primary")
       : inert(scenario === "recovery" ? "取消已请求" : "暂停", "pause");
   const tabs = [["task", "工作", "blocks"], ["super-agent", "协调", "command"], ["dispatch", "调度", "git-branch"], ["calls", "调用", "network"], ["audit", "审计", "shield-check"]];
@@ -157,7 +189,7 @@ function superAgent() {
       <div class="acceptance-strip"><span>${icon("check")}最多重试 3 次</span><span>${icon("check")}现有接口兼容</span><span class="tone-red-text">${icon("x")}请求扣款幂等</span></div></section>
       <section class="next-decision">${section("下一步建议", pill("未执行"))}<div class="recommendation"><span class="recommendation-symbol">${icon("pencil")}</span><div><h3>先修复幂等键，再重新验证</h3><p>测试证据显示幂等键在循环内重新生成。把标识移到重试循环外，保留现有接口，再检查三项验收条件。</p><div class="recommendation-source">${icon("file-check-2")}test-report · 候选 d4e5f6${link("tests", "查看依据", "arrow-up-right", "text-link")}</div></div></div>
       <div class="proposal-sequence"><div><span class="sequence-number">01</span><div><strong>开发修复</strong><small>代码模型 A · 独占隔离写入</small></div></div><span class="sequence-arrow">${icon("arrow-right")}</span><div><span class="sequence-number">02</span><div><strong>重新验证</strong><small>测试 Agent · 读取实际结果</small></div></div></div>
-      <div class="panel-actions">${link("new-task", "准备修改要求", "pencil", "button button-primary")}${link("control", "调整下一次运行", "sliders-horizontal")}</div></section>
+      <div class="panel-actions">${link("plan", "修订执行计划", "pencil", "button button-primary")}${link("control", "调整下一次运行", "sliders-horizontal")}</div></section>
       <section class="delegation-roster">${section("本轮分工", link("delegation", "查看委派关系", "git-branch", "text-link"))}
       ${planData.slice(0, 4).map(([title, role, model, permission, state, tone, glyph], index) => `<a href="#${tone === "red" ? "tests" : "calls"}" class="delegation-roster-row">${avatar("", ["blue", "amber", "green", "red"][index], glyph)}<div><strong>${title}</strong><small>${role} · ${model}</small></div><span class="roster-permission">${permission}</span>${pill(state, tone)}${icon("arrow-up-right")}</a>`).join("")}</section>
     </div><aside class="coordination-aside"><section>${section("不能自动越过的边界")}<ul class="control-boundaries"><li>${icon("shield-check")}代码写入需要本次授权</li><li>${icon("lock-keyhole")}只有一个工作区写入者</li><li>${icon("circle-x")}验证失败不能应用变更</li><li>${icon("user-round")}提交、合并、发布由人决定</li></ul></section>
@@ -177,7 +209,7 @@ function controlPanel() {
     <form id="control-form" class="control-layout" aria-label="下一次运行配置草稿" novalidate><div class="control-main">
       <section class="control-section">${section("模型分工", '<span class="control-section-note">样例配置 · 均未连接</span>')}
         <div class="routing-heading"><span>角色与职责</span><span>模型配置</span><span>权限范围</span></div>
-        <div class="routing-list">${roleDefinitions.map(([id, title, duty, glyph, tone]) => `<div class="routing-row">${avatar("", tone, glyph)}<div class="routing-role"><label for="model-${id}">${title}</label><small>${duty}</small></div><div class="routing-select">${modelSelect(id, draft.models[id])}</div><span class="routing-permission">${id === "developer" ? "隔离写入" : id === "tester" ? "运行测试" : "只读"}</span></div>`).join("")}</div>
+        <div class="routing-list">${roleDefinitions.map(([id, title, duty, glyph, tone]) => `<div class="routing-row">${avatar("", tone, glyph)}<div class="routing-role"><label for="model-${id}">${title}</label><small>${duty}</small></div><div class="routing-select">${modelSelect(id, draft.models[id])}<button type="button" data-model-info="${id}" class="model-check-link">${icon("circle-help")}检查连接与能力</button></div><span class="routing-permission">${id === "developer" ? "隔离写入" : id === "tester" ? "运行测试" : "只读"}</span><p class="model-change-note" id="model-note-${id}" ${draft.models[id] !== initialDraft.models[id] ? "" : "hidden"}></p></div>`).join("")}</div>
         <p class="control-inline-note">${icon("lock-keyhole")}切换模型不增加工具权限，也不自动扩大资料发送范围。</p>
       </section>
       <section class="control-section">${section("资源上限")}<div class="budget-fields">
@@ -199,9 +231,75 @@ function controlReview() {
     <div class="draft-context"><div><span class="draft-version">草稿</span><strong>${changes.length} 项调整</strong><span>下一次运行 · 未应用</span></div>${link("control", "返回编辑", "pencil", "text-link")}</div>
     ${errors.length ? notice("amber", "草稿需要修正", errors.join("；"), link("control", "返回修正", "arrow-right", "text-link")) : ""}
     <div class="review-layout"><section>${section("配置差异")}<div class="draft-diff">${changes.length ? changes.map(({ name, before, after }) => `<div class="draft-diff-row"><strong>${name}</strong><span class="before-value">${before}</span>${icon("arrow-right")}<span class="after-value">${after}</span></div>`).join("") : '<div class="draft-no-change">没有配置调整。Run 02 的配置保持不变。</div>'}</div>
-      <div class="draft-impact">${section("应用前仍需检查")}<ul><li>${icon("check")}确认模型连接、数据范围与必要能力</li><li>${icon("check")}检查代码基线和计划版本</li><li>${icon("check")}任何写入仍需单独授权</li></ul></div>
+      ${changedModelChecklist()}
+      <div class="draft-impact">${section("应用前仍需检查")}<ul><li>${icon("circle-help")}确认模型连接、数据范围与必要能力</li><li>${icon("circle-help")}检查代码基线和计划版本</li><li>${icon("circle-help")}任何写入仍需单独授权</li></ul></div>
       <div class="draft-review-actions">${link("control", "继续编辑", "pencil")}${inert("应用配置", "check", "button button-primary")}</div><p class="unapplied-note">${icon("lock-keyhole")}未连接执行器，不能应用配置或开始新运行。</p>
     </section><aside class="review-unchanged">${section("未改变")}<p>${icon("shield-check")}项目权限与目录范围</p><p>${icon("git-branch")}Run 02 历史与成果</p><p>${icon("user-round")}人工审批与验证门槛</p>${link("super-agent", "返回任务协调", "arrow-up-right", "text-link")}</aside></div></div>`;
+}
+
+function changedModelChecklist() {
+  const changed = roleDefinitions.filter(([role]) => uiState.draft.models[role] !== initialDraft.models[role]);
+  if (!changed.length) return "";
+  return `<section class="changed-model-checks">${section("模型切换的检查项", pill("尚未核实", "amber"))}
+    ${changed.map(([role, title]) => {
+      const profile = modelProfiles[uiState.draft.models[role]];
+      return `<div class="changed-model-item"><div><strong>${title}</strong><span>${modelLabel(uiState.draft.models[role])}</span></div><p>${icon("circle-alert")}${profile.transfer}</p><p>${icon("unplug")}未连接，工具与输出能力未验证</p><button type="button" class="text-link" data-model-info="${role}">检查此配置${icon("arrow-up-right")}</button></div>`;
+    }).join("")}</section>`;
+}
+
+function showModelInfo(role) {
+  const definition = roleDefinitions.find(([id]) => id === role);
+  if (!definition) return;
+  const selected = uiState.draft.models[role];
+  const profile = modelProfiles[selected];
+  const dialog = $("#model-dialog");
+  dialog.innerHTML = `<div class="model-dialog-head"><div><span class="eyebrow">模型配置 / 静态样例</span><h2 id="model-dialog-title">${modelLabel(selected)}</h2></div><button type="button" class="icon-button" data-close-model aria-label="关闭模型检查" title="关闭模型检查">${icon("x")}</button></div>
+    <div class="model-profile-state">${pill("未连接")}${pill("能力未验证", "amber")}<span>用于 ${definition[1]} 的下一次运行草稿</span></div>
+    <dl class="model-profile-facts"><div><dt>连接配置</dt><dd>${profile.connection}</dd></div><div><dt>拟发送位置</dt><dd>${profile.destination}</dd></div><div><dt>用途声明</dt><dd>${profile.code}</dd></div></dl>
+    <section class="model-checklist"><h3>执行前仍需核实</h3><div>${icon("circle-help")}模型连接与返回身份<span>未核实</span></div><div>${icon("circle-help")}工具调用与结构化输出<span>未验证</span></div><div>${icon("circle-help")}上下文容量与当前资料<span>未知</span></div><div>${icon("circle-help")}数据区域与保留策略<span>未核实</span></div></section>
+    <div class="model-data-warning">${icon("shield-check")}<div><strong>${profile.transfer}</strong><p>${profile.note} 项目权限不随选择改变，未连接的配置不能被应用。</p></div></div>
+    <div class="model-dialog-actions"><button type="button" class="button button-secondary" data-close-model>返回编辑</button>${inert("测试连接", "plug", "button button-primary")}</div>`;
+  dialog.showModal();
+  dialog.querySelector("[data-close-model]").focus();
+}
+
+function planField(key, label, help, rows, maximum) {
+  return `<label class="revision-field" for="plan-${key}"><span>${label}</span><textarea id="plan-${key}" data-plan-field="${key}" rows="${rows}" maxlength="${maximum}" aria-describedby="plan-${key}-help plan-${key}-error">${escapeHTML(uiState.plan[key])}</textarea><small id="plan-${key}-help">${help}</small><span class="field-error" id="plan-${key}-error" aria-live="polite"></span></label>`;
+}
+
+function planHeader(preview = false) {
+  return `${heading(preview ? "检查修订影响" : "修订执行计划", preview ? "检查目标、步骤和授权边界，再准备下一次运行。" : "保留上次证据，只为下一次运行准备变更。", link(preview ? "plan" : "task", preview ? "返回编辑" : "返回任务", preview ? "pencil" : "arrow-right"), "支付服务 / 重试策略调整")}
+    <div class="revision-version-strip"><span class="revision-version">计划 v2 <small>Run 02 · 已结束</small></span>${icon("arrow-right")}<span class="revision-version proposed">计划 v3 <small>草稿 · 未提交</small></span><span class="revision-local-note">${icon("file-text")}仅保留在本页，刷新重置</span></div>
+    <ol class="revision-progress" aria-label="修订阶段"><li ${!preview ? 'aria-current="step"' : ""}><span>1</span>编辑修订</li><li ${preview ? 'aria-current="step"' : ""}><span>2</span>检查影响</li><li><span>3</span>授权与执行${icon("lock-keyhole")}</li></ol>`;
+}
+
+function planEditor() {
+  return `<div class="page revision-page">${planHeader()}<div class="revision-layout"><form id="plan-form" class="revision-main" novalidate>
+      <section class="revision-form-section">${section("目标与验收")}<div class="revision-fields">${planField("goal", "修订目标", "8–500 字；保持本次任务的项目范围。", 3, 500)}${planField("criteria", "验收要求", "8–800 字；验证仍使用实际执行证据。", 3, 800)}</div></section>
+      <section class="revision-form-section">${section("下一次执行步骤", '<span class="revision-section-meta">单一写入者 · 验证后交由你审查</span>')}
+      <div class="editable-steps">${uiState.plan.steps.map((step, index) => `<div class="editable-step"><div class="editable-step-marker">${String(index + 1).padStart(2, "0")}</div><div class="editable-step-body"><div class="editable-step-role">${avatar("", index ? "amber" : "green", index ? "file-check-2" : "code-xml")}<span>${index ? "测试 Agent" : "开发 Agent"}</span><a href="#control">${modelLabel(uiState.draft.models[step.role])}${icon("sliders-horizontal")}</a></div>
+        <label class="revision-field" for="plan-step-${index}-title"><span class="sr-only">步骤 ${index + 1} 名称</span><input id="plan-step-${index}-title" data-plan-step="${index}" data-plan-property="title" value="${escapeHTML(step.title)}" maxlength="60" aria-describedby="plan-step-${index}-title-error" /><span class="field-error" id="plan-step-${index}-title-error" aria-live="polite"></span></label>
+        <label class="revision-field" for="plan-step-${index}-output"><span>交付要求</span><textarea id="plan-step-${index}-output" data-plan-step="${index}" data-plan-property="output" rows="2" maxlength="300" aria-describedby="plan-step-${index}-output-error">${escapeHTML(step.output)}</textarea><span class="field-error" id="plan-step-${index}-output-error" aria-live="polite"></span></label>
+        <div class="editable-step-boundary">${icon(index ? "file-check-2" : "lock-keyhole")}${index ? "依赖步骤 01 · 验证失败不得应用变更" : "限定目录隔离写入 · 需要本次授权"}</div></div></div>`).join("")}
+        <div class="fixed-review-step"><span class="editable-step-marker">03</span>${icon("user-round")}<div><strong>由你审查成果</strong><p>查看 Diff 与测试证据，应用变更需要单独授权。</p></div>${pill("人工门禁")}</div></div></section>
+      <section class="revision-form-section">${section("修订原因")}${planField("reason", "记录这次修改的依据", "8–500 字；此记录是草稿，不会写入已完成的运行。", 3, 500)}</section>
+      <div class="revision-form-actions"><p id="plan-form-error" class="draft-error" role="alert"></p><span id="plan-draft-state" aria-live="polite">${uiState.planEdited ? "草稿已编辑，尚未提交" : "已带入失败证据，尚未提交"}</span><div><button type="button" class="button button-quiet" data-reset-plan ${uiState.planEdited ? "" : "disabled"}>${icon("refresh-cw")}恢复建议</button><button type="submit" id="preview-plan" class="button button-primary" ${planErrors().length ? "disabled" : ""}>${icon("file-diff")}检查修订影响</button></div></div>
+    </form><aside class="revision-aside"><section class="revision-source">${section("修订依据", pill("失败", "red"))}<span class="revision-source-file">${icon("file-check-2")}test-report / Run 02</span><h3>相同请求仅扣款一次</h3><div class="expected-actual"><div><span>预期</span><strong>1 <small>次</small></strong></div><div><span>实际</span><strong class="tone-red-text">2 <small>次</small></strong></div></div><p>幂等键在循环内重新生成，候选 d4e5f6 未通过验证。</p>${link("tests", "查看完整证据", "arrow-up-right", "text-link")}</section>
+      <section class="revision-guardrails">${section("继续保持")}<ul><li>${icon("shield-check")}项目与目录范围不变</li><li>${icon("lock-keyhole")}不复用旧写入授权</li><li>${icon("git-branch")}Run 02 和计划 v2 保留</li><li>${icon("circle-check")}旧验证不证明新变更通过</li></ul></section>
+      <div class="revision-scope"><span>读取与修改范围</span><code>src/retry/**</code><code>tests/retry/**</code><small>仅下一次隔离工作区</small></div>
+    </aside></div></div>`;
+}
+
+function planReview() {
+  const plan = uiState.plan;
+  const errors = planErrors();
+  return `<div class="page revision-page">${planHeader(true)}
+    ${errors.length ? notice("amber", "草稿尚未完整", errors.map(([, message]) => message).join("；"), link("plan", "继续编辑", "pencil", "text-link")) : ""}
+    <div class="revision-layout"><div class="revision-main"><section>${section("修订摘要", pill("未执行"))}<div class="revision-comparison"><div><span class="comparison-label">Run 02 · 计划 v2</span><h3>增加重试上限并验证扣款幂等性</h3><p>研究与实现已完成，幂等性验证失败。</p></div>${icon("arrow-right")}<div><span class="comparison-label proposed">下一次运行 · 计划 v3 草稿</span><h3>${escapeHTML(plan.goal)}</h3><p>${escapeHTML(plan.reason)}</p></div></div></section>
+    <section class="revision-review-section">${section("建议执行顺序")}<ol class="review-step-list">${plan.steps.map((step, index) => `<li><span class="editable-step-marker">${String(index + 1).padStart(2, "0")}</span><div><strong>${escapeHTML(step.title)}</strong><small>${index ? "测试" : "开发"} Agent · ${modelLabel(uiState.draft.models[step.role])}</small><p>${escapeHTML(step.output)}</p></div></li>`).join("")}<li><span class="editable-step-marker">03</span><div><strong>人工审查与单独授权</strong><small>林然 · 项目所有者</small><p>验证通过后检查成果，不会自动应用、合并或发布。</p></div></li></ol></section>
+    <section class="revision-review-section">${section("影响与重新检查")}<div class="revision-impact-list"><div>${icon("file-check-2")}<div><strong>重新执行验证</strong><p>新候选须重新验证，Run 02 的结果只保留为修订依据。</p></div>${pill("需检查", "amber")}</div><div>${icon("shield-check")}<div><strong>重新确认写入授权</strong><p>计划和成果已变化，旧写入授权不能继续使用。</p></div>${pill("未授权")}</div><div>${icon("blocks")}<div><strong>模型与资源配置仍是草稿</strong><p>${draftChanges().length ? `有 ${draftChanges().length} 项配置调整。` : "使用当前两种样例模型配置。"}连接与能力尚未验证。</p></div>${link("control", "检查配置", "arrow-up-right", "text-link")}</div></div></section>
+    <div class="revision-review-actions">${link("plan", "返回编辑", "pencil")}${inert("提交修订", "check", "button button-primary")}</div><p class="unapplied-note">${icon("lock-keyhole")}未连接执行器。没有生成新运行、发起模型请求或改变 Run 02。</p></div>
+    <aside class="revision-aside"><section>${section("验收要求")}<p class="review-criteria">${escapeHTML(plan.criteria)}</p></section><section class="revision-guardrails">${section("保持不变")}<ul><li>${icon("folder-git-2")}payment-service</li><li>${icon("git-branch")}基线 a1b2c3，执行前再检查</li><li>${icon("lock-keyhole")}src/retry 与 tests/retry</li><li>${icon("user-round")}提交、合并、部署未授权</li></ul></section>${link("task", "回到原任务", "arrow-right", "text-link")}</aside></div></div>`;
 }
 
 function home(empty = false) {
@@ -323,7 +421,7 @@ function callInspector() {
 
 function artifacts(tests = false) {
   return `<div class="task-page">${taskHeader("task")}<div class="artifact-heading"><div><div class="eyebrow">候选成果 / RUN 02</div><h2>${tests ? "验证证据" : "代码变更"}</h2><p>变更保留于隔离工作区，尚未应用到主工作区。</p></div>${inert("应用变更", "git-merge", "button button-primary")}</div><nav class="local-tabs"><a class="${!tests ? "is-active" : ""}" href="#artifacts">代码变更 <span>2</span></a><a class="${tests ? "is-active" : ""}" href="#tests">验证证据 <span>3</span></a><a href="#audit">审查记录</a></nav>
-    ${tests ? testEvidence() : diffEvidence()}<div class="outcome-footer"><span>${icon("lock-keyhole")}验证未通过，应用变更被阻止。</span>${link("new-task", "要求修改", "pencil", "button button-primary")}</div></div>`;
+    ${tests ? testEvidence() : diffEvidence()}<div class="outcome-footer"><span>${icon("lock-keyhole")}验证未通过，应用变更被阻止。</span>${link("plan", "要求修改", "pencil", "button button-primary")}</div></div>`;
 }
 
 function diffEvidence() {
@@ -394,7 +492,7 @@ function stateScreen(state) {
   return `<div class="task-page">${taskHeader("task", state)}<div class="state-page"><div class="state-symbol ${tone === "amber" ? "tone-amber" : "tone-blue"}">${icon(glyph)}</div><h2>${title}</h2><p class="state-description">${detail}</p><dl class="state-facts">${facts.map(([key, value]) => `<div><dt>${key}</dt><dd>${value}</dd></div>`).join("")}</dl><div class="panel-actions">${inert(state === "offline" ? "重新同步" : state === "budget" ? "调整本次上限" : "取消排队", state === "offline" ? "refresh-cw" : state === "budget" ? "sliders-horizontal" : "square", "button button-primary")}${inert("查看已有成果", "files")}</div></div></div>`;
 }
 
-const renderers = { workbench: () => home(), project, task, "super-agent": superAgent, control: controlPanel, "control-review": controlReview, dispatch: () => dispatch(false), delegation: () => dispatch(true), calls: () => calls(false), "call-detail": () => calls(true), artifacts: () => artifacts(false), tests: () => artifacts(true), approval, recovery, audit, setup, "new-task": newTask, empty: () => home(true), queued: () => stateScreen("queued"), offline: () => stateScreen("offline"), budget: () => stateScreen("budget") };
+const renderers = { workbench: () => home(), project, task, "super-agent": superAgent, control: controlPanel, "control-review": controlReview, plan: planEditor, "plan-review": planReview, dispatch: () => dispatch(false), delegation: () => dispatch(true), calls: () => calls(false), "call-detail": () => calls(true), artifacts: () => artifacts(false), tests: () => artifacts(true), approval, recovery, audit, setup, "new-task": newTask, empty: () => home(true), queued: () => stateScreen("queued"), offline: () => stateScreen("offline"), budget: () => stateScreen("budget") };
 
 function rememberView() {
   if (!currentScreen) return;
@@ -451,6 +549,28 @@ function updateDraftStatus() {
     const [name, , minimum, maximum] = draftLimits.find(([name]) => name === input.dataset.draftField);
     $(`#${name}-error`).textContent = invalid ? `请输入 ${minimum}–${maximum} 的整数` : "";
   });
+  for (const [role] of roleDefinitions) {
+    const note = $(`#model-note-${role}`);
+    if (!note) continue;
+    const changed = uiState.draft.models[role] !== initialDraft.models[role];
+    note.hidden = !changed;
+    note.textContent = changed ? `${modelProfiles[uiState.draft.models[role]].transfer}。连接和能力尚未检查。` : "";
+  }
+}
+
+function updatePlanStatus() {
+  if (!$("#plan-form")) return;
+  const errors = planErrors();
+  const errorMap = new Map(errors);
+  document.querySelectorAll("[data-plan-field], [data-plan-step]").forEach((input) => {
+    const key = input.dataset.planField || `step-${input.dataset.planStep}-${input.dataset.planProperty}`;
+    input.setAttribute("aria-invalid", String(errorMap.has(key)));
+    $(`#plan-${key}-error`).textContent = errorMap.get(key) || "";
+  });
+  $("#plan-form-error").textContent = errors.length ? `还有 ${errors.length} 项需要完善，请检查对应输入。` : "";
+  $("#preview-plan").disabled = errors.length > 0;
+  $("#plan-draft-state").textContent = uiState.planEdited ? "草稿已编辑，尚未提交" : "已带入失败证据，尚未提交";
+  $("[data-reset-plan]").disabled = !uiState.planEdited;
 }
 
 function render() {
@@ -459,7 +579,7 @@ function render() {
   rememberView();
   const id = Object.hasOwn(renderers, route) ? route : "task";
   const [, name, title, context] = screens.find(([screen]) => screen === id);
-  const active = ["workbench", "empty"].includes(id) ? "workbench" : id === "super-agent" ? "super-agent" : ["control", "control-review"].includes(id) ? "control" : id === "setup" ? "setup" : ["artifacts", "tests"].includes(id) ? "artifacts" : "project";
+  const active = ["workbench", "empty"].includes(id) ? "workbench" : ["super-agent", "plan", "plan-review"].includes(id) ? "super-agent" : ["control", "control-review"].includes(id) ? "control" : id === "setup" ? "setup" : ["artifacts", "tests"].includes(id) ? "artifacts" : "project";
   $("#app-nav").innerHTML = navigation(active);
   $("#mobile-navigation").innerHTML = navigation(active);
   $("#app-header").innerHTML = header(title, !["workbench", "empty", "project", "setup"].includes(id));
@@ -473,6 +593,7 @@ function render() {
   selectStudio(uiState.studio);
   filterCalls(uiState.callFilter);
   updateDraftStatus();
+  updatePlanStatus();
   document.querySelectorAll("main details").forEach((element, index) => { element.open = uiState.details[id]?.[index] || false; });
   const savedScroll = uiState.scroll[id] || {};
   if ($(".workstream")) $(".workstream").scrollTop = savedScroll.work || 0;
@@ -499,10 +620,23 @@ document.addEventListener("input", (event) => {
     uiState.draft[event.target.dataset.draftField] = event.target.value;
     updateDraftStatus();
   }
+  if (event.target.matches("[data-plan-field]")) {
+    uiState.plan[event.target.dataset.planField] = event.target.value;
+    uiState.planEdited = true;
+    updatePlanStatus();
+  }
+  if (event.target.matches("[data-plan-step]")) {
+    uiState.plan.steps[Number(event.target.dataset.planStep)][event.target.dataset.planProperty] = event.target.value;
+    uiState.planEdited = true;
+    updatePlanStatus();
+  }
 });
 document.addEventListener("click", (event) => {
   if (event.target.closest("[data-open-navigation]")) $("#navigation-dialog").showModal();
   if (event.target.closest("[data-close-navigation]")) $("#navigation-dialog").close();
+  const modelInfo = event.target.closest("[data-model-info]");
+  if (modelInfo) showModelInfo(modelInfo.dataset.modelInfo);
+  if (event.target.closest("[data-close-model]")) $("#model-dialog").close();
   const evidenceTab = event.target.closest("[data-evidence-tab]");
   if (evidenceTab) selectEvidence(evidenceTab.dataset.evidenceTab);
   const studioTab = event.target.closest("button[data-studio-view]");
@@ -516,6 +650,13 @@ document.addEventListener("click", (event) => {
     document.querySelectorAll("[data-draft-field]").forEach((input) => { input.value = uiState.draft[input.dataset.draftField]; });
     $("[data-draft-toggle]").checked = uiState.draft.stopOnFailure;
     updateDraftStatus();
+  }
+  if (event.target.closest("[data-reset-plan]")) {
+    uiState.plan = freshPlan();
+    uiState.planEdited = false;
+    document.querySelectorAll("[data-plan-field]").forEach((input) => { input.value = uiState.plan[input.dataset.planField]; });
+    document.querySelectorAll("[data-plan-step]").forEach((input) => { input.value = uiState.plan.steps[Number(input.dataset.planStep)][input.dataset.planProperty]; });
+    updatePlanStatus();
   }
 });
 document.addEventListener("keydown", (event) => {
@@ -535,6 +676,10 @@ document.addEventListener("submit", (event) => {
   if (event.target.id === "control-form") {
     updateDraftStatus();
     if (draftChanges().length && !draftErrors().length) location.hash = "control-review";
+  }
+  if (event.target.id === "plan-form") {
+    updatePlanStatus();
+    if (!planErrors().length) location.hash = "plan-review";
   }
 });
 render();

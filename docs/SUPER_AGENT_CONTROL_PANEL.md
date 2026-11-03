@@ -2,6 +2,8 @@
 
 日期：2026-11-02。状态：静态交互设计提案，未接模型或执行器，尚未通过用户体验验收。
 
+2026-11-03 补充：增加计划修订与模型连接/数据范围检查，见 [PLAN_REVISION_FLOW.md](PLAN_REVISION_FLOW.md)。下文 21 画面/14 交互是第二轮历史范围；最新检查为 23 画面/19 交互，以 verification.json 为准。
+
 ## 1. 两个入口，各自有明确职责
 
 | 入口 | 内容 | 不承担 |
@@ -86,4 +88,4 @@
 - [手机 Control Panel](../design/review-v2/evidence/screenshots/mobile-control.png)
 - [配置差异](../design/review-v2/evidence/screenshots/desktop-control-review.png)
 
-继续迭代：先评审新入口和草稿操作，再补计划修订、调用详情回到精确步骤，以及模型切换时的数据范围与能力检查设计。不在这一阶段接真实服务。
+继续迭代：计划修订与模型检查已出静态稿，下一步评审并补调用详情到精确步骤/成果的定位。不在这一阶段接真实服务。

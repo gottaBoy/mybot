@@ -14,7 +14,7 @@ const browser = await chromium.launch({
   args: ["--no-sandbox"],
 });
 const screens = [
-  "task", "super-agent", "control", "control-review", "calls", "call-detail", "workbench", "project", "dispatch", "delegation",
+  "task", "super-agent", "control", "control-review", "plan", "plan-review", "calls", "call-detail", "workbench", "project", "dispatch", "delegation",
   "artifacts", "tests", "approval", "recovery", "audit", "setup",
   "new-task", "empty", "queued", "offline", "budget",
 ];
@@ -30,8 +30,9 @@ const shots = new Set([
   "desktop/task", "desktop/calls", "desktop/call-detail", "desktop/workbench",
   "desktop/dispatch", "desktop/artifacts", "desktop/tests", "desktop/approval",
   "desktop/super-agent", "desktop/control",
+  "desktop/plan", "desktop/plan-review",
   "mobile/task", "mobile/calls", "mobile/call-detail", "mobile/dispatch",
-  "mobile/approval", "mobile/recovery", "mobile/super-agent", "mobile/control",
+  "mobile/approval", "mobile/recovery", "mobile/super-agent", "mobile/control", "mobile/plan", "mobile/plan-review",
 ]);
 const out = path.join(root, "evidence");
 await mkdir(path.join(out, "screenshots"), { recursive: true });
@@ -80,7 +81,7 @@ try {
           .filter((el) => visible(el) && el.scrollWidth > el.clientWidth + 2).map((el) => el.textContent.trim());
         const marker = document.querySelector(".review-label");
         const primary = document.querySelector(".workstream p") || document.querySelector("main p");
-        const overlappingFields = Array.from(document.querySelectorAll("#control-form input[type=number]")).filter((input) => {
+        const overlappingFields = Array.from(document.querySelectorAll("#control-form input[type=number], #plan-form textarea, #plan-form input")).filter((input) => {
           input.scrollIntoView({ block: "center" });
           const r = input.getBoundingClientRect();
           return document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2) !== input;
@@ -278,6 +279,98 @@ try {
     assert.equal(await page.locator(".compact-plan").getAttribute("open"), "");
     assert.equal(report.externalRequests.length, 0);
   });
+  await check("revision-flow-preserves-failed-run-and-existing-evidence", async () => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await open("task");
+    await page.locator('.task-heading a[href="#plan"]').click();
+    await page.waitForFunction(() => document.body.dataset.screen === "plan");
+    assert.match(await page.locator(".revision-version-strip").innerText(), /计划 v2/);
+    assert.match(await page.locator(".revision-version-strip").innerText(), /计划 v3/);
+    assert.match(await page.locator(".revision-source").innerText(), /Run 02/);
+    assert.equal(await page.locator(".editable-step").count(), 2);
+    assert.match(await page.locator(".fixed-review-step").innerText(), /人工门禁/);
+    await page.locator("#plan-goal").fill("复用每个请求的幂等键，并保持最大三次重试。");
+    await page.locator("#plan-step-0-title").fill("将幂等键创建移到循环外");
+    await page.locator("#plan-reason").fill("以 Run 02 失败测试为依据，修复后必须重新验证。");
+    await page.getByRole("button", { name: "检查修订影响", exact: true }).click();
+    await page.waitForFunction(() => document.body.dataset.screen === "plan-review");
+    assert.match(await page.locator(".revision-comparison").innerText(), /复用每个请求的幂等键/);
+    assert.match(await page.locator(".review-step-list").innerText(), /将幂等键创建移到循环外/);
+    assert.match(await page.locator(".revision-impact-list").innerText(), /旧写入授权不能继续使用/);
+    assert.equal(await page.getByRole("button", { name: "提交修订" }).isDisabled(), true);
+    await page.locator('.revision-aside a[href="#task"]').click();
+    await page.waitForFunction(() => document.body.dataset.screen === "task");
+    assert.match(await page.locator(".fact-axes").innerText(), /2 通过 \/ 1 失败/);
+    assert.match(await page.locator(".compact-plan").innerText(), /v2/);
+    assert.match(await page.locator(".evidence-version").innerText(), /d4e5f6/);
+  });
+  await check("revision-draft-validation-reset-and-navigation", async () => {
+    await open("plan");
+    for (const selector of ["#plan-goal", "#plan-criteria", "#plan-reason", "#plan-step-0-title", "#plan-step-1-output"]) {
+      await page.locator(selector).fill("");
+      assert.equal(await page.locator(selector).getAttribute("aria-invalid"), "true");
+      assert.equal(await page.getByRole("button", { name: "检查修订影响" }).isDisabled(), true);
+    }
+    await page.getByRole("button", { name: "恢复建议" }).click();
+    assert.equal(await page.getByRole("button", { name: "检查修订影响" }).isDisabled(), false);
+    assert.equal(await page.locator("#plan-form-error").innerText(), "");
+    await page.locator("#plan-step-0-title").fill("检查固定的重试标识");
+    await page.locator(".editable-step-role a[href=\"#control\"]").first().click();
+    await page.waitForFunction(() => document.body.dataset.screen === "control");
+    await page.selectOption("#screen-picker", "plan");
+    await page.waitForFunction(() => document.body.dataset.screen === "plan");
+    assert.equal(await page.locator("#plan-step-0-title").inputValue(), "检查固定的重试标识");
+    await page.reload();
+    assert.equal(await page.locator("#plan-step-0-title").inputValue(), "修复幂等键复用");
+  });
+  await check("revision-user-text-is-not-interpreted-as-html", async () => {
+    await open("plan");
+    const text = '修复验证 <img src="x" onerror="window.__injected=1"> 不执行输入标记。';
+    await page.locator("#plan-goal").fill(text);
+    await page.getByRole("button", { name: "检查修订影响" }).click();
+    await page.waitForFunction(() => document.body.dataset.screen === "plan-review");
+    assert.ok((await page.locator(".revision-comparison").innerText()).includes(text));
+    assert.equal(await page.locator('.revision-comparison img[src="x"]').count(), 0);
+    assert.equal(await page.evaluate(() => window.__injected), undefined);
+    await page.getByRole("link", { name: "返回编辑" }).first().click();
+    await page.waitForFunction(() => document.body.dataset.screen === "plan");
+    assert.equal(await page.locator("#plan-goal").inputValue(), text);
+  });
+  await check("model-inspection-is-unverified-and-focus-returns", async () => {
+    await open("control");
+    await page.locator('[data-model-info="developer"]').click();
+    assert.equal(await page.locator("#model-dialog").evaluate((dialog) => dialog.open), true);
+    assert.match(await page.locator("#model-dialog").innerText(), /未连接/);
+    assert.match(await page.locator("#model-dialog").innerText(), /能力未验证/);
+    assert.equal(await page.evaluate(() => getComputedStyle(document.body).overflow), "hidden");
+    assert.equal(await page.getByRole("button", { name: "测试连接", exact: true }).isDisabled(), true);
+    await page.keyboard.press("Escape");
+    assert.equal(await page.locator("#model-dialog").evaluate((dialog) => dialog.open), false);
+    assert.notEqual(await page.evaluate(() => getComputedStyle(document.body).overflow), "hidden");
+    assert.equal(await page.locator('[data-model-info="developer"]').evaluate((el) => document.activeElement === el), true);
+  });
+  await check("model-switch-shows-data-boundary-not-automatic-approval", async () => {
+    await open("control");
+    await page.selectOption("#model-developer", "reasoning-b");
+    assert.match(await page.locator("#model-note-developer").innerText(), /外部服务/);
+    await page.locator('[data-model-info="developer"]').click();
+    assert.match(await page.locator("#model-dialog-title").innerText(), /推理模型 B/);
+    assert.match(await page.locator(".model-profile-facts").innerText(), /外部推理服务/);
+    for (const [name, width, height] of [["desktop", 1440, 1000], ["mobile", 390, 844]]) {
+      await page.setViewportSize({ width, height });
+      const shot = `screenshots/${name}-model-inspection.png`;
+      await page.screenshot({ path: path.join(out, shot), fullPage: false });
+      report.screenshots.push(shot);
+      assert.ok(await page.locator("#model-dialog").evaluate((dialog) => dialog.scrollWidth <= dialog.clientWidth + 1));
+    }
+    await page.locator("[data-close-model]").first().click();
+    await page.getByRole("button", { name: "预览调整" }).click();
+    await page.waitForFunction(() => document.body.dataset.screen === "control-review");
+    assert.match(await page.locator(".changed-model-checks").innerText(), /需确认资料可外发/);
+    assert.match(await page.locator(".changed-model-checks").innerText(), /未连接/);
+    assert.equal(await page.getByRole("button", { name: "应用配置" }).isDisabled(), true);
+    assert.equal(report.externalRequests.length, 0);
+  });
 } catch (error) {
   report.errors.push(error.stack || String(error));
 } finally {
@@ -291,7 +384,7 @@ report.summary = {
   failedInteractions: report.interactions.filter((item) => !item.passed).length,
   errors: report.errors.length,
   externalRequests: report.externalRequests.length,
-  complete: report.cases.length === screens.length * viewports.length && report.interactions.length === 14,
+  complete: report.cases.length === screens.length * viewports.length && report.interactions.length === 19,
 };
 await writeFile(path.join(out, "verification.json"), `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify(report.summary, null, 2));

@@ -1,12 +1,14 @@
 # 原创界面与用户旅程
 
-更新日期：2026-11-02。
+更新日期：2026-11-03。
 
 状态：已有原创图形化低保真初稿，尚未通过用户评审、最终视觉定版或用户测试。目标用户为研发团队，先单人试点，不继续沿用旧原型。研发定位补充见 [MODERN_RND_WORKBENCH.md](MODERN_RND_WORKBENCH.md)。
 
 最新反馈：V1 视觉被用户明确否定，本页旧配色不再作为默认方向。V2 的任务与调用画面已重做和静态检查，但未获用户视觉确认，见 [UI 迭代日志](UI_ITERATIONS.md)。
 
 V2 当前已补 Super-agent 协调和 Control Panel。本页早期导航/配色为设计历程，不覆盖最新静态稿；当前结构与操作边界见 [SUPER_AGENT_CONTROL_PANEL.md](SUPER_AGENT_CONTROL_PANEL.md)。
+
+本轮已增加 [计划修订与模型检查](PLAN_REVISION_FLOW.md)，编辑下一次运行的草稿，不修改历史任务。
 
 本轮新增 [原创文字线框 V1](LOW_FIDELITY_V1.md)，具体工作流以该提案评审。此文继续规定六条旅程、状态与视觉约束；文字线框不等于视觉完成。
 
