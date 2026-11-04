@@ -1,0 +1,13 @@
+[project]
+name = "mybot-workbench"
+version = "0.1.0"
+description = "Single-user AI R&D workbench"
+requires-python = ">=3.11"
+dependencies = ["fastapi==0.162.0", "uvicorn==0.54.0", "httpx==0.28.1", "pydantic==2.14.2"]
+
+[project.optional-dependencies]
+test = ["pytest==9.2.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

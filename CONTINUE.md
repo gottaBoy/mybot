@@ -1,6 +1,8 @@
 # 下次从这里继续
 
-更新日期：2026-11-03。仓库：`/home/my/workspace/ainfra/mybot`。
+更新日期：2026-11-04。仓库：`/home/my/workspace/ainfra/mybot`。
+
+**最新阶段：用户已说“好的，开始实现吧”，不要恢复成仅设计阶段。** 只读研发调研应用已实现于 `workbench/`、`web/`，具体边界见 [ADR-0004](docs/decisions/ADR-0004-implementation-slice.md) 和 [实现状态](docs/IMPLEMENTATION_STATUS.md)。静态设计继续保留，不是业务数据源。
 
 ## 1. 最新目标
 
@@ -8,7 +10,7 @@
 
 用户希望通过 Super-agent / Subagent 把工作分配给适合的模型，追踪每个 Agent、模型和工具调用，具备好用、原创的界面，以及可视化、审计和运行分析。
 
-**最新视觉反馈：用户明确否定 V1“太丑了，不高级”。不要继续把 V1 作为推荐方案或只作轻微美化。**
+**视觉约束：用户明确否定 V1“太丑了，不高级”。不要继续把 V1 作为推荐方案或只作轻微美化。** 当前真实界面延续原创 V2 石墨色工作区，不代表用户已最终认可视觉。
 
 用户新指定参考：`gottaBoy/dsh-superagent-prototype`、`Playa-Cyrene/Cyrene-Agent`、AgentsPulse Super-agent 架构教程，以及微信文章。身份、commit、已读资料和视觉边界见 [USER_REFERENCES_2026-11-02.md](docs/USER_REFERENCES_2026-11-02.md)。
 
@@ -16,19 +18,35 @@
 
 ## 2. 不可丢失的约束
 
-- 先分析、方案与界面设计，不急于业务实现。
+- 实现授权已覆盖此前“只做设计”的阶段限制；本轮仅做单用户只读调研，不自动扩到代码写入和部署。
 - UI 全新设计，不借鉴 `/home/my/workspace/ainfra` 下任何项目的视觉、布局或交互。
 - 可以参考用户指定的公开产品风格与能力，不复制品牌、角色图或整套页面。此项不解除本地 UI 禁借鉴要求。
 - 可以分析公开开源产品的能力与架构，不复制界面。
 - 本地项目仅作可选后端能力；存在源码不代表已验证或已接入。
 - 多 Agent 按需使用；角色不等于模型，不强制全部角色参与。
 - 追踪、可视化和分析不能只做动画或聊天历史。
-- 不展示模型内部思维链，不默认采集原始敏感 Prompt。
+- 不展示模型内部思维链；只保存明确选择并确认发送的上下文和模型正文，不采集隐藏资料或凭证。
 - 暂停/取消/恢复需真实语义，有副作用的操作不能盲目重试。
 
 ## 3. 当前实际状态
 
-已完成：
+当前实现：
+
+- FastAPI + SQLite + 一个后台 Worker；无前端构建依赖，不强制 GPU。
+- 真实项目、模型配置、任务、发送快照与 hash 校验、调用/时间上限。
+- Super-agent 生成 1–2 个受限研究任务，最多两个并行，汇总角色生成最终方案；各角色可选不同模型。
+- 运行、Agent、逐模型调用、用量/缺失、时间、尝试、成果、事件和人工审查持久化。
+- 阶段边界暂停、请求取消、失败/中断后确认续跑；不自动重试、回退或重放已完成阶段。
+- 默认本机访问，远程令牌/Host/Origin 边界；模型密钥仅引用专用环境变量。
+- 响应式真实 UI，手机工作/成果切换、模型表单、登录/退出；不提供原生 App 或离线模式。
+- 38 项后端测试通过；浏览器实际结果以 `tests/evidence/browser.json` 为准，测试不发送外部模型请求。
+- 真实模型、GPU 服务、Safari 和真机未验收；没有执行代码修改、Shell、测试命令或部署的 Agent 能力。
+
+本机启动：`.venv/bin/python -m workbench --host 127.0.0.1 --port 4180`。若端口占用先检查现有进程，不要再开多个服务竞争同一数据目录。正式运行数据位于 Git 忽略的 `.runtime/`。
+
+本轮已启动 `http://127.0.0.1:4180`，`/healthz` 正常，Bootstrap 的项目/模型/任务/运行为零；真实应用手机导航也已检查。服务是否仍在线以下次实际端口检查为准。仅本机监听，未开放手机远程访问或 TLS 代理。
+
+此前设计与研究记录（保留历史）：
 
 - 产品定位纠偏与两份决策记录。
 - 能力地图、六条用户旅程、界面文字规格。
@@ -62,26 +80,33 @@
 - 三个开源项目的完整安全审计和运行故障验证；不把本轮静态节选阅读当作完整审计。
 - 能力和用户旅程的正式评审。
 - 图形化低保真的用户评审、最终原创视觉定版和真实可用性验证。
-- 技术选型和后端/模型/数据库/执行器接入。
+- 真实 Provider 兼容性、代码执行器、写入门禁和沙箱；本轮已有后端/数据库/协议适配器，不把未验收项等同全部未实现。
 - 上游项目部署、测试或真实任务 POC。
 
-`prototype/` 是未采用的早期静态草图，保留但不作为当前界面或工程起点。本轮没有启动开发服务。
+`prototype/` 是未采用的早期静态草图，保留但不作为当前界面或工程起点。当前阶段可以启动本机真实应用；不要用 FakeProvider 测试服务器冒充用户环境。
 
-`design/review-v1/` 是被用户否定的低保真，不是当前视觉基线。`design/review-v2/` 是当前两个关键画面的视觉提案，已做静态检查但未视觉定版；所有样例都未真实执行。
+`design/review-v1/` 是被用户否定的低保真，不是当前视觉基线。`design/review-v2/` 是保留的视觉与交互提案，23 个静态画面未接业务；所有样例都未真实执行。`web/` 才是真实应用入口。
 
 ## 4. 推荐阅读顺序
 
-1. [最新参考与视觉反馈](docs/USER_REFERENCES_2026-11-02.md) 和 [定位 ADR-0002](docs/decisions/ADR-0002-rnd-team-single-user-pilot.md)。
-2. [现代研发工作台定义](docs/MODERN_RND_WORKBENCH.md)。
-3. [源码链路对照](docs/SOURCE_CHAIN_ANALYSIS.md)，必要时回看 [调研与 commit](docs/OPEN_SOURCE_RESEARCH.md)。
-4. [首版范围](docs/MVP_SCOPE.md)。
-5. [V2 当前预览](design/review-v2/index.html)、[UI 迭代日志](docs/UI_ITERATIONS.md)、[计划修订与模型检查](docs/PLAN_REVISION_FLOW.md)，必要时回看协调控制与文字线框；V1 仅作对照。
-6. [界面与六条旅程](docs/UI_DESIGN.md)、[可视化调度](docs/VISUAL_SCHEDULING.md)。
-7. [执行计划](docs/EXECUTION_PLAN.md) 与 [评审清单](docs/DESIGN_REVIEW.md)，需要时回看产品基线和完整能力地图。
+1. [实现 ADR-0004](docs/decisions/ADR-0004-implementation-slice.md)、[实现状态](docs/IMPLEMENTATION_STATUS.md) 和 [启动方式](README.md)。
+2. [UI 迭代日志](docs/UI_ITERATIONS.md)、`web/`、`workbench/` 和 [测试说明](tests/README.md)。
+3. [现代研发工作台定义](docs/MODERN_RND_WORKBENCH.md) 和 [定位 ADR-0002](docs/decisions/ADR-0002-rnd-team-single-user-pilot.md)。
+4. [源码链路对照](docs/SOURCE_CHAIN_ANALYSIS.md)、[首版长期范围](docs/MVP_SCOPE.md)，必要时回看开源调研。
+5. [V2 静态预览](design/review-v2/index.html)、[计划修订设计](docs/PLAN_REVISION_FLOW.md)；未实现设计不得与真实能力混用。
+6. [执行计划](docs/EXECUTION_PLAN.md) 与原有产品/设计文档，按具体任务阅读，不重新开始无限调研。
 
 `docs/archive/` 和 ADR-0001 中被 ADR-0002 修订的个人产品定位不是当前默认方案。
 
 ## 5. 下一次具体步骤
+
+1. 检查 `git status` / `git log -1` 和本机 4180 端口，核对当前服务与提交，不重复安装或新建架构。
+2. 按 README 从空工作区体验；只有用户明确配置/点击时才测试真实 Provider，不能读取兄弟项目凭证或自行付费调用。
+3. 用一个真实 Provider 验证 JSON 规划、输出长度、用量字段、失败与手动续跑；保留兼容性差异。
+4. 做 Safari/Android/iPhone 真机、触摸键盘、安全区、网络重连验收；尺寸模拟不冒充设备认证。
+5. 按反馈完善长记录、精确定位、配置编辑和无障碍；之后再立代码沙箱/写入/测试闭环的阶段。
+
+下面 N1–N4 是设计阶段的步骤与发现，保留作为来源，不覆盖本节的实现阶段顺序。
 
 ### N1：已完成第一轮有边界的源码对照
 
@@ -114,7 +139,7 @@ OpenHands 优先看会话事件、Agent Server、工作区和用量；OpenBot �
 ### 本轮工具与验证
 
 - 设计文件可通过 file URL 打开，不启动服务器。
-- 使用临时目录中的 Playwright 1.56.1 和独立 Chrome 检查；正式工程没有安装框架或运行时。
+- 设计阶段使用临时目录中的 Playwright 1.56.1 和独立 Chrome；实现阶段已安装 `.venv` 和锁定的 Python 依赖，运行测试说明另见 `tests/README.md`。
 - 本地图标来自 Lucide Static 0.468.0，保留原始许可。
 - 用户问到 ego(lite)：本轮不需要，未来真实浏览器任务再评估。官方仓库与范围见 ADR-0003。
 - 检查通过以 evidence/verification.json 为准；没有模型/工具执行或上游部署验收。
@@ -128,15 +153,15 @@ OpenHands 优先看会话事件、Agent Server、工作区和用量；OpenBot �
 - 模型宣布完成、测试通过和人工接受是三条事实轴。
 - 执行器缺失计量、暂停或隔离能力时须显示降级，不能用 UI 补造事实。
 
-### N4：经设计确认后再技术 POC
+### N4：只读 POC 已进入实现，代码执行仍后置
 
-先一个执行后端和一个模型连接，验证调研与方案、代码修改与测试及追踪一致性。不要直接拼接三套平台。
+首条调研闭环已实现，验收使用测试 Provider；代码修改/测试和外部执行器仍未接入。不要直接拼接三套平台或将固定阶段编排宣称为 DeepSeek Harness 接入。
 
-## 6. 候选方案，不是定版
+## 6. 后续执行器候选，不是已集成能力
 
 自定义研发产品域、原创 UI、统一事件与审计；优先评估 OpenHands SDK/Agent Server 的执行能力，研究 OpenBot 的能力边界和 OpenMuse 的可见执行体验。
 
-框架、协议、存储和许可证未最终确定。不能把之前提过的 Next.js/Vue、LangGraph、Temporal、AG-UI、A2A 等全部变成硬依赖。
+当前只读实现已选 FastAPI、SQLite 与 Chat Completions 适配器。后续代码执行器及其许可证仍待专项验证，不能把之前提过的 Next.js/Vue、LangGraph、Temporal、AG-UI、A2A 等全部变成硬依赖。
 
 ## 7. 本地项目与安全
 
@@ -146,8 +171,8 @@ OpenHands 优先看会话事件、Agent Server、工作区和用量；OpenBot �
 - `../mattermost`：后续通知和审批渠道。
 - `../aibiz`：不复用 UI 或运行时。
 
-不要读取 `.env`、数据库目录、运行凭证或日志中的秘密。没有启动外部服务、付费模型或生产动作的授权。
+不要读取兄弟项目 `.env`、数据库目录、运行凭证或日志中的秘密。允许启动本机工作台与隔离测试；没有自动调用真实模型、启动外部基础服务或执行生产动作的授权。
 
 ## 8. 对下次会话的最短交接
 
-> 请先阅读 CONTINUE.md、docs/UI_ITERATIONS.md 和 docs/PLAN_REVISION_FLOW.md。V2 已补计划修订、修订影响与模型检查，23 画面做静态回归。模型资料全是未验证样例，计划/配置只在内存，不写历史或执行。下一步根据用户反馈改善精确追踪定位、长记录检索和草稿汇总。没有真实服务或执行器，不删除整份样式再替换，记得提交和交接。
+> 先读 CONTINUE.md、ADR-0004、IMPLEMENTATION_STATUS.md 和 README。用户已授权实现，真实只读应用在 workbench/ 与 web/，SQLite 保存任务/运行/调用/成果/事件；静态 V2 保留且不接真实数据。使用测试 Provider 验证了闭环，没有真实付费请求。浏览器尺寸检查不等于 Safari/真机验收。下一步先明确授权验收一个真实 Provider，再迭代手机与追踪体验；代码写入、Shell、部署和团队权限尚未实现。不删除整份样式，记得提交和更新交接。

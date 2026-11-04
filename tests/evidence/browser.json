@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-11-04T14:24:10.157Z",
+  "fixture": "FakeProvider, no external model requests",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "documentWidth": 1425,
+      "broken": [],
+      "passed": true
+    },
+    {
+      "name": "compact",
+      "width": 1024,
+      "documentWidth": 1009,
+      "broken": [],
+      "passed": true
+    },
+    {
+      "name": "tablet",
+      "width": 768,
+      "documentWidth": 753,
+      "broken": [],
+      "passed": true
+    },
+    {
+      "name": "android-size",
+      "width": 390,
+      "documentWidth": 375,
+      "broken": [],
+      "passed": true
+    },
+    {
+      "name": "iphone-small-size",
+      "width": 320,
+      "documentWidth": 320,
+      "broken": [],
+      "passed": true
+    }
+  ],
+  "interactions": [
+    "create-project-persists",
+    "model-config-is-not-a-provider-test",
+    "start-run-agent-calls-artifact-audit",
+    "artifact-review-persists-after-reload",
+    "mobile-navigation-and-form-input-size",
+    "token-login-logout-and-relogin"
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "complete": true
+}

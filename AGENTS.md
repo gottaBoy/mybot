@@ -7,8 +7,10 @@ Read `CONTINUE.md` before making assumptions about the project. Then read the la
 ## Product And Phase
 
 - Target: an AI workbench for R&D teams, initially validated by one developer.
-- Current phase: research, product definition, user journeys, and original UI design.
-- Do not start business implementation or connect live executors unless the user changes this phase.
+- Current phase: implementation authorized by the user on 2026-11-04.
+- First slice: single-user, read-only project research, persistent runs/events, model routing and responsive Web UI.
+- Preserve the static review artifacts. The working application lives separately in `workbench/` and `web/`.
+- No shell execution, code writes, deployment, automatic paid calls or sibling credentials. Providers run only when the user explicitly starts/tests a configured connection.
 - Preserve the distinction between accepted requirements, proposed designs, source observations, and tested behavior.
 
 ## UI
@@ -17,8 +19,9 @@ Read `CONTINUE.md` before making assumptions about the project. Then read the la
 - `prototype/` is an unadopted early sketch, not the visual or engineering baseline.
 - The user rejected the visual quality of `design/review-v1/`. Preserve it for comparison, not as the accepted baseline.
 - `design/review-v2/` contains the current task/call/coordinator/control/plan-revision visual proposal and static checks, not an accepted final design. Read `docs/UI_ITERATIONS.md` before continuing it.
-- Control Panel edits are in-memory presentation drafts only. Never present a preview as applied configuration or a completed agent action.
-- Plan v3 is a local revision draft, not a new run. Model profiles and connection locations are explicitly fictional, unverified samples, not working providers.
+- In `design/review-v2/`, Control Panel edits are in-memory presentation drafts only. Never present a static preview as applied configuration or a completed agent action.
+- Static Plan v3 is a local revision draft, not a new run. Static model profiles and connection locations are explicitly fictional, unverified samples, not working providers.
+- In the live `web/` application, project/model/task configuration is persisted through the API. Model reachability still requires an explicit test; saved configuration is not test evidence.
 - Preserve V1 and draft history. Iterate the current visual layer without deleting whole stylesheets before replacements exist.
 - Static mock data and disabled business actions must not be presented as executed work.
 - Public open-source projects may be studied for architecture and capabilities; do not turn that into copying their UI.

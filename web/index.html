@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#1c1d20" />
+    <title>Workbench · 研发工作空间</title>
+    <link rel="icon" href="/icons/command.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles/review.css" />
+    <link rel="stylesheet" href="/styles/studio.css" />
+    <link rel="stylesheet" href="/styles/control.css" />
+    <link rel="stylesheet" href="/styles/revision.css" />
+    <link rel="stylesheet" href="/assets/app.css" />
+    <script src="/assets/app.js" defer></script>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">跳到主要内容</a>
+    <div class="app-shell">
+      <aside id="app-nav" class="app-nav" aria-label="主导航"></aside>
+      <div class="app-body">
+        <header id="app-header" class="app-header"></header>
+        <main id="main" tabindex="-1"><div class="page"><h1>正在连接工作空间…</h1></div></main>
+        <footer class="review-footer"><span>Workbench 0.1 · 单用户试点</span><span>只读分析 · 无 Shell、代码写入或部署权限</span></footer>
+      </div>
+    </div>
+    <dialog id="nav-dialog" class="navigation-dialog" aria-label="导航"></dialog>
+    <dialog id="form-dialog" class="live-dialog" aria-labelledby="dialog-title"></dialog>
+    <div id="toast" class="live-toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

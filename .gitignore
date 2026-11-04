@@ -6,3 +6,10 @@ node_modules/
 playwright-report/
 test-results/
 *.log
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+.runtime/
+.coverage
+htmlcov/

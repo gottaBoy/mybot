@@ -1,0 +1,163 @@
+import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
+import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+const { chromium } = await import(pathToFileURL(process.env.PLAYWRIGHT_MODULE).href);
+const tmp = await mkdtemp(path.join(os.tmpdir(), "mybot-live-test-"));
+const port = Number(process.env.TEST_PORT || 4182);
+const base = `http://127.0.0.1:${port}`;
+const testToken = "browser-fixture-only-not-a-production-token";
+const server = spawn(".venv/bin/python", ["tests/browser_server.py", tmp, String(port), testToken], {
+  cwd: process.cwd(), env: { ...process.env, PYTHONPATH: "." }, stdio: ["ignore", "pipe", "pipe"],
+});
+let serverOutput = "";
+server.stdout.on("data", (data) => { serverOutput += data; });
+server.stderr.on("data", (data) => { serverOutput += data; });
+const report = { generatedAt: new Date().toISOString(), fixture: "FakeProvider, no external model requests",
+  viewports: [], interactions: [], errors: [], externalRequests: [] };
+const out = "tests/evidence";
+await mkdir(out, { recursive: true });
+let browser;
+try {
+  let ready = false;
+  for (let i = 0; i < 100; i++) {
+    if (server.exitCode !== null) throw new Error(serverOutput);
+    try { if ((await fetch(`${base}/healthz`)).ok) { ready = true; break; } } catch {}
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  assert.ok(ready, serverOutput);
+  browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || "/usr/bin/google-chrome", args: ["--no-sandbox"], headless: true });
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  page.on("pageerror", (error) => report.errors.push(error.message));
+  page.on("console", (message) => { if (message.type() === "error") report.errors.push(message.text()); });
+  await page.route(/^https?:\/\//, async (route) => {
+    if (new URL(route.request().url()).origin !== base) { report.externalRequests.push(route.request().url()); await route.abort(); }
+    else await route.continue();
+  });
+  await page.goto(base);
+  await page.getByRole("heading", { name: "登录工作空间", exact: true }).waitFor();
+  await page.locator('[name="token"]').fill(testToken);
+  await page.locator('#form-dialog [type="submit"]').click();
+  await page.getByRole("heading", { name: "工作台", exact: true }).waitFor();
+  assert.equal(await page.locator(".nav-project").count(), 0);
+  await page.locator('.page-heading [data-action="new-project"]').click();
+  await page.locator('[name="name"]').fill("移动研发项目");
+  await page.locator('[name="goal"]').fill("检查只读上下文与研发方案");
+  await page.locator('#form-dialog [type="submit"]').click();
+  await page.getByRole("heading", { name: "移动研发项目", exact: true }).waitFor();
+  report.interactions.push("create-project-persists");
+
+  await page.goto(`${base}/#models`);
+  await page.getByRole("button", { name: "添加模型" }).click();
+  await page.locator('[name="name"]').fill("浏览器测试模型");
+  await page.locator('[name="endpoint"]').fill("http://127.0.0.1:9999/v1");
+  await page.locator('[name="model"]').fill("test-fixture-only");
+  await page.locator('#form-dialog [type="submit"]').click();
+  await page.getByRole("heading", { name: "浏览器测试模型" }).waitFor();
+  assert.match(await page.locator(".model-row").innerText(), /未测试/);
+  report.interactions.push("model-config-is-not-a-provider-test");
+
+  await page.locator('.primary-nav a[href="#home"]').click();
+  await page.locator(".nav-new").click();
+  await page.locator('[name="title"]').fill("验证手机与桌面调研闭环");
+  await page.locator('[name="goal"]').fill("分析提供资料里的约束和风险，提出可核查的方案");
+  await page.locator('[name="files"]').fill("README.md");
+  await page.locator('#form-dialog [type="submit"]').click();
+  await page.getByRole("heading", { name: "检查发送内容与运行上限" }).waitFor();
+  await page.locator(".send-preview summary").click();
+  assert.match(await page.locator(".send-preview pre").innerText(), /Browser test repository/);
+  assert.match(await page.locator("#send-targets").innerText(), /127.0.0.1:9999/);
+  await page.locator('[name="consent"]').check();
+  await page.locator('#form-dialog [type="submit"]').click();
+  await page.getByRole("heading", { name: "验证手机与桌面调研闭环" }).waitFor();
+  await page.waitForFunction(() => document.querySelector(".fact-axes")?.textContent.includes("执行完成"), { timeout: 15000 });
+  assert.match(await page.locator(".fact-axes").innerText(), /未执行测试/);
+  await page.locator('[data-tab="agents"]').click();
+  assert.equal(await page.locator(".live-agent-row").count(), 4);
+  await page.locator('[data-tab="calls"]').click();
+  assert.equal(await page.locator(".calls-table tbody tr").count(), 4);
+  await page.locator('.calls-table [data-action="call"]').first().click();
+  assert.match(await page.locator("#form-dialog").innerText(), /Token/);
+  await page.getByRole("button", { name: "关闭", exact: true }).click();
+  await page.locator('[data-tab="audit"]').click();
+  assert.match(await page.locator(".audit-list").innerText(), /artifact.created/);
+  await page.locator('[data-tab="work"]').click();
+  assert.ok(await page.locator(".artifact-content").innerText());
+  await page.locator(".original-request summary").click();
+  await Promise.all([
+    page.waitForResponse((response) => response.url().endsWith("/api/bootstrap")),
+    page.waitForResponse((response) => /\/api\/runs\/[a-f0-9]+$/.test(response.url())),
+    page.evaluate(() => document.dispatchEvent(new Event("visibilitychange"))),
+  ]);
+  assert.equal(await page.locator(".original-request").evaluate((node) => node.open), true);
+  report.interactions.push("start-run-agent-calls-artifact-audit");
+
+  const runUrl = page.url();
+  for (const [name, width, height] of [
+    ["desktop", 1440, 1000], ["compact", 1024, 900], ["tablet", 768, 1024],
+    ["android-size", 390, 844], ["iphone-small-size", 320, 740],
+  ]) {
+    await page.setViewportSize({ width, height });
+    const layout = await page.evaluate(() => ({
+      width: window.innerWidth, documentWidth: document.documentElement.scrollWidth,
+      broken: [...document.images].filter((i) => !i.complete || !i.naturalWidth).map((i) => i.src),
+    }));
+    assert.ok(layout.documentWidth <= layout.width + 1, `${name}: ${JSON.stringify(layout)}`);
+    assert.deepEqual(layout.broken, []);
+    if (width <= 699) {
+      await page.locator('[data-pane="evidence"]').click();
+      assert.equal(await page.locator(".evidence-inspector").isVisible(), true);
+      assert.equal(await page.locator(".work-pane").isVisible(), false);
+      assert.equal(await page.locator(".task-studio").evaluate((el) => el.scrollWidth <= el.clientWidth + 1), true);
+    }
+    await page.waitForFunction(() => !document.querySelector("#toast").classList.contains("show"));
+    await page.waitForFunction(() => Number(getComputedStyle(document.querySelector("#toast")).opacity) === 0);
+    if (["desktop", "android-size"].includes(name)) await page.screenshot({ path: `${out}/live-${name}.png`, fullPage: true });
+    report.viewports.push({ name, ...layout, passed: true });
+  }
+  await page.getByRole("button", { name: "接受方案" }).click();
+  await page.waitForFunction(() => document.querySelector(".fact-axes")?.textContent.includes("已接受方案"));
+  await page.reload();
+  await page.waitForFunction(() => document.querySelector(".fact-axes")?.textContent.includes("已接受方案"));
+  assert.ok(page.url() === runUrl);
+  report.interactions.push("artifact-review-persists-after-reload");
+  await page.getByRole("button", { name: "打开导航" }).click();
+  assert.equal(await page.locator("#nav-dialog").evaluate((d) => d.open), true);
+  await page.keyboard.press("Escape");
+  assert.equal(await page.locator("#nav-dialog").evaluate((d) => d.open), false);
+  await page.goto(`${base}/#models`);
+  await page.getByRole("button", { name: "添加模型" }).click();
+  const mobileForm = await page.locator("#form-dialog").evaluate((dialog) => ({
+    width: dialog.getBoundingClientRect().width, viewport: innerWidth,
+    overflow: dialog.scrollWidth > dialog.clientWidth + 1,
+    inputSize: getComputedStyle(dialog.querySelector("input")).fontSize,
+  }));
+  assert.ok(mobileForm.width <= mobileForm.viewport);
+  assert.equal(mobileForm.overflow, false);
+  assert.ok(parseFloat(mobileForm.inputSize) >= 16);
+  await page.keyboard.press("Escape");
+  report.interactions.push("mobile-navigation-and-form-input-size");
+  await page.getByRole("button", { name: "退出登录", exact: true }).click();
+  await page.getByRole("heading", { name: "登录工作空间", exact: true }).waitFor();
+  assert.equal((await page.request.get(`${base}/api/bootstrap`)).status(), 401);
+  await page.locator('[name="token"]').fill(testToken);
+  await page.locator('#form-dialog [type="submit"]').click();
+  await page.getByRole("heading", { name: "模型与控制", exact: true }).waitFor();
+  assert.equal(await page.getByRole("heading", { name: "浏览器测试模型", exact: true }).count(), 1);
+  report.interactions.push("token-login-logout-and-relogin");
+  assert.deepEqual(report.externalRequests, []);
+  assert.deepEqual(report.errors, []);
+} catch (error) {
+  report.errors.push(error.stack || String(error));
+} finally {
+  if (browser) await browser.close();
+  server.kill("SIGTERM");
+  await new Promise((resolve) => { if (server.exitCode !== null) resolve(); else server.once("exit", resolve); });
+}
+report.complete = report.interactions.length === 6 && report.viewports.length === 5 && report.errors.length === 0;
+await writeFile(`${out}/browser.json`, `${JSON.stringify(report, null, 2)}\n`);
+console.log(JSON.stringify(report, null, 2));
+if (!report.complete) process.exitCode = 1;
