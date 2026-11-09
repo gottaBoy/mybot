@@ -104,6 +104,29 @@ print(json.dumps({'type': 'turn.completed', 'usage': {'input_tokens': 42, 'outpu
     result = asyncio.run(CodexCliProvider().complete(model, [], 400))
     assert result["text"] == "final answer"
     assert (result["input_tokens"], result["output_tokens"]) == (42, 9)
+    assert result["diagnostics"]["workspace_isolated"] is True
+    assert result["diagnostics"]["user_config_ignored"] is True
+    assert result["diagnostics"]["rules_ignored"] is True
+    assert result["diagnostics"]["project_docs_disabled"] is True
+    assert not list(tmp_path.glob("mybot-codex-*.txt"))
+
+
+def test_codex_does_not_load_repository_agents_or_user_rules(monkeypatch, tmp_path):
+    (tmp_path / "AGENTS.md").write_text("DO NOT USE THIS IMPLICIT INSTRUCTION", encoding="utf-8")
+    model = fake_codex(monkeypatch, tmp_path, """
+from pathlib import Path
+args = set(sys.argv[1:])
+clean = (
+    '--ignore-user-config' in args
+    and '--ignore-rules' in args
+    and not (Path.cwd() / 'AGENTS.md').exists()
+    and '--sandbox' in args
+)
+print(json.dumps({'item': {'type': 'agent_message', 'text': 'isolated' if clean else 'leaked'}}), flush=True)
+""")
+    result = asyncio.run(CodexCliProvider().complete(model, [], 100))
+    assert result["text"] == "isolated"
+    assert result["diagnostics"]["workspace_isolated"] is True
     assert not list(tmp_path.glob("mybot-codex-*.txt"))
 
 

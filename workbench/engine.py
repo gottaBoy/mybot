@@ -90,7 +90,8 @@ class Engine:
             status = "failed" if result.get("truncated") else "succeeded"
             self.store.finish_call(call_id, status, result=result,
                                    duration=round((time.monotonic() - start) * 1000),
-                                   error="output_truncated" if result.get("truncated") else None)
+                                   error="output_truncated" if result.get("truncated") else None,
+                                   error_detail=result.get("diagnostics") or {})
             if result.get("truncated"):
                 raise ProviderError("output_truncated")
             self.store.agent_status(agent["id"], "succeeded", result["text"])

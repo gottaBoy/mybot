@@ -99,13 +99,18 @@ class CodexCliProvider:
         command = [
             executable, "exec", "--json", "--ephemeral", "--sandbox", "read-only",
             "--skip-git-repo-check", "--color", "never",
+            "--ignore-user-config", "--ignore-rules",
+            "-c", 'project_doc_max_bytes=0',
+            "-c", 'web_search="disabled"',
+            "-c", 'shell_environment_policy.inherit="none"',
         ]
-        workspace = model.get("workspace")
-        if workspace:
-            command.extend(["-C", str(workspace)])
-        output_file = tempfile.NamedTemporaryFile(prefix="mybot-codex-", suffix=".txt", delete=False)
-        output_path = Path(output_file.name)
-        output_file.close()
+        # Never launch Codex in the user's repository. Even with a read-only
+        # sandbox, cwd-based project discovery can load AGENTS.md and other
+        # implicit instructions that were outside the confirmed snapshot.
+        isolation = tempfile.TemporaryDirectory(prefix="mybot-codex-cwd-")
+        isolated_workspace = Path(isolation.name)
+        command.extend(["-C", str(isolated_workspace)])
+        output_path = isolated_workspace / "last-message.txt"
         command.extend(["--output-last-message", str(output_path)])
         command.append("-")
         process = None
@@ -119,6 +124,10 @@ class CodexCliProvider:
             "events": 0,
             "last_event": None,
             "partial_message": False,
+            "workspace_isolated": True,
+            "user_config_ignored": True,
+            "rules_ignored": True,
+            "project_docs_disabled": True,
         }
         message_types = {"agentMessage", "agent_message", "assistant_message", "message"}
         event_types = {
@@ -197,7 +206,7 @@ class CodexCliProvider:
                         stdin=asyncio.subprocess.PIPE,
                         stdout=asyncio.subprocess.PIPE,
                         stderr=asyncio.subprocess.DEVNULL,
-                        cwd=str(workspace) if workspace else None,
+                        cwd=str(isolated_workspace),
                         start_new_session=True,
                         limit=1024 * 1024 + 1,
                     )
@@ -223,10 +232,12 @@ class CodexCliProvider:
                 raise ProviderError("codex_cli_start_failed", detail=safe_detail()) from exc
             if process.returncode != 0:
                 raise ProviderError("codex_cli_failed", detail=safe_detail())
-            with output_path.open("rb") as output:
-                final_bytes = output.read(320001)
-            if len(final_bytes) > 320000:
-                raise ProviderError("response_too_large", detail=safe_detail())
+            final_bytes = b""
+            if output_path.exists():
+                with output_path.open("rb") as output:
+                    final_bytes = output.read(320001)
+                if len(final_bytes) > 320000:
+                    raise ProviderError("response_too_large", detail=safe_detail())
             final_text = final_bytes.decode("utf-8", errors="replace").strip()
             text = final_text or text
             if not text:
@@ -240,7 +251,8 @@ class CodexCliProvider:
 
             return {"text": text, "model": model["model"],
                     "input_tokens": tokens("input_tokens"),
-                    "output_tokens": tokens("output_tokens"), "truncated": False}
+                    "output_tokens": tokens("output_tokens"),
+                    "truncated": False, "diagnostics": safe_detail()}
         finally:
             if process and (process.returncode is None or any(not task.done() for task in tasks)):
                 await terminate()
@@ -248,7 +260,7 @@ class CodexCliProvider:
                 if not task.done():
                     task.cancel()
             await asyncio.gather(*tasks, return_exceptions=True)
-            output_path.unlink(missing_ok=True)
+            isolation.cleanup()
 
 
 class ProviderRouter:

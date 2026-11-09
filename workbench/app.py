@@ -159,6 +159,7 @@ def create_app(settings=None, provider=None) -> FastAPI:
         ]
         return {"projects": store.list("projects"), "models": [public_model(m) for m in store.list("models")],
                 "tasks": store.list("tasks"), "runs": store.list("runs"),
+                "backends": store.list("backend_connections"),
                 "workspace": str(settings.workspace), "access": "read_only",
                 "default_model_id": store.get_setting("default_model_id", settings.default_model_id),
                 "local_harnesses": local_harnesses,
@@ -272,6 +273,15 @@ def create_app(settings=None, provider=None) -> FastAPI:
     async def run_events(identifier: str, after: int = 0):
         store.get("runs", identifier)
         return {"events": store.events(identifier, max(0, after))}
+
+    @app.get("/api/backends")
+    async def backend_list():
+        return {"connections": store.list("backend_connections"), "read_only": True}
+
+    @app.get("/api/backends/{identifier}/conversations")
+    async def backend_conversations(identifier: str):
+        store.get("backend_connections", identifier)
+        return {"conversations": store.list("conversation_refs", identifier), "read_only": True}
 
     @app.get("/api/runs/{identifier}/retry-preview")
     async def run_retry_preview(identifier: str):

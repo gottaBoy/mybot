@@ -12,7 +12,8 @@
 | --- | --- |
 | Agent Work 可视化 | Run detail 返回 `local-superagent` 阶段事实；真实 Web 提供 Agent Work 列表、Planning/Research/Synthesis 阶段图和事实边界 |
 | 本地 Harness/默认模型发现 | Bootstrap 仅检测 `codex`/`claude`/`opencode`/`t3` 可执行文件；默认模型可在 UI 设为工作区设置或由 `WORKBENCH_DEFAULT_MODEL_ID` 指定；不读取凭证或自动调用 |
-| Codex CLI Adapter | 显式“启用 Codex Adapter”创建 `codex_cli` 模型配置；默认调用 `codex exec`，强制 ephemeral/read-only；认证由 Codex CLI 管理；单通道失败不会启动排队中的下一个研究调用 |
+| Codex CLI Adapter | 显式“启用 Codex Adapter”创建 `codex_cli` 模型配置；调用使用临时隔离 cwd、`--ignore-user-config`、`--ignore-rules`、禁用项目文档加载、ephemeral/read-only；认证由 Codex CLI 管理；单通道失败不会启动排队中的下一个研究调用 |
+| Backend/Conversation 合同骨架 | 持久化 `BackendConnection`/`ConversationRef`，提供只读列表 API 和未配置空适配器；未接入 OpenMausBot 网络或发送 |
 | 项目 | 名称、目标、相对目录、允许发送的项目资料 |
 | 模型 | 本地/远程 Chat Completions 配置；密钥只引用服务端环境变量 |
 | 任务 | 目标、验收要求、最多 10 个显式源码文本文件 |
@@ -69,6 +70,7 @@ UI 没有静态演示任务、伪造 Token、占位测试结果或假在线模�
 - 发送预览与启动时 hash 不一致会拒绝，要求重新确认。
 - 密钥变量名须为 `WORKBENCH_MODEL_<NAME>_KEY`；密钥值不存数据库、不返回浏览器。
 - 原始模型内部思维链不采集；模型正文输出与用户确认过的上下文会作为成果/快照保存于私有数据目录。
+- Codex 不在用户仓库 cwd 中启动；每次调用使用临时空目录，避免自动加载仓库 `AGENTS.md` 或其他隐式规则。用户确认的快照仍通过显式 prompt 发送。
 - 数据目录权限 700，SQLite 文件权限 600；本轮不提供加密存储。
 
 ## 5. 运行控制口径
@@ -96,16 +98,16 @@ App Server 草稿未通过最终协议/能力边界复核，已撤回生产入�
 
 ## 7. 验证与未验收事项
 
-最新真实执行：2026-11-09 用户授权的 Codex 关联重试 `49acc6c258094a2794b153a6b6629800` 已完成两项研究与汇总，规划复用，3 次新增调用、3 份待审查成果，约 325 秒。证明这一配置下的真实文本闭环可完成；不代表源码研究、工具 ceiling、费用账单或普遍可靠性已验收。详细用量和边界见 [进度记录](PROGRESS_LOG.md)。
+最新真实执行：2026-11-09 用户授权的 Codex 关联重试 `49acc6c258094a2794b153a6b6629800` 已完成两项研究与汇总，规划复用，3 次新增调用、3 份待审查成果，约 325 秒。证明当时配置下的真实文本闭环可完成；不代表本次新增隔离实现已经做过真实模型回归、工具 ceiling、费用账单或普遍可靠性已验收。详细用量和边界见 [进度记录](PROGRESS_LOG.md)。
 
-- 后端测试：`tests/test_workbench.py`、`tests/test_provider.py`，本轮 38 项通过。
+- 后端测试：完整 Python 回归 181 项通过；保留 Starlette/httpx 弃用提醒。
 - 协议测试使用 HTTPX MockTransport；后台流程使用仅测试可注入的 FakeProvider。
 - 浏览器：`tests/verify-live.mjs` 创建临时服务器与临时 SQLite，以 FakeProvider 验证 UI→API→Worker→数据库，不访问外部模型。
 - 浏览器检查报告：[browser.json](../tests/evidence/browser.json)。
 - 本轮 Chrome 五种尺寸与六组流程通过，包括登录/退出、角色/调用/成果检查、审查持久化、手机导航和表单；没有浏览器外网请求。
 - [桌面截图](../tests/evidence/live-desktop.png)、[手机尺寸截图](../tests/evidence/live-android-size.png)的内容均为明确测试夹具，不是真实模型质量证明。
 
-尚未完成：真实外部 Provider、本地 GPU 模型兼容性、Safari、设备真机、断电一致性/压力测试、TLS 反向代理、团队权限与生产安全审计。
+尚未完成：隔离 cwd 变更后的真实 Codex 回归、本地 GPU 模型兼容性、Safari、设备真机、断电一致性/压力测试、TLS 反向代理、团队权限与生产安全审计。
 
 当前 TestClient 依赖产生一条 Starlette/httpx 迁移提醒；本轮测试能运行，不隐瞒该依赖警告，也不在这一轮更换协议客户端。
 

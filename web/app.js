@@ -21,7 +21,7 @@ const tone = (status) => status === "succeeded" || status === "accepted" ? "gree
 const pill = (status, custom) => `<span class="status status-${tone(status)}"><i></i>${esc(custom || labels[status] || status)}</span>`;
 const when = (value) => value ? new Date(value).toLocaleString("zh-CN", { hour12: false }) : "—";
 const duration = (value) => value === null || value === undefined ? "未知" : value >= 1000 ? `${(value / 1000).toFixed(1)}s` : `${value}ms`;
-let data = { projects: [], models: [], tasks: [], runs: [], default_model_id: "", local_harnesses: [] };
+let data = { projects: [], models: [], tasks: [], runs: [], backends: [], default_model_id: "", local_harnesses: [] };
 let detail = null;
 let routeKey = "";
 let polling = false;

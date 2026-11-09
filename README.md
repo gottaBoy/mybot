@@ -39,6 +39,7 @@
 - 已实现：项目/模型配置、任务、发送快照确认、Super-agent 规划、最多两个研究 Agent 并行、汇总与人工审查。
 - 已实现：SQLite 持久运行/事件、模型角色路由、运行内逐调用追踪、暂停/取消/手动续跑、响应式 Web。
 - 后端采用 FastAPI + SQLite + 单后台 Worker，不需要前端构建，也不强制 GPU。
+- 已建立只读 Backend/Conversation 合同和空状态 API；OpenMausBot 固定 fork 尚未连接，当前不会自动发现账号或发送消息。
 - 未实现：Shell、代码写入、真实测试执行、部署、任意 DAG、团队权限、原生 App。
 - 工作台已接入显式启用的 Codex CLI；2026-11-09 一个获授权的关联重试已完成 2 项研究与汇总，3 次新增调用、3 份待审查成果。仍有历史超时/未知用量，且尚未完成源码研究及工具边界验收。自动回归使用测试 Provider；凭证由 CLI 保管，OpenMausBot 尚未接入。
 - 旧 `prototype/` 未采用，不作为新界面或工程起点。
@@ -60,7 +61,7 @@ python3 -m venv .venv
 - `WORKBENCH_WORKSPACE`：允许选择的服务器目录上界，默认本仓库；项目路径和任务文件均使用相对路径。
 - `WORKBENCH_DATA_DIR`：私有 SQLite/运行快照目录，默认 `.runtime/`，已排除 Git。
 - 模型基础地址填到 `/v1` 这一层，例如 `http://127.0.0.1:11434/v1`；程序追加 `/chat/completions`。示例不是已安装的模型服务。
-- Codex 当前使用 `codex exec`；`WORKBENCH_CODEX_TIMEOUT_SECONDS` 设置单次总时限（10–300 秒，默认 90）。超时不自动重试。长驻 App Server 仍是待验收方案，不提供传输切换入口，见 [可靠性方案](docs/CODEX_RELIABILITY_PLAN.md)。
+- Codex 当前使用 `codex exec`；每次调用在临时空工作目录启动，并忽略用户配置/规则和项目文档自动加载，只把用户确认的快照放入 prompt。`WORKBENCH_CODEX_TIMEOUT_SECONDS` 设置默认单次时限（10–300 秒，Run 可覆盖）。超时不自动重试。长驻 App Server 仍是待验收方案，见 [可靠性方案](docs/CODEX_RELIABILITY_PLAN.md)。
 - 失败/中断运行提供“重试与资源”：先预览复用步骤和最低新增调用数，再选择未完成角色模型、预算、并行数、单次时限和输出上限。提交后创建关联 Run，不修改来源 Run，不自动重试。
 - 需要密钥时，在服务启动前设置 `WORKBENCH_MODEL_<NAME>_KEY`，界面只填变量名。不会加载 `.env`，不接受浏览器上传密钥。
 - 配置保存不调用模型；主动测试和开始运行会发起请求，费用由 Provider 决定。接口兼容性需单独验证。

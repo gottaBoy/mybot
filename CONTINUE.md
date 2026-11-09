@@ -4,6 +4,10 @@
 
 **最新真实执行成功（2026-11-09）：** 用户明确“你自己跑吧”后，仅创建一个关联重试 `49acc6c258094a2794b153a6b6629800`，来源 `bd69...`。规划复用，新增调用预算 3、Codex 单通道、单次时限 240 秒。两项研究与汇总均成功，耗时分别 109074/126864/88651 ms，总历时约 5 分 25 秒，3 份成果均待审查。CLI 报告 input 41460/output 9993 tokens；金额未知，不包含来源失败调用。没有再次重试、切换 Provider 或修改来源记录。仍未附加源码快照，输出为分析提案；正文引用了 CLI 自动上下文中的 AGENTS.md，因此不能声称输入严格只有 mybot 可见快照。CLI 无工具 ceiling、隐式上下文、输出 Token 硬上限仍是未验收边界。进度记录已更新，当前无活动 Run；后续不要重复消费这次真实执行授权。
 
+**最新 P0 隔离修复（2026-11-09）：** 针对上述真实 Run 暴露的隐式 `AGENTS.md` 上下文问题，Codex Adapter 现在在临时空 cwd 启动，不进入用户仓库；显式忽略用户配置和规则，禁用项目文档加载、web search 和 shell 环境继承。用户确认的快照仍通过 prompt 发送。181 项 Python 测试、5 视口/11 条浏览器交互通过；没有新的真实模型调用。该隔离降低隐式上下文风险，但不等于完整工具权限 ceiling；下一步进入 OpenMausBot 只读适配前，继续冻结工具/权限合同。
+
+**最新 Phase 3 合同骨架（2026-11-09）：** 已新增 `BackendConnection`、`ConversationRef`、`MessageRef`、`ConversationBackendPort`，SQLite `backend_connections`/`conversation_refs` 表，以及只读 API `/api/backends` 和 `/api/backends/{id}/conversations`。未配置 backend 时返回真实空状态，不连接账号、不发消息。184 项 Python 测试、5 视口/11 条浏览器交互通过。下一步是固定 `gottaBoy/OpenMausBot` commit 的隔离 MockTransport 只读 Adapter，覆盖分页、游标、403、断线和 schema 变化。
+
 **最新恢复能力（本轮）：** 已实现“重试与资源”而非直接复用旧 Run。失败/中断/暂停运行可打开重试预览，看到复用步骤、待重试步骤、历史调用和最低新增预算；可重新分配未完成角色模型、预算、并行、单次时限和输出上限。提交会创建 `source_run_id` 关联的新 Run，复制已完成 Agent/Artifact 引用但不计新调用，来源 Run/调用/成果不改写；未知结果需确认，快照变化、密钥缺失、预算不足和活动运行会拒绝。180 项 Python 测试、5 视口/11 条浏览器交互通过。尚未对真实历史 Codex Run 发起重试。
 
 **真实重试观察：** 用户随后创建了 `bd69b087d85b4531837075eac9cbd2de`，来源为 `8bd1...`。规划成功复用，Codex 研究单次 120 秒超时，事件 24、最后白名单类型 `command_execution`、部分正文存在、进程已回收、用量未知；另一个研究保持 pending，汇总未执行。预算和 lineage 正常，不能把它归因于 `max_calls`。该来源快照仍没有显式文件，重复运行不会自动获得项目源码。下一步先补明确文件或切换已验证 Provider，不自动重试未知结果。

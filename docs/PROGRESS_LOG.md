@@ -122,6 +122,24 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
 
 ## 2026-11-09
 
+### 工作项：Codex 隐式上下文隔离
+
+- 领域/模块：Codex CLI Adapter、Provider 安全边界
+- 实现：Codex 不再以用户仓库作为 cwd；每次调用创建临时空目录，传入 `-C`，并设置 `--ignore-user-config`、`--ignore-rules`、`project_doc_max_bytes=0`、禁用 web search 和 shell 环境继承。仍使用 CLI 自己的认证，不读取或复制 credential store；用户确认的快照通过显式 prompt 发送。诊断中记录隔离状态，但不保存路径、stderr、命令正文或隐式规则内容。
+- 验证命令：`.venv/bin/python -m pytest -q`；`PLAYWRIGHT_MODULE=/tmp/mybot-design-tools.VtVbIr/node_modules/playwright/index.mjs CHROME_PATH=/usr/bin/google-chrome TEST_PORT=4182 node tests/verify-live.mjs`；`node --check web/app.js`；`git diff --check`
+- 结果：181 项 Python 测试、5 视口/11 条浏览器交互通过；新增 fake CLI 验证仓库 `AGENTS.md` 不在 cwd、用户配置/规则被忽略；无外部浏览器请求。
+- 未完成/unknown：尚未对隔离后的参数执行新的真实 Codex Run；`read-only` 与 cwd 隔离不等于完整无工具 capability ceiling；现有真实 Run 记录不重写。
+- 下一步：提交本轮隔离修复；随后进入 Phase 3 OpenMausBot 只读 `BackendConnection/ConversationRef` 合同，不启动真实账号或发送接口。
+
+### 工作项：OpenMausBot 只读后端合同骨架
+
+- 领域/模块：Conversation/Backend Domain、Store/API
+- 实现：新增稳定的 `BackendConnection`、`ConversationRef`、`MessageRef` 和 `ConversationBackendPort` 合同；新增 `UnconfiguredConversationBackend`，明确未配置时只返回空会话、不提供消息发送路径。SQLite 增加 `backend_connections`/`conversation_refs` 表和只读查询 API：`GET /api/backends`、`GET /api/backends/{id}/conversations`；Bootstrap 暴露持久化 backend 列表。当前没有网络客户端、真实账号发现或发送接口。
+- 验证命令：`.venv/bin/python -m pytest -q`；`PLAYWRIGHT_MODULE=/tmp/mybot-design-tools.VtVbIr/node_modules/playwright/index.mjs CHROME_PATH=/usr/bin/google-chrome TEST_PORT=4182 node tests/verify-live.mjs`；`node --check web/app.js`；`git diff --check`
+- 结果：184 项 Python 测试、5 视口/11 条浏览器交互通过；只读 backend 持久化/空状态合同通过；无浏览器外部请求。
+- 未完成/unknown：OpenMausBot fork 尚未连接；没有分页消息适配、403/断线/schema 变化映射或真实 API；UI 只暴露底层 bootstrap 状态，尚未添加会话工作区。
+- 下一步：为固定 fork 实现隔离 MockTransport 的只读 Adapter，先覆盖 Bot/Conversation/Message 分页、游标去重和错误映射，再接 Web 会话列表。
+
 ### 工作项：授权真实重试完整收敛
 
 - 领域/模块：Codex CLI、Recovery、研究/汇总与成果

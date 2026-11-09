@@ -408,6 +408,23 @@ def test_default_model_setting_persists_without_provider_call(fixture):
         assert provider.requests == []
 
 
+def test_read_only_backend_contract_is_persistent_and_empty_by_default(fixture):
+    app, provider, _ = fixture
+    with TestClient(app) as client:
+        bootstrap = client.get("/api/bootstrap").json()
+        assert bootstrap["backends"] == []
+        connection = app.state.store.add_backend({
+            "name": "OpenMausBot (not connected)",
+            "kind": "openmausbot",
+            "status": "unconfigured",
+        })
+        listed = client.get("/api/backends").json()
+        assert listed == {"connections": [connection], "read_only": True}
+        conversations = client.get(f"/api/backends/{connection['id']}/conversations").json()
+        assert conversations == {"conversations": [], "read_only": True}
+        assert provider.requests == []
+
+
 def test_enable_codex_creates_local_adapter_without_provider_call(fixture, monkeypatch):
     app, provider, _ = fixture
     monkeypatch.setattr("workbench.app.shutil.which", lambda name: "/usr/bin/codex" if name == "codex" else None)

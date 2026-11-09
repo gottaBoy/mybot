@@ -35,11 +35,15 @@
   - Bounded Research
   - Synthesis
 - Agent Work 阶段图、Run/Agent/Call/Artifact 可视化。
-- Codex CLI 最小 Adapter：
+- Codex CLI Adapter：
   - 显式启用 `codex_cli` 配置。
   - `codex exec --json --ephemeral --sandbox read-only`。
   - 不读取/复制 Codex credential store。
   - 取消/超时子进程回收。
+- P0 隐式上下文隔离：
+  - 临时空 cwd，不进入用户仓库。
+  - 忽略用户 config/rules。
+  - 禁止项目文档自动加载、web search 和 shell 环境继承。
 - 本地 Harness binary discovery。
 - 工作区默认模型持久化设置。
 - DDD/模块化单体决策 ADR-0005。
@@ -47,9 +51,9 @@
 
 ### 已验证
 
-- Python 回归：145 项通过。
-- 浏览器：5 个视口、8 条交互通过。
-- 真实 Codex Run 尚未成功完成；一次运行因 CLI 未回传而取消，结果正确标记用量未知。
+- Python 回归：181 项通过。
+- 浏览器：5 个视口、11 条交互通过。
+- 真实 Codex 已有一次关联重试完整完成；仍有历史超时和未知用量，新增隔离参数尚未做真实回归。
 - OpenMausBot 已完成固定 npm 包 + 合成 ACP 的 35/38 项隔离研究，但没有接入 mybot。
 
 ## 2. 分阶段路线
@@ -124,9 +128,15 @@ cancel()
 
 ### Phase 3：OpenMausBot 会话后端
 
-状态：下一步。
+状态：合同骨架已完成，固定 fork 适配器未完成。
 
-交付：
+已完成：
+
+- `BackendConnection` / `ConversationRef` / `MessageRef` / `ConversationBackendPort` 合同。
+- SQLite backend binding/ref 表。
+- 只读空适配器和只读查询 API。
+
+待交付：
 
 - `BackendConnection`。
 - `ConversationRef`。
@@ -332,11 +342,10 @@ web/i18n/en-US.json
 
 下一项只做 Phase 3：
 
-1. 定义 `BackendConnection`/`ConversationRef` schema。
-2. 建立 OpenMausBot fork 固定 commit 的只读 Adapter Port。
-3. MockTransport 合同测试。
-4. Web Agent/会话只读列表。
-5. 更新 `PROGRESS_LOG.md`。
+1. 固定 `gottaBoy/OpenMausBot` commit 的只读 Adapter。
+2. MockTransport 合同测试：Bot/Conversation/Message 分页、游标去重、403/断线/schema 变化。
+3. Web Agent/会话只读列表和空状态。
+4. 更新 `PROGRESS_LOG.md`。
 
 不同时做：
 

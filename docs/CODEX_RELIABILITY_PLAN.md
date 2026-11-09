@@ -24,8 +24,9 @@ Run `8bd1d79b7cc94f5d8aa518819a362320`：
 6. 保存安全诊断：超时阈值、事件数、固定类型、最后事件距今毫秒、出现过正文与否、退出码、回收状态。部分正文不等于完成；进程回收不代表远端退款或停止计费。
 7. `turn.completed.usage` 提供合法非负整数时保存逐调用 tokens；没有用量仍为未知，金额仍未知。
 8. Run 和显式连接测试共享 CLI 锁，避免测试期间启动第二个 Codex 进程。
+9. Codex CLI 不在用户仓库中启动；使用临时空 cwd、`--ignore-user-config`、`--ignore-rules`、`project_doc_max_bytes=0` 和关闭 web search/继承环境，降低隐式 AGENTS.md/规则进入上下文的风险。该隔离只限制 cwd/config/rules，不等于完整工具 ceiling。
 
-没有放宽工具授权、增加自动重试或宣称真实故障率已经下降。
+没有放宽工具授权、增加自动重试或宣称真实故障率已经下降。新增隔离参数尚未做真实 Codex 回归。
 
 ## 3. App Server 研究与撤回
 

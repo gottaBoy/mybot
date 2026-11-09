@@ -24,7 +24,7 @@ def dump(value) -> str:
     return json.dumps(value, ensure_ascii=False)
 
 
-JSON_FIELDS = {"files", "config", "context", "plan", "payload", "error_detail"}
+JSON_FIELDS = {"files", "config", "context", "plan", "payload", "error_detail", "settings"}
 TERMINAL = {"succeeded", "failed", "canceled"}
 ACTIVE = {"queued", "running", "pause_requested", "cancel_requested", "paused", "interrupted"}
 
@@ -95,6 +95,17 @@ CREATE INDEX IF NOT EXISTS agents_run ON agents(run_id);
 CREATE TABLE IF NOT EXISTS workspace_settings (
  key TEXT PRIMARY KEY, value TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS backend_connections (
+ id TEXT PRIMARY KEY, name TEXT NOT NULL, kind TEXT NOT NULL,
+ endpoint TEXT NOT NULL, status TEXT NOT NULL, settings TEXT NOT NULL DEFAULT '{}',
+ revoked_at TEXT, created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS conversation_refs (
+ id TEXT PRIMARY KEY, connection_id TEXT NOT NULL REFERENCES backend_connections(id),
+ external_id TEXT NOT NULL, title TEXT NOT NULL, status TEXT NOT NULL,
+ cursor TEXT, created_at TEXT NOT NULL,
+ UNIQUE(connection_id, external_id)
+);
 """
 
 
@@ -160,7 +171,8 @@ class Store:
         return values
 
     def get(self, table: str, entity_id: str) -> dict:
-        if table not in {"projects", "models", "tasks", "runs", "agents", "artifacts", "calls"}:
+        if table not in {"projects", "models", "tasks", "runs", "agents", "artifacts", "calls",
+                         "backend_connections", "conversation_refs"}:
             raise ValueError("Invalid entity")
         with self.transaction() as db:
             row = decode(db.execute(f"SELECT * FROM {table} WHERE id=?", (entity_id,)).fetchone())
@@ -183,15 +195,54 @@ class Store:
             self.event(db, "workspace.setting.updated", {"key": key}, actor=actor)
 
     def list(self, table: str, run_id=None) -> list[dict]:
-        if table not in {"projects", "models", "tasks", "runs", "agents", "artifacts", "calls"}:
+        if table not in {"projects", "models", "tasks", "runs", "agents", "artifacts", "calls",
+                         "backend_connections", "conversation_refs"}:
             raise ValueError("Invalid entity")
-        where = " WHERE run_id=?" if run_id else ""
+        if table == "conversation_refs" and run_id:
+            where = " WHERE connection_id=?"
+        else:
+            where = " WHERE run_id=?" if run_id else ""
         sort = "started_at" if table == "calls" else "created_at" if table != "agents" else "rowid"
         with self.transaction() as db:
             return [decode(row) for row in db.execute(
                 f"SELECT * FROM {table}{where} ORDER BY {sort} DESC",
                 (run_id,) if run_id else (),
             ).fetchall()]
+
+    def add_backend(self, values: dict) -> dict:
+        values = {
+            "id": uid(), "name": values["name"], "kind": values["kind"],
+            "endpoint": values.get("endpoint", ""),
+            "status": values.get("status", "unconfigured"),
+            "settings": values.get("settings", {}),
+            "revoked_at": None, "created_at": now(),
+        }
+        with self.transaction() as db:
+            db.execute(
+                "INSERT INTO backend_connections(id,name,kind,endpoint,status,settings,revoked_at,created_at) "
+                "VALUES(?,?,?,?,?,?,?,?)",
+                (values["id"], values["name"], values["kind"], values["endpoint"], values["status"],
+                 dump(values["settings"]), values["revoked_at"], values["created_at"]),
+            )
+            self.event(db, "backend.configured", {
+                "kind": values["kind"], "status": values["status"], "read_only": True,
+            }, entity_id=values["id"])
+        return self.get("backend_connections", values["id"])
+
+    def add_conversation_ref(self, values: dict) -> dict:
+        values = {"id": uid(), "cursor": None, "created_at": now(), **values}
+        with self.transaction() as db:
+            db.execute(
+                "INSERT INTO conversation_refs(id,connection_id,external_id,title,status,cursor,created_at) "
+                "VALUES(?,?,?,?,?,?,?)",
+                (values["id"], values["connection_id"], values["external_id"], values["title"],
+                 values["status"], values["cursor"], values["created_at"]),
+            )
+            self.event(db, "conversation.ref.created", {
+                "connection_id": values["connection_id"], "external_id": values["external_id"],
+                "read_only": True,
+            }, entity_id=values["id"])
+        return self.get("conversation_refs", values["id"])
 
     def create_run(self, task_id: str, request_id: str, config: dict, context: dict) -> dict:
         with self.transaction() as db:
