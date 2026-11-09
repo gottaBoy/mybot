@@ -1,0 +1,439 @@
+{
+  "rea_version": "6.8.0",
+  "rea_exit_code": 0,
+  "evidence_id": "ev_71d9d64e20f3121276dd4bfc704956e548138c75e194232c562f2c71aaae7c76",
+  "predicate_type": "rea.process-capture",
+  "exit": {
+    "code": 0,
+    "signal": 0,
+    "reason": "exited"
+  },
+  "settlement": {
+    "state": "quiesced",
+    "elapsed_ms": 272,
+    "cleanup_outcome": "not_required"
+  },
+  "cleanup": {
+    "owned_process_group": "verified",
+    "temporary_root": "removed",
+    "unverified_processes": [
+      {
+        "pid": 1747080,
+        "reason": "EACCES: permission denied, open '/proc/1747080/environ'"
+      },
+      {
+        "pid": 1747088,
+        "reason": "EACCES: permission denied, open '/proc/1747088/environ'"
+      },
+      {
+        "pid": 1747089,
+        "reason": "EACCES: permission denied, open '/proc/1747089/environ'"
+      },
+      {
+        "pid": 1747091,
+        "reason": "EACCES: permission denied, open '/proc/1747091/environ'"
+      },
+      {
+        "pid": 1747092,
+        "reason": "EACCES: permission denied, open '/proc/1747092/environ'"
+      },
+      {
+        "pid": 1747093,
+        "reason": "EACCES: permission denied, open '/proc/1747093/environ'"
+      },
+      {
+        "pid": 1747094,
+        "reason": "EACCES: permission denied, open '/proc/1747094/environ'"
+      },
+      {
+        "pid": 1747095,
+        "reason": "EACCES: permission denied, open '/proc/1747095/environ'"
+      },
+      {
+        "pid": 1747096,
+        "reason": "EACCES: permission denied, open '/proc/1747096/environ'"
+      },
+      {
+        "pid": 1747098,
+        "reason": "EACCES: permission denied, open '/proc/1747098/environ'"
+      },
+      {
+        "pid": 1747099,
+        "reason": "EACCES: permission denied, open '/proc/1747099/environ'"
+      },
+      {
+        "pid": 1747100,
+        "reason": "EACCES: permission denied, open '/proc/1747100/environ'"
+      },
+      {
+        "pid": 1747101,
+        "reason": "EACCES: permission denied, open '/proc/1747101/environ'"
+      },
+      {
+        "pid": 1747102,
+        "reason": "EACCES: permission denied, open '/proc/1747102/environ'"
+      },
+      {
+        "pid": 1747103,
+        "reason": "EACCES: permission denied, open '/proc/1747103/environ'"
+      },
+      {
+        "pid": 1747105,
+        "reason": "EACCES: permission denied, open '/proc/1747105/environ'"
+      },
+      {
+        "pid": 1747106,
+        "reason": "EACCES: permission denied, open '/proc/1747106/environ'"
+      },
+      {
+        "pid": 1747107,
+        "reason": "EACCES: permission denied, open '/proc/1747107/environ'"
+      },
+      {
+        "pid": 1747108,
+        "reason": "EACCES: permission denied, open '/proc/1747108/environ'"
+      },
+      {
+        "pid": 1747109,
+        "reason": "EACCES: permission denied, open '/proc/1747109/environ'"
+      },
+      {
+        "pid": 1747111,
+        "reason": "EACCES: permission denied, open '/proc/1747111/environ'"
+      },
+      {
+        "pid": 1747112,
+        "reason": "EACCES: permission denied, open '/proc/1747112/environ'"
+      },
+      {
+        "pid": 1747113,
+        "reason": "EACCES: permission denied, open '/proc/1747113/environ'"
+      },
+      {
+        "pid": 1747114,
+        "reason": "EACCES: permission denied, open '/proc/1747114/environ'"
+      },
+      {
+        "pid": 1747116,
+        "reason": "EACCES: permission denied, open '/proc/1747116/environ'"
+      },
+      {
+        "pid": 1747117,
+        "reason": "EACCES: permission denied, open '/proc/1747117/environ'"
+      },
+      {
+        "pid": 1747119,
+        "reason": "EACCES: permission denied, open '/proc/1747119/environ'"
+      },
+      {
+        "pid": 1747124,
+        "reason": "EACCES: permission denied, open '/proc/1747124/environ'"
+      },
+      {
+        "pid": 1747125,
+        "reason": "EACCES: permission denied, open '/proc/1747125/environ'"
+      },
+      {
+        "pid": 1747126,
+        "reason": "EACCES: permission denied, open '/proc/1747126/environ'"
+      },
+      {
+        "pid": 1747127,
+        "reason": "EACCES: permission denied, open '/proc/1747127/environ'"
+      },
+      {
+        "pid": 1747128,
+        "reason": "EACCES: permission denied, open '/proc/1747128/environ'"
+      },
+      {
+        "pid": 1747129,
+        "reason": "EACCES: permission denied, open '/proc/1747129/environ'"
+      },
+      {
+        "pid": 1747131,
+        "reason": "EACCES: permission denied, open '/proc/1747131/environ'"
+      },
+      {
+        "pid": 1747132,
+        "reason": "EACCES: permission denied, open '/proc/1747132/environ'"
+      },
+      {
+        "pid": 1747133,
+        "reason": "EACCES: permission denied, open '/proc/1747133/environ'"
+      },
+      {
+        "pid": 1747134,
+        "reason": "EACCES: permission denied, open '/proc/1747134/environ'"
+      },
+      {
+        "pid": 1747135,
+        "reason": "EACCES: permission denied, open '/proc/1747135/environ'"
+      },
+      {
+        "pid": 1747136,
+        "reason": "EACCES: permission denied, open '/proc/1747136/environ'"
+      },
+      {
+        "pid": 1747137,
+        "reason": "EACCES: permission denied, open '/proc/1747137/environ'"
+      },
+      {
+        "pid": 1747369,
+        "reason": "EACCES: permission denied, open '/proc/1747369/environ'"
+      },
+      {
+        "pid": 1747433,
+        "reason": "EACCES: permission denied, open '/proc/1747433/environ'"
+      },
+      {
+        "pid": 1747435,
+        "reason": "EACCES: permission denied, open '/proc/1747435/environ'"
+      },
+      {
+        "pid": 1747496,
+        "reason": "EACCES: permission denied, open '/proc/1747496/environ'"
+      }
+    ]
+  },
+  "truncated": false,
+  "residual_unknowns": [
+    {
+      "scope": "process",
+      "reason": "Process trees are sampled and may omit short-lived descendants."
+    },
+    {
+      "scope": "process",
+      "reason": "The executable digest is a prelaunch file sample; operating-system image binding is not atomically observed."
+    },
+    {
+      "scope": "environment",
+      "reason": "Inherited host environment variables are not recorded."
+    },
+    {
+      "scope": "network",
+      "reason": "Network activity is not observed by this capture."
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747080 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747080/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747088 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747088/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747089 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747089/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747091 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747091/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747092 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747092/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747093 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747093/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747094 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747094/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747095 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747095/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747096 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747096/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747098 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747098/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747099 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747099/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747100 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747100/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747101 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747101/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747102 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747102/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747103 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747103/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747105 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747105/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747106 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747106/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747107 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747107/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747108 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747108/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747109 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747109/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747111 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747111/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747112 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747112/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747113 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747113/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747114 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747114/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747116 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747116/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747117 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747117/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747119 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747119/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747124 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747124/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747125 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747125/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747126 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747126/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747127 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747127/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747128 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747128/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747129 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747129/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747131 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747131/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747132 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747132/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747133 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747133/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747134 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747134/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747135 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747135/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747136 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747136/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747137 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747137/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747369 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747369/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747433 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747433/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747435 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747435/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1747496 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1747496/environ'"
+    }
+  ],
+  "mcp_report_sha256": "b3213bc7774e7bdf60088f1323514b78b4fbba637a436946240999236d62010d",
+  "probe_passed": true,
+  "check_count": 38,
+  "scenario": {
+    "executable": "/home/my/workspace/ainfra/mywork/mybot/.venv/bin/python",
+    "arguments": [
+      "-I",
+      "/home/my/workspace/ainfra/mywork/mybot/tests/research/verify_omb_mcp.py",
+      "--package",
+      "/tmp/mybot-cross-device.FXoGm6/artifacts/omb",
+      "--archive",
+      "/tmp/mybot-cross-device.FXoGm6/openmausbot-0.1.146.tgz",
+      "--node",
+      "/home/my/.npm/_npx/ef8b185be06dfeb4/node_modules/node/bin/node",
+      "--report",
+      "/tmp/mybot-rea-mcp-m9j6df01/reports/omb-mcp.json",
+      "--fixed-default"
+    ],
+    "working_directory": "/tmp/mybot-rea-mcp-m9j6df01",
+    "filesystem_observation_paths": [
+      "/tmp/mybot-rea-mcp-m9j6df01/reports"
+    ],
+    "timeout_ms": 90000,
+    "settle_ms": 300,
+    "limits": {
+      "output_bytes": 150000,
+      "file_bytes": 150000,
+      "files": 20
+    }
+  },
+  "invocation_environment": {
+    "PATH": "/usr/bin:/bin",
+    "HOME": "/tmp/mybot-rea-mcp-m9j6df01/home",
+    "LANG": "C.UTF-8",
+    "TMPDIR": "/tmp/mybot-rea-mcp-m9j6df01"
+  },
+  "harness_sha256": {
+    "capture_omb_mcp.py": "645cc2ff5280e7b9b81eaf01f9fc56de9efcbe6b0dd03b49c90ae9b721b226dd",
+    "verify_omb_mcp.py": "6b8bbc50b15dc8d10984df0460737ec4aa3183052859e460dcad1a891d61cc59",
+    "mock_acp.py": "97626fae7fb09acf0615d44185817322ff466b8ceca6301fcf76f7a0f9f7dbc8",
+    "omb_mcp_bridge.mjs": "52d70a3fde830f2f628bb1878dfd479f659a62a74648143d41052ee3db35425b",
+    "guard.py": "bc17ec678aa749ff48b2357fd3d4aabc9e87a10cdb8b35f985ba2617b327399d",
+    "guard_selftest.py": "ab31aa0f7bfd5b4d06161aaf8eff292d8cf856eb0ce8451b98f9ab4063d1e8c5",
+    "verify_omb_p0.py": "1b1d163447493c74d2f02e404335ea220530a614fae9e5a2338ab6f2e395ddd2"
+  },
+  "limitation": "REA captures probe/report, not all HTTP/syscalls. Handler transport is injected; native fetch untested."
+}

@@ -1,0 +1,1862 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-11-08T04:24:37.713596+00:00",
+  "scope": "Real pinned upstream server and MCP handlers; synthetic stdio ACP; no real model/tools",
+  "version": "0.1.146",
+  "temporary_root": "/tmp/mybot-rea-mcp-lu5nt05l/mybot-omb-mcp-bz_epj93",
+  "checks": {
+    "verified_package_archive_and_members": true,
+    "unchanged_deny_all_guard_selftest": true,
+    "node_version_pinned": true,
+    "native_mcp_stdio_initialize": true,
+    "native_mcp_tools_include_work_control": true,
+    "native_mcp_no_grant_or_credential_tools": true,
+    "synthetic_pairing_mints_session": true,
+    "single_use_pairing_refuses_replay": true,
+    "service_unpaired_mcp_write_refused": true,
+    "bridge_initialize": true,
+    "paired_mcp_read_bots": true,
+    "synthetic_engine_available": true,
+    "created_bot_ask_template": true,
+    "mcp_profile_rejects_permission_fields": true,
+    "mock_turn_completes": true,
+    "transcript_contains_mock_reply": true,
+    "duplicate_send_returns_same_receipt": true,
+    "duplicate_send_only_one_mock_prompt": true,
+    "followup_same_conversation_completed": true,
+    "same_conversation_keeps_both_replies": true,
+    "cross_bot_task_binding_refused": true,
+    "running_wait_not_claimed_completed": true,
+    "interrupted_job_not_claimed_success": true,
+    "mock_received_cancel": true,
+    "failed_job_not_claimed_success": true,
+    "explicit_new_turn_after_failure": true,
+    "bot_profile_persisted_after_restart": true,
+    "task_persisted_after_restart": true,
+    "transcript_persisted_after_restart": true,
+    "completed_user_turns_not_replayed_on_clean_restart": true,
+    "explicit_followup_after_restart": true,
+    "synthetic_session_logout": true,
+    "revoked_session_refused_without_loopback_fallback": true,
+    "all_servers_stopped": true,
+    "all_bridge_children_stopped": true
+  },
+  "observations": {
+    "http": [
+      {
+        "method": "POST",
+        "path": "/api/bots",
+        "status": 403
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/instances",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/bots",
+        "status": 201
+      },
+      {
+        "method": "PATCH",
+        "path": "/api/bots/ddfe5472-bc92-4ccd-87fb-f15244c64842",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/bots/ddfe5472-bc92-4ccd-87fb-f15244c64842/tasks",
+        "status": 201
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/bots/ddfe5472-bc92-4ccd-87fb-f15244c64842/messages",
+        "status": 202
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/job?scope=job",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/job?scope=job&since=1794111879720&wait=3998&version=WsqEtgHv6IYRzXQH",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/messages?limit=10",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/messages?limit=50",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/bots/ddfe5472-bc92-4ccd-87fb-f15244c64842/messages",
+        "status": 202
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/bots/ddfe5472-bc92-4ccd-87fb-f15244c64842/messages",
+        "status": 202
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/job?scope=job&since=1794111879919",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/messages?limit=10",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/messages?limit=50",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/bots",
+        "status": 201
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/bots/ddfe5472-bc92-4ccd-87fb-f15244c64842/messages",
+        "status": 202
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/job?scope=job&since=1794111879987",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/job?scope=job&since=1794111879987&wait=999&version=Wr0D27pKMBwmRN8l",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/messages?limit=10",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/bots/ddfe5472-bc92-4ccd-87fb-f15244c64842/interrupt",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/job?scope=job&since=1794111879987",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/messages?limit=10",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/bots/ddfe5472-bc92-4ccd-87fb-f15244c64842/messages",
+        "status": 202
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/job?scope=job&since=1794111881031",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/job?scope=job&since=1794111881031&wait=3977&version=sMVdBv7e73bJt716",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/messages?limit=10",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/bots/ddfe5472-bc92-4ccd-87fb-f15244c64842/messages",
+        "status": 202
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/job?scope=job&since=1794111881331",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/messages?limit=10",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/messages?limit=100",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/bots/ddfe5472-bc92-4ccd-87fb-f15244c64842/messages",
+        "status": 202
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/job?scope=job&since=1794111882194",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/job?scope=job&since=1794111882194&wait=3997&version=dCDWT4C5_eCB39fJ",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/threads/d206bb20-f421-4314-a426-d428f206d10e/messages?limit=10",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/api/bots?messages=0",
+        "status": 401
+      }
+    ],
+    "tool_names": [
+      "get_system_health",
+      "list_bots",
+      "get_bot_messages",
+      "send_bot_message",
+      "create_bot",
+      "update_bot_profile",
+      "list_channels",
+      "get_channel_messages",
+      "send_channel_message",
+      "create_channel",
+      "update_channel",
+      "create_task",
+      "switch_task",
+      "rename_task",
+      "search_messages",
+      "wait_for_conversation",
+      "set_bot_model",
+      "edit_bot_message",
+      "list_available_models",
+      "interrupt_conversation"
+    ],
+    "synthetic_session_scopes": [
+      "admin",
+      "client"
+    ],
+    "bridge_exit_codes": [
+      0,
+      0,
+      0
+    ],
+    "mock_engine": {
+      "instanceId": "mybot-mock",
+      "snapshot": {
+        "state": "available",
+        "version": "mybot-synthetic-acp 1.0.0",
+        "authenticated": true
+      }
+    },
+    "bot_id": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+    "task_id": "d206bb20-f421-4314-a426-d428f206d10e",
+    "first_wait": {
+      "status": "settled",
+      "state": "completed",
+      "targetType": "bot",
+      "targetId": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+      "taskId": "d206bb20-f421-4314-a426-d428f206d10e",
+      "target": {
+        "id": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+        "name": "MYBOT Research Fixture",
+        "title": "Read-only research fixture",
+        "description": "Synthetic persistent profile",
+        "section": null,
+        "chiefOfStaff": false,
+        "modelSelection": {
+          "instanceId": "mybot-mock",
+          "model": "agent-default"
+        },
+        "busy": false,
+        "waitingForTeammates": false,
+        "activity": "idle",
+        "unread": true,
+        "activeTaskId": "d206bb20-f421-4314-a426-d428f206d10e",
+        "tasks": [
+          {
+            "taskId": "d206bb20-f421-4314-a426-d428f206d10e",
+            "title": "Persistent synthetic conversation",
+            "createdAt": 1794111879652,
+            "busy": false,
+            "waitingForTeammates": false,
+            "activity": "idle",
+            "modelSelection": {
+              "instanceId": "mybot-mock",
+              "model": "agent-default"
+            },
+            "active": true,
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "costUsd": null,
+              "turns": 1,
+              "lastTurn": {
+                "input": 0,
+                "output": 0,
+                "costUsd": null
+              }
+            }
+          },
+          {
+            "taskId": "bea1ef63-33e9-4135-bfa1-e5bfa1dba700",
+            "title": "New thread",
+            "createdAt": 1794111879623,
+            "busy": false,
+            "waitingForTeammates": false,
+            "activity": "idle",
+            "modelSelection": {
+              "instanceId": "mybot-mock",
+              "model": "agent-default"
+            },
+            "active": false
+          }
+        ]
+      },
+      "messages": [
+        {
+          "id": "f813df2e-a896-4f3d-9a4e-2fd59ace9425",
+          "at": 1794111879666,
+          "role": "user",
+          "kind": "text",
+          "text": "MYBOT_OK_FIRST"
+        },
+        {
+          "id": "78e0ac4c-1f06-4ef9-b1ea-e41febad7944",
+          "at": 1794111879741,
+          "role": "bot",
+          "kind": "text",
+          "text": "MOCK ONLY: MYBOT_OK_FIRST"
+        },
+        {
+          "id": "edd00f9d-2239-4607-8eb0-23516e23cbe5",
+          "at": 1794111879750,
+          "role": "bot",
+          "kind": "digest",
+          "text": "[digest] \u00b7 no tool activity observed in this turn \u00b7 reply: MOCK ONLY: MYBOT_OK_FIRST"
+        }
+      ],
+      "hasMore": false,
+      "job": {
+        "threadId": "d206bb20-f421-4314-a426-d428f206d10e",
+        "scope": "job",
+        "since": 1794111879720,
+        "now": 1794111879906,
+        "state": "completed",
+        "reason": "MYBOT Research Fixture finished",
+        "version": "hGBKbNevQFGYnTxV",
+        "conversation": {
+          "kind": "bot",
+          "busy": false,
+          "activity": "idle",
+          "queued": 0
+        },
+        "roots": [
+          "b39dd13a-206d-4a8a-9999-831cb3340b22"
+        ],
+        "nodes": [
+          {
+            "id": "b39dd13a-206d-4a8a-9999-831cb3340b22",
+            "rootId": "b39dd13a-206d-4a8a-9999-831cb3340b22",
+            "depth": 0,
+            "botId": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+            "botName": "MYBOT Research Fixture",
+            "threadId": "d206bb20-f421-4314-a426-d428f206d10e",
+            "threadTitle": "Persistent synthetic conversation",
+            "status": "completed",
+            "outcome": "done",
+            "mode": "work",
+            "reply": "resume",
+            "awaited": true,
+            "createdAt": 1794111879667,
+            "startedAt": 1794111879667,
+            "finishedAt": 1794111879742,
+            "executions": 1,
+            "result": "MOCK ONLY: MYBOT_OK_FIRST"
+          }
+        ],
+        "hidden": 0,
+        "counts": {
+          "queued": 0,
+          "running": 0,
+          "waiting": 0,
+          "needsInput": 0,
+          "completed": 1,
+          "failed": 0,
+          "cancelled": 0
+        },
+        "needsInput": []
+      }
+    },
+    "second_wait": {
+      "status": "settled",
+      "state": "completed",
+      "targetType": "bot",
+      "targetId": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+      "taskId": "d206bb20-f421-4314-a426-d428f206d10e",
+      "target": {
+        "id": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+        "name": "MYBOT Research Fixture",
+        "title": "Read-only research fixture",
+        "description": "Synthetic persistent profile",
+        "section": null,
+        "chiefOfStaff": false,
+        "modelSelection": {
+          "instanceId": "mybot-mock",
+          "model": "agent-default"
+        },
+        "busy": false,
+        "waitingForTeammates": false,
+        "activity": "idle",
+        "unread": true,
+        "activeTaskId": "d206bb20-f421-4314-a426-d428f206d10e",
+        "tasks": [
+          {
+            "taskId": "d206bb20-f421-4314-a426-d428f206d10e",
+            "title": "Persistent synthetic conversation",
+            "createdAt": 1794111879652,
+            "busy": false,
+            "waitingForTeammates": false,
+            "activity": "idle",
+            "modelSelection": {
+              "instanceId": "mybot-mock",
+              "model": "agent-default"
+            },
+            "active": true,
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "costUsd": null,
+              "turns": 2,
+              "lastTurn": {
+                "input": 0,
+                "output": 0,
+                "costUsd": null
+              }
+            }
+          },
+          {
+            "taskId": "bea1ef63-33e9-4135-bfa1-e5bfa1dba700",
+            "title": "New thread",
+            "createdAt": 1794111879623,
+            "busy": false,
+            "waitingForTeammates": false,
+            "activity": "idle",
+            "modelSelection": {
+              "instanceId": "mybot-mock",
+              "model": "agent-default"
+            },
+            "active": false
+          }
+        ]
+      },
+      "messages": [
+        {
+          "id": "f813df2e-a896-4f3d-9a4e-2fd59ace9425",
+          "at": 1794111879666,
+          "role": "user",
+          "kind": "text",
+          "text": "MYBOT_OK_FIRST"
+        },
+        {
+          "id": "78e0ac4c-1f06-4ef9-b1ea-e41febad7944",
+          "at": 1794111879741,
+          "role": "bot",
+          "kind": "text",
+          "text": "MOCK ONLY: MYBOT_OK_FIRST"
+        },
+        {
+          "id": "edd00f9d-2239-4607-8eb0-23516e23cbe5",
+          "at": 1794111879750,
+          "role": "bot",
+          "kind": "digest",
+          "text": "[digest] \u00b7 no tool activity observed in this turn \u00b7 reply: MOCK ONLY: MYBOT_OK_FIRST"
+        },
+        {
+          "id": "26a738b5-ff5a-48d5-a37a-378101676f02",
+          "at": 1794111879919,
+          "role": "user",
+          "kind": "text",
+          "text": "MYBOT_OK_SECOND"
+        },
+        {
+          "id": "32a439cd-e953-4e7e-9a93-1406f8beb972",
+          "at": 1794111879941,
+          "role": "bot",
+          "kind": "text",
+          "text": "MOCK ONLY: MYBOT_OK_SECOND"
+        },
+        {
+          "id": "d7fa35e4-a6c0-48ee-b021-053d03ce514f",
+          "at": 1794111879948,
+          "role": "bot",
+          "kind": "digest",
+          "text": "[digest] \u00b7 no tool activity observed in this turn \u00b7 reply: MOCK ONLY: MYBOT_OK_SECOND"
+        }
+      ],
+      "hasMore": false,
+      "job": {
+        "threadId": "d206bb20-f421-4314-a426-d428f206d10e",
+        "scope": "job",
+        "since": 1794111879919,
+        "now": 1794111879956,
+        "state": "completed",
+        "reason": "MYBOT Research Fixture finished",
+        "version": "8t07WnoqizqRRR9e",
+        "conversation": {
+          "kind": "bot",
+          "busy": false,
+          "activity": "idle",
+          "queued": 0
+        },
+        "roots": [
+          "fbf3f901-8491-4b51-a361-7d5df8649459"
+        ],
+        "nodes": [
+          {
+            "id": "fbf3f901-8491-4b51-a361-7d5df8649459",
+            "rootId": "fbf3f901-8491-4b51-a361-7d5df8649459",
+            "depth": 0,
+            "botId": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+            "botName": "MYBOT Research Fixture",
+            "threadId": "d206bb20-f421-4314-a426-d428f206d10e",
+            "threadTitle": "Persistent synthetic conversation",
+            "status": "completed",
+            "outcome": "done",
+            "mode": "work",
+            "reply": "resume",
+            "awaited": true,
+            "createdAt": 1794111879920,
+            "startedAt": 1794111879920,
+            "finishedAt": 1794111879941,
+            "executions": 1,
+            "result": "MOCK ONLY: MYBOT_OK_SECOND"
+          }
+        ],
+        "hidden": 0,
+        "counts": {
+          "queued": 0,
+          "running": 0,
+          "waiting": 0,
+          "needsInput": 0,
+          "completed": 1,
+          "failed": 0,
+          "cancelled": 0
+        },
+        "needsInput": []
+      }
+    },
+    "hold_wait": {
+      "status": "timed-out",
+      "state": "timed-out",
+      "targetType": "bot",
+      "targetId": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+      "taskId": "d206bb20-f421-4314-a426-d428f206d10e",
+      "target": {
+        "id": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+        "name": "MYBOT Research Fixture",
+        "title": "Read-only research fixture",
+        "description": "Synthetic persistent profile",
+        "section": null,
+        "chiefOfStaff": false,
+        "modelSelection": {
+          "instanceId": "mybot-mock",
+          "model": "agent-default"
+        },
+        "busy": true,
+        "waitingForTeammates": false,
+        "activity": "working",
+        "unread": false,
+        "activeTaskId": "d206bb20-f421-4314-a426-d428f206d10e",
+        "tasks": [
+          {
+            "taskId": "d206bb20-f421-4314-a426-d428f206d10e",
+            "title": "Persistent synthetic conversation",
+            "createdAt": 1794111879652,
+            "busy": true,
+            "waitingForTeammates": false,
+            "activity": "working",
+            "modelSelection": {
+              "instanceId": "mybot-mock",
+              "model": "agent-default"
+            },
+            "active": true,
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "costUsd": null,
+              "turns": 2,
+              "lastTurn": {
+                "input": 0,
+                "output": 0,
+                "costUsd": null
+              }
+            }
+          },
+          {
+            "taskId": "bea1ef63-33e9-4135-bfa1-e5bfa1dba700",
+            "title": "New thread",
+            "createdAt": 1794111879623,
+            "busy": false,
+            "waitingForTeammates": false,
+            "activity": "idle",
+            "modelSelection": {
+              "instanceId": "mybot-mock",
+              "model": "agent-default"
+            },
+            "active": false
+          }
+        ]
+      },
+      "messages": [
+        {
+          "id": "f813df2e-a896-4f3d-9a4e-2fd59ace9425",
+          "at": 1794111879666,
+          "role": "user",
+          "kind": "text",
+          "text": "MYBOT_OK_FIRST"
+        },
+        {
+          "id": "78e0ac4c-1f06-4ef9-b1ea-e41febad7944",
+          "at": 1794111879741,
+          "role": "bot",
+          "kind": "text",
+          "text": "MOCK ONLY: MYBOT_OK_FIRST"
+        },
+        {
+          "id": "edd00f9d-2239-4607-8eb0-23516e23cbe5",
+          "at": 1794111879750,
+          "role": "bot",
+          "kind": "digest",
+          "text": "[digest] \u00b7 no tool activity observed in this turn \u00b7 reply: MOCK ONLY: MYBOT_OK_FIRST"
+        },
+        {
+          "id": "26a738b5-ff5a-48d5-a37a-378101676f02",
+          "at": 1794111879919,
+          "role": "user",
+          "kind": "text",
+          "text": "MYBOT_OK_SECOND"
+        },
+        {
+          "id": "32a439cd-e953-4e7e-9a93-1406f8beb972",
+          "at": 1794111879941,
+          "role": "bot",
+          "kind": "text",
+          "text": "MOCK ONLY: MYBOT_OK_SECOND"
+        },
+        {
+          "id": "d7fa35e4-a6c0-48ee-b021-053d03ce514f",
+          "at": 1794111879948,
+          "role": "bot",
+          "kind": "digest",
+          "text": "[digest] \u00b7 no tool activity observed in this turn \u00b7 reply: MOCK ONLY: MYBOT_OK_SECOND"
+        },
+        {
+          "id": "321a0cf1-0fa5-405d-bc4d-265f5037f4cc",
+          "at": 1794111879987,
+          "role": "user",
+          "kind": "text",
+          "text": "MYBOT_HOLD_CANCEL"
+        }
+      ],
+      "hasMore": false,
+      "job": {
+        "threadId": "d206bb20-f421-4314-a426-d428f206d10e",
+        "scope": "job",
+        "since": 1794111879987,
+        "now": 1794111880999,
+        "state": "running",
+        "reason": "MYBOT Research Fixture is working",
+        "version": "Wr0D27pKMBwmRN8l",
+        "conversation": {
+          "kind": "bot",
+          "busy": true,
+          "activity": "working",
+          "queued": 0
+        },
+        "roots": [
+          "3bf35b04-e1c4-420a-bd4c-d1410ae8eb87"
+        ],
+        "nodes": [
+          {
+            "id": "3bf35b04-e1c4-420a-bd4c-d1410ae8eb87",
+            "rootId": "3bf35b04-e1c4-420a-bd4c-d1410ae8eb87",
+            "depth": 0,
+            "botId": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+            "botName": "MYBOT Research Fixture",
+            "threadId": "d206bb20-f421-4314-a426-d428f206d10e",
+            "threadTitle": "Persistent synthetic conversation",
+            "status": "running",
+            "mode": "work",
+            "reply": "resume",
+            "awaited": true,
+            "createdAt": 1794111879988,
+            "startedAt": 1794111879988,
+            "executions": 1
+          }
+        ],
+        "hidden": 0,
+        "counts": {
+          "queued": 0,
+          "running": 1,
+          "waiting": 0,
+          "needsInput": 0,
+          "completed": 0,
+          "failed": 0,
+          "cancelled": 0
+        },
+        "needsInput": []
+      }
+    },
+    "stopped_wait": {
+      "status": "settled",
+      "state": "failed",
+      "targetType": "bot",
+      "targetId": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+      "taskId": "d206bb20-f421-4314-a426-d428f206d10e",
+      "target": {
+        "id": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+        "name": "MYBOT Research Fixture",
+        "title": "Read-only research fixture",
+        "description": "Synthetic persistent profile",
+        "section": null,
+        "chiefOfStaff": false,
+        "modelSelection": {
+          "instanceId": "mybot-mock",
+          "model": "agent-default"
+        },
+        "busy": false,
+        "waitingForTeammates": false,
+        "activity": "idle",
+        "unread": true,
+        "activeTaskId": "d206bb20-f421-4314-a426-d428f206d10e",
+        "tasks": [
+          {
+            "taskId": "d206bb20-f421-4314-a426-d428f206d10e",
+            "title": "Persistent synthetic conversation",
+            "createdAt": 1794111879652,
+            "busy": false,
+            "waitingForTeammates": false,
+            "activity": "idle",
+            "modelSelection": {
+              "instanceId": "mybot-mock",
+              "model": "agent-default"
+            },
+            "active": true,
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "costUsd": null,
+              "turns": 3,
+              "lastTurn": {
+                "input": 0,
+                "output": 0,
+                "costUsd": null
+              }
+            }
+          },
+          {
+            "taskId": "bea1ef63-33e9-4135-bfa1-e5bfa1dba700",
+            "title": "New thread",
+            "createdAt": 1794111879623,
+            "busy": false,
+            "waitingForTeammates": false,
+            "activity": "idle",
+            "modelSelection": {
+              "instanceId": "mybot-mock",
+              "model": "agent-default"
+            },
+            "active": false
+          }
+        ]
+      },
+      "messages": [
+        {
+          "id": "f813df2e-a896-4f3d-9a4e-2fd59ace9425",
+          "at": 1794111879666,
+          "role": "user",
+          "kind": "text",
+          "text": "MYBOT_OK_FIRST"
+        },
+        {
+          "id": "78e0ac4c-1f06-4ef9-b1ea-e41febad7944",
+          "at": 1794111879741,
+          "role": "bot",
+          "kind": "text",
+          "text": "MOCK ONLY: MYBOT_OK_FIRST"
+        },
+        {
+          "id": "edd00f9d-2239-4607-8eb0-23516e23cbe5",
+          "at": 1794111879750,
+          "role": "bot",
+          "kind": "digest",
+          "text": "[digest] \u00b7 no tool activity observed in this turn \u00b7 reply: MOCK ONLY: MYBOT_OK_FIRST"
+        },
+        {
+          "id": "26a738b5-ff5a-48d5-a37a-378101676f02",
+          "at": 1794111879919,
+          "role": "user",
+          "kind": "text",
+          "text": "MYBOT_OK_SECOND"
+        },
+        {
+          "id": "32a439cd-e953-4e7e-9a93-1406f8beb972",
+          "at": 1794111879941,
+          "role": "bot",
+          "kind": "text",
+          "text": "MOCK ONLY: MYBOT_OK_SECOND"
+        },
+        {
+          "id": "d7fa35e4-a6c0-48ee-b021-053d03ce514f",
+          "at": 1794111879948,
+          "role": "bot",
+          "kind": "digest",
+          "text": "[digest] \u00b7 no tool activity observed in this turn \u00b7 reply: MOCK ONLY: MYBOT_OK_SECOND"
+        },
+        {
+          "id": "321a0cf1-0fa5-405d-bc4d-265f5037f4cc",
+          "at": 1794111879987,
+          "role": "user",
+          "kind": "text",
+          "text": "MYBOT_HOLD_CANCEL"
+        },
+        {
+          "id": "15c104a8-a5cc-47ae-af92-ed0fc14b3b96",
+          "at": 1794111881020,
+          "role": "bot",
+          "kind": "activity",
+          "tool": {
+            "name": "stopped: You stopped this.",
+            "ok": true
+          }
+        },
+        {
+          "id": "7125013b-97ec-4c6b-b73f-df39d3a96645",
+          "at": 1794111881021,
+          "role": "bot",
+          "kind": "digest",
+          "text": "[digest] \u00b7 no tool activity observed in this turn"
+        }
+      ],
+      "hasMore": false,
+      "job": {
+        "threadId": "d206bb20-f421-4314-a426-d428f206d10e",
+        "scope": "job",
+        "since": 1794111879987,
+        "now": 1794111881027,
+        "state": "failed",
+        "reason": "MYBOT Research Fixture's work ended because it was stopped: Stopped by user",
+        "version": "QMd-pUhg75RNTzSF",
+        "conversation": {
+          "kind": "bot",
+          "busy": false,
+          "activity": "idle",
+          "queued": 0
+        },
+        "roots": [
+          "3bf35b04-e1c4-420a-bd4c-d1410ae8eb87"
+        ],
+        "nodes": [
+          {
+            "id": "3bf35b04-e1c4-420a-bd4c-d1410ae8eb87",
+            "rootId": "3bf35b04-e1c4-420a-bd4c-d1410ae8eb87",
+            "depth": 0,
+            "botId": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+            "botName": "MYBOT Research Fixture",
+            "threadId": "d206bb20-f421-4314-a426-d428f206d10e",
+            "threadTitle": "Persistent synthetic conversation",
+            "status": "cancelled",
+            "outcome": "stopped",
+            "outcomeDetail": "Stopped by user",
+            "mode": "work",
+            "reply": "resume",
+            "awaited": true,
+            "createdAt": 1794111879988,
+            "startedAt": 1794111879988,
+            "finishedAt": 1794111881005,
+            "executions": 1,
+            "result": "Stopped by user"
+          }
+        ],
+        "hidden": 0,
+        "counts": {
+          "queued": 0,
+          "running": 0,
+          "waiting": 0,
+          "needsInput": 0,
+          "completed": 0,
+          "failed": 0,
+          "cancelled": 1
+        },
+        "needsInput": []
+      }
+    },
+    "failed_wait": {
+      "status": "failed",
+      "state": "failed",
+      "targetType": "bot",
+      "targetId": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+      "taskId": "d206bb20-f421-4314-a426-d428f206d10e",
+      "target": {
+        "id": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+        "name": "MYBOT Research Fixture",
+        "title": "Read-only research fixture",
+        "description": "Synthetic persistent profile",
+        "section": null,
+        "chiefOfStaff": false,
+        "modelSelection": {
+          "instanceId": "mybot-mock",
+          "model": "agent-default"
+        },
+        "busy": false,
+        "waitingForTeammates": false,
+        "activity": "idle",
+        "unread": true,
+        "activeTaskId": "d206bb20-f421-4314-a426-d428f206d10e",
+        "tasks": [
+          {
+            "taskId": "d206bb20-f421-4314-a426-d428f206d10e",
+            "title": "Persistent synthetic conversation",
+            "createdAt": 1794111879652,
+            "busy": false,
+            "waitingForTeammates": false,
+            "activity": "idle",
+            "modelSelection": {
+              "instanceId": "mybot-mock",
+              "model": "agent-default"
+            },
+            "active": true,
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "costUsd": null,
+              "turns": 5,
+              "lastTurn": {
+                "input": 0,
+                "output": 0,
+                "costUsd": null
+              }
+            }
+          },
+          {
+            "taskId": "bea1ef63-33e9-4135-bfa1-e5bfa1dba700",
+            "title": "New thread",
+            "createdAt": 1794111879623,
+            "busy": false,
+            "waitingForTeammates": false,
+            "activity": "idle",
+            "modelSelection": {
+              "instanceId": "mybot-mock",
+              "model": "agent-default"
+            },
+            "active": false
+          }
+        ]
+      },
+      "messages": [
+        {
+          "id": "d7fa35e4-a6c0-48ee-b021-053d03ce514f",
+          "at": 1794111879948,
+          "role": "bot",
+          "kind": "digest",
+          "text": "[digest] \u00b7 no tool activity observed in this turn \u00b7 reply: MOCK ONLY: MYBOT_OK_SECOND"
+        },
+        {
+          "id": "321a0cf1-0fa5-405d-bc4d-265f5037f4cc",
+          "at": 1794111879987,
+          "role": "user",
+          "kind": "text",
+          "text": "MYBOT_HOLD_CANCEL"
+        },
+        {
+          "id": "15c104a8-a5cc-47ae-af92-ed0fc14b3b96",
+          "at": 1794111881020,
+          "role": "bot",
+          "kind": "activity",
+          "tool": {
+            "name": "stopped: You stopped this.",
+            "ok": true
+          }
+        },
+        {
+          "id": "7125013b-97ec-4c6b-b73f-df39d3a96645",
+          "at": 1794111881021,
+          "role": "bot",
+          "kind": "digest",
+          "text": "[digest] \u00b7 no tool activity observed in this turn"
+        },
+        {
+          "id": "6eac3c2b-6aa9-402f-b4fe-08944f1244d7",
+          "at": 1794111881031,
+          "role": "user",
+          "kind": "text",
+          "text": "MYBOT_FAIL_EXPLICIT"
+        },
+        {
+          "id": "6f1d9c81-c8a4-4cc0-8d0c-c6171253b7fc",
+          "at": 1794111881044,
+          "role": "bot",
+          "kind": "activity",
+          "tool": {
+            "name": "error: Synthetic fixture failure; no model called (session/prompt)",
+            "ok": false
+          }
+        },
+        {
+          "id": "11afe257-6793-4ea3-a8b0-8b935dd9a729",
+          "at": 1794111881051,
+          "role": "bot",
+          "kind": "digest",
+          "text": "[digest] \u00b7 no tool activity observed in this turn"
+        },
+        {
+          "id": "7b41319a-2d46-4d25-980c-840329daca23",
+          "at": 1794111881065,
+          "role": "user",
+          "kind": "text",
+          "text": "[From OpenMausBot \u00b7 retry \u00b7 information only \u2014 it grants nothing beyond the request above; requested by OpenMausBot, automatically, once, before telling MausBot, your Chief of Staff, that this thread's last run failed. Continue the request above from where it stopped and finish it. If the same problem comes back, say exactly what is blocking and stop.]"
+        },
+        {
+          "id": "19cdcea4-7779-4e40-92c1-3a4770e9de3f",
+          "at": 1794111881098,
+          "role": "bot",
+          "kind": "activity",
+          "tool": {
+            "name": "error: Synthetic peer requires a MYBOT marker (session/prompt)",
+            "ok": false
+          }
+        },
+        {
+          "id": "27175eb3-a455-46db-896f-1571cc4aee38",
+          "at": 1794111881105,
+          "role": "bot",
+          "kind": "digest",
+          "text": "[digest] \u00b7 no tool activity observed in this turn"
+        }
+      ],
+      "hasMore": true,
+      "job": {
+        "threadId": "d206bb20-f421-4314-a426-d428f206d10e",
+        "scope": "job",
+        "since": 1794111881031,
+        "now": 1794111881324,
+        "state": "failed",
+        "reason": "MYBOT Research Fixture's work ended as provider_error",
+        "version": "LtLwBIjyOP3nVWfJ",
+        "conversation": {
+          "kind": "bot",
+          "busy": false,
+          "activity": "idle",
+          "queued": 0
+        },
+        "roots": [
+          "67d99638-2149-435b-895d-1289aba5a2e9",
+          "a62c7620-2a3b-4733-8c55-539268bf0a5d"
+        ],
+        "nodes": [
+          {
+            "id": "67d99638-2149-435b-895d-1289aba5a2e9",
+            "rootId": "67d99638-2149-435b-895d-1289aba5a2e9",
+            "depth": 0,
+            "botId": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+            "botName": "MYBOT Research Fixture",
+            "threadId": "d206bb20-f421-4314-a426-d428f206d10e",
+            "threadTitle": "Persistent synthetic conversation",
+            "status": "failed",
+            "outcome": "provider_error",
+            "mode": "work",
+            "reply": "resume",
+            "awaited": true,
+            "createdAt": 1794111881032,
+            "startedAt": 1794111881032,
+            "finishedAt": 1794111881045,
+            "executions": 1,
+            "result": "Synthetic fixture failure; no model called (session/prompt). No tool calls were seen before it stopped."
+          },
+          {
+            "id": "a62c7620-2a3b-4733-8c55-539268bf0a5d",
+            "rootId": "a62c7620-2a3b-4733-8c55-539268bf0a5d",
+            "depth": 0,
+            "botId": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+            "botName": "MYBOT Research Fixture",
+            "threadId": "d206bb20-f421-4314-a426-d428f206d10e",
+            "threadTitle": "Persistent synthetic conversation",
+            "status": "failed",
+            "outcome": "provider_error",
+            "mode": "work",
+            "reply": "resume",
+            "awaited": true,
+            "createdAt": 1794111881066,
+            "startedAt": 1794111881066,
+            "finishedAt": 1794111881099,
+            "executions": 1,
+            "result": "Synthetic peer requires a MYBOT marker (session/prompt). No tool calls were seen before it stopped."
+          }
+        ],
+        "hidden": 0,
+        "counts": {
+          "queued": 0,
+          "running": 0,
+          "waiting": 0,
+          "needsInput": 0,
+          "completed": 0,
+          "failed": 2,
+          "cancelled": 0
+        },
+        "needsInput": []
+      }
+    },
+    "after_failure_wait": {
+      "status": "settled",
+      "state": "completed",
+      "targetType": "bot",
+      "targetId": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+      "taskId": "d206bb20-f421-4314-a426-d428f206d10e",
+      "target": {
+        "id": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+        "name": "MYBOT Research Fixture",
+        "title": "Read-only research fixture",
+        "description": "Synthetic persistent profile",
+        "section": null,
+        "chiefOfStaff": false,
+        "modelSelection": {
+          "instanceId": "mybot-mock",
+          "model": "agent-default"
+        },
+        "busy": false,
+        "waitingForTeammates": false,
+        "activity": "idle",
+        "unread": true,
+        "activeTaskId": "d206bb20-f421-4314-a426-d428f206d10e",
+        "tasks": [
+          {
+            "taskId": "d206bb20-f421-4314-a426-d428f206d10e",
+            "title": "Persistent synthetic conversation",
+            "createdAt": 1794111879652,
+            "busy": false,
+            "waitingForTeammates": false,
+            "activity": "idle",
+            "modelSelection": {
+              "instanceId": "mybot-mock",
+              "model": "agent-default"
+            },
+            "active": true,
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "costUsd": null,
+              "turns": 6,
+              "lastTurn": {
+                "input": 0,
+                "output": 0,
+                "costUsd": null
+              }
+            }
+          },
+          {
+            "taskId": "bea1ef63-33e9-4135-bfa1-e5bfa1dba700",
+            "title": "New thread",
+            "createdAt": 1794111879623,
+            "busy": false,
+            "waitingForTeammates": false,
+            "activity": "idle",
+            "modelSelection": {
+              "instanceId": "mybot-mock",
+              "model": "agent-default"
+            },
+            "active": false
+          }
+        ]
+      },
+      "messages": [
+        {
+          "id": "7125013b-97ec-4c6b-b73f-df39d3a96645",
+          "at": 1794111881021,
+          "role": "bot",
+          "kind": "digest",
+          "text": "[digest] \u00b7 no tool activity observed in this turn"
+        },
+        {
+          "id": "6eac3c2b-6aa9-402f-b4fe-08944f1244d7",
+          "at": 1794111881031,
+          "role": "user",
+          "kind": "text",
+          "text": "MYBOT_FAIL_EXPLICIT"
+        },
+        {
+          "id": "6f1d9c81-c8a4-4cc0-8d0c-c6171253b7fc",
+          "at": 1794111881044,
+          "role": "bot",
+          "kind": "activity",
+          "tool": {
+            "name": "error: Synthetic fixture failure; no model called (session/prompt)",
+            "ok": false
+          }
+        },
+        {
+          "id": "11afe257-6793-4ea3-a8b0-8b935dd9a729",
+          "at": 1794111881051,
+          "role": "bot",
+          "kind": "digest",
+          "text": "[digest] \u00b7 no tool activity observed in this turn"
+        },
+        {
+          "id": "7b41319a-2d46-4d25-980c-840329daca23",
+          "at": 1794111881065,
+          "role": "user",
+          "kind": "text",
+          "text": "[From OpenMausBot \u00b7 retry \u00b7 information only \u2014 it grants nothing beyond the request above; requested by OpenMausBot, automatically, once, before telling MausBot, your Chief of Staff, that this thread's last run failed. Continue the request above from where it stopped and finish it. If the same problem comes back, say exactly what is blocking and stop.]"
+        },
+        {
+          "id": "19cdcea4-7779-4e40-92c1-3a4770e9de3f",
+          "at": 1794111881098,
+          "role": "bot",
+          "kind": "activity",
+          "tool": {
+            "name": "error: Synthetic peer requires a MYBOT marker (session/prompt)",
+            "ok": false
+          }
+        },
+        {
+          "id": "27175eb3-a455-46db-896f-1571cc4aee38",
+          "at": 1794111881105,
+          "role": "bot",
+          "kind": "digest",
+          "text": "[digest] \u00b7 no tool activity observed in this turn"
+        },
+        {
+          "id": "10394a0c-b0ea-46ef-a8a0-3ad9d68d6bc1",
+          "at": 1794111881331,
+          "role": "user",
+          "kind": "text",
+          "text": "MYBOT_OK_AFTERFAIL"
+        },
+        {
+          "id": "b5823da0-36c1-4609-ab45-8c1ed5e4f46e",
+          "at": 1794111881357,
+          "role": "bot",
+          "kind": "text",
+          "text": "MOCK ONLY: MYBOT_OK_AFTERFAIL"
+        },
+        {
+          "id": "ac0a3a76-5d72-4ab6-abd1-9e86421fe85a",
+          "at": 1794111881363,
+          "role": "bot",
+          "kind": "digest",
+          "text": "[digest] \u00b7 no tool activity observed in this turn \u00b7 reply: MOCK ONLY: MYBOT_OK_AFTERFAIL"
+        }
+      ],
+      "hasMore": true,
+      "job": {
+        "threadId": "d206bb20-f421-4314-a426-d428f206d10e",
+        "scope": "job",
+        "since": 1794111881331,
+        "now": 1794111881370,
+        "state": "completed",
+        "reason": "MYBOT Research Fixture finished",
+        "version": "Nw5kOReU3YQYTXMg",
+        "conversation": {
+          "kind": "bot",
+          "busy": false,
+          "activity": "idle",
+          "queued": 0
+        },
+        "roots": [
+          "b77bc6a3-ffb4-42f5-bfe2-d148499a50b5"
+        ],
+        "nodes": [
+          {
+            "id": "b77bc6a3-ffb4-42f5-bfe2-d148499a50b5",
+            "rootId": "b77bc6a3-ffb4-42f5-bfe2-d148499a50b5",
+            "depth": 0,
+            "botId": "ddfe5472-bc92-4ccd-87fb-f15244c64842",
+            "botName": "MYBOT Research Fixture",
+            "threadId": "d206bb20-f421-4314-a426-d428f206d10e",
+            "threadTitle": "Persistent synthetic conversation",
+            "status": "completed",
+            "outcome": "done",
+            "mode": "work",
+            "reply": "resume",
+            "awaited": true,
+            "createdAt": 1794111881333,
+            "startedAt": 1794111881333,
+            "finishedAt": 1794111881357,
+            "executions": 1,
+            "result": "MOCK ONLY: MYBOT_OK_AFTERFAIL"
+          }
+        ],
+        "hidden": 0,
+        "counts": {
+          "queued": 0,
+          "running": 0,
+          "waiting": 0,
+          "needsInput": 0,
+          "completed": 1,
+          "failed": 0,
+          "cancelled": 0
+        },
+        "needsInput": []
+      }
+    },
+    "pre_restart_prompts": [
+      {
+        "method": "session/prompt",
+        "session": "3d290421-db35-4934-a42d-30d9a4cce837",
+        "marker": null,
+        "pid": 1723174,
+        "fixture_only": true,
+        "unmarked_prompt_prefix": "This is a connection check. Reply with the single word OK."
+      },
+      {
+        "method": "session/prompt",
+        "session": "d9d9c3d3-67fe-4003-a6e5-251dfd5c390d",
+        "marker": null,
+        "pid": 1723266,
+        "fixture_only": true,
+        "unmarked_prompt_prefix": "This is a connection check. Reply with the single word OK."
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": "MYBOT_OK_FIRST",
+        "pid": 1723319,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": "MYBOT_OK_SECOND",
+        "pid": 1723319,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": "MYBOT_HOLD_CANCEL",
+        "pid": 1723319,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": "MYBOT_FAIL_EXPLICIT",
+        "pid": 1723319,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": null,
+        "pid": 1723372,
+        "fixture_only": true,
+        "unmarked_prompt_prefix": "Context from OpenMausBot updated since this conversation started; it replaces any earlier copy:\n\nFile locations for this bot (absolute paths): {\"currentWorkingFolder\":\"/tmp/mybot-rea-mcp-lu5nt05l/mybot-omb-mcp-bz_epj93/profile/data/task-wor"
+      },
+      {
+        "method": "session/prompt",
+        "session": "ce6f3333-24da-450f-a7ea-e1f61d0bb813",
+        "marker": "MYBOT_OK_SECOND",
+        "pid": 1723373,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": "MYBOT_OK_AFTERFAIL",
+        "pid": 1723372,
+        "fixture_only": true
+      }
+    ],
+    "post_restart_prompts": [
+      {
+        "method": "session/prompt",
+        "session": "3d290421-db35-4934-a42d-30d9a4cce837",
+        "marker": null,
+        "pid": 1723174,
+        "fixture_only": true,
+        "unmarked_prompt_prefix": "This is a connection check. Reply with the single word OK."
+      },
+      {
+        "method": "session/prompt",
+        "session": "d9d9c3d3-67fe-4003-a6e5-251dfd5c390d",
+        "marker": null,
+        "pid": 1723266,
+        "fixture_only": true,
+        "unmarked_prompt_prefix": "This is a connection check. Reply with the single word OK."
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": "MYBOT_OK_FIRST",
+        "pid": 1723319,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": "MYBOT_OK_SECOND",
+        "pid": 1723319,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": "MYBOT_HOLD_CANCEL",
+        "pid": 1723319,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": "MYBOT_FAIL_EXPLICIT",
+        "pid": 1723319,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": null,
+        "pid": 1723372,
+        "fixture_only": true,
+        "unmarked_prompt_prefix": "Context from OpenMausBot updated since this conversation started; it replaces any earlier copy:\n\nFile locations for this bot (absolute paths): {\"currentWorkingFolder\":\"/tmp/mybot-rea-mcp-lu5nt05l/mybot-omb-mcp-bz_epj93/profile/data/task-wor"
+      },
+      {
+        "method": "session/prompt",
+        "session": "ce6f3333-24da-450f-a7ea-e1f61d0bb813",
+        "marker": "MYBOT_OK_SECOND",
+        "pid": 1723373,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": "MYBOT_OK_AFTERFAIL",
+        "pid": 1723372,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "791279e3-0a95-465c-893f-09f17127d4a6",
+        "marker": null,
+        "pid": 1723406,
+        "fixture_only": true,
+        "unmarked_prompt_prefix": "This is a connection check. Reply with the single word OK."
+      }
+    ],
+    "mock_receipts": [
+      {
+        "method": "initialize",
+        "session": null,
+        "marker": null,
+        "pid": 1723174,
+        "fixture_only": true
+      },
+      {
+        "method": "session/new",
+        "session": null,
+        "marker": null,
+        "pid": 1723174,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "3d290421-db35-4934-a42d-30d9a4cce837",
+        "marker": null,
+        "pid": 1723174,
+        "fixture_only": true,
+        "unmarked_prompt_prefix": "This is a connection check. Reply with the single word OK."
+      },
+      {
+        "method": "initialize",
+        "session": null,
+        "marker": null,
+        "pid": 1723266,
+        "fixture_only": true
+      },
+      {
+        "method": "session/new",
+        "session": null,
+        "marker": null,
+        "pid": 1723266,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "d9d9c3d3-67fe-4003-a6e5-251dfd5c390d",
+        "marker": null,
+        "pid": 1723266,
+        "fixture_only": true,
+        "unmarked_prompt_prefix": "This is a connection check. Reply with the single word OK."
+      },
+      {
+        "method": "initialize",
+        "session": null,
+        "marker": null,
+        "pid": 1723319,
+        "fixture_only": true
+      },
+      {
+        "method": "session/new",
+        "session": null,
+        "marker": null,
+        "pid": 1723319,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": "MYBOT_OK_FIRST",
+        "pid": 1723319,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": "MYBOT_OK_SECOND",
+        "pid": 1723319,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": "MYBOT_HOLD_CANCEL",
+        "pid": 1723319,
+        "fixture_only": true
+      },
+      {
+        "method": "session/cancel",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": null,
+        "pid": 1723319,
+        "fixture_only": true
+      },
+      {
+        "method": "session/load",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": null,
+        "pid": 1723319,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": "MYBOT_FAIL_EXPLICIT",
+        "pid": 1723319,
+        "fixture_only": true
+      },
+      {
+        "method": "initialize",
+        "session": null,
+        "marker": null,
+        "pid": 1723372,
+        "fixture_only": true
+      },
+      {
+        "method": "session/load",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": null,
+        "pid": 1723372,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": null,
+        "pid": 1723372,
+        "fixture_only": true,
+        "unmarked_prompt_prefix": "Context from OpenMausBot updated since this conversation started; it replaces any earlier copy:\n\nFile locations for this bot (absolute paths): {\"currentWorkingFolder\":\"/tmp/mybot-rea-mcp-lu5nt05l/mybot-omb-mcp-bz_epj93/profile/data/task-wor"
+      },
+      {
+        "method": "initialize",
+        "session": null,
+        "marker": null,
+        "pid": 1723373,
+        "fixture_only": true
+      },
+      {
+        "method": "session/new",
+        "session": null,
+        "marker": null,
+        "pid": 1723373,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "ce6f3333-24da-450f-a7ea-e1f61d0bb813",
+        "marker": "MYBOT_OK_SECOND",
+        "pid": 1723373,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": "MYBOT_OK_AFTERFAIL",
+        "pid": 1723372,
+        "fixture_only": true
+      },
+      {
+        "method": "initialize",
+        "session": null,
+        "marker": null,
+        "pid": 1723406,
+        "fixture_only": true
+      },
+      {
+        "method": "session/new",
+        "session": null,
+        "marker": null,
+        "pid": 1723406,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "791279e3-0a95-465c-893f-09f17127d4a6",
+        "marker": null,
+        "pid": 1723406,
+        "fixture_only": true,
+        "unmarked_prompt_prefix": "This is a connection check. Reply with the single word OK."
+      },
+      {
+        "method": "initialize",
+        "session": null,
+        "marker": null,
+        "pid": 1723445,
+        "fixture_only": true
+      },
+      {
+        "method": "session/load",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": null,
+        "pid": 1723445,
+        "fixture_only": true
+      },
+      {
+        "method": "session/prompt",
+        "session": "1d930883-e3e3-4746-b85a-fd1b646345b8",
+        "marker": "MYBOT_OK_RESTART",
+        "pid": 1723445,
+        "fixture_only": true
+      }
+    ],
+    "mock_prompt_count": 11,
+    "real_model_requests": 0,
+    "fixture_tool_executions": 0,
+    "unmarked_mock_prompt_count": 4
+  },
+  "launches": [
+    {
+      "trust": "owner",
+      "port": 57545,
+      "webhook_port": 48155,
+      "log": "/tmp/mybot-rea-mcp-lu5nt05l/mybot-omb-mcp-bz_epj93/profile/owner-0.log",
+      "boot_ms": 622,
+      "exit_code": 0,
+      "listeners_closed": true
+    },
+    {
+      "trust": "service",
+      "port": 46131,
+      "webhook_port": 38403,
+      "log": "/tmp/mybot-rea-mcp-lu5nt05l/mybot-omb-mcp-bz_epj93/profile/service-1.log",
+      "boot_ms": 471,
+      "exit_code": 0,
+      "listeners_closed": true
+    },
+    {
+      "trust": "service",
+      "port": 53303,
+      "webhook_port": 43077,
+      "log": "/tmp/mybot-rea-mcp-lu5nt05l/mybot-omb-mcp-bz_epj93/profile/service-2.log",
+      "boot_ms": 471,
+      "exit_code": 0,
+      "listeners_closed": true
+    }
+  ],
+  "errors": [],
+  "limitations": [
+    "Handler HTTP is injected through the trusted probe, not native MCP fetch/socket transport.",
+    "Native packaged stdio entry tested only for initialize/tools/list without HTTP.",
+    "No production integration, real model, account, phone, GUI, Shell or App action.",
+    "Ask configuration and mock refusal are not a production capability ceiling.",
+    "No SSE/replay, RPC cancellation, crash recovery, multi-agent delegation or live approval acceptance."
+  ],
+  "integrity": "sha512-RKx0WYT/xJMCHjvIcv3jALIz1AF0LiyjSmE3bRERdALXunc6ULPk3nOaor6noTnKgSmeOSVDuB4ycrmEPD6WPA==",
+  "selected_sha256": {
+    "dist-server/index.js": "c538779892379bc8cd3297d8e2c4f5d506050b9470325b9bccfecc41a545ba94",
+    "dist-server/mcp-server.js": "a15c95147dcbf99ec1e1f85651f5b21c494eb7553370aca1326bb3b8e06467bf",
+    "dist-server/scripts/mcp-server.js": "92d5a7ec4075486aafa660a6b9723c4da62ebc89b680633f567c93cd0b703c0e",
+    "dist-server/server/drivers/acp/core.js": "2e224f82d02587d14f9ce9dbdaff3ce434f9ba1c3c566e314d01826a9f040391",
+    "dist-server/server/drivers/acp/custom.js": "71d8820b31ac6070817cce006b962c9c341cbe3408ec80955790d42d876e7c00"
+  },
+  "guard": {
+    "allowed_write_read": true,
+    "clean_environment": true,
+    "explicit_loopback_listener_allowed": true,
+    "tcp_outbound_denied": true,
+    "udp_outbound_denied": true,
+    "unlisted_file_denied": true,
+    "unlisted_listener_denied": true
+  },
+  "passed": true,
+  "adoption_verdict": "not adopted; bounded reuse evidence only",
+  "harness_sha256": {
+    "verify_omb_mcp.py": "0336df6d4054694d1daddadb7c1a6d16001b0b02a8eed9ba1f4ad53a174e48d7",
+    "mock_acp.py": "97626fae7fb09acf0615d44185817322ff466b8ceca6301fcf76f7a0f9f7dbc8",
+    "omb_mcp_bridge.mjs": "52d70a3fde830f2f628bb1878dfd479f659a62a74648143d41052ee3db35425b",
+    "guard.py": "bc17ec678aa749ff48b2357fd3d4aabc9e87a10cdb8b35f985ba2617b327399d",
+    "guard_selftest.py": "ab31aa0f7bfd5b4d06161aaf8eff292d8cf856eb0ce8451b98f9ab4063d1e8c5"
+  }
+}

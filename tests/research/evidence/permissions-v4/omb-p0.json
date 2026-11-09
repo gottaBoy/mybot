@@ -1,0 +1,382 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-11-07T15:00:47.281692+00:00",
+  "scope": "P0 isolated upstream boot and metadata only; no model prompt",
+  "version": "0.1.146",
+  "temporary_root": "/tmp/mybot-rea-p0-_chqjcsq/mybot-omb-p0-tom_nrgd",
+  "launches": [
+    {
+      "trust": "service",
+      "port": 43345,
+      "webhook_port": 52937,
+      "log": "/tmp/mybot-rea-p0-_chqjcsq/mybot-omb-p0-tom_nrgd/profile/service-0.log",
+      "boot_ms": 938,
+      "exit_code": 0,
+      "listeners_closed": true
+    },
+    {
+      "trust": "owner",
+      "port": 47967,
+      "webhook_port": 57129,
+      "log": "/tmp/mybot-rea-p0-_chqjcsq/mybot-omb-p0-tom_nrgd/profile/owner-1.log",
+      "boot_ms": 620,
+      "exit_code": 0,
+      "listeners_closed": true
+    },
+    {
+      "trust": "service",
+      "port": 38745,
+      "webhook_port": 51497,
+      "log": "/tmp/mybot-rea-p0-_chqjcsq/mybot-omb-p0-tom_nrgd/profile/service-2.log",
+      "boot_ms": 620,
+      "exit_code": 0,
+      "listeners_closed": true
+    }
+  ],
+  "checks": {
+    "archive_integrity": true,
+    "extracted_members_match_archive": true,
+    "cli_help": true,
+    "node_version_pinned": true,
+    "selected_permission_functions": true,
+    "oss_edition": true,
+    "static_html": true,
+    "service_config_denied": true,
+    "unpaired_browser_denied": true,
+    "service_bot_list_visible": true,
+    "ask_first_default": false,
+    "no_model_selected": true,
+    "service_bot_mutation_denied": true,
+    "owner_can_set_ask_template": true,
+    "template_default": true,
+    "top_level_full_ignored": true,
+    "nested_settings_full_overrides": true,
+    "skip_defaults_returns_full": true,
+    "no_fixture_model_selected": true,
+    "owner_can_downgrade_fixture": true,
+    "fixture_now_ask": true,
+    "fixture_ask_persisted": true,
+    "all_fixture_modes_ask_persisted": true,
+    "all_processes_stopped": true
+  },
+  "observations": {
+    "verified_package_file_count": 1666,
+    "node_version": "v24.22.1",
+    "fresh_bot_count": 1,
+    "fresh_bot_modes": [
+      "full"
+    ],
+    "ask_template_status": 200,
+    "creation_cases": [
+      {
+        "case": "template_default",
+        "request": {
+          "useDefaults": true
+        },
+        "status": 201,
+        "mode": "ask",
+        "expected": "ask"
+      },
+      {
+        "case": "top_level_full_ignored",
+        "request": {
+          "useDefaults": true,
+          "approvalMode": "full"
+        },
+        "status": 201,
+        "mode": "ask",
+        "expected": "ask"
+      },
+      {
+        "case": "nested_settings_full_overrides",
+        "request": {
+          "useDefaults": true,
+          "settings": {
+            "approvalMode": "full"
+          }
+        },
+        "status": 201,
+        "mode": "full",
+        "expected": "full"
+      },
+      {
+        "case": "skip_defaults_returns_full",
+        "request": {
+          "useDefaults": false
+        },
+        "status": 201,
+        "mode": "full",
+        "expected": "full"
+      }
+    ],
+    "identity_persisted": true
+  },
+  "errors": [],
+  "not_tested": [
+    "model or tool execution",
+    "live approvals",
+    "Bot API authenticated execution",
+    "running-task restart/replay",
+    "SSE delivery/replay",
+    "phone pairing or devices",
+    "third-party accounts",
+    "production security",
+    "enterprise license suitability"
+  ],
+  "integrity": "sha512-RKx0WYT/xJMCHjvIcv3jALIz1AF0LiyjSmE3bRERdALXunc6ULPk3nOaor6noTnKgSmeOSVDuB4ycrmEPD6WPA==",
+  "selected_sha256": {
+    "cli.js": "1873fee9198a8102e0118c2aba19aa7903eb084b249c9105968b458e671bb9a8",
+    "dist-server/index.js": "c538779892379bc8cd3297d8e2c4f5d506050b9470325b9bccfecc41a545ba94",
+    "dist-server/shared/approval-mode.js": "3c372bd82ac3a603a1480adde81a2737cfd2473765f0b9ce2ff72b7477636fea",
+    "dist-server/server/request-auth.js": "cd36862b2bf1d1481521e175fecfcc51139efba7bb4fe63f74ee1e5bc3a4b3e1"
+  },
+  "guard": {
+    "allowed_write_read": true,
+    "clean_environment": true,
+    "explicit_loopback_listener_allowed": true,
+    "tcp_outbound_denied": true,
+    "udp_outbound_denied": true,
+    "unlisted_file_denied": true,
+    "unlisted_listener_denied": true
+  },
+  "permission_functions": {
+    "kind": "selected-upstream-functions-only",
+    "sha256": {
+      "dist-server/shared/approval-mode.js": "3c372bd82ac3a603a1480adde81a2737cfd2473765f0b9ce2ff72b7477636fea",
+      "dist-server/server/auto-approve.js": "6cb666a876db18eb51db0f6169ae7700cc37b1283cc6087ad84fe43befd01232",
+      "dist-server/server/runtime/level.js": "c20e39522c26d8b9120ceee8bf175175c61326693113cb7dd06185a07d6f5a70",
+      "dist-server/server/bot-api-fence.js": "4555fbd2d77dd1f7d47808b4455bce3d6d59f58b8babfc2ca40856208422e231"
+    },
+    "cases": [
+      {
+        "id": "unset_default",
+        "actual": "full",
+        "expected": "full",
+        "passed": true
+      },
+      {
+        "id": "default_override_unset",
+        "actual": "ask",
+        "expected": "ask",
+        "passed": true
+      },
+      {
+        "id": "default_override_explicit_full",
+        "actual": "full",
+        "expected": "full",
+        "passed": true
+      },
+      {
+        "id": "legacy_auto_still_auto",
+        "actual": "auto",
+        "expected": "auto",
+        "passed": true
+      },
+      {
+        "id": "malformed_mode_fails_closed",
+        "actual": "ask",
+        "expected": "ask",
+        "passed": true
+      },
+      {
+        "id": "thread_explicit_ask_wins",
+        "actual": "ask",
+        "expected": "ask",
+        "passed": true
+      },
+      {
+        "id": "full_cross_engine_not_forced_to_ask",
+        "actual": false,
+        "expected": false,
+        "passed": true
+      },
+      {
+        "id": "custom_cross_engine_requires_ask",
+        "actual": true,
+        "expected": true,
+        "passed": true
+      },
+      {
+        "id": "chief_person_may_raise",
+        "actual": {
+          "level": "full",
+          "source": "chief"
+        },
+        "expected": {
+          "level": "full",
+          "source": "chief"
+        },
+        "passed": true
+      },
+      {
+        "id": "chief_routine_may_raise",
+        "actual": {
+          "level": "full",
+          "source": "chief"
+        },
+        "expected": {
+          "level": "full",
+          "source": "chief"
+        },
+        "passed": true
+      },
+      {
+        "id": "outside_does_not_inherit",
+        "actual": {
+          "level": "ask",
+          "source": "own"
+        },
+        "expected": {
+          "level": "ask",
+          "source": "own"
+        },
+        "passed": true
+      },
+      {
+        "id": "outside_does_not_clamp_own_full",
+        "actual": {
+          "level": "full",
+          "source": "own"
+        },
+        "expected": {
+          "level": "full",
+          "source": "own"
+        },
+        "passed": true
+      },
+      {
+        "id": "nonchief_does_not_raise",
+        "actual": {
+          "level": "ask",
+          "source": "own"
+        },
+        "expected": {
+          "level": "ask",
+          "source": "own"
+        },
+        "passed": true
+      },
+      {
+        "id": "custom_remains_own",
+        "actual": {
+          "level": "custom",
+          "source": "own"
+        },
+        "expected": {
+          "level": "custom",
+          "source": "own"
+        },
+        "passed": true
+      },
+      {
+        "id": "peer_origin_alone_not_ceiling",
+        "actual": "full",
+        "expected": "full",
+        "passed": true
+      },
+      {
+        "id": "ask_without_grant",
+        "actual": "no-grant",
+        "expected": "no-grant",
+        "passed": true
+      },
+      {
+        "id": "ask_saved_command_grant",
+        "actual": "command-allowlist",
+        "expected": "command-allowlist",
+        "passed": true
+      },
+      {
+        "id": "ask_saved_tool_grant",
+        "actual": "tool-allowlist",
+        "expected": "tool-allowlist",
+        "passed": true
+      },
+      {
+        "id": "ask_own_files_grant",
+        "actual": "own-files",
+        "expected": "own-files",
+        "passed": true
+      },
+      {
+        "id": "ask_explicit_guard_first",
+        "actual": "explicit-approval-block",
+        "expected": "explicit-approval-block",
+        "passed": true
+      },
+      {
+        "id": "full_auto_verdict_first",
+        "actual": "full-access",
+        "expected": "full-access",
+        "passed": true
+      },
+      {
+        "id": "question_still_human_in_full",
+        "actual": "no-grant",
+        "expected": "no-grant",
+        "passed": true
+      },
+      {
+        "id": "api_tools_hooks_only",
+        "actual": [
+          "hooks"
+        ],
+        "expected": [
+          "hooks"
+        ],
+        "passed": true
+      },
+      {
+        "id": "api_route_POST_/api/internal/hook",
+        "actual": false,
+        "expected": false,
+        "passed": true
+      },
+      {
+        "id": "api_route_GET_/api/internal/tool-result",
+        "actual": false,
+        "expected": false,
+        "passed": true
+      },
+      {
+        "id": "api_route_POST_/api/internal/tool-result",
+        "actual": false,
+        "expected": false,
+        "passed": true
+      },
+      {
+        "id": "api_route_POST_/api/internal/coordinate-bots",
+        "actual": true,
+        "expected": true,
+        "passed": true
+      },
+      {
+        "id": "api_route_POST_/api/internal/shell",
+        "actual": true,
+        "expected": true,
+        "passed": true
+      },
+      {
+        "id": "api_route_POST_/api/bots",
+        "actual": true,
+        "expected": true,
+        "passed": true
+      },
+      {
+        "id": "api_route_PATCH_/api/config",
+        "actual": true,
+        "expected": true,
+        "passed": true
+      },
+      {
+        "id": "api_route_GET_/api/internal/unknown",
+        "actual": true,
+        "expected": true,
+        "passed": true
+      }
+    ],
+    "passed": true,
+    "limitation": "Selected pure functions, not reachability or full task/tool security."
+  },
+  "p0_verdict": "not_adopted_ask_first_default_failed"
+}

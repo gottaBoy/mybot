@@ -9,6 +9,8 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
+from .recovery import fingerprint, retry_preview
+
 
 def now() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -22,7 +24,7 @@ def dump(value) -> str:
     return json.dumps(value, ensure_ascii=False)
 
 
-JSON_FIELDS = {"files", "config", "context", "plan", "payload"}
+JSON_FIELDS = {"files", "config", "context", "plan", "payload", "error_detail"}
 TERMINAL = {"succeeded", "failed", "canceled"}
 ACTIVE = {"queued", "running", "pause_requested", "cancel_requested", "paused", "interrupted"}
 
@@ -44,6 +46,7 @@ CREATE TABLE IF NOT EXISTS projects (
 CREATE TABLE IF NOT EXISTS models (
  id TEXT PRIMARY KEY, name TEXT NOT NULL, endpoint TEXT NOT NULL,
  model TEXT NOT NULL, key_env TEXT NOT NULL, tested_at TEXT, test_status TEXT,
+ kind TEXT NOT NULL DEFAULT 'chat_completions',
  created_at TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS tasks (
@@ -55,6 +58,7 @@ CREATE TABLE IF NOT EXISTS runs (
  id TEXT PRIMARY KEY, task_id TEXT NOT NULL REFERENCES tasks(id),
  request_id TEXT NOT NULL UNIQUE, status TEXT NOT NULL, config TEXT NOT NULL,
  context TEXT NOT NULL, plan TEXT NOT NULL DEFAULT '[]',
+ source_run_id TEXT REFERENCES runs(id),
  error TEXT, started_at TEXT, ended_at TEXT, created_at TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS agents (
@@ -62,6 +66,7 @@ CREATE TABLE IF NOT EXISTS agents (
  step_key TEXT NOT NULL, role TEXT NOT NULL, title TEXT NOT NULL,
  objective TEXT NOT NULL, model_id TEXT NOT NULL, status TEXT NOT NULL,
  output TEXT, started_at TEXT, ended_at TEXT,
+ source_agent_id TEXT REFERENCES agents(id),
  UNIQUE(run_id,step_key)
 );
 CREATE TABLE IF NOT EXISTS calls (
@@ -69,12 +74,14 @@ CREATE TABLE IF NOT EXISTS calls (
  agent_id TEXT REFERENCES agents(id), model_id TEXT NOT NULL,
  attempt INTEGER NOT NULL, status TEXT NOT NULL, requested_model TEXT NOT NULL,
  returned_model TEXT, input_tokens INTEGER, output_tokens INTEGER,
- duration_ms INTEGER, error TEXT, started_at TEXT NOT NULL, ended_at TEXT
+ duration_ms INTEGER, error TEXT, error_detail TEXT NOT NULL DEFAULT '{}',
+ started_at TEXT NOT NULL, ended_at TEXT
 );
 CREATE TABLE IF NOT EXISTS artifacts (
  id TEXT PRIMARY KEY, run_id TEXT NOT NULL REFERENCES runs(id),
  agent_id TEXT REFERENCES agents(id), title TEXT NOT NULL, kind TEXT NOT NULL,
  content TEXT NOT NULL, decision TEXT NOT NULL DEFAULT 'pending',
+ source_artifact_id TEXT REFERENCES artifacts(id),
  created_at TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS events (
@@ -85,6 +92,9 @@ CREATE TABLE IF NOT EXISTS events (
 CREATE INDEX IF NOT EXISTS events_run_seq ON events(run_id,seq);
 CREATE INDEX IF NOT EXISTS calls_run ON calls(run_id);
 CREATE INDEX IF NOT EXISTS agents_run ON agents(run_id);
+CREATE TABLE IF NOT EXISTS workspace_settings (
+ key TEXT PRIMARY KEY, value TEXT NOT NULL
+);
 """
 
 
@@ -96,6 +106,20 @@ class Store:
         self.lock = threading.RLock()
         with self.transaction() as db:
             db.executescript(SCHEMA)
+            columns = {row["name"] for row in db.execute("PRAGMA table_info(models)").fetchall()}
+            if "kind" not in columns:
+                db.execute("ALTER TABLE models ADD COLUMN kind TEXT NOT NULL DEFAULT 'chat_completions'")
+            call_columns = {row["name"] for row in db.execute("PRAGMA table_info(calls)").fetchall()}
+            if "error_detail" not in call_columns:
+                db.execute("ALTER TABLE calls ADD COLUMN error_detail TEXT NOT NULL DEFAULT '{}'")
+            for table, column, reference in (
+                ("runs", "source_run_id", "runs"),
+                ("agents", "source_agent_id", "agents"),
+                ("artifacts", "source_artifact_id", "artifacts"),
+            ):
+                names = {row["name"] for row in db.execute(f"PRAGMA table_info({table})")}
+                if column not in names:
+                    db.execute(f"ALTER TABLE {table} ADD COLUMN {column} TEXT REFERENCES {reference}(id)")
         os.chmod(self.path, 0o600)
 
     @contextmanager
@@ -144,6 +168,20 @@ class Store:
             raise KeyError(entity_id)
         return row
 
+    def get_setting(self, key: str, default=None):
+        with self.transaction() as db:
+            row = db.execute("SELECT value FROM workspace_settings WHERE key=?", (key,)).fetchone()
+        return row["value"] if row else default
+
+    def set_setting(self, key: str, value: str, actor="user"):
+        with self.transaction() as db:
+            db.execute(
+                "INSERT INTO workspace_settings(key,value) VALUES(?,?) "
+                "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+                (key, value),
+            )
+            self.event(db, "workspace.setting.updated", {"key": key}, actor=actor)
+
     def list(self, table: str, run_id=None) -> list[dict]:
         if table not in {"projects", "models", "tasks", "runs", "agents", "artifacts", "calls"}:
             raise ValueError("Invalid entity")
@@ -159,11 +197,15 @@ class Store:
         with self.transaction() as db:
             existing = decode(db.execute("SELECT * FROM runs WHERE request_id=?", (request_id,)).fetchone())
             if existing:
-                if (existing["task_id"] != task_id or existing["config"] != config
+                if (existing.get("source_run_id") or existing["task_id"] != task_id or existing["config"] != config
                         or existing["context"].get("hash") != context.get("hash")):
                     raise ValueError("Request ID was already used with different input")
                 return existing
-            active = db.execute("SELECT id FROM runs WHERE task_id=? AND status NOT IN ('succeeded','failed','canceled')", (task_id,)).fetchone()
+            active = db.execute(
+                "SELECT id FROM runs WHERE task_id=? AND status NOT IN ('succeeded','failed','canceled') "
+                "AND NOT EXISTS(SELECT 1 FROM runs child WHERE child.source_run_id=runs.id)",
+                (task_id,),
+            ).fetchone()
             if active:
                 raise ValueError("This task already has an unfinished run")
             identifier = uid()
@@ -172,6 +214,115 @@ class Store:
             self.event(db, "run.queued", {"context_files": context["evidence"], "access": "read_only",
                                        "model_ids": config, "consent": True}, identifier, actor="user")
         return self.get("runs", identifier)
+
+    @staticmethod
+    def _retry_state(db, identifier):
+        run = decode(db.execute("SELECT * FROM runs WHERE id=?", (identifier,)).fetchone())
+        if run is None:
+            raise KeyError(identifier)
+        facts = [
+            [decode(row) for row in db.execute(f"SELECT * FROM {table} WHERE run_id=?", (identifier,))]
+            for table in ("agents", "calls", "artifacts")
+        ]
+        return run, facts, retry_preview(run, *facts)
+
+    def retry_preview(self, identifier):
+        with self.transaction() as db:
+            run, _, preview = self._retry_state(db, identifier)
+            preview["defaults"] = {
+                **run["config"],
+                "max_calls": max(1, preview["minimum_calls"]),
+                "call_timeout_seconds": run["config"].get("call_timeout_seconds", 120),
+            }
+            preview["retry_runs"] = [
+                dict(row) for row in db.execute(
+                    "SELECT id,status,created_at FROM runs WHERE source_run_id=? ORDER BY created_at",
+                    (identifier,),
+                )
+            ]
+        return preview
+
+    def retry_children(self, identifier):
+        with self.transaction() as db:
+            return [dict(row) for row in db.execute(
+                "SELECT id,status,created_at FROM runs WHERE source_run_id=? ORDER BY created_at DESC",
+                (identifier,),
+            )]
+
+    def create_retry(self, identifier, request_id, config, models, snapshot_hash, acknowledge):
+        request_hash = fingerprint([identifier, snapshot_hash, config])
+        with self.transaction() as db:
+            existing = decode(db.execute("SELECT * FROM runs WHERE request_id=?", (request_id,)).fetchone())
+            if existing:
+                if existing.get("source_run_id") != identifier or existing["context"].get("retry_request_hash") != request_hash:
+                    raise ValueError("retry_request_id_conflict")
+                return existing
+            source, facts, preview = self._retry_state(db, identifier)
+            if not preview["allowed"]:
+                raise ValueError("retry_source_not_ready")
+            if preview["snapshot_hash"] != snapshot_hash:
+                raise ValueError("retry_snapshot_changed")
+            if preview["requires_acknowledgement"] and not acknowledge:
+                raise ValueError("retry_replay_confirmation_required")
+            if config["max_calls"] < preview["minimum_calls"]:
+                raise ValueError("retry_budget_insufficient")
+            active = db.execute(
+                "SELECT id FROM runs WHERE task_id=? AND id!=? "
+                "AND status NOT IN ('succeeded','failed','canceled') "
+                "AND NOT EXISTS(SELECT 1 FROM runs child WHERE child.source_run_id=runs.id)",
+                (source["task_id"], identifier),
+            ).fetchone()
+            if active:
+                raise ValueError("retry_other_run_active")
+            new_id = uid()
+            keep = set(preview["reuse_step_keys"])
+            plan = source["plan"] if "plan" in keep else []
+            context = {
+                **source["context"],
+                "models": {**source["context"]["models"], **models},
+                "retry_request_hash": request_hash,
+            }
+            db.execute(
+                "INSERT INTO runs(id,task_id,request_id,status,config,context,plan,source_run_id,created_at) "
+                "VALUES(?,?,?,'queued',?,?,?,?,?)",
+                (new_id, source["task_id"], request_id, dump(config), dump(context), dump(plan), identifier, now()),
+            )
+            agents, _, artifacts = facts
+            reusable = [agent for agent in agents if agent["step_key"] in keep]
+            agent_ids = {agent["id"]: uid() for agent in reusable}
+            for agent in reusable:
+                copied_id = agent_ids[agent["id"]]
+                db.execute(
+                    "INSERT INTO agents(id,run_id,parent_id,step_key,role,title,objective,model_id,status,output,source_agent_id) "
+                    "VALUES(?,?,?,?,?,?,?,?,'succeeded',?,?)",
+                    (copied_id, new_id, agent_ids.get(agent["parent_id"]), agent["step_key"], agent["role"],
+                     agent["title"], agent["objective"], agent["model_id"], agent["output"], agent["id"]),
+                )
+                self.event(db, "agent.reused", {
+                    "source_run_id": identifier, "source_agent_id": agent["id"],
+                    "step_key": agent["step_key"], "new_model_call": False,
+                }, new_id, copied_id)
+            for artifact in artifacts:
+                if artifact["agent_id"] not in agent_ids:
+                    continue
+                artifact_id = uid()
+                db.execute(
+                    "INSERT INTO artifacts(id,run_id,agent_id,title,kind,content,decision,source_artifact_id,created_at) "
+                    "VALUES(?,?,?,?,?,?,?,?,?)",
+                    (artifact_id, new_id, agent_ids[artifact["agent_id"]], artifact["title"], artifact["kind"],
+                     artifact["content"], artifact["decision"], artifact["id"], now()),
+                )
+                self.event(db, "artifact.reused", {
+                    "source_run_id": identifier, "source_artifact_id": artifact["id"],
+                }, new_id, artifact_id)
+            self.event(db, "run.retry.created", {
+                "source_run_id": identifier, "source_snapshot_hash": snapshot_hash,
+                "reused_steps": sorted(keep), "resources": config,
+                "new_call_budget": config["max_calls"],
+                "source_call_count": preview["source_call_count"],
+                "replay_acknowledged": acknowledge, "consent": True,
+            }, new_id, actor="user")
+        return self.get("runs", new_id)
 
     def claim(self) -> dict | None:
         with self.transaction() as db:
@@ -186,6 +337,13 @@ class Store:
         with self.transaction() as db:
             db.execute("UPDATE runs SET plan=? WHERE id=?", (dump(items), run_id))
             self.event(db, "plan.created", {"version": 1, "tasks": items}, run_id)
+
+    def adjust_plan(self, run_id: str, items: list[dict], reason: str):
+        with self.transaction() as db:
+            db.execute("UPDATE runs SET plan=? WHERE id=?", (dump(items), run_id))
+            self.event(db, "plan.adjusted", {
+                "version": 1, "tasks": items, "reason": reason,
+            }, run_id)
 
     def agent(self, run_id: str, key: str, role: str, title: str, objective: str,
               model_id: str, parent=None) -> dict:
@@ -226,7 +384,8 @@ class Store:
                                            "agent_id": agent["id"]}, run_id, identifier)
         return identifier
 
-    def finish_call(self, identifier: str, status: str, *, result=None, duration=0, error=None):
+    def finish_call(self, identifier: str, status: str, *, result=None, duration=0,
+                    error=None, error_detail=None):
         with self.transaction() as db:
             row = db.execute("SELECT * FROM calls WHERE id=?", (identifier,)).fetchone()
             db.execute("UPDATE calls SET status=?,returned_model=?,input_tokens=?,output_tokens=?,duration_ms=?,error=?,ended_at=? WHERE id=?",
@@ -234,8 +393,13 @@ class Store:
                         result.get("input_tokens") if result else None,
                         result.get("output_tokens") if result else None,
                         duration, error, now(), identifier))
-            self.event(db, f"model.{status}", {"duration_ms": duration, "error": error,
-                                             "agent_id": row["agent_id"]}, row["run_id"], identifier)
+            db.execute("UPDATE calls SET error_detail=? WHERE id=?",
+                       (dump(error_detail or {}), identifier))
+            self.event(db, f"model.{status}", {
+                "duration_ms": duration, "error": error,
+                "error_detail": error_detail or {},
+                "agent_id": row["agent_id"],
+            }, row["run_id"], identifier)
 
     def artifact(self, run_id: str, agent_id: str, title: str, kind: str, content: str):
         with self.transaction() as db:
@@ -258,7 +422,7 @@ class Store:
 
     def control(self, identifier: str, action: str, acknowledge=False) -> dict:
         with self.transaction() as db:
-            row = db.execute("SELECT status FROM runs WHERE id=?", (identifier,)).fetchone()
+            row = db.execute("SELECT * FROM runs WHERE id=?", (identifier,)).fetchone()
             if not row:
                 raise KeyError(identifier)
             src = row["status"]
@@ -267,8 +431,24 @@ class Store:
             elif action == "cancel" and src in ACTIVE | {"failed"}:
                 dst = "cancel_requested" if src in {"running", "pause_requested", "cancel_requested"} else "canceled"
             elif action == "resume" and src in {"paused", "interrupted", "failed"}:
+                if db.execute("SELECT 1 FROM runs WHERE source_run_id=? LIMIT 1", (identifier,)).fetchone():
+                    raise ValueError("retry_source_has_child")
+                if db.execute(
+                    "SELECT 1 FROM runs WHERE task_id=? AND id!=? "
+                    "AND status NOT IN ('succeeded','failed','canceled') "
+                    "AND NOT EXISTS(SELECT 1 FROM runs child WHERE child.source_run_id=runs.id)",
+                    (row["task_id"], identifier),
+                ).fetchone():
+                    raise ValueError("retry_other_run_active")
                 if src in {"interrupted", "failed"} and not acknowledge:
                     raise ValueError("Confirm that incomplete read-only model calls may run and incur costs again")
+                if src == "failed":
+                    retries = db.execute(
+                        "SELECT COALESCE(MAX(attempt), 0) FROM calls WHERE run_id=? AND status IN ('failed','canceled','interrupted')",
+                        (identifier,),
+                    ).fetchone()[0]
+                    if retries >= 2:
+                        raise ValueError("Retry limit reached for this run; create a new run or choose another adapter")
                 dst = "queued"
             elif (action == "cancel" and src == "canceled") or (action == "pause" and src in {"paused", "pause_requested"}):
                 return decode(db.execute("SELECT * FROM runs WHERE id=?", (identifier,)).fetchone())

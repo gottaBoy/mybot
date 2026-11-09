@@ -86,6 +86,12 @@ def test_real_closed_loop_and_audit(fixture):
         run = post(client, f"/api/tasks/{task['id']}/runs", run_body(model)).json()
         value = wait_status(client, run["id"], {"succeeded", "failed"})
         assert value["run"]["status"] == "succeeded", value
+        assert value["harness"]["id"] == "local-superagent"
+        assert value["harness"]["parallel_limit"] == 2
+        assert [stage["key"] for stage in value["harness"]["stages"]] == [
+            "planning", "research", "synthesis",
+        ]
+        assert all(stage["status"] == "succeeded" for stage in value["harness"]["stages"])
         assert len(value["agents"]) == 4
         assert len(provider.requests) == len(value["calls"]) == 4
         assert all(c["status"] == "succeeded" for c in value["calls"])
@@ -137,6 +143,34 @@ def test_budget_limits_plan_and_calls(fixture):
         assert value["run"]["status"] == "succeeded"
         assert len(value["run"]["plan"]) == 1
         assert len(provider.requests) == 3
+
+
+def test_planner_retry_reserves_synthesis_budget(fixture):
+    app, provider, _ = fixture
+    original = provider.complete
+    failed = True
+
+    async def fail_planner_once(model, messages, max_tokens):
+        nonlocal failed
+        if failed and "仅返回 JSON" in messages[-1]["content"]:
+            failed = False
+            raise ProviderError("test_planner_retry")
+        return await original(model, messages, max_tokens)
+
+    provider.complete = fail_planner_once
+    with TestClient(app) as client:
+        _, model, task = seed(client)
+        run = post(client, f"/api/tasks/{task['id']}/runs", run_body(model, max_calls=4)).json()
+        first = wait_status(client, run["id"], {"succeeded", "failed"})
+        assert first["run"]["status"] == "failed"
+        assert first["run"]["error"] == "test_planner_retry"
+        post(client, f"/api/runs/{run['id']}/resume", {"acknowledge_replay": True})
+        result = wait_status(client, run["id"], {"succeeded", "failed"})
+        assert result["run"]["status"] == "succeeded", result
+        assert len(result["calls"]) == 4
+        assert len(result["run"]["plan"]) == 1
+        assert len(result["artifacts"]) == 2  # research + synthesis
+        assert any(event["kind"] == "plan.adjusted" for event in result["events"])
 
 
 def test_cancel_inflight_preserves_call(fixture):
@@ -302,6 +336,28 @@ def test_provider_failure_records_safe_error_and_no_success(fixture):
         assert result["artifacts"] == []
 
 
+def test_provider_diagnostics_are_persisted_without_raw_output(fixture):
+    app, provider, _ = fixture
+
+    async def fail_with_diagnostics(model, messages, max_tokens):
+        raise ProviderError("codex_cli_timeout_outcome_unknown", detail={
+            "timeout_seconds": 90, "events": 3, "last_event": "turn_started",
+            "partial_message": False,
+        })
+
+    provider.complete = fail_with_diagnostics
+    with TestClient(app) as client:
+        _, model, task = seed(client)
+        run = post(client, f"/api/tasks/{task['id']}/runs", run_body(model)).json()
+        result = wait_status(client, run["id"], {"failed"})
+        assert result["calls"][0]["error_detail"] == {
+            "timeout_seconds": 90, "events": 3, "last_event": "turn_started",
+            "partial_message": False,
+        }
+        failed_event = next(event for event in result["events"] if event["kind"] == "model.failed")
+        assert failed_event["payload"]["error_detail"]["events"] == 3
+
+
 def test_request_size_boundary(fixture):
     app, _, _ = fixture
     with TestClient(app) as client:
@@ -341,6 +397,28 @@ def test_models_are_routed_by_role(fixture):
             assert call["model_id"] == agent["model_id"]
 
 
+def test_default_model_setting_persists_without_provider_call(fixture):
+    app, provider, _ = fixture
+    with TestClient(app) as client:
+        _, model, _ = seed(client)
+        result = post(client, "/api/settings/default-model", {"model_id": model["id"]})
+        assert result.status_code == 200
+        bootstrap = client.get("/api/bootstrap").json()
+        assert bootstrap["default_model_id"] == model["id"]
+        assert provider.requests == []
+
+
+def test_enable_codex_creates_local_adapter_without_provider_call(fixture, monkeypatch):
+    app, provider, _ = fixture
+    monkeypatch.setattr("workbench.app.shutil.which", lambda name: "/usr/bin/codex" if name == "codex" else None)
+    with TestClient(app) as client:
+        result = client.post("/api/models/enable-codex", headers=HEADERS)
+        assert result.status_code == 200
+        assert result.json()["model"]["kind"] == "codex_cli"
+        assert result.json()["created"] is True
+        assert provider.requests == []
+
+
 def test_partial_failure_resume_reuses_completed_research(fixture):
     app, provider, _ = fixture
     complete = provider.complete
@@ -370,6 +448,67 @@ def test_partial_failure_resume_reuses_completed_research(fixture):
         assert len(provider.requests) == len(result["calls"]) == 5
         assert len([call for call in result["calls"] if call["status"] == "failed"]) == 1
         assert max(call["attempt"] for call in result["calls"]) == 2
+
+
+def test_codex_single_channel_does_not_start_queued_research_after_failure(fixture):
+    app, provider, _ = fixture
+    original = provider.complete
+    failed = False
+
+    async def fail_first_research(model, messages, max_tokens):
+        nonlocal failed
+        if not failed and "你的子任务：" in messages[-1]["content"]:
+            failed = True
+            raise ProviderError("codex_cli_timeout_outcome_unknown")
+        return await original(model, messages, max_tokens)
+
+    provider.complete = fail_first_research
+    with TestClient(app) as client:
+        _, chat_model, task = seed(client)
+        codex = post(client, "/api/models", {
+            "kind": "codex_cli", "name": "Codex fixture",
+            "endpoint": "codex://local", "model": "codex-cli",
+        }).json()
+        run = post(client, f"/api/tasks/{task['id']}/runs", run_body(
+            chat_model, coordinator_model=codex["id"],
+            researcher_model=codex["id"], reviewer_model=codex["id"],
+            max_calls=4, parallel=2,
+        )).json()
+        result = wait_status(client, run["id"], {"failed"})
+        assert result["run"]["error"] == "codex_cli_timeout_outcome_unknown"
+        assert len(result["calls"]) == 2  # planner + first research only
+        assert len(provider.requests) == 1  # the failed fixture short-circuits before recording
+        queued = next(agent for agent in result["agents"] if agent["step_key"] == "research-1")
+        assert queued["status"] == "pending"
+        assert all(call["status"] != "canceled" for call in result["calls"])
+
+
+def test_synthesis_resume_reuses_all_completed_research_with_last_call(fixture):
+    app, provider, _ = fixture
+    original = provider.complete
+    failed = False
+
+    async def fail_synthesis_once(model, messages, max_tokens):
+        nonlocal failed
+        if not failed and "以下是其他 Agent 的分析" in messages[-1]["content"]:
+            failed = True
+            raise ProviderError("test_synthesis_failure")
+        return await original(model, messages, max_tokens)
+
+    provider.complete = fail_synthesis_once
+    with TestClient(app) as client:
+        _, model, task = seed(client)
+        run = post(client, f"/api/tasks/{task['id']}/runs", run_body(model, max_calls=5)).json()
+        failed_run = wait_status(client, run["id"], {"failed"})
+        assert len(failed_run["calls"]) == 4
+        assert len(failed_run["artifacts"]) == 2
+        assert post(client, f"/api/runs/{run['id']}/resume", {"acknowledge_replay": True}).status_code == 200
+        result = wait_status(client, run["id"], {"succeeded", "failed"})
+        assert result["run"]["status"] == "succeeded", result
+        assert len(result["calls"]) == 5
+        assert len(result["run"]["plan"]) == 2
+        assert len(result["artifacts"]) == 3
+        assert not any(event["kind"] == "plan.adjusted" for event in result["events"])
 
 
 def test_truncated_output_preserves_usage_but_not_success(fixture):

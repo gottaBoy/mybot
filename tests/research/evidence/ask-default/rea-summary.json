@@ -1,0 +1,96 @@
+{
+  "rea_version": "6.8.0",
+  "rea_exit_code": 0,
+  "evidence_id": "ev_323363c672ba657cedb72dab9a01a7a4a30850b4d348a85588626c5c6c1e9a7e",
+  "predicate_type": "rea.process-capture",
+  "exit": {
+    "code": 1,
+    "signal": 0,
+    "reason": "exited"
+  },
+  "settlement": {
+    "state": "quiesced",
+    "elapsed_ms": 239,
+    "cleanup_outcome": "not_required"
+  },
+  "cleanup": {
+    "owned_process_group": "verified",
+    "temporary_root": "removed",
+    "unverified_processes": [
+      {
+        "pid": 3497143,
+        "reason": "EACCES: permission denied, open '/proc/3497143/environ'"
+      },
+      {
+        "pid": 3497220,
+        "reason": "EACCES: permission denied, open '/proc/3497220/environ'"
+      }
+    ]
+  },
+  "truncated": false,
+  "residual_unknowns": [
+    {
+      "scope": "process",
+      "reason": "Process trees are sampled and may omit short-lived descendants."
+    },
+    {
+      "scope": "process",
+      "reason": "The executable digest is a prelaunch file sample; operating-system image binding is not atomically observed."
+    },
+    {
+      "scope": "environment",
+      "reason": "Inherited host environment variables are not recorded."
+    },
+    {
+      "scope": "network",
+      "reason": "Network activity is not observed by this capture."
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3497143 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3497143/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3497220 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3497220/environ'"
+    }
+  ],
+  "p0_report_sha256": "4d785d0d261db074c839b9763a501a768fd58ddef869f35021a92434f0f57fd3",
+  "scenario": {
+    "executable": "/usr/bin/python3",
+    "arguments": [
+      "-I",
+      "/home/my/workspace/ainfra/mywork/mybot/tests/research/verify_omb_p0.py",
+      "--package",
+      "/tmp/mybot-cross-device.FXoGm6/artifacts/omb",
+      "--archive",
+      "/tmp/mybot-cross-device.FXoGm6/openmausbot-0.1.146.tgz",
+      "--node",
+      "/home/my/.npm/_npx/ef8b185be06dfeb4/node_modules/node/bin/node",
+      "--report",
+      "/tmp/mybot-rea-p0-z2whhj96/reports/omb-p0.json"
+    ],
+    "working_directory": "/tmp/mybot-rea-p0-z2whhj96",
+    "filesystem_observation_paths": [
+      "/tmp/mybot-rea-p0-z2whhj96/reports"
+    ],
+    "timeout_ms": 60000,
+    "settle_ms": 300,
+    "limits": {
+      "output_bytes": 100000,
+      "file_bytes": 100000,
+      "files": 20
+    }
+  },
+  "invocation_environment": {
+    "PATH": "/usr/bin:/bin",
+    "HOME": "/tmp/mybot-rea-p0-z2whhj96/home",
+    "LANG": "C.UTF-8",
+    "TMPDIR": "/tmp/mybot-rea-p0-z2whhj96"
+  },
+  "harness_sha256": {
+    "verify_omb_p0.py": "f7b45baae28f3f5623a7eb9eec7dc17470b4a00316da5936124b02362dcba912",
+    "guard.py": "bc17ec678aa749ff48b2357fd3d4aabc9e87a10cdb8b35f985ba2617b327399d",
+    "guard_selftest.py": "ab31aa0f7bfd5b4d06161aaf8eff292d8cf856eb0ce8451b98f9ab4063d1e8c5"
+  },
+  "limitation": "REA observes the probe and its report, not every HTTP or network syscall."
+}

@@ -1,0 +1,416 @@
+{
+  "rea_version": "6.8.0",
+  "rea_exit_code": 0,
+  "evidence_id": "ev_fce053a70615164fed30a9b76d3c1a5c4e07ea56dd3d713a222108061916442c",
+  "predicate_type": "rea.process-capture",
+  "exit": {
+    "code": 1,
+    "signal": 0,
+    "reason": "exited"
+  },
+  "settlement": {
+    "state": "quiesced",
+    "elapsed_ms": 267,
+    "cleanup_outcome": "not_required"
+  },
+  "cleanup": {
+    "owned_process_group": "verified",
+    "temporary_root": "removed",
+    "unverified_processes": [
+      {
+        "pid": 3500847,
+        "reason": "EACCES: permission denied, open '/proc/3500847/environ'"
+      },
+      {
+        "pid": 3500946,
+        "reason": "EACCES: permission denied, open '/proc/3500946/environ'"
+      },
+      {
+        "pid": 3500988,
+        "reason": "EACCES: permission denied, open '/proc/3500988/environ'"
+      },
+      {
+        "pid": 3500995,
+        "reason": "EACCES: permission denied, open '/proc/3500995/environ'"
+      },
+      {
+        "pid": 3500996,
+        "reason": "EACCES: permission denied, open '/proc/3500996/environ'"
+      },
+      {
+        "pid": 3500997,
+        "reason": "EACCES: permission denied, open '/proc/3500997/environ'"
+      },
+      {
+        "pid": 3500998,
+        "reason": "EACCES: permission denied, open '/proc/3500998/environ'"
+      },
+      {
+        "pid": 3500999,
+        "reason": "EACCES: permission denied, open '/proc/3500999/environ'"
+      },
+      {
+        "pid": 3501000,
+        "reason": "EACCES: permission denied, open '/proc/3501000/environ'"
+      },
+      {
+        "pid": 3501001,
+        "reason": "EACCES: permission denied, open '/proc/3501001/environ'"
+      },
+      {
+        "pid": 3501002,
+        "reason": "EACCES: permission denied, open '/proc/3501002/environ'"
+      },
+      {
+        "pid": 3501003,
+        "reason": "EACCES: permission denied, open '/proc/3501003/environ'"
+      },
+      {
+        "pid": 3501004,
+        "reason": "EACCES: permission denied, open '/proc/3501004/environ'"
+      },
+      {
+        "pid": 3501005,
+        "reason": "EACCES: permission denied, open '/proc/3501005/environ'"
+      },
+      {
+        "pid": 3501006,
+        "reason": "EACCES: permission denied, open '/proc/3501006/environ'"
+      },
+      {
+        "pid": 3501007,
+        "reason": "EACCES: permission denied, open '/proc/3501007/environ'"
+      },
+      {
+        "pid": 3501008,
+        "reason": "EACCES: permission denied, open '/proc/3501008/environ'"
+      },
+      {
+        "pid": 3501009,
+        "reason": "EACCES: permission denied, open '/proc/3501009/environ'"
+      },
+      {
+        "pid": 3501010,
+        "reason": "EACCES: permission denied, open '/proc/3501010/environ'"
+      },
+      {
+        "pid": 3501011,
+        "reason": "EACCES: permission denied, open '/proc/3501011/environ'"
+      },
+      {
+        "pid": 3501012,
+        "reason": "EACCES: permission denied, open '/proc/3501012/environ'"
+      },
+      {
+        "pid": 3501013,
+        "reason": "EACCES: permission denied, open '/proc/3501013/environ'"
+      },
+      {
+        "pid": 3501014,
+        "reason": "EACCES: permission denied, open '/proc/3501014/environ'"
+      },
+      {
+        "pid": 3501015,
+        "reason": "EACCES: permission denied, open '/proc/3501015/environ'"
+      },
+      {
+        "pid": 3501018,
+        "reason": "EACCES: permission denied, open '/proc/3501018/environ'"
+      },
+      {
+        "pid": 3501019,
+        "reason": "EACCES: permission denied, open '/proc/3501019/environ'"
+      },
+      {
+        "pid": 3501020,
+        "reason": "EACCES: permission denied, open '/proc/3501020/environ'"
+      },
+      {
+        "pid": 3501021,
+        "reason": "EACCES: permission denied, open '/proc/3501021/environ'"
+      },
+      {
+        "pid": 3501023,
+        "reason": "EACCES: permission denied, open '/proc/3501023/environ'"
+      },
+      {
+        "pid": 3501024,
+        "reason": "EACCES: permission denied, open '/proc/3501024/environ'"
+      },
+      {
+        "pid": 3501025,
+        "reason": "EACCES: permission denied, open '/proc/3501025/environ'"
+      },
+      {
+        "pid": 3501027,
+        "reason": "EACCES: permission denied, open '/proc/3501027/environ'"
+      },
+      {
+        "pid": 3501028,
+        "reason": "EACCES: permission denied, open '/proc/3501028/environ'"
+      },
+      {
+        "pid": 3501029,
+        "reason": "EACCES: permission denied, open '/proc/3501029/environ'"
+      },
+      {
+        "pid": 3501030,
+        "reason": "EACCES: permission denied, open '/proc/3501030/environ'"
+      },
+      {
+        "pid": 3501031,
+        "reason": "EACCES: permission denied, open '/proc/3501031/environ'"
+      },
+      {
+        "pid": 3501033,
+        "reason": "EACCES: permission denied, open '/proc/3501033/environ'"
+      },
+      {
+        "pid": 3501034,
+        "reason": "EACCES: permission denied, open '/proc/3501034/environ'"
+      },
+      {
+        "pid": 3501035,
+        "reason": "EACCES: permission denied, open '/proc/3501035/environ'"
+      },
+      {
+        "pid": 3501036,
+        "reason": "EACCES: permission denied, open '/proc/3501036/environ'"
+      },
+      {
+        "pid": 3501037,
+        "reason": "EACCES: permission denied, open '/proc/3501037/environ'"
+      },
+      {
+        "pid": 3501039,
+        "reason": "EACCES: permission denied, open '/proc/3501039/environ'"
+      }
+    ]
+  },
+  "truncated": false,
+  "residual_unknowns": [
+    {
+      "scope": "process",
+      "reason": "Process trees are sampled and may omit short-lived descendants."
+    },
+    {
+      "scope": "process",
+      "reason": "The executable digest is a prelaunch file sample; operating-system image binding is not atomically observed."
+    },
+    {
+      "scope": "environment",
+      "reason": "Inherited host environment variables are not recorded."
+    },
+    {
+      "scope": "network",
+      "reason": "Network activity is not observed by this capture."
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3500847 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3500847/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3500946 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3500946/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3500988 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3500988/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3500995 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3500995/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3500996 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3500996/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3500997 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3500997/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3500998 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3500998/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3500999 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3500999/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501000 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501000/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501001 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501001/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501002 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501002/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501003 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501003/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501004 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501004/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501005 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501005/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501006 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501006/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501007 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501007/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501008 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501008/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501009 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501009/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501010 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501010/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501011 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501011/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501012 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501012/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501013 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501013/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501014 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501014/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501015 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501015/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501018 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501018/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501019 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501019/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501020 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501020/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501021 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501021/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501023 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501023/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501024 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501024/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501025 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501025/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501027 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501027/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501028 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501028/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501029 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501029/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501030 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501030/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501031 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501031/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501033 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501033/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501034 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501034/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501035 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501035/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501036 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501036/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501037 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501037/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 3501039 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/3501039/environ'"
+    }
+  ],
+  "p0_report_sha256": "82570cdef2f6f155bac4fc1d33f366de4719ae930385b01a665cb28dad873a40",
+  "scenario": {
+    "executable": "/usr/bin/python3",
+    "arguments": [
+      "-I",
+      "/home/my/workspace/ainfra/mywork/mybot/tests/research/verify_omb_p0.py",
+      "--package",
+      "/tmp/mybot-cross-device.FXoGm6/artifacts/omb",
+      "--archive",
+      "/tmp/mybot-cross-device.FXoGm6/openmausbot-0.1.146.tgz",
+      "--node",
+      "/home/my/.npm/_npx/ef8b185be06dfeb4/node_modules/node/bin/node",
+      "--report",
+      "/tmp/mybot-rea-p0-1f9i4q_e/reports/omb-p0.json"
+    ],
+    "working_directory": "/tmp/mybot-rea-p0-1f9i4q_e",
+    "filesystem_observation_paths": [
+      "/tmp/mybot-rea-p0-1f9i4q_e/reports"
+    ],
+    "timeout_ms": 60000,
+    "settle_ms": 300,
+    "limits": {
+      "output_bytes": 100000,
+      "file_bytes": 100000,
+      "files": 20
+    }
+  },
+  "invocation_environment": {
+    "PATH": "/usr/bin:/bin",
+    "HOME": "/tmp/mybot-rea-p0-1f9i4q_e/home",
+    "LANG": "C.UTF-8",
+    "TMPDIR": "/tmp/mybot-rea-p0-1f9i4q_e"
+  },
+  "harness_sha256": {
+    "verify_omb_p0.py": "bf53fe5a21f83a8a500d431f53ac8c3b9755bf717d52589cb4e4d04e3ccce96b",
+    "guard.py": "bc17ec678aa749ff48b2357fd3d4aabc9e87a10cdb8b35f985ba2617b327399d",
+    "guard_selftest.py": "ab31aa0f7bfd5b4d06161aaf8eff292d8cf856eb0ce8451b98f9ab4063d1e8c5"
+  },
+  "limitation": "REA observes the probe and its report, not every HTTP or network syscall."
+}

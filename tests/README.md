@@ -1,5 +1,9 @@
 # 实现验证
 
+上游研究探针独立于业务测试，见 [research/README.md](research/README.md)。OpenMausBot P0 不使用生产数据、不发送模型请求；REA 完整证据与底座采用结论分开记录。
+
+Runtime Lab 的预览验证独立运行：`node --test tests/research/test_runtime_preview.cjs`，浏览器入口 `design/runtime-lab/verify.mjs`。它只测试本地夹具，不自动启动或调用任何上游执行器，结果见 [预览记录](../docs/RUNTIME_LAB_PREVIEW.md)。
+
 ## 后端
 
 ```bash
@@ -9,6 +13,10 @@ node --check web/app.js
 ```
 
 测试使用临时目录/SQLite、FakeProvider 和 HTTPX MockTransport，不发送外部模型请求。覆盖文件与凭证边界、发送确认、幂等、角色路由、调用计量、部分失败、截断、暂停/取消/续跑、重启与访问控制。
+
+Codex 故障测试只运行临时 fake CLI，覆盖事件用量、超时、取消、输出限额、临时文件/读取任务清理、共享单通道，以及恢复时复用已完成研究。不会执行本机真实 Codex。
+
+重试测试覆盖来源快照 hash、显式重放确认、最低新增预算、角色模型重新分配、来源 Run 不变、幂等请求、活动运行互斥和服务重启后的 lineage；不会自动发起真实 Provider 重试。
 
 本轮存在一条 Starlette TestClient/httpx 迁移警告，非测试失败；尚未迁移 httpx2。
 
@@ -26,5 +34,7 @@ node tests/verify-live.mjs
 `TEST_PORT` 默认 4182，冲突时显式指定空闲端口。脚本创建临时测试服务与数据目录，注入仅测试可用的 FakeProvider，结束后关闭服务；不会调用真实模型，不使用生产 `.runtime/`。
 
 检查包括创建项目/模型、预览并启动运行、Agent/调用/审计/成果、展开状态、审查持久化、手机导航和表单、令牌登录/退出/重新登录。尺寸为 1440/1024/768/390/320px，不是真机或 Safari 兼容性认证。
+
+超时诊断流程使用 BrowserProvider 固定故障夹具，检查 API 持久化和 320/1440px 弹窗，不是一次真实 Codex 超时。
 
 结果写入 [evidence/browser.json](evidence/browser.json)，截图的“测试输出”是夹具，不是模型回答质量证明。

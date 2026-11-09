@@ -58,6 +58,9 @@ try {
   await page.locator('#form-dialog [type="submit"]').click();
   await page.getByRole("heading", { name: "浏览器测试模型" }).waitFor();
   assert.match(await page.locator(".model-row").innerText(), /未测试/);
+  await page.getByRole("button", { name: "设为默认" }).click();
+  await page.waitForFunction(() => document.querySelector(".model-row")?.textContent.includes("默认"));
+  report.interactions.push("default-model-setting-is-persistent");
   report.interactions.push("model-config-is-not-a-provider-test");
 
   await page.locator('.primary-nav a[href="#home"]').click();
@@ -75,6 +78,9 @@ try {
   await page.getByRole("heading", { name: "验证手机与桌面调研闭环" }).waitFor();
   await page.waitForFunction(() => document.querySelector(".fact-axes")?.textContent.includes("执行完成"), { timeout: 15000 });
   assert.match(await page.locator(".fact-axes").innerText(), /未执行测试/);
+  assert.equal(await page.locator(".agent-work-graph").count(), 1);
+  assert.equal(await page.locator(".agent-work-stage").count(), 3);
+  assert.match(await page.locator(".agent-work-graph").innerText(), /制定计划/);
   await page.locator('[data-tab="agents"]').click();
   assert.equal(await page.locator(".live-agent-row").count(), 4);
   await page.locator('[data-tab="calls"]').click();
@@ -86,6 +92,16 @@ try {
   assert.match(await page.locator(".audit-list").innerText(), /artifact.created/);
   await page.locator('[data-tab="work"]').click();
   assert.ok(await page.locator(".artifact-content").innerText());
+  const runUrl = page.url();
+  await page.locator('a[href="#agent-work"]').click();
+  await page.getByRole("heading", { name: "AI Agent Work", exact: true }).waitFor();
+  assert.equal(await page.locator(".agent-work-run").count(), 1);
+  await page.locator(".agent-work-run").first().click();
+  await page.getByRole("heading", { name: "Agent Work", level: 1, exact: true }).waitFor();
+  assert.equal(await page.locator(".agent-work-detail-grid").count(), 1);
+  report.interactions.push("agent-work-visualization");
+  await page.goto(runUrl);
+  await page.getByRole("heading", { name: "验证手机与桌面调研闭环", exact: true }).waitFor();
   await page.locator(".original-request summary").click();
   await Promise.all([
     page.waitForResponse((response) => response.url().endsWith("/api/bootstrap")),
@@ -95,7 +111,6 @@ try {
   assert.equal(await page.locator(".original-request").evaluate((node) => node.open), true);
   report.interactions.push("start-run-agent-calls-artifact-audit");
 
-  const runUrl = page.url();
   for (const [name, width, height] of [
     ["desktop", 1440, 1000], ["compact", 1024, 900], ["tablet", 768, 1024],
     ["android-size", 390, 844], ["iphone-small-size", 320, 740],
@@ -146,8 +161,117 @@ try {
   await page.locator('[name="token"]').fill(testToken);
   await page.locator('#form-dialog [type="submit"]').click();
   await page.getByRole("heading", { name: "模型与控制", exact: true }).waitFor();
-  assert.equal(await page.getByRole("heading", { name: "浏览器测试模型", exact: true }).count(), 1);
+  assert.equal(await page.getByRole("heading", { name: /浏览器测试模型/ }).count(), 1);
   report.interactions.push("token-login-logout-and-relogin");
+
+  const bootstrap = await (await page.request.get(`${base}/api/bootstrap`)).json();
+  const headers = { "X-Workbench-Request": "1" };
+  const taskResponse = await page.request.post(`${base}/api/tasks`, {
+    headers, data: { project_id: bootstrap.projects[0].id, title: "超时诊断测试夹具",
+      goal: "timeout-diagnostics-fixture", files: [] },
+  });
+  assert.equal(taskResponse.status(), 201);
+  const failedTask = await taskResponse.json();
+  const preview = await (await page.request.post(`${base}/api/tasks/${failedTask.id}/preview`,
+    { headers, data: {} })).json();
+  const modelId = bootstrap.models[0].id;
+  const failedRunResponse = await page.request.post(`${base}/api/tasks/${failedTask.id}/runs`, {
+    headers, data: { coordinator_model: modelId, researcher_model: modelId, reviewer_model: modelId,
+      consent: true, request_id: "browser-timeout-fixture", context_hash: preview.context_hash },
+  });
+  assert.equal(failedRunResponse.status(), 201);
+  const failedRun = await failedRunResponse.json();
+  await page.goto(`${base}/#run/${failedRun.id}`);
+  await page.waitForFunction(() => document.querySelector(".notice-red")?.textContent.includes("Codex CLI"));
+  await page.locator('[data-tab="calls"]').click();
+  await page.locator('.calls-table [data-action="call"]').first().click();
+  await page.locator(".call-diagnostics").waitFor();
+  assert.match(await page.locator(".call-diagnostics").innerText(), /process_reaped/);
+  for (const width of [320, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    const layout = await page.locator("#form-dialog").evaluate((dialog) => ({
+      fits: dialog.getBoundingClientRect().width <= innerWidth,
+      overflow: dialog.scrollWidth > dialog.clientWidth + 1,
+    }));
+    assert.ok(layout.fits && !layout.overflow, JSON.stringify(layout));
+  }
+  await page.getByRole("button", { name: "关闭", exact: true }).click();
+  report.interactions.push("timeout-diagnostics-persist-and-fit-mobile-desktop");
+
+  const retryModelResponse = await page.request.post(`${base}/api/models`, {
+    headers, data: { name: "重试模型（测试夹具）", endpoint: "http://127.0.0.1:9999/v1", model: "retry-fixture" },
+  });
+  const retryModel = await retryModelResponse.json();
+  const retryTaskResponse = await page.request.post(`${base}/api/tasks`, {
+    headers, data: { project_id: bootstrap.projects[0].id, title: "资源重试验收（测试夹具）",
+      goal: "resource-retry-fixture", files: ["README.md"] },
+  });
+  const retryTask = await retryTaskResponse.json();
+  const retryContext = await (await page.request.post(`${base}/api/tasks/${retryTask.id}/preview`,
+    { headers, data: {} })).json();
+  const retrySourceResponse = await page.request.post(`${base}/api/tasks/${retryTask.id}/runs`, {
+    headers, data: { coordinator_model: modelId, researcher_model: modelId, reviewer_model: modelId,
+      consent: true, request_id: "browser-resource-source", context_hash: retryContext.context_hash },
+  });
+  assert.equal(retrySourceResponse.status(), 201);
+  const retrySource = await retrySourceResponse.json();
+  await page.goto(`${base}/#run/${retrySource.id}`);
+  await page.getByRole("heading", { name: "资源重试验收（测试夹具）", exact: true }).waitFor();
+  await page.waitForFunction(() => document.querySelector(".fact-axes")?.textContent.includes("执行失败"));
+  await page.getByRole("button", { name: "重试与资源", exact: true }).click();
+  await page.locator('[data-form="retry"]').waitFor();
+  assert.equal(await page.locator(".retry-steps li").count(), 4);
+  assert.equal(await page.locator(".retry-steps .status").filter({ hasText: "复用" }).count(), 3);
+  assert.equal(await page.locator('[name="max_calls"]').inputValue(), "1");
+  assert.equal(await page.locator('[name="coordinator_model"]').isDisabled(), true);
+  assert.equal(await page.locator('[name="researcher_model"]').isDisabled(), true);
+  await page.locator('[name="acknowledge_replay"]').check();
+  await page.locator('[name="consent"]').check();
+  await page.locator('[name="reviewer_model"]').selectOption(retryModel.id);
+  assert.equal(await page.locator('[name="consent"]').isChecked(), false);
+  assert.equal(await page.locator('[name="acknowledge_replay"]').isChecked(), false);
+  await page.locator('[name="call_timeout_seconds"]').fill("180");
+  await page.locator('[name="max_output_tokens"]').fill("2048");
+  assert.match(await page.locator("#retry-targets").innerText(), /重试模型/);
+  for (const width of [1440, 768, 390, 320]) {
+    await page.setViewportSize({ width, height: 1000 });
+    const geometry = await page.locator("#form-dialog").evaluate((dialog) => ({
+      width: dialog.getBoundingClientRect().width, viewport: innerWidth,
+      overflow: dialog.scrollWidth > dialog.clientWidth + 1,
+    }));
+    assert.ok(geometry.width <= geometry.viewport && !geometry.overflow, JSON.stringify(geometry));
+    if (width === 1440 || width === 390) {
+      await page.locator("#form-dialog").evaluate((dialog) => { dialog.scrollTop = 0; });
+      await page.screenshot({ path: `${out}/retry-resources-${width}.png`, fullPage: true });
+    }
+  }
+  const unchanged = await (await page.request.get(`${base}/api/runs/${retrySource.id}`)).json();
+  assert.equal(unchanged.calls.length, 4);
+  assert.equal(unchanged.run.status, "failed");
+  assert.equal(unchanged.retry_runs.length, 0);
+  report.interactions.push("resource-retry-preview-consent-reset-and-responsive-layout");
+  await page.locator('[name="acknowledge_replay"]').check();
+  await page.locator('[name="consent"]').check();
+  await page.getByRole("button", { name: "确认重试", exact: true }).click();
+  await page.waitForURL((url) => url.hash.startsWith("#run/") && !url.hash.endsWith(retrySource.id));
+  await page.waitForFunction(() => document.querySelector(".fact-axes")?.textContent.includes("执行完成"));
+  const newRunId = page.url().split("#run/")[1];
+  const recovered = await (await page.request.get(`${base}/api/runs/${newRunId}`)).json();
+  assert.equal(recovered.calls.length, 1);
+  assert.equal(recovered.run.source_run_id, retrySource.id);
+  assert.equal(recovered.run.config.call_timeout_seconds, 180);
+  assert.equal(recovered.calls[0].model_id, retryModel.id);
+  assert.equal(recovered.agents.filter((agent) => agent.source_agent_id).length, 3);
+  assert.match(await page.locator(".retry-lineage").innerText(), /本次新增 1 次调用/);
+  await page.reload();
+  await page.locator(".retry-lineage").waitFor();
+  const sourceAfter = await (await page.request.get(`${base}/api/runs/${retrySource.id}`)).json();
+  assert.deepEqual(sourceAfter.run, unchanged.run);
+  assert.deepEqual(sourceAfter.calls, unchanged.calls);
+  await page.locator(".retry-lineage a").first().click();
+  await page.getByRole("button", { name: "重试与资源", exact: true }).waitFor();
+  assert.equal(await page.locator(`.retry-lineage a[href="#run/${newRunId}"]`).count(), 1);
+  report.interactions.push("resource-retry-submits-once-reuses-results-and-persists-lineage");
   assert.deepEqual(report.externalRequests, []);
   assert.deepEqual(report.errors, []);
 } catch (error) {
@@ -157,7 +281,7 @@ try {
   server.kill("SIGTERM");
   await new Promise((resolve) => { if (server.exitCode !== null) resolve(); else server.once("exit", resolve); });
 }
-report.complete = report.interactions.length === 6 && report.viewports.length === 5 && report.errors.length === 0;
+report.complete = report.interactions.length === 11 && report.viewports.length === 5 && report.errors.length === 0;
 await writeFile(`${out}/browser.json`, `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify(report, null, 2));
 if (!report.complete) process.exitCode = 1;

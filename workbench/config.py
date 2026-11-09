@@ -13,6 +13,7 @@ class Settings:
     access_token: str = ""
     secure_cookie: bool = False
     poll_interval: float = 0.25
+    default_model_id: str = ""
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -31,4 +32,5 @@ class Settings:
             allowed_hosts=hosts,
             access_token=token,
             secure_cookie=os.environ.get("WORKBENCH_SECURE_COOKIE") == "1",
+            default_model_id=os.environ.get("WORKBENCH_DEFAULT_MODEL_ID", "").strip(),
         )

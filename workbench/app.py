@@ -4,6 +4,7 @@ import fcntl
 import hashlib
 import ipaddress
 import secrets
+import shutil
 import time
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -16,9 +17,11 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from .config import Settings
 from .context import ContextError, snapshot, validate_directory
 from .engine import Engine
-from .provider import ProviderError, key_available
+from .harness import LocalSuperagentHarness
+from .provider import ProviderError, ProviderRouter, key_available
+from .recovery import MODEL_FIELDS
 from .schemas import (
-    ArtifactDecision, Login, ModelCreate, ProjectCreate, Resume, RunCreate, TaskCreate,
+    ArtifactDecision, DefaultModel, Login, ModelCreate, ProjectCreate, Resume, RunCreate, RunRetry, TaskCreate,
 )
 from .store import Store, now
 
@@ -26,7 +29,7 @@ from .store import Store, now
 def create_app(settings=None, provider=None) -> FastAPI:
     settings = settings or Settings.from_env()
     store = Store(settings.data_dir)
-    engine = Engine(store, provider, settings.poll_interval)
+    engine = Engine(store, provider or ProviderRouter(), settings.poll_interval)
     sessions = {}
     login_attempts = {}
     root = Path(__file__).resolve().parents[1]
@@ -149,11 +152,20 @@ def create_app(settings=None, provider=None) -> FastAPI:
 
     @app.get("/api/bootstrap")
     async def bootstrap():
+        local_harnesses = [
+            {"id": name, "label": label, "available": bool(shutil.which(name)), "auth": "unverified"}
+            for name, label in (("codex", "Codex CLI"), ("claude", "Claude Code"),
+                                ("opencode", "OpenCode"), ("t3", "T3 Code"))
+        ]
         return {"projects": store.list("projects"), "models": [public_model(m) for m in store.list("models")],
                 "tasks": store.list("tasks"), "runs": store.list("runs"),
                 "workspace": str(settings.workspace), "access": "read_only",
+                "default_model_id": store.get_setting("default_model_id", settings.default_model_id),
+                "local_harnesses": local_harnesses,
                 "capabilities": {"code_write": False, "shell": False, "deployment": False,
-                                 "parallel_research": True, "max_parallel": 2}}
+                                 "parallel_research": True, "max_parallel": 2,
+                                 "agent_work": True,
+                                 "harness": LocalSuperagentHarness.capabilities()}}
 
     @app.post("/api/projects", status_code=201)
     async def project_create(body: ProjectCreate):
@@ -164,9 +176,26 @@ def create_app(settings=None, provider=None) -> FastAPI:
     async def model_create(body: ModelCreate):
         return public_model(store.add("models", body.model_dump(), "model.configured"))
 
+    @app.post("/api/models/enable-codex")
+    async def enable_codex():
+        if not shutil.which("codex"):
+            raise HTTPException(422, "Codex CLI was not found on PATH")
+        existing = next((model for model in store.list("models") if model.get("kind") == "codex_cli"), None)
+        if existing:
+            return {"model": public_model(existing), "created": False,
+                    "note": "Codex CLI 配置已存在；尚未发起请求"}
+        model = store.add("models", {
+            "kind": "codex_cli", "name": "Codex CLI", "endpoint": "codex://local",
+            "model": "codex-cli", "key_env": "",
+        }, "model.codex_enabled")
+        return {"model": public_model(model), "created": True,
+                "note": "Codex CLI 配置已启用；尚未发起请求"}
+
     @app.post("/api/models/{identifier}/test")
     async def model_test(identifier: str):
         model = store.get("models", identifier)
+        if model.get("kind") == "codex_cli":
+            model = {**model, "workspace": str(settings.workspace)}
         try:
             await engine.provider.complete(model, [{"role": "user", "content": "Reply only OK."}], 16)
             status = "reachable"
@@ -176,6 +205,12 @@ def create_app(settings=None, provider=None) -> FastAPI:
             db.execute("UPDATE models SET tested_at=?,test_status=? WHERE id=?", (now(), status, identifier))
             store.event(db, "model.tested", {"status": status}, entity_id=identifier, actor="user")
         return {"status": status, "note": "A minimal request tests reachability, not full tool capability"}
+
+    @app.post("/api/settings/default-model")
+    async def default_model(body: DefaultModel):
+        model = store.get("models", body.model_id)
+        store.set_setting("default_model_id", model["id"])
+        return {"model_id": model["id"], "name": model["name"], "note": "保存默认模型不发起请求"}
 
     @app.post("/api/tasks", status_code=201)
     async def task_create(body: TaskCreate):
@@ -204,6 +239,9 @@ def create_app(settings=None, provider=None) -> FastAPI:
         for field in ("coordinator_model", "researcher_model", "reviewer_model"):
             model = store.get("models", config[field])
             if not key_available(model):
+                if model.get("kind") == "codex_cli":
+                    models[model["id"]] = {**model, "workspace": str(settings.workspace)}
+                    continue
                 raise HTTPException(422, f"Missing environment key for {model['name']}")
             models[model["id"]] = model
         text, evidence = snapshot(settings.workspace, project, task["files"])
@@ -221,14 +259,49 @@ def create_app(settings=None, provider=None) -> FastAPI:
     async def run_detail(identifier: str):
         run = store.get("runs", identifier)
         task = store.get("tasks", run["task_id"])
+        agents = store.list("agents", identifier)
+        calls = store.list("calls", identifier)
+        artifacts = store.list("artifacts", identifier)
+        events = store.events(identifier)
         return {"run": run, "task": task, "project": store.get("projects", task["project_id"]),
-                "agents": store.list("agents", identifier), "calls": store.list("calls", identifier),
-                "artifacts": store.list("artifacts", identifier), "events": store.events(identifier)}
+                "agents": agents, "calls": calls, "artifacts": artifacts, "events": events,
+                "retry_runs": store.retry_children(identifier),
+                "harness": LocalSuperagentHarness.describe(run, agents, calls, artifacts, events)}
 
     @app.get("/api/runs/{identifier}/events")
     async def run_events(identifier: str, after: int = 0):
         store.get("runs", identifier)
         return {"events": store.events(identifier, max(0, after))}
+
+    @app.get("/api/runs/{identifier}/retry-preview")
+    async def run_retry_preview(identifier: str):
+        return store.retry_preview(identifier)
+
+    @app.post("/api/runs/{identifier}/retry", status_code=201)
+    async def run_retry(identifier: str, body: RunRetry):
+        if not body.consent:
+            raise HTTPException(422, "retry_send_confirmation_required")
+        preview = store.retry_preview(identifier)
+        config = body.model_dump(exclude={"consent", "acknowledge_replay", "request_id", "snapshot_hash"})
+        active_roles = {step["role"] for step in preview["steps"] if step["action"] != "reuse"}
+        models = {}
+        for role, field in zip(("coordinator", "researcher", "reviewer"), MODEL_FIELDS):
+            if role not in active_roles:
+                if config[field] != preview["defaults"][field]:
+                    raise HTTPException(422, "retry_completed_role_model_locked")
+                continue
+            model = store.get("models", config[field])
+            if not key_available(model):
+                raise HTTPException(422, "missing_api_key")
+            if model.get("kind") == "codex_cli":
+                model = {**model, "workspace": str(settings.workspace)}
+            models[model["id"]] = model
+        try:
+            return store.create_retry(
+                identifier, body.request_id, config, models, body.snapshot_hash, body.acknowledge_replay,
+            )
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from exc
 
     @app.post("/api/runs/{identifier}/{action}")
     async def run_control(identifier: str, action: str, body: Resume):

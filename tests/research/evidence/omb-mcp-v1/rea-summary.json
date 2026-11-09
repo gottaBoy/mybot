@@ -1,0 +1,102 @@
+{
+  "rea_version": "6.8.0",
+  "rea_exit_code": 0,
+  "evidence_id": "ev_d1b5bc9e9a6dfa5ee1cf5ac96aee5b21df7233659c84607dbe2634c75b8ac35c",
+  "predicate_type": "rea.process-capture",
+  "exit": {
+    "code": 0,
+    "signal": 0,
+    "reason": "exited"
+  },
+  "settlement": {
+    "state": "quiesced",
+    "elapsed_ms": 228,
+    "cleanup_outcome": "not_required"
+  },
+  "cleanup": {
+    "owned_process_group": "verified",
+    "temporary_root": "removed",
+    "unverified_processes": [
+      {
+        "pid": 1723380,
+        "reason": "EACCES: permission denied, open '/proc/1723380/environ'"
+      },
+      {
+        "pid": 1723444,
+        "reason": "EACCES: permission denied, open '/proc/1723444/environ'"
+      }
+    ]
+  },
+  "truncated": false,
+  "residual_unknowns": [
+    {
+      "scope": "process",
+      "reason": "Process trees are sampled and may omit short-lived descendants."
+    },
+    {
+      "scope": "process",
+      "reason": "The executable digest is a prelaunch file sample; operating-system image binding is not atomically observed."
+    },
+    {
+      "scope": "environment",
+      "reason": "Inherited host environment variables are not recorded."
+    },
+    {
+      "scope": "network",
+      "reason": "Network activity is not observed by this capture."
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1723380 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1723380/environ'"
+    },
+    {
+      "scope": "process",
+      "reason": "Ownership of unrelated process 1723444 could not be verified; it was left untouched: EACCES: permission denied, open '/proc/1723444/environ'"
+    }
+  ],
+  "mcp_report_sha256": "acd065b30338c9a6d40467b691f9ee0ee2453c393264064146dc99dec844d4b2",
+  "probe_passed": true,
+  "check_count": 35,
+  "scenario": {
+    "executable": "/home/my/workspace/ainfra/mywork/mybot/.venv/bin/python",
+    "arguments": [
+      "-I",
+      "/home/my/workspace/ainfra/mywork/mybot/tests/research/verify_omb_mcp.py",
+      "--package",
+      "/tmp/mybot-cross-device.FXoGm6/artifacts/omb",
+      "--archive",
+      "/tmp/mybot-cross-device.FXoGm6/openmausbot-0.1.146.tgz",
+      "--node",
+      "/home/my/.npm/_npx/ef8b185be06dfeb4/node_modules/node/bin/node",
+      "--report",
+      "/tmp/mybot-rea-mcp-lu5nt05l/reports/omb-mcp.json"
+    ],
+    "working_directory": "/tmp/mybot-rea-mcp-lu5nt05l",
+    "filesystem_observation_paths": [
+      "/tmp/mybot-rea-mcp-lu5nt05l/reports"
+    ],
+    "timeout_ms": 90000,
+    "settle_ms": 300,
+    "limits": {
+      "output_bytes": 150000,
+      "file_bytes": 150000,
+      "files": 20
+    }
+  },
+  "invocation_environment": {
+    "PATH": "/usr/bin:/bin",
+    "HOME": "/tmp/mybot-rea-mcp-lu5nt05l/home",
+    "LANG": "C.UTF-8",
+    "TMPDIR": "/tmp/mybot-rea-mcp-lu5nt05l"
+  },
+  "harness_sha256": {
+    "capture_omb_mcp.py": "ed66bec2a0a9569587d8b89a26c7012a7767d6861da4d77eef85b0e24e0d9eb2",
+    "verify_omb_mcp.py": "0336df6d4054694d1daddadb7c1a6d16001b0b02a8eed9ba1f4ad53a174e48d7",
+    "mock_acp.py": "97626fae7fb09acf0615d44185817322ff466b8ceca6301fcf76f7a0f9f7dbc8",
+    "omb_mcp_bridge.mjs": "52d70a3fde830f2f628bb1878dfd479f659a62a74648143d41052ee3db35425b",
+    "guard.py": "bc17ec678aa749ff48b2357fd3d4aabc9e87a10cdb8b35f985ba2617b327399d",
+    "guard_selftest.py": "ab31aa0f7bfd5b4d06161aaf8eff292d8cf856eb0ce8451b98f9ab4063d1e8c5",
+    "verify_omb_p0.py": "1b1d163447493c74d2f02e404335ea220530a614fae9e5a2338ab6f2e395ddd2"
+  },
+  "limitation": "REA captures probe/report, not all HTTP/syscalls. Handler transport is injected; native fetch untested."
+}

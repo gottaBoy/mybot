@@ -1,0 +1,79 @@
+{
+  "date": "2026-11-07T15:50:54.398966+00:00",
+  "scope": "one authorized text-only Codex CLI turn, not an OpenMausBot integration",
+  "authorized_one_request": true,
+  "prompt": "Reply with exactly MYBOT_ACCOUNT_OK. Do not call tools or access any files.",
+  "turn_start_calls": 1,
+  "automatic_rerun": false,
+  "status": "passed",
+  "wire_request_count": "not independently observed",
+  "credential_values_logged": false,
+  "temporary_workspace": "/tmp/mybot-codex-text-sq3u7run",
+  "initialized": true,
+  "configured_model": "gpt-6.1-sol",
+  "authentication": "existing_cli_api_key_no_export",
+  "provider_endpoint_not_recorded": true,
+  "disabled_features": [
+    "shell_tool",
+    "unified_exec",
+    "shell_snapshot",
+    "code_mode",
+    "code_mode_host",
+    "view_image",
+    "image_generation",
+    "multi_agent",
+    "multi_agent_v2",
+    "browser_use",
+    "browser_use_external",
+    "in_app_browser",
+    "computer_use",
+    "apps",
+    "plugins",
+    "remote_plugin",
+    "hooks",
+    "goals",
+    "memories",
+    "skill_search",
+    "skill_mcp_dependency_install",
+    "workspace_dependencies",
+    "sleep_tool",
+    "tool_suggest",
+    "in_app_local_automation",
+    "unbounded_connection_retries"
+  ],
+  "disabled_mcp_server_count": 0,
+  "retry_overrides": {
+    "request_max_retries": 0,
+    "stream_max_retries": 0
+  },
+  "explicit_project_files_attached": 0,
+  "preflight_complete": true,
+  "turn_accepted": true,
+  "turn_status": "completed",
+  "duration_ms": 8041,
+  "reply_matches_expected": true,
+  "reply": "MYBOT_ACCOUNT_OK",
+  "tool_item_count": 0,
+  "observed_item_types": [
+    "agentMessage",
+    "userMessage"
+  ],
+  "visible_usage": {
+    "total": {
+      "totalTokens": 2715,
+      "inputTokens": 2707,
+      "cachedInputTokens": 0,
+      "outputTokens": 8,
+      "reasoningOutputTokens": 0
+    },
+    "last": {
+      "totalTokens": 2715,
+      "inputTokens": 2707,
+      "cachedInputTokens": 0,
+      "outputTokens": 8,
+      "reasoningOutputTokens": 0
+    }
+  },
+  "client_exit_code": 0,
+  "client_stopped": true
+}

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file:; style-src 'self' file:; img-src 'self' file: data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <title>mybot · 执行器实验室 · MOCK</title>
+  <link rel="icon" type="image/svg+xml" href="../review-v1/assets/icons/command.svg" />
+  <link rel="stylesheet" href="lab.css" />
+  <script src="fixture-runtime.js" defer></script>
+  <script src="lab.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到工作区</a>
+  <aside class="sidebar">
+    <a class="brand" href="#compare"><img src="../review-v1/assets/icons/command.svg" alt="" /><strong>mybot</strong><span>LAB</span></a>
+    <div class="workspace"><span class="workspace-mark">R</span><div><strong>研发工作空间</strong><small>单人试点 · 本地演示</small></div></div>
+    <div class="nav-caption">EXECUTION</div>
+    <nav aria-label="主导航">
+      <a href="#compare" data-view="compare"><img src="../review-v1/assets/icons/blocks.svg" alt="" />执行器对比<span class="nav-count">3</span></a>
+      <a href="#capabilities" data-view="capabilities"><img src="../review-v1/assets/icons/shield-check.svg" alt="" />能力与边界</a>
+      <a href="#research" data-view="research"><img src="../review-v1/assets/icons/file-search.svg" alt="" />研究证据</a>
+    </nav>
+    <div class="sidebar-divider"></div>
+    <div class="nav-caption">LOCAL CONTRACT</div>
+    <div class="contract-note"><img src="../review-v1/assets/icons/lock-keyhole.svg" alt="" /><span>权限上限独立于 Harness</span></div>
+    <div class="side-facts"><span>模型请求<strong>0</strong></span><span>工具执行<strong>0</strong></span><span>账号连接<strong>无</strong></span></div>
+    <div class="sidebar-bottom"><a class="workbench-link" href="http://127.0.0.1:4180/" target="_blank" rel="noopener"><img src="../review-v1/assets/icons/arrow-up-right.svg" alt="" />打开现有工作台</a><small>RuntimeAdapter / P1 · 预览</small></div>
+  </aside>
+  <div class="app-body">
+    <header class="topbar">
+      <a class="mobile-brand" href="#compare"><img src="../review-v1/assets/icons/command.svg" alt="" /><strong>mybot</strong></a>
+      <span class="breadcrumb">研发工作空间<span>/</span><strong id="breadcrumb-title">执行器对比</strong></span>
+      <span class="mock-badge"><span></span>MOCK · 不连接账号</span>
+      <button id="scope-button" class="icon-button" aria-label="检查预览边界" title="检查预览边界"><img src="../review-v1/assets/icons/circle-help.svg" alt="" /></button>
+    </header>
+    <nav class="mobile-nav" aria-label="移动导航"><a href="#compare" data-view="compare">对比</a><a href="#capabilities" data-view="capabilities">能力</a><a href="#research" data-view="research">证据</a></nav>
+    <main id="main" tabindex="-1">
+      <section id="compare-view">
+        <div class="page-heading"><div><div class="eyebrow">P1 / RUNTIME ADAPTER</div><h1>执行器对比</h1><p>同一份任务 · 三组协议形状夹具 · 一个事实模型</p></div><button class="button secondary" id="export-button"><img src="../review-v1/assets/icons/file-text.svg" alt="" />导出 Mock 记录</button></div>
+        <section class="task-config" aria-label="演示任务">
+          <div class="config-title"><span class="small-label">演示任务</span><span class="scope-tag"><img src="../review-v1/assets/icons/lock-keyhole.svg" alt="" />仅内存夹具</span></div>
+          <label for="task">任务目标</label>
+          <textarea id="task" maxlength="500" rows="2">对比研发工作台的跨端与权限约束，列出三条需要验证的风险。</textarea>
+          <div class="config-controls"><label class="scenario-control" for="scenario">场景<select id="scenario"></select></label><div class="playback-speed" role="group" aria-label="播放速度"><button data-speed="1" aria-pressed="true">1×</button><button data-speed="2" aria-pressed="false">2×</button></div><div class="run-controls"><button id="reset-button" class="icon-button" aria-label="重置 Mock" title="重置 Mock"><img src="../review-v1/assets/icons/refresh-cw.svg" alt="" /></button><button id="cancel-button" class="button secondary" disabled><img src="../review-v1/assets/icons/square.svg" alt="" />取消 Mock</button><button id="run-button" class="button primary"><img src="../review-v1/assets/icons/arrow-right.svg" alt="" />播放 Mock</button></div></div>
+        </section>
+        <div class="run-summary"><span id="comparison-state" role="status" aria-live="polite">尚未播放</span><span id="comparison-count">3 个夹具已选</span><span>真实执行未接入</span></div>
+        <div class="mobile-pane-switch" role="group" aria-label="工作面板"><button data-pane="comparison" aria-pressed="true">执行对比</button><button data-pane="inspector" aria-pressed="false">事件检查</button></div>
+        <div class="lab-layout" data-pane="comparison">
+          <section id="lanes" class="lanes" aria-label="执行器夹具"></section>
+          <aside class="inspector" aria-label="事件检查器">
+            <header class="inspector-heading"><div><span class="small-label">检查器</span><h2 id="inspector-name">Codex</h2></div><span class="scope-tag">夹具</span></header>
+            <div class="inspector-tabs" role="tablist" aria-label="检查器视图"><button id="tab-events" role="tab" aria-controls="inspector-content" aria-selected="true" data-tab="events">标准事件</button><button id="tab-native" role="tab" aria-controls="inspector-content" aria-selected="false" tabindex="-1" data-tab="native">原始夹具</button><button id="tab-result" role="tab" aria-controls="inspector-content" aria-selected="false" tabindex="-1" data-tab="result">结果</button></div>
+            <div id="inspector-content" role="tabpanel" aria-labelledby="tab-events"></div>
+          </aside>
+        </div>
+        <div class="comparison-footer"><img src="../review-v1/assets/icons/unplug.svg" alt="" /><span>本地 Mock · 无上游进程 · 无模型用量 · 刷新不保留</span></div>
+      </section>
+      <section id="capabilities-view" hidden>
+        <div class="page-heading"><div><div class="eyebrow">BOUNDARIES / NOT A BENCHMARK</div><h1>能力与边界</h1><p>上游声明、本地证据与工作台接入分开记录</p></div></div>
+        <div class="table-scroll"><table class="capability-table"><thead><tr><th>能力 / 证据</th><th>Codex</th><th>Pi</th><th>DeepSeek Harness</th></tr></thead><tbody>
+          <tr><th>独立文本请求</th><td><span class="fact green">一次已验证</span></td><td>未运行</td><td>未运行</td></tr>
+          <tr><th>工作台 RuntimeAdapter</th><td>未接入</td><td>未接入</td><td>未接入</td></tr>
+          <tr><th>候选接口</th><td>App Server</td><td>SDK / RPC</td><td>SDK / headless</td></tr>
+          <tr><th>本次页面</th><td>本地夹具</td><td>本地夹具</td><td>示意封装夹具</td></tr>
+          <tr><th>工具权限强制</th><td>未集成验收</td><td>未验证</td><td>未验证</td></tr>
+          <tr><th>取消与未决副作用</th><td>未集成验收</td><td>未验证</td><td>未验证</td></tr>
+          <tr><th>进程重启后续跑</th><td>未验收</td><td>未验证</td><td>未验证</td></tr>
+          <tr><th>真实模型请求授权</th><td>上次单次授权已用完</td><td>无授权</td><td>无授权</td></tr>
+        </tbody></table></div>
+        <div class="policy-band"><div><img src="../review-v1/assets/icons/shield-check.svg" alt="" /><h2>宿主权限上限</h2></div><dl><div><dt>资料</dt><dd>显式选择与确认</dd></div><div><dt>工具</dt><dd>默认拒绝</dd></div><div><dt>重试</dt><dd>不自动重发</dd></div><div><dt>事实源</dt><dd>mybot Run / Event</dd></div></dl></div>
+      </section>
+      <section id="research-view" hidden>
+        <div class="page-heading"><div><div class="eyebrow">EVIDENCE / REFERENCE MAP</div><h1>研究证据</h1><p>机制借鉴不等于集成或运行验收</p></div></div>
+        <div id="research-list" class="research-list"></div>
+      </section>
+    </main>
+    <footer class="page-footer"><span>mybot · Runtime Lab 0.1</span><span>原创预览 · 2026-11-08</span></footer>
+  </div>
+  <dialog id="scope-dialog" aria-labelledby="scope-title"><div class="dialog-heading"><h2 id="scope-title">预览边界</h2><button class="icon-button" id="close-dialog" aria-label="关闭" title="关闭"><img src="../review-v1/assets/icons/x.svg" alt="" /></button></div><dl class="scope-list"><div><dt>数据来源</dt><dd>本地预设夹具</dd></div><div><dt>模型 / 账号</dt><dd>不连接</dd></div><div><dt>运行存储</dt><dd>仅浏览器内存</dd></div><div><dt>上游协议</dt><dd>选定文档形状；不是兼容性认证</dd></div><div><dt>DSH 原始事件</dt><dd>演示封装，尚未验证上游 wire schema</dd></div><div><dt>真实执行器验收</dt><dd>未完成</dd></div></dl></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

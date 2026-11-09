@@ -1,0 +1,78 @@
+{
+  "date": "2026-11-07T17:15:38.289Z",
+  "scope": "Local file fixture preview; no upstream/model execution",
+  "interactions": [
+    "success-fixture-no-provider-or-tools",
+    "cancel-fixture-no-provider-or-tools",
+    "disconnect-fixture-no-provider-or-tools",
+    "failure-fixture-no-provider-or-tools",
+    "denied-fixture-no-provider-or-tools",
+    "manual-cancel-and-no-late-replay",
+    "empty-input-single-selection-and-html-escaping",
+    "keyboard-tabs-and-native-fixture-inspection",
+    "downloaded-json-preserves-mock-provenance",
+    "scope-dialog-and-escape",
+    "mobile-pane-and-result",
+    "navigation-capability-evidence-and-reset",
+    "reload-clears-in-memory-fixtures"
+  ],
+  "viewports": [
+    {
+      "name": "wide",
+      "width": 1920,
+      "scrollWidth": 1920,
+      "brokenImages": [],
+      "clippedButtons": [],
+      "screenshot": "wide-comparison.png",
+      "passed": true
+    },
+    {
+      "name": "desktop",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "brokenImages": [],
+      "clippedButtons": [],
+      "screenshot": "desktop-comparison.png",
+      "passed": true
+    },
+    {
+      "name": "compact",
+      "width": 1024,
+      "scrollWidth": 1024,
+      "brokenImages": [],
+      "clippedButtons": [],
+      "screenshot": "compact-comparison.png",
+      "passed": true
+    },
+    {
+      "name": "tablet",
+      "width": 768,
+      "scrollWidth": 768,
+      "brokenImages": [],
+      "clippedButtons": [],
+      "screenshot": "tablet-comparison.png",
+      "passed": true
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "scrollWidth": 390,
+      "brokenImages": [],
+      "clippedButtons": [],
+      "screenshot": "mobile-comparison.png",
+      "passed": true
+    },
+    {
+      "name": "small-mobile",
+      "width": 320,
+      "scrollWidth": 320,
+      "brokenImages": [],
+      "clippedButtons": [],
+      "screenshot": "small-mobile-comparison.png",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "complete": true
+}

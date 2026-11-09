@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-11-07T14:48:40.427020+00:00",
+  "scope": "P0 isolated upstream boot and metadata only; no model prompt",
+  "version": "0.1.146",
+  "temporary_root": "/tmp/mybot-rea-p0-1f9i4q_e/mybot-omb-p0-8pyj333m",
+  "launches": [
+    {
+      "trust": "service",
+      "port": 38007,
+      "webhook_port": 44841,
+      "log": "/tmp/mybot-rea-p0-1f9i4q_e/mybot-omb-p0-8pyj333m/profile/service-0.log",
+      "boot_ms": 921,
+      "exit_code": 0,
+      "listeners_closed": true
+    },
+    {
+      "trust": "owner",
+      "port": 46173,
+      "webhook_port": 45429,
+      "log": "/tmp/mybot-rea-p0-1f9i4q_e/mybot-omb-p0-8pyj333m/profile/owner-1.log",
+      "boot_ms": 620,
+      "exit_code": 0,
+      "listeners_closed": true
+    },
+    {
+      "trust": "service",
+      "port": 53461,
+      "webhook_port": 35437,
+      "log": "/tmp/mybot-rea-p0-1f9i4q_e/mybot-omb-p0-8pyj333m/profile/service-2.log",
+      "boot_ms": 621,
+      "exit_code": 0,
+      "listeners_closed": true
+    }
+  ],
+  "checks": {
+    "archive_integrity": true,
+    "extracted_members_match_archive": true,
+    "cli_help": true,
+    "node_version_pinned": true,
+    "oss_edition": true,
+    "static_html": true,
+    "service_config_denied": true,
+    "unpaired_browser_denied": true,
+    "service_bot_list_visible": true,
+    "ask_first_default": false,
+    "no_model_selected": true,
+    "service_bot_mutation_denied": true,
+    "owner_can_set_ask_template": true,
+    "ask_template_creates_ask": true,
+    "explicit_full_can_override_template": false,
+    "owner_can_downgrade_fixture": true,
+    "fixture_now_ask": true,
+    "fixture_ask_persisted": true,
+    "all_processes_stopped": true
+  },
+  "observations": {
+    "verified_package_file_count": 1666,
+    "node_version": "v24.22.1",
+    "fresh_bot_count": 1,
+    "fresh_bot_modes": [
+      "full"
+    ],
+    "ask_template_status": 200,
+    "ask_template_created_mode": null,
+    "ask_template_response_keys": [
+      "bot"
+    ],
+    "ask_template_response": {
+      "id": "671f02da-47e6-4097-82ca-091590b2d0a5",
+      "threadId": "2c9e3bce-2930-4676-8f6c-e4e44eba3a62",
+      "name": "Ask default synthetic",
+      "title": "",
+      "description": "",
+      "soul": "",
+      "soulHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "notifications": true,
+      "color": "green",
+      "mascotBody": "cursor",
+      "unread": false,
+      "modelSelection": {
+        "instanceId": "",
+        "model": ""
+      },
+      "createdAt": 1794062922832,
+      "approvalMode": "ask",
+      "avatarUrl": null,
+      "autoApprove": false,
+      "waitingForTeammates": false,
+      "mainThreadId": "2c9e3bce-2930-4676-8f6c-e4e44eba3a62",
+      "tasks": [
+        {
+          "threadId": "2c9e3bce-2930-4676-8f6c-e4e44eba3a62",
+          "title": "New thread",
+          "createdAt": 1794062922832,
+          "updatedAt": 1794062922846,
+          "unread": false,
+          "activity": "idle",
+          "busy": false,
+          "lastThreadOrderAt": 1794062922846,
+          "modelSelection": {
+            "instanceId": "",
+            "model": ""
+          },
+          "followsBotModel": true,
+          "waitingForTeammates": false
+        }
+      ],
+      "messages": [
+        {
+          "id": "5e470a6b-8bc7-4662-90f1-d04fb344b21b",
+          "at": 1794062922846,
+          "parentId": null,
+          "role": "bot",
+          "kind": "text",
+          "text": "Hi, I'm Ask default synthetic. What would you like me to do?",
+          "setupOffer": true,
+          "setupChoices": [
+            "Research and digging into topics",
+            "Keeping an eye on things for me",
+            "Email, calendar and messages",
+            "Bookings, shopping and errands",
+            "Data, spreadsheets and reports"
+          ]
+        }
+      ],
+      "activeLeafId": "5e470a6b-8bc7-4662-90f1-d04fb344b21b"
+    },
+    "explicit_full_status": 201,
+    "explicit_full_created_mode": "ask",
+    "explicit_full_response_keys": [
+      "bot"
+    ],
+    "explicit_full_response": {
+      "id": "1684817b-d222-4e45-91ae-40dfb6870437",
+      "threadId": "c7513a93-407a-4aed-ab4d-5a696ba255af",
+      "name": "Explicit full synthetic",
+      "title": "",
+      "description": "",
+      "soul": "",
+      "soulHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "notifications": true,
+      "color": "pink",
+      "mascotBody": "cursor",
+      "unread": false,
+      "modelSelection": {
+        "instanceId": "",
+        "model": ""
+      },
+      "createdAt": 1794062922870,
+      "approvalMode": "ask",
+      "avatarUrl": null,
+      "autoApprove": false,
+      "waitingForTeammates": false,
+      "mainThreadId": "c7513a93-407a-4aed-ab4d-5a696ba255af",
+      "tasks": [
+        {
+          "threadId": "c7513a93-407a-4aed-ab4d-5a696ba255af",
+          "title": "New thread",
+          "createdAt": 1794062922870,
+          "updatedAt": 1794062922886,
+          "unread": false,
+          "activity": "idle",
+          "busy": false,
+          "lastThreadOrderAt": 1794062922886,
+          "modelSelection": {
+            "instanceId": "",
+            "model": ""
+          },
+          "followsBotModel": true,
+          "waitingForTeammates": false
+        }
+      ],
+      "messages": [
+        {
+          "id": "c5444069-c309-4551-9aa0-96c00ba0c739",
+          "at": 1794062922886,
+          "parentId": null,
+          "role": "bot",
+          "kind": "text",
+          "text": "Hi, I'm Explicit full synthetic. What would you like me to do?",
+          "setupOffer": true,
+          "setupChoices": [
+            "Research and digging into topics",
+            "Keeping an eye on things for me",
+            "Email, calendar and messages",
+            "Bookings, shopping and errands",
+            "Data, spreadsheets and reports"
+          ]
+        }
+      ],
+      "activeLeafId": "c5444069-c309-4551-9aa0-96c00ba0c739"
+    },
+    "identity_persisted": true
+  },
+  "errors": [],
+  "not_tested": [
+    "model or tool execution",
+    "live approvals",
+    "Bot API authenticated execution",
+    "running-task restart/replay",
+    "SSE delivery/replay",
+    "phone pairing or devices",
+    "third-party accounts",
+    "production security",
+    "enterprise license suitability"
+  ],
+  "integrity": "sha512-RKx0WYT/xJMCHjvIcv3jALIz1AF0LiyjSmE3bRERdALXunc6ULPk3nOaor6noTnKgSmeOSVDuB4ycrmEPD6WPA==",
+  "selected_sha256": {
+    "cli.js": "1873fee9198a8102e0118c2aba19aa7903eb084b249c9105968b458e671bb9a8",
+    "dist-server/index.js": "c538779892379bc8cd3297d8e2c4f5d506050b9470325b9bccfecc41a545ba94",
+    "dist-server/shared/approval-mode.js": "3c372bd82ac3a603a1480adde81a2737cfd2473765f0b9ce2ff72b7477636fea",
+    "dist-server/server/request-auth.js": "cd36862b2bf1d1481521e175fecfcc51139efba7bb4fe63f74ee1e5bc3a4b3e1"
+  },
+  "guard": {
+    "allowed_write_read": true,
+    "clean_environment": true,
+    "explicit_loopback_listener_allowed": true,
+    "tcp_outbound_denied": true,
+    "udp_outbound_denied": true,
+    "unlisted_file_denied": true,
+    "unlisted_listener_denied": true
+  },
+  "p0_verdict": "not_adopted_ask_first_default_failed"
+}
