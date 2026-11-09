@@ -172,3 +172,26 @@ P0 的安全预检通过后，按具体范围选择工具：
 - T1-T8 全部通过且许可边界明确：进入 `ExecutionAdapter` 设计。
 - 任务能跑但权限、事件或私有化不足：作为旁车。
 - 必须官方身份/云服务、默认 Full 无法收紧或无法对齐 Run/Call/Event：淘汰为参考资料。
+
+## 6. mybot 当前 Adapter 进度（2026-11-09）
+
+已在 mybot 内建立稳定的 `BackendConnection` / `ConversationRef` / `MessageRef`
+合同和 `OpenMausBotReadOnlyAdapter` 隔离适配器。Adapter 固定研究 commit：
+
+```text
+gottaBoy/OpenMausBot
+1bc4749aa8307d7d6998bf86de4ef6478460dd93
+```
+
+当前 Adapter 只支持合同级只读 GET 映射，端点路径通过配置提供，不宣称这些路径就是
+OpenMausBot 固定 fork 的真实 API。已验证：
+
+- 会话和消息列表；
+- `cursor` / `next_cursor`、`nextCursor`；
+- 重复外部 ID 去重；
+- 403、404、5xx、schema invalid、revoked 和 unreachable 错误映射；
+- 不存在发送、更新、任务启动或模型调用方法。
+
+验证使用 `httpx.MockTransport`，没有真实账号、HTTP 服务、MCP client 或上游网络。
+下一步必须先核对固定 fork 的原生协议/端点，再把 Adapter 接入配置服务；不能把合同
+夹具结果写成 OpenMausBot 已连接。

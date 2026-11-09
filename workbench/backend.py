@@ -11,6 +11,8 @@ from typing import Protocol
 
 import httpx
 
+OPENMAUSBOT_FORK_COMMIT = "1bc4749aa8307d7d6998bf86de4ef6478460dd93"
+
 class BackendError(Exception):
     def __init__(self, code: str):
         self.code = code
@@ -79,6 +81,10 @@ class OpenMausBotReadOnlyAdapter:
     def __init__(self, client: httpx.AsyncClient | None = None):
         self.client = client
         self._connections: dict[str, BackendConnection] = {}
+
+    @classmethod
+    def supported_commit(cls) -> str:
+        return OPENMAUSBOT_FORK_COMMIT
 
     async def list_conversations(self, connection, *, cursor=None):
         self._connections[connection.id] = connection
