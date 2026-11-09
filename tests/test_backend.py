@@ -7,6 +7,7 @@ from workbench.backend import (
     BackendConnection,
     BackendError,
     ConversationRef,
+    OpenMausBotNativeReadAdapter,
     OpenMausBotReadOnlyAdapter,
     UnconfiguredConversationBackend,
 )
@@ -100,3 +101,38 @@ def test_openmausbot_read_adapter_rejects_schema_and_revoked_connection():
     with pytest.raises(BackendError, match="backend_revoked"):
         asyncio.run(adapter.list_conversations(revoked))
     asyncio.run(client.aclose())
+
+
+def test_openmausbot_native_adapter_maps_observed_read_routes():
+    requests = []
+
+    def handler(request):
+        requests.append(request)
+        if request.url.path == "/api/bots":
+            return httpx.Response(200, json={"bots": [
+                {"id": "bot-1", "name": "Research bot", "threadId": "thread/one", "status": "idle"},
+            ]})
+        assert request.url.path == "/api/threads/thread/one/messages"
+        assert request.url.params["limit"] == "30"
+        return httpx.Response(200, json={"messages": [
+            {"id": "m1", "role": "assistant", "content": "answer"},
+        ], "hasMore": False})
+
+    client = httpx.AsyncClient(
+        base_url="http://mock.local", transport=httpx.MockTransport(handler),
+    )
+    adapter = OpenMausBotNativeReadAdapter(client)
+    connection = BackendConnection("c1", "OMB", "openmausbot", "http://mock.local", "configured")
+
+    async def run():
+        conversations, cursor = await adapter.list_conversations(connection)
+        messages, next_cursor = await adapter.list_messages(conversations[0])
+        await client.aclose()
+        return conversations, cursor, messages, next_cursor
+
+    conversations, cursor, messages, next_cursor = asyncio.run(run())
+    assert conversations[0].external_id == "thread/one"
+    assert conversations[0].title == "Research bot"
+    assert messages[0].content == "answer"
+    assert cursor is None and next_cursor is None
+    assert [request.method for request in requests] == ["GET", "GET"]

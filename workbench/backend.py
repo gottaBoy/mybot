@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Protocol
+from urllib.parse import quote
 
 import httpx
 
@@ -91,7 +92,7 @@ class OpenMausBotReadOnlyAdapter:
         return await self._list(
             connection, connection.settings.get("conversations_path", "/conversations")
             if connection.settings else "/conversations",
-            cursor=cursor, collection_keys=("conversations", "threads", "items"),
+            cursor=cursor, collection_keys=("bots", "conversations", "threads", "items"),
             mapper=lambda item: self._conversation(connection, item),
         )
 
@@ -105,7 +106,7 @@ class OpenMausBotReadOnlyAdapter:
             mapper=lambda item: self._message(conversation, item),
         )
 
-    async def _list(self, connection, path, *, cursor, collection_keys, mapper):
+    async def _list(self, connection, path, *, cursor, collection_keys, mapper, extra_params=None):
         if connection.status == "revoked" or connection.revoked_at:
             raise BackendError("backend_revoked")
         if connection.status != "configured":
@@ -118,7 +119,9 @@ class OpenMausBotReadOnlyAdapter:
                 trust_env=False, timeout=httpx.Timeout(20, connect=5),
             )
         try:
-            params = {"cursor": cursor} if cursor else {}
+            params = dict(extra_params or {})
+            if cursor:
+                params["cursor"] = cursor
             response = await client.get(path, params=params)
         except httpx.HTTPError as exc:
             raise BackendError("backend_unreachable") from exc
@@ -179,6 +182,51 @@ class OpenMausBotReadOnlyAdapter:
             created_at=item.get("created_at") if isinstance(item.get("created_at"), str) else None,
         )
 
+
+class OpenMausBotNativeReadAdapter(OpenMausBotReadOnlyAdapter):
+    """Read-only mapping for the observed OpenMausBot package endpoints.
+
+    Observed package contract (fixed npm artifact, not a live connection):
+    `GET /api/bots` and `GET /api/threads/{threadId}/messages?limit=N`.
+    """
+
+    async def list_conversations(self, connection, *, cursor=None):
+        self._connections[connection.id] = connection
+        return await self._list(
+            connection, "/api/bots", cursor=cursor,
+            collection_keys=("bots",), mapper=lambda item: self._native_bot(connection, item),
+        )
+
+    async def list_messages(self, conversation, *, cursor=None):
+        connection = self._connections.get(conversation.connection_id)
+        if connection is None:
+            raise BackendError("backend_connection_unknown")
+        limit = "30"
+        if connection.settings and isinstance(connection.settings.get("message_limit"), int):
+            limit = str(max(1, min(200, connection.settings["message_limit"])))
+        return await self._list(
+            connection,
+            f"/api/threads/{quote(conversation.external_id, safe='')}/messages",
+            cursor=cursor, extra_params={"limit": limit},
+            collection_keys=("messages",),
+            mapper=lambda item: self._message(conversation, item),
+        )
+
+    @staticmethod
+    def _native_bot(connection, item):
+        if not isinstance(item, dict):
+            raise TypeError
+        thread_id = item.get("threadId")
+        if not isinstance(thread_id, str) or not thread_id:
+            raise ValueError
+        return ConversationRef(
+            id=f"{connection.id}:{thread_id}",
+            connection_id=connection.id,
+            external_id=thread_id,
+            title=str(item.get("name", item.get("title", thread_id))),
+            status=str(item.get("status", "unknown")),
+            cursor=None,
+        )
 
 def dedupe_refs(items):
     seen = set()

@@ -192,6 +192,18 @@ OpenMausBot 固定 fork 的真实 API。已验证：
 - 403、404、5xx、schema invalid、revoked 和 unreachable 错误映射；
 - 不存在发送、更新、任务启动或模型调用方法。
 
+随后根据固定发布包 `dist-server/scripts/mcp-server.js` 核对到一组实际只读路径：
+
+```text
+GET /api/bots
+GET /api/threads/{threadId}/messages?limit=N
+```
+
+mybot 新增 `OpenMausBotNativeReadAdapter` 只读映射夹具，将 Bot 的 `threadId` 转为
+`ConversationRef.external_id`，消息映射为 `MessageRef`。这仍是 MockTransport 合同，
+不是上游服务端点连通证据；消息端点当前是 bounded recent messages，未宣称 cursor
+分页或 SSE replay。
+
 验证使用 `httpx.MockTransport`，没有真实账号、HTTP 服务、MCP client 或上游网络。
 下一步必须先核对固定 fork 的原生协议/端点，再把 Adapter 接入配置服务；不能把合同
 夹具结果写成 OpenMausBot 已连接。
