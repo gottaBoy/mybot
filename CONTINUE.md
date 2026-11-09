@@ -6,7 +6,7 @@
 
 **最新 P0 隔离修复（2026-11-09）：** 针对上述真实 Run 暴露的隐式 `AGENTS.md` 上下文问题，Codex Adapter 现在在临时空 cwd 启动，不进入用户仓库；显式忽略用户配置和规则，禁用项目文档加载、web search 和 shell 环境继承。用户确认的快照仍通过 prompt 发送。181 项 Python 测试、5 视口/11 条浏览器交互通过；没有新的真实模型调用。该隔离降低隐式上下文风险，但不等于完整工具权限 ceiling；下一步进入 OpenMausBot 只读适配前，继续冻结工具/权限合同。
 
-**最新 Phase 3 合同骨架（2026-11-09）：** 已新增 `BackendConnection`、`ConversationRef`、`MessageRef`、`ConversationBackendPort`，SQLite `backend_connections`/`conversation_refs` 表，以及只读 API `/api/backends` 和 `/api/backends/{id}/conversations`。未配置 backend 时返回真实空状态，不连接账号、不发消息。184 项 Python 测试、5 视口/11 条浏览器交互通过。下一步是固定 `gottaBoy/OpenMausBot` commit 的隔离 MockTransport 只读 Adapter，覆盖分页、游标、403、断线和 schema 变化。
+**最新 Phase 3 只读 Adapter（2026-11-09）：** 已新增 `BackendConnection`、`ConversationRef`、`MessageRef`、`ConversationBackendPort`，SQLite 表和只读 API；`OpenMausBotReadOnlyAdapter` 已通过隔离 MockTransport 合同测试，覆盖 GET-only、会话/消息分页、游标、重复 ID 去重、403/404/5xx/schema/revoked 映射。未连接真实账号，不提供发送接口。189 项 Python 测试、5 视口/11 条浏览器交互通过。下一步是固定 fork commit、核对原生只读协议，再接 adapter service。
 
 **最新恢复能力（本轮）：** 已实现“重试与资源”而非直接复用旧 Run。失败/中断/暂停运行可打开重试预览，看到复用步骤、待重试步骤、历史调用和最低新增预算；可重新分配未完成角色模型、预算、并行、单次时限和输出上限。提交会创建 `source_run_id` 关联的新 Run，复制已完成 Agent/Artifact 引用但不计新调用，来源 Run/调用/成果不改写；未知结果需确认，快照变化、密钥缺失、预算不足和活动运行会拒绝。180 项 Python 测试、5 视口/11 条浏览器交互通过。尚未对真实历史 Codex Run 发起重试。
 

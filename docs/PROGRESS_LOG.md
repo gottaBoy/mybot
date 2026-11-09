@@ -134,11 +134,11 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
 ### 工作项：OpenMausBot 只读后端合同骨架
 
 - 领域/模块：Conversation/Backend Domain、Store/API
-- 实现：新增稳定的 `BackendConnection`、`ConversationRef`、`MessageRef` 和 `ConversationBackendPort` 合同；新增 `UnconfiguredConversationBackend`，明确未配置时只返回空会话、不提供消息发送路径。SQLite 增加 `backend_connections`/`conversation_refs` 表和只读查询 API：`GET /api/backends`、`GET /api/backends/{id}/conversations`；Bootstrap 暴露持久化 backend 列表。当前没有网络客户端、真实账号发现或发送接口。
+- 实现：新增稳定的 `BackendConnection`、`ConversationRef`、`MessageRef` 和 `ConversationBackendPort` 合同；新增 `UnconfiguredConversationBackend`，明确未配置时只返回空会话、不提供消息发送路径。SQLite 增加 `backend_connections`/`conversation_refs` 表和只读查询 API：`GET /api/backends`、`GET /api/backends/{id}/conversations`；Bootstrap 暴露持久化 backend 列表。新增 `OpenMausBotReadOnlyAdapter` 隔离 MockTransport 映射：只读 GET、conversation/message 分页、cursor、重复 ID 去重、403/404/5xx/schema/revoked 错误码。
 - 验证命令：`.venv/bin/python -m pytest -q`；`PLAYWRIGHT_MODULE=/tmp/mybot-design-tools.VtVbIr/node_modules/playwright/index.mjs CHROME_PATH=/usr/bin/google-chrome TEST_PORT=4182 node tests/verify-live.mjs`；`node --check web/app.js`；`git diff --check`
-- 结果：184 项 Python 测试、5 视口/11 条浏览器交互通过；只读 backend 持久化/空状态合同通过；无浏览器外部请求。
-- 未完成/unknown：OpenMausBot fork 尚未连接；没有分页消息适配、403/断线/schema 变化映射或真实 API；UI 只暴露底层 bootstrap 状态，尚未添加会话工作区。
-- 下一步：为固定 fork 实现隔离 MockTransport 的只读 Adapter，先覆盖 Bot/Conversation/Message 分页、游标去重和错误映射，再接 Web 会话列表。
+- 结果：189 项 Python 测试、5 视口/11 条浏览器交互通过；只读 backend 持久化、Adapter 分页/错误合同通过；无浏览器外部请求。
+- 未完成/unknown：OpenMausBot fork 尚未连接；默认路径没有真实 HTTP endpoint/认证配置，未验证原生 MCP client、SSE/replay、真实 schema 或账号撤销。
+- 下一步：固定 `gottaBoy/OpenMausBot` commit，核对原生只读端点/协议；再把 Adapter 接入 backend service，而不是直接连接用户账号。
 
 ### 工作项：授权真实重试完整收敛
 

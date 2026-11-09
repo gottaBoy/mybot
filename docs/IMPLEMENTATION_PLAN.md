@@ -135,6 +135,7 @@ cancel()
 - `BackendConnection` / `ConversationRef` / `MessageRef` / `ConversationBackendPort` 合同。
 - SQLite backend binding/ref 表。
 - 只读空适配器和只读查询 API。
+- 隔离 MockTransport 只读 Adapter：分页、游标、重复 ID 去重、403/404/5xx/schema/revoked 映射。
 
 待交付：
 
