@@ -142,6 +142,8 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
 
 补充实现：从固定发布包 `dist-server/scripts/mcp-server.js` 核对出只读路径 `GET /api/bots` 和 `GET /api/threads/{threadId}/messages?limit=N`，新增 `OpenMausBotNativeReadAdapter` MockTransport 映射。Bot `threadId` 映射为 ConversationRef，消息映射为 MessageRef；没有实现发送/任务/审批路径。当前仍无真实 HTTP/MCP 连接，消息接口的 bounded recent semantics 也不等于 cursor/SSE replay。
 
+补充实现：新增 `check_health()` 只读健康合同，对应观察到的 `GET /api/health`；验证 app identity、packaged 标记，以及 401/403/错误服务身份映射。健康检查不修改 BackendConnection、不保存凭证、不触发模型或消息操作。完整回归更新为 195 项。
+
 ### 工作项：授权真实重试完整收敛
 
 - 领域/模块：Codex CLI、Recovery、研究/汇总与成果

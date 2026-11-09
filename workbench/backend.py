@@ -50,6 +50,13 @@ class MessageRef:
     created_at: str | None
 
 
+@dataclass(frozen=True)
+class BackendHealth:
+    status: str
+    app: str | None = None
+    packaged: bool | None = None
+
+
 class ConversationBackendPort(Protocol):
     async def list_conversations(
         self, connection: BackendConnection, *, cursor: str | None = None,
@@ -189,6 +196,40 @@ class OpenMausBotNativeReadAdapter(OpenMausBotReadOnlyAdapter):
     Observed package contract (fixed npm artifact, not a live connection):
     `GET /api/bots` and `GET /api/threads/{threadId}/messages?limit=N`.
     """
+
+    async def check_health(self, connection):
+        if connection.status == "revoked" or connection.revoked_at:
+            raise BackendError("backend_revoked")
+        if connection.status != "configured":
+            raise BackendError("backend_not_configured")
+        client = self.client
+        owned = client is None
+        if owned:
+            client = httpx.AsyncClient(
+                base_url=connection.endpoint, follow_redirects=False,
+                trust_env=False, timeout=httpx.Timeout(10, connect=5),
+            )
+        try:
+            response = await client.get("/api/health")
+        except httpx.HTTPError as exc:
+            raise BackendError("backend_unreachable") from exc
+        finally:
+            if owned:
+                await client.aclose()
+        if response.status_code in {401, 403}:
+            raise BackendError("backend_auth_required" if response.status_code == 401 else "backend_access_denied")
+        if response.status_code >= 400:
+            raise BackendError(f"backend_http_{response.status_code}")
+        try:
+            payload = response.json()
+        except ValueError as exc:
+            raise BackendError("backend_schema_invalid") from exc
+        if not isinstance(payload, dict) or payload.get("app") != "openmausbot":
+            raise BackendError("backend_not_openmausbot")
+        packaged = payload.get("static")
+        if packaged is not None and not isinstance(packaged, bool):
+            raise BackendError("backend_schema_invalid")
+        return BackendHealth("connected", "openmausbot", packaged)
 
     async def list_conversations(self, connection, *, cursor=None):
         self._connections[connection.id] = connection

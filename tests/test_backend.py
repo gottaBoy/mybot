@@ -5,6 +5,7 @@ import pytest
 
 from workbench.backend import (
     BackendConnection,
+    BackendHealth,
     BackendError,
     ConversationRef,
     OpenMausBotNativeReadAdapter,
@@ -136,3 +137,49 @@ def test_openmausbot_native_adapter_maps_observed_read_routes():
     assert messages[0].content == "answer"
     assert cursor is None and next_cursor is None
     assert [request.method for request in requests] == ["GET", "GET"]
+
+
+def test_openmausbot_native_health_is_read_only_and_validates_identity():
+    requests = []
+
+    def handler(request):
+        requests.append(request)
+        return httpx.Response(200, json={"app": "openmausbot", "static": True})
+
+    client = httpx.AsyncClient(
+        base_url="http://mock.local", transport=httpx.MockTransport(handler),
+    )
+    adapter = OpenMausBotNativeReadAdapter(client)
+    connection = BackendConnection("c1", "OMB", "openmausbot", "http://mock.local", "configured")
+    health = asyncio.run(adapter.check_health(connection))
+    asyncio.run(client.aclose())
+    assert health == BackendHealth("connected", "openmausbot", True)
+    assert requests[0].method == "GET"
+    assert requests[0].url.path == "/api/health"
+
+
+@pytest.mark.parametrize("status,code", [
+    (401, "backend_auth_required"), (403, "backend_access_denied"),
+])
+def test_openmausbot_health_maps_auth_state(status, code):
+    client = httpx.AsyncClient(
+        base_url="http://mock.local",
+        transport=httpx.MockTransport(lambda request: httpx.Response(status)),
+    )
+    adapter = OpenMausBotNativeReadAdapter(client)
+    connection = BackendConnection("c1", "OMB", "openmausbot", "http://mock.local", "configured")
+    with pytest.raises(BackendError, match=code):
+        asyncio.run(adapter.check_health(connection))
+    asyncio.run(client.aclose())
+
+
+def test_openmausbot_health_rejects_wrong_server_identity():
+    client = httpx.AsyncClient(
+        base_url="http://mock.local",
+        transport=httpx.MockTransport(lambda request: httpx.Response(200, json={"app": "other"})),
+    )
+    adapter = OpenMausBotNativeReadAdapter(client)
+    connection = BackendConnection("c1", "Other", "openmausbot", "http://mock.local", "configured")
+    with pytest.raises(BackendError, match="backend_not_openmausbot"):
+        asyncio.run(adapter.check_health(connection))
+    asyncio.run(client.aclose())

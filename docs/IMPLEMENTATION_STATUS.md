@@ -13,7 +13,7 @@
 | Agent Work 可视化 | Run detail 返回 `local-superagent` 阶段事实；真实 Web 提供 Agent Work 列表、Planning/Research/Synthesis 阶段图和事实边界 |
 | 本地 Harness/默认模型发现 | Bootstrap 仅检测 `codex`/`claude`/`opencode`/`t3` 可执行文件；默认模型可在 UI 设为工作区设置或由 `WORKBENCH_DEFAULT_MODEL_ID` 指定；不读取凭证或自动调用 |
 | Codex CLI Adapter | 显式“启用 Codex Adapter”创建 `codex_cli` 模型配置；调用使用临时隔离 cwd、`--ignore-user-config`、`--ignore-rules`、禁用项目文档加载、ephemeral/read-only；认证由 Codex CLI 管理；单通道失败不会启动排队中的下一个研究调用 |
-| Backend/Conversation 只读合同 | 持久化 `BackendConnection`/`ConversationRef`，提供只读列表 API；隔离 MockTransport Adapter 已支持通用/观察到的 OpenMausBot 只读路径、消息映射和错误映射，并固定研究 commit；未接入真实 OpenMausBot 网络或发送 |
+| Backend/Conversation 只读合同 | 持久化 `BackendConnection`/`ConversationRef`，提供只读列表 API；隔离 MockTransport Adapter 已支持健康检查、通用/观察到的 OpenMausBot 只读路径、消息映射和错误映射，并固定研究 commit；未接入真实 OpenMausBot 网络或发送 |
 | 项目 | 名称、目标、相对目录、允许发送的项目资料 |
 | 模型 | 本地/远程 Chat Completions 配置；密钥只引用服务端环境变量 |
 | 任务 | 目标、验收要求、最多 10 个显式源码文本文件 |
@@ -100,7 +100,7 @@ App Server 草稿未通过最终协议/能力边界复核，已撤回生产入�
 
 最新真实执行：2026-11-09 用户授权的 Codex 关联重试 `49acc6c258094a2794b153a6b6629800` 已完成两项研究与汇总，规划复用，3 次新增调用、3 份待审查成果，约 325 秒。证明当时配置下的真实文本闭环可完成；不代表本次新增隔离实现、Backend Adapter 或工具 ceiling 已做真实账号/模型验收。详细用量和边界见 [进度记录](PROGRESS_LOG.md)。
 
-- 后端测试：完整 Python 回归 191 项通过；保留 Starlette/httpx 弃用提醒。
+- 后端测试：完整 Python 回归 195 项通过；保留 Starlette/httpx 弃用提醒。
 - 协议测试使用 HTTPX MockTransport；后台流程使用仅测试可注入的 FakeProvider。
 - 浏览器：`tests/verify-live.mjs` 创建临时服务器与临时 SQLite，以 FakeProvider 验证 UI→API→Worker→数据库，不访问外部模型。
 - 浏览器检查报告：[browser.json](../tests/evidence/browser.json)。

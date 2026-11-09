@@ -8,6 +8,8 @@
 
 **最新 Phase 3 只读 Adapter（2026-11-09）：** 已新增 `BackendConnection`、`ConversationRef`、`MessageRef`、`ConversationBackendPort`，SQLite 表和只读 API；通用 Adapter 与 `OpenMausBotNativeReadAdapter` 已通过隔离 MockTransport 合同测试，覆盖 GET-only、观察到的 `/api/bots` 和 `/api/threads/{threadId}/messages?limit=N`、游标/去重/错误映射，并固定研究 commit `1bc4749aa8307d7d6998bf86de4ef6478460dd93`。未连接真实账号，不提供发送接口。191 项 Python 测试通过。下一步是核对原生认证、SSE/replay 和运行恢复，再接 adapter service。
 
+**Phase 3 健康检查合同（本轮）：** `OpenMausBotNativeReadAdapter.check_health()` 已按固定发布包观察到的 `GET /api/health` 实现 MockTransport 映射，验证 `app=openmausbot`、`static` 字段、401/403 和错误服务身份；不修改连接状态、不读取凭证、不连接真实账号。完整 Python 回归 195 项通过。
+
 **最新恢复能力（本轮）：** 已实现“重试与资源”而非直接复用旧 Run。失败/中断/暂停运行可打开重试预览，看到复用步骤、待重试步骤、历史调用和最低新增预算；可重新分配未完成角色模型、预算、并行、单次时限和输出上限。提交会创建 `source_run_id` 关联的新 Run，复制已完成 Agent/Artifact 引用但不计新调用，来源 Run/调用/成果不改写；未知结果需确认，快照变化、密钥缺失、预算不足和活动运行会拒绝。180 项 Python 测试、5 视口/11 条浏览器交互通过。尚未对真实历史 Codex Run 发起重试。
 
 **真实重试观察：** 用户随后创建了 `bd69b087d85b4531837075eac9cbd2de`，来源为 `8bd1...`。规划成功复用，Codex 研究单次 120 秒超时，事件 24、最后白名单类型 `command_execution`、部分正文存在、进程已回收、用量未知；另一个研究保持 pending，汇总未执行。预算和 lineage 正常，不能把它归因于 `max_calls`。该来源快照仍没有显式文件，重复运行不会自动获得项目源码。下一步先补明确文件或切换已验证 Provider，不自动重试未知结果。

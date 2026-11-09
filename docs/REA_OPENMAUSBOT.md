@@ -204,6 +204,10 @@ mybot 新增 `OpenMausBotNativeReadAdapter` 只读映射夹具，将 Bot 的 `th
 不是上游服务端点连通证据；消息端点当前是 bounded recent messages，未宣称 cursor
 分页或 SSE replay。
 
+Adapter 另提供只读 `check_health()`，映射 `GET /api/health`，仅接受返回
+`app=openmausbot` 的服务；401/403、错误服务身份、revoked/unconfigured 分别映射为
+稳定 BackendError。它不修改连接状态，也不处理配对码、token 或发送。
+
 验证使用 `httpx.MockTransport`，没有真实账号、HTTP 服务、MCP client 或上游网络。
 下一步必须先核对固定 fork 的原生协议/端点，再把 Adapter 接入配置服务；不能把合同
 夹具结果写成 OpenMausBot 已连接。
