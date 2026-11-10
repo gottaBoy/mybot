@@ -184,7 +184,20 @@ function modelsView() {
     ${harnesses.length ? `<section class="local-harnesses"><div class="section-heading"><h2>本地 Harness</h2><span class="table-footnote">仅检测可执行文件，认证未验证</span></div><div class="harness-discovery-list">${harnesses.map((item) => `<div><span class="agent-avatar agent-neutral">${icon("terminal")}</span><strong>${esc(item.label)}</strong><small>${esc(item.id)} · 已发现，认证未验证</small>${item.id === "codex" ? btn("启用 Codex Adapter", "plug", 'data-action="enable-codex"') : ""}</div>`).join("")}</div></section>` : ""}
     ${harnesses.length ? `<div class="notice notice-neutral local-harness-note">${icon("circle-help")}<div><strong>Codex CLI 尚未作为 Workbench 执行器启用</strong><p>当前只做可执行文件发现，不读取本机登录凭证。后续启用 Codex Adapter 后，用户明确选择的 Run 才会复用 CLI 登录态。</p></div></div>` : ""}
     <section class="page-section">${sectionHeading("模型连接")}${data.models.map((m) => `<div class="model-row">${icon("blocks")}<div><h3>${esc(m.name)} ${m.id === data.default_model_id ? pill("accepted", "默认") : ""}</h3><p><code>${esc(m.model)}</code></p><small>${esc(m.endpoint)}</small><p class="model-key">密钥：${m.key_env ? `${esc(m.key_env)} · ${m.key_available ? "服务端已提供" : "未提供"}` : "无（本地或免密端点）"}</p><small class="model-id">配置 ID：<code>${esc(m.id)}</code></small></div><div>${m.id !== data.default_model_id ? btn("设为默认", "check", `data-action="default-model" data-model="${m.id}"`) : ""}${pill(m.test_status === "reachable" ? "succeeded" : "pending", m.test_status === "reachable" ? "可达，能力未验证" : m.test_status || "未测试")}${btn("测试连接", "plug", `data-action="test-model" data-model="${m.id}"`)}</div></div>`).join("") || '<div class="empty-state"><h2>尚未配置模型</h2><p>支持本地或远程的 OpenAI-compatible Chat Completions 接口。</p></div>'}</section>
+    ${backendConnectionsView()}
     <section class="page-section">${sectionHeading("当前执行边界")}<div class="control-boundaries"><p>${icon("check")}单机一个后台 Worker，每次最多两个只读研究 Agent 并行</p><p>${icon("check")}规划、研究和汇总可以指定不同模型</p><p>${icon("x")}代码写入、Shell、部署和生产权限未实现</p><p>${icon("circle-help")}成本未知时不会填零；测试连接不证明工具能力</p></div></section></div>`;
+}
+
+function backendConnectionsView() {
+  return `<section class="page-section backend-section">${sectionHeading("会话后端", btn("添加后端", "plus", 'data-action="new-backend"'))}
+    ${(data.backends || []).map((connection) => {
+      const revoked = connection.status === "revoked";
+      const reachable = connection.test_status === "reachable";
+      const status = revoked ? "已撤销" : reachable ? "服务可达 · 认证未验证"
+        : connection.test_status ? errorLabel(connection.test_status) : "未检查";
+      return `<div class="backend-row"><span class="agent-avatar agent-neutral">${icon("network")}</span><div class="backend-identity"><h3>${esc(connection.name)}</h3><code>${esc(connection.endpoint)}</code><p>${pill(revoked ? "canceled" : reachable ? "succeeded" : "pending", status)}</p><small>会话读取未授权${connection.tested_at ? ` · 检查时间 ${when(connection.tested_at)}` : ""}</small></div><div class="backend-actions">${revoked ? "" : `${btn("检查服务", "plug", `data-action="check-backend" data-backend="${connection.id}"`)}${btn("撤销", "square", `data-action="revoke-backend" data-backend="${connection.id}"`)}`}</div></div>`;
+    }).join("") || '<p class="empty-message">尚未配置会话后端</p>'}
+  </section>`;
 }
 
 function missing() {
@@ -252,7 +265,20 @@ function errorLabel(code) {
     retry_source_has_child: "此运行已有关联重试，请前往关联运行继续",
     retry_request_id_conflict: "该重试请求已提交，但内容不同，请重新打开重试窗口",
     retry_completed_role_model_locked: "已完成角色只复用原结果，不重新分配模型",
+    backend_check_confirmation_required: "请确认本次健康检查",
+    backend_revoked: "连接已撤销",
+    backend_not_configured: "后端尚未配置",
+    backend_endpoint_invalid: "后端地址不符合本机回环限制",
+    backend_auth_required: "后端要求认证",
+    backend_access_denied: "后端拒绝访问",
+    backend_unreachable: "无法连接后端",
+    backend_timeout: "后端检查超时",
+    backend_redirect_denied: "后端返回重定向，未跟随",
+    backend_schema_invalid: "后端响应结构不兼容",
+    backend_response_too_large: "后端响应超过大小限制",
+    backend_not_openmausbot: "后端身份不是 OpenMausBot",
   };
+  if (typeof code === "string" && /^backend_http_\d+$/.test(code)) return `后端返回 HTTP ${code.split("_").at(-1)}`;
   return map[code] || code;
 }
 
@@ -340,6 +366,16 @@ function taskForm(projectId) {
 
 function modelForm() {
   modal("添加模型配置", `<form data-form="model" class="live-form">${field("name", "配置名称", "", "required maxlength=80")}${field("endpoint", "API 基础地址", "", 'type="url" required placeholder="http://127.0.0.1:11434/v1"')}${field("model", "请求模型标识", "", "required maxlength=150")}${field("key_env", "密钥环境变量名称（可留空）", "", 'placeholder="WORKBENCH_MODEL_REMOTE_KEY" pattern="WORKBENCH_MODEL_[A-Z0-9_]+_KEY"')}<p class="field-hint">只填变量名。密钥在服务启动前设置，不通过浏览器输入。远程 API 需 HTTPS；本机推理可用 HTTP。</p><p class="form-error" role="alert"></p><div class="form-actions">${btn("保存配置", "check", 'type="submit"', true)}</div></form>`);
+}
+
+function backendForm() {
+  modal("添加只读后端", `<form data-form="backend" class="live-form">${field("name", "连接名称", "", "required maxlength=80")}${field("endpoint", "本机服务地址", "", 'type="url" required placeholder="http://127.0.0.1:8000" maxlength=200')}<p class="field-hint">仅支持本机回环 IP（127.0.0.1 或 [::1]），不填写账号、密钥、路径或查询参数。保存不会联网。</p><p class="form-error" role="alert"></p><div class="form-actions">${btn("保存连接", "check", 'type="submit"', true)}</div></form>`);
+}
+
+function backendCheckForm(identifier) {
+  const connection = data.backends.find((item) => item.id === identifier);
+  if (!connection) return;
+  modal("检查后端服务", `<form data-form="backend-check" data-backend="${connection.id}" class="live-form"><dl class="definition-list"><dt>连接</dt><dd>${esc(connection.name)}</dd><dt>请求</dt><dd><code>GET ${esc(connection.endpoint)}/api/health</code></dd></dl><p>仅检查服务身份与可达性，不携带凭证、不读取会话、不调用模型。可达不代表认证或读取权限已验证。</p><label class="consent-label"><input type="checkbox" name="consent" required /><span>确认向此本机地址发送一次健康检查请求。</span></label><p class="form-error" role="alert"></p><div class="form-actions">${btn("确认检查", "plug", 'type="submit"', true)}</div></form>`);
 }
 
 async function prepare(taskId) {
@@ -444,6 +480,19 @@ document.addEventListener("submit", async (event) => {
       await api("/models", { method: "POST", body: JSON.stringify(values) });
       $("#form-dialog").close(); await refresh();
       notify("模型配置已保存，尚未发起请求。");
+    } else if (form.dataset.form === "backend") {
+      await api("/backends", { method: "POST", body: JSON.stringify(values) });
+      $("#form-dialog").close();
+      await refresh();
+      notify("后端配置已保存，尚未联网。");
+    } else if (form.dataset.form === "backend-check") {
+      const result = await api(`/backends/${form.dataset.backend}/check`, {
+        method: "POST", body: JSON.stringify({ consent: values.consent === "on" }),
+      });
+      $("#form-dialog").close();
+      await refresh();
+      notify(result.status === "reachable" ? "服务可达；认证和会话读取权限仍未验证。" : errorLabel(result.status),
+        result.status !== "reachable");
     } else if (form.dataset.form === "task") {
       values.files = values.files.split("\n").map((v) => v.trim()).filter(Boolean);
       const result = await api("/tasks", { method: "POST", body: JSON.stringify(values) });
@@ -505,6 +554,15 @@ document.addEventListener("click", async (event) => {
     else if (action === "new-project") projectForm();
     else if (action === "new-task") taskForm(el.dataset.project);
     else if (action === "new-model") modelForm();
+    else if (action === "new-backend") backendForm();
+    else if (action === "check-backend") backendCheckForm(el.dataset.backend);
+    else if (action === "revoke-backend") {
+      if (!confirm("撤销此连接？撤销后禁止检查服务或读取缓存会话。")) return;
+      el.disabled = true;
+      await api(`/backends/${el.dataset.backend}/revoke`, { method: "POST", body: "{}" });
+      await refresh();
+      notify("后端连接已撤销。");
+    }
     else if (action === "prepare") await prepare(el.dataset.task);
     else if (action === "retry") await prepareRetry();
     else if (action === "test-model") {

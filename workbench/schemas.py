@@ -79,6 +79,34 @@ class DefaultModel(Input):
     model_id: str = Field(min_length=1, max_length=100)
 
 
+class BackendCreate(Input):
+    name: str = Field(min_length=1, max_length=80)
+    kind: str = Field(default="openmausbot", pattern="^openmausbot$")
+    endpoint: str = Field(min_length=8, max_length=200)
+
+    @field_validator("endpoint")
+    @classmethod
+    def loopback_origin(cls, value: str) -> str:
+        url = urlsplit(value)
+        if (url.scheme not in {"http", "https"} or not url.hostname
+                or url.username is not None or url.password is not None
+                or url.query or url.fragment or url.path not in {"", "/"}
+                or "\\" in value or any(ord(char) < 33 for char in value)):
+            raise ValueError("Use a loopback HTTP(S) origin without credentials, path, query or fragment")
+        try:
+            if not ipaddress.ip_address(url.hostname).is_loopback:
+                raise ValueError
+            if url.port is not None and url.port < 1:
+                raise ValueError
+        except ValueError:
+            raise ValueError("Only literal loopback IP addresses are supported") from None
+        return value.rstrip("/")
+
+
+class BackendCheck(Input):
+    consent: bool = False
+
+
 class TaskCreate(Input):
     project_id: str
     title: str = Field(min_length=1, max_length=160)

@@ -153,7 +153,7 @@ def test_openmausbot_native_health_is_read_only_and_validates_identity():
     connection = BackendConnection("c1", "OMB", "openmausbot", "http://mock.local", "configured")
     health = asyncio.run(adapter.check_health(connection))
     asyncio.run(client.aclose())
-    assert health == BackendHealth("connected", "openmausbot", True)
+    assert health == BackendHealth("reachable", "openmausbot", True)
     assert requests[0].method == "GET"
     assert requests[0].url.path == "/api/health"
 

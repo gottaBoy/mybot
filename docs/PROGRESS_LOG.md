@@ -155,6 +155,27 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
 - 验证方式：只读 `/api/runs/49acc6c258094a2794b153a6b6629800` 与 `/api/bootstrap` 核对阶段、调用、成果、用量和空活动队列；本次没有改业务代码或重跑离线测试。此前 180 项 Python、5 视口/11 条交互证据独立保留。
 - 下一步：先人工审查成果；项目研究需另行选择原始源码/研究文档快照并确认发送。继续实现 CLI 能力边界时按 CODEX_RELIABILITY_PLAN，不把这一次成功当作故障率或完整安全验收。
 
+## 2026-11-10
+
+### 工作项：004 统一工作项及计数
+
+- 领域/模块：产品执行台账与交接
+- 实现：建立 `docs/WORK_ITEMS.md`，逐项保留原 001–119 编号，区分完成/部分/待办/授权门槛/暂缓；阶段范围与执行包不重复计数。IMPLEMENTATION_PLAN/STATUS/CONTINUE/README 统一指向台账。
+- 结果：119 项中 9 完成、35 部分、58 待办、15 授权门槛、2 暂缓，未完全完成 110 项。未将 mock 适配、健康可达、测试数或 commit 数计为整体业务完成。
+- 验证：`tests/test_work_items.py` 检查编号唯一连续及状态统计与摘要一致。
+- 下一步：按 B04/B05 执行包推进，完成后更新原编号状态和证据，保留真实接入/真机授权门槛。
+
+### 工作项：执行包 B01–B03 本机连接配置、健康查询与撤销
+
+- 领域/模块：Conversation/Backend Application Service、Store/API、真实 Web
+- 实现：新增 BackendService；`POST /api/backends` 保存不联网，字面量回环 HTTP(S) origin 限制，拒绝原始凭证、自定义路径/settings/status；固定服务器侧 adapter/研究 commit。新增 `GET .../health` 查询持久结果，`POST .../check` 须 consent，最多一次 GET `/api/health`，拒绝重定向、64 KiB 响应上限、10 秒绝对期限，不携带凭证、不读取会话、不调用模型。
+- 状态：可达仅为 reachable，authentication=unverified、read_access_verified=false；不把公共健康接口当成认证完成。新增 tested_at/test_status；撤销幂等，在途检查返回后也不能覆写 revoked。撤销后拒绝检查和缓存会话读取。
+- UI：模型与控制页的会话后端区，添加连接、显式确认检查、撤销及状态/时间；桌面/手机截图均为明确测试夹具。
+- 验证命令：`.venv/bin/python -m pytest -q`；`PLAYWRIGHT_MODULE=/tmp/mybot-design-tools.VtVbIr/node_modules/playwright/index.mjs CHROME_PATH=/usr/bin/google-chrome TEST_PORT=4182 node tests/verify-live.mjs`；`node --check web/app.js`；`git diff --check`。
+- 结果：本轮先后完成定向测试及完整回归；最终数量以本条后续验证补充和 `tests/evidence/browser.json` 为准。新增后端状态/配置/撤销浏览器场景，无外部浏览器请求。
+- 未完成/unknown：未新增生产后端连接，没有接入真实账号、启动上游或调用模型；不包含认证/配对、Bot 读取授权、历史分页、SSE/replay、断线接续和会话产品界面，关联原 008/013/017/118 仍部分完成。
+- 下一步：B04 会话工作区 + B05 固定源码认证/读取 scope 离线核对；真实接入继续单独授权。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。

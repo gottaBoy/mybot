@@ -1,6 +1,9 @@
 # 实现进度与平台范围
 
-更新日期：2026-11-09。
+更新日期：2026-11-10。
+
+工作项统一台账：[WORK_ITEMS.md](WORK_ITEMS.md)。119 项中完成 9 项、未完全完成 110 项；
+本地实现、离线合同和真实账号验收分开计。
 
 当前：用户已授权实现，第一条只读研发调研闭环；不是完整团队交付平台。
 
@@ -13,7 +16,8 @@
 | Agent Work 可视化 | Run detail 返回 `local-superagent` 阶段事实；真实 Web 提供 Agent Work 列表、Planning/Research/Synthesis 阶段图和事实边界 |
 | 本地 Harness/默认模型发现 | Bootstrap 仅检测 `codex`/`claude`/`opencode`/`t3` 可执行文件；默认模型可在 UI 设为工作区设置或由 `WORKBENCH_DEFAULT_MODEL_ID` 指定；不读取凭证或自动调用 |
 | Codex CLI Adapter | 显式“启用 Codex Adapter”创建 `codex_cli` 模型配置；调用使用临时隔离 cwd、`--ignore-user-config`、`--ignore-rules`、禁用项目文档加载、ephemeral/read-only；认证由 Codex CLI 管理；单通道失败不会启动排队中的下一个研究调用 |
-| Backend/Conversation 只读合同 | 持久化 `BackendConnection`/`ConversationRef`，提供只读列表 API；隔离 MockTransport Adapter 已支持健康检查、通用/观察到的 OpenMausBot 只读路径、消息映射和错误映射，并固定研究 commit；未接入真实 OpenMausBot 网络或发送 |
+| Backend 配置/检查/撤销 | 模型与控制页保存本机回环连接不联网；显式确认才 GET `/api/health`；可达不代表认证/会话读取；检查结果持久化，支持撤销及在途竞争保护 |
+| Backend/Conversation 只读合同 | 持久化 `BackendConnection`/`ConversationRef`；离线 Adapter 映射观察到的只读路径；真实认证、消息分页和会话 UI 尚未接入，未提供发送 |
 | 项目 | 名称、目标、相对目录、允许发送的项目资料 |
 | 模型 | 本地/远程 Chat Completions 配置；密钥只引用服务端环境变量 |
 | 任务 | 目标、验收要求、最多 10 个显式源码文本文件 |
@@ -37,6 +41,7 @@ UI 没有静态演示任务、伪造 Token、占位测试结果或假在线模�
 - DeepSeek Harness / OpenHands 等运行时接入。
 - Token 流式输出、复杂耗时瀑布图、价格计费和学习型模型路由。
 - Codex App Server 的真实 Provider 验收、跨版本协议兼容和断线恢复。
+- OpenMausBot 原生认证/配对、读取 scope、会话消息工作区和 SSE/replay；健康检查不包含这些能力。
 - 团队成员、项目级多用户权限、SSO 与公网生产部署。
 - 原生 macOS/Linux/Android/iOS 应用、PWA 离线模式与后台推送。
 - 项目/模型配置编辑删除、成果内容编辑和自动按修改意见重新规划。
@@ -86,6 +91,12 @@ UI 没有静态演示任务、伪造 Token、占位测试结果或假在线模�
 - 事件为追加审计/追踪记录，不是不可篡改证明。
 - “要求修改”只保存人工决定，不会触发付费调用；后续运行仍需显式创建并确认发送。
 
+后端连接：`POST /api/backends` 只保存配置；列表、Bootstrap 和 `GET .../health` 不联网。
+`POST .../check` 需 consent，只做健康请求，不带凭证、不自动读取会话；拒绝重定向，
+响应上限 64 KiB、总时限 10 秒。当前只允许字面量回环 IP（例如 127.0.0.1、[::1]），
+不允许浏览器配置任意主机、路径、settings 或凭证。`POST .../revoke` 幂等，
+撤销后拒绝进一步检查和缓存会话读取；在途响应不能将撤销覆盖为可达。
+
 ## 6. 模型兼容范围
 
 请求是 OpenAI-compatible `POST <base>/chat/completions`，带 `model`、`messages`、`max_tokens`、`stream:false`。响应需提供 `choices[0].message.content` 字符串；用量缺失保留未知。
@@ -100,11 +111,11 @@ App Server 草稿未通过最终协议/能力边界复核，已撤回生产入�
 
 最新真实执行：2026-11-09 用户授权的 Codex 关联重试 `49acc6c258094a2794b153a6b6629800` 已完成两项研究与汇总，规划复用，3 次新增调用、3 份待审查成果，约 325 秒。证明当时配置下的真实文本闭环可完成；不代表本次新增隔离实现、Backend Adapter 或工具 ceiling 已做真实账号/模型验收。详细用量和边界见 [进度记录](PROGRESS_LOG.md)。
 
-- 后端测试：完整 Python 回归 195 项通过；保留 Starlette/httpx 弃用提醒。
+- 后端测试：本轮完整回归结果见 PROGRESS_LOG 的 2026-11-10 条目；保留 Starlette/httpx 弃用提醒。
 - 协议测试使用 HTTPX MockTransport；后台流程使用仅测试可注入的 FakeProvider。
 - 浏览器：`tests/verify-live.mjs` 创建临时服务器与临时 SQLite，以 FakeProvider 验证 UI→API→Worker→数据库，不访问外部模型。
 - 浏览器检查报告：[browser.json](../tests/evidence/browser.json)。
-- 本轮 Chrome 五种尺寸与六组流程通过，包括登录/退出、角色/调用/成果检查、审查持久化、手机导航和表单；没有浏览器外网请求。
+- Chrome 五视口/14 条交互通过，新增后端保存不检查、显式健康确认和撤销持久化，使用 MockTransport 而非真实 OpenMausBot。
 - [桌面截图](../tests/evidence/live-desktop.png)、[手机尺寸截图](../tests/evidence/live-android-size.png)的内容均为明确测试夹具，不是真实模型质量证明。
 
 尚未完成：隔离 cwd 变更后的真实 Codex 回归、OpenMausBot 固定 fork 真实接入/原生认证、SSE replay 和运行中恢复、本地 GPU 模型兼容性、Safari、设备真机、断电一致性/压力测试、TLS 反向代理、团队权限与生产安全审计。

@@ -4,6 +4,9 @@
 
 **下次继续先读 [CONTINUE.md](CONTINUE.md)**。这里记录最新要求、证据、待办和禁止误用的旧方案。
 
+**工作项台账：[WORK_ITEMS.md](docs/WORK_ITEMS.md)**。保留 119 个原编号，当前 9 项完成、
+110 项未完全完成；按执行包推进，不用 commit 或测试数量代替产品完成度。
+
 **当前可运行应用：`workbench/` + `web/`**。2026-11-04 用户授权开始实现，第一条闭环是只读研发调研，不是完整的编码/部署 Agent 平台。实现范围与平台证据见 [IMPLEMENTATION_STATUS.md](docs/IMPLEMENTATION_STATUS.md)。
 
 **静态设计：[V2 研发工作区](design/review-v2/index.html)**。可以直接打开，数据均为虚构样例，不与真实应用混用。V1 已被用户否定，V2 仍需持续体验评审。
@@ -39,7 +42,7 @@
 - 已实现：项目/模型配置、任务、发送快照确认、Super-agent 规划、最多两个研究 Agent 并行、汇总与人工审查。
 - 已实现：SQLite 持久运行/事件、模型角色路由、运行内逐调用追踪、暂停/取消/手动续跑、响应式 Web。
 - 后端采用 FastAPI + SQLite + 单后台 Worker，不需要前端构建，也不强制 GPU。
-- 已建立只读 Backend/Conversation 合同和空状态 API；OpenMausBot 固定 fork 尚未连接，当前不会自动发现账号或发送消息。
+- 已建立只读 Backend/Conversation 合同和本机连接配置页；保存不联网，健康检查需显式确认，撤销后禁止使用。公共 health 可达不代表认证/会话读取。OpenMausBot 固定 fork 尚未完成真实会话接入。
 - 未实现：Shell、代码写入、真实测试执行、部署、任意 DAG、团队权限、原生 App。
 - 工作台已接入显式启用的 Codex CLI；2026-11-09 一个获授权的关联重试已完成 2 项研究与汇总，3 次新增调用、3 份待审查成果。仍有历史超时/未知用量，且尚未完成源码研究及工具边界验收。自动回归使用测试 Provider；凭证由 CLI 保管，OpenMausBot 尚未接入。
 - 旧 `prototype/` 未采用，不作为新界面或工程起点。

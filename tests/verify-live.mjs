@@ -272,6 +272,64 @@ try {
   await page.getByRole("button", { name: "重试与资源", exact: true }).waitFor();
   assert.equal(await page.locator(`.retry-lineage a[href="#run/${newRunId}"]`).count(), 1);
   report.interactions.push("resource-retry-submits-once-reuses-results-and-persists-lineage");
+
+  await page.goto(`${base}/#models`);
+  await page.getByRole("button", { name: "添加后端", exact: true }).click();
+  await page.locator('[data-form="backend"] [name="name"]').fill("本机 OMB（测试夹具）");
+  await page.locator('[data-form="backend"] [name="endpoint"]').fill("http://127.0.0.1:8000");
+  await page.getByRole("button", { name: "保存连接", exact: true }).click();
+  await page.locator(".backend-row").waitFor();
+  assert.match(await page.locator(".backend-row").innerText(), /未检查/);
+  let connections = await (await page.request.get(`${base}/api/backends`)).json();
+  const backendId = connections.connections[0].id;
+  assert.equal(connections.connections[0].tested_at, null);
+  assert.equal(connections.connections[0].test_status, null);
+  await page.reload();
+  await page.locator(".backend-row").waitFor();
+  assert.match(await page.locator(".backend-row").innerText(), /未检查/);
+  report.interactions.push("backend-config-persists-without-connection-check");
+
+  await page.getByRole("button", { name: "检查服务", exact: true }).click();
+  await page.locator('[data-form="backend-check"]').waitFor();
+  assert.equal(await page.locator('[name="consent"]').isChecked(), false);
+  assert.match(await page.locator('#form-dialog').innerText(), /不携带凭证/);
+  await page.locator('[name="consent"]').check();
+  await page.getByRole("button", { name: "确认检查", exact: true }).click();
+  await page.waitForFunction(() => document.querySelector(".backend-row")?.textContent.includes("服务可达"));
+  assert.match(await page.locator(".backend-row").innerText(), /认证未验证/);
+  const backendHealth = await (await page.request.get(`${base}/api/backends/${backendId}/health`)).json();
+  assert.equal(backendHealth.authentication, "unverified");
+  assert.equal(backendHealth.read_access_verified, false);
+  report.interactions.push("explicit-backend-health-check-is-not-authentication");
+
+  await page.waitForFunction(() => !document.querySelector("#toast").classList.contains("show"));
+  await page.waitForFunction(() => Number(getComputedStyle(document.querySelector("#toast")).opacity) === 0);
+  for (const [name, width, height] of [["desktop", 1440, 1000], ["mobile", 390, 844], ["small", 320, 740]]) {
+    await page.setViewportSize({ width, height });
+    const geometry = await page.locator(".backend-row").evaluate((row) => ({
+      documentWidth: document.documentElement.scrollWidth,
+      viewport: innerWidth,
+      rowWidth: row.scrollWidth,
+      clientWidth: row.clientWidth,
+      broken: [...document.images].filter((image) => !image.complete || !image.naturalWidth).map((image) => image.src),
+    }));
+    assert.ok(geometry.documentWidth <= geometry.viewport + 1, JSON.stringify(geometry));
+    assert.ok(geometry.rowWidth <= geometry.clientWidth + 1, JSON.stringify(geometry));
+    assert.deepEqual(geometry.broken, []);
+    if (width !== 320) {
+      await page.locator(".backend-section").screenshot({ path: `${out}/backend-${name}.png` });
+    }
+  }
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "撤销", exact: true }).click();
+  await page.waitForFunction(() => document.querySelector(".backend-row")?.textContent.includes("已撤销"));
+  assert.equal(await page.locator('.backend-row [data-action="check-backend"]').count(), 0);
+  await page.reload();
+  await page.locator(".backend-row").waitFor();
+  assert.match(await page.locator(".backend-row").innerText(), /已撤销/);
+  connections = await (await page.request.get(`${base}/api/backends`)).json();
+  assert.equal(connections.connections[0].status, "revoked");
+  report.interactions.push("backend-revocation-persists-and-layout-fits");
   assert.deepEqual(report.externalRequests, []);
   assert.deepEqual(report.errors, []);
 } catch (error) {
@@ -281,7 +339,7 @@ try {
   server.kill("SIGTERM");
   await new Promise((resolve) => { if (server.exitCode !== null) resolve(); else server.once("exit", resolve); });
 }
-report.complete = report.interactions.length === 11 && report.viewports.length === 5 && report.errors.length === 0;
+report.complete = report.interactions.length === 14 && report.viewports.length === 5 && report.errors.length === 0;
 await writeFile(`${out}/browser.json`, `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify(report, null, 2));
 if (!report.complete) process.exitCode = 1;

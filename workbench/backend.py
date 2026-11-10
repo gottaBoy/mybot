@@ -1,11 +1,9 @@
-"""Read-only conversation backend contracts.
-
-No network client lives here. Upstream adapters map their identities and
-states into these stable mybot-owned value shapes.
-"""
+"""Read-only backend contracts and adapters; never dispatches model work."""
 
 from __future__ import annotations
 
+import asyncio
+import json
 from dataclasses import dataclass
 from typing import Protocol
 from urllib.parse import quote
@@ -13,6 +11,7 @@ from urllib.parse import quote
 import httpx
 
 OPENMAUSBOT_FORK_COMMIT = "1bc4749aa8307d7d6998bf86de4ef6478460dd93"
+
 
 class BackendError(Exception):
     def __init__(self, code: str):
@@ -210,18 +209,30 @@ class OpenMausBotNativeReadAdapter(OpenMausBotReadOnlyAdapter):
                 trust_env=False, timeout=httpx.Timeout(10, connect=5),
             )
         try:
-            response = await client.get("/api/health")
+            async with asyncio.timeout(10):
+                async with client.stream("GET", "/api/health", follow_redirects=False) as response:
+                    if response.status_code in {401, 403}:
+                        raise BackendError(
+                            "backend_auth_required" if response.status_code == 401 else "backend_access_denied"
+                        )
+                    if 300 <= response.status_code < 400:
+                        raise BackendError("backend_redirect_denied")
+                    if response.status_code >= 400:
+                        raise BackendError(f"backend_http_{response.status_code}")
+                    data = bytearray()
+                    async for chunk in response.aiter_bytes():
+                        data.extend(chunk)
+                        if len(data) > 65536:
+                            raise BackendError("backend_response_too_large")
+        except (httpx.TimeoutException, TimeoutError) as exc:
+            raise BackendError("backend_timeout") from exc
         except httpx.HTTPError as exc:
             raise BackendError("backend_unreachable") from exc
         finally:
             if owned:
                 await client.aclose()
-        if response.status_code in {401, 403}:
-            raise BackendError("backend_auth_required" if response.status_code == 401 else "backend_access_denied")
-        if response.status_code >= 400:
-            raise BackendError(f"backend_http_{response.status_code}")
         try:
-            payload = response.json()
+            payload = json.loads(data)
         except ValueError as exc:
             raise BackendError("backend_schema_invalid") from exc
         if not isinstance(payload, dict) or payload.get("app") != "openmausbot":
@@ -229,7 +240,7 @@ class OpenMausBotNativeReadAdapter(OpenMausBotReadOnlyAdapter):
         packaged = payload.get("static")
         if packaged is not None and not isinstance(packaged, bool):
             raise BackendError("backend_schema_invalid")
-        return BackendHealth("connected", "openmausbot", packaged)
+        return BackendHealth("reachable", "openmausbot", packaged)
 
     async def list_conversations(self, connection, *, cursor=None):
         self._connections[connection.id] = connection

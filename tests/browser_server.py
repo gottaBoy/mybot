@@ -2,12 +2,14 @@
 import sys
 from pathlib import Path
 
+import httpx
 import uvicorn
 
 from test_workbench import FakeProvider
 from workbench.app import create_app
 from workbench.config import Settings
 from workbench.provider import ProviderError
+from workbench.backend import OpenMausBotNativeReadAdapter
 
 
 class BrowserProvider(FakeProvider):
@@ -34,5 +36,15 @@ workspace.mkdir(parents=True)
 (workspace / "README.md").write_text("# Browser test repository\nExplicit context fixture.", encoding="utf-8")
 settings = Settings(root / "data", workspace, poll_interval=0.01,
                     access_token=sys.argv[3] if len(sys.argv) > 3 else "")
-uvicorn.run(create_app(settings, BrowserProvider(delay=0.15)), host="127.0.0.1", port=int(sys.argv[2]),
+
+def backend_health_fixture(request):
+    assert request.method == "GET" and request.url.path == "/api/health"
+    return httpx.Response(200, json={"app": "openmausbot", "static": True})
+
+
+backend_client = httpx.AsyncClient(
+    base_url="http://127.0.0.1:8000", transport=httpx.MockTransport(backend_health_fixture),
+)
+uvicorn.run(create_app(settings, BrowserProvider(delay=0.15), OpenMausBotNativeReadAdapter(backend_client)),
+            host="127.0.0.1", port=int(sys.argv[2]),
             log_level="warning")

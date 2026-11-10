@@ -131,6 +131,10 @@ class Store:
                 names = {row["name"] for row in db.execute(f"PRAGMA table_info({table})")}
                 if column not in names:
                     db.execute(f"ALTER TABLE {table} ADD COLUMN {column} TEXT REFERENCES {reference}(id)")
+            backend_columns = {row["name"] for row in db.execute("PRAGMA table_info(backend_connections)")}
+            for column in ("tested_at", "test_status"):
+                if column not in backend_columns:
+                    db.execute(f"ALTER TABLE backend_connections ADD COLUMN {column} TEXT")
         os.chmod(self.path, 0o600)
 
     @contextmanager
@@ -226,7 +230,7 @@ class Store:
             )
             self.event(db, "backend.configured", {
                 "kind": values["kind"], "status": values["status"], "read_only": True,
-            }, entity_id=values["id"])
+            }, entity_id=values["id"], actor="user")
         return self.get("backend_connections", values["id"])
 
     def add_conversation_ref(self, values: dict) -> dict:
@@ -243,6 +247,31 @@ class Store:
                 "read_only": True,
             }, entity_id=values["id"])
         return self.get("conversation_refs", values["id"])
+
+    def record_backend_check(self, identifier: str, status: str) -> dict:
+        with self.transaction() as db:
+            row = db.execute("SELECT * FROM backend_connections WHERE id=?", (identifier,)).fetchone()
+            if row is None:
+                raise KeyError(identifier)
+            if row["status"] == "revoked" or row["revoked_at"]:
+                return decode(row)
+            db.execute("UPDATE backend_connections SET tested_at=?,test_status=? WHERE id=?",
+                       (now(), status, identifier))
+            self.event(db, "backend.health.checked", {
+                "status": status, "authentication": "unverified", "read_access_verified": False,
+            }, entity_id=identifier, actor="user")
+            return decode(db.execute("SELECT * FROM backend_connections WHERE id=?", (identifier,)).fetchone())
+
+    def revoke_backend(self, identifier: str) -> dict:
+        with self.transaction() as db:
+            row = db.execute("SELECT * FROM backend_connections WHERE id=?", (identifier,)).fetchone()
+            if row is None:
+                raise KeyError(identifier)
+            if row["status"] != "revoked":
+                db.execute("UPDATE backend_connections SET status='revoked',revoked_at=? WHERE id=?",
+                           (now(), identifier))
+                self.event(db, "backend.revoked", {"read_only": True}, entity_id=identifier, actor="user")
+            return decode(db.execute("SELECT * FROM backend_connections WHERE id=?", (identifier,)).fetchone())
 
     def create_run(self, task_id: str, request_id: str, config: dict, context: dict) -> dict:
         with self.transaction() as db:

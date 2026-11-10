@@ -1,6 +1,9 @@
 # mybot AI Agent Work 分步骤实现计划
 
-日期：2026-11-08。状态：当前执行路线。每一阶段完成后追加到 [PROGRESS_LOG.md](PROGRESS_LOG.md)，不把设计计划写成已实现能力。
+更新：2026-11-10。状态：当前执行路线。每一阶段完成后追加到 [PROGRESS_LOG.md](PROGRESS_LOG.md)，不把设计计划写成已实现能力。
+
+工作项状态以 [WORK_ITEMS.md](WORK_ITEMS.md) 为单一清单：原编号 119 项，完成 9 项，
+未完全完成 110 项。阶段下列的是交付范围，不重复累加为额外工作项。
 
 ## 0. 总目标
 
@@ -51,8 +54,8 @@
 
 ### 已验证
 
-- Python 回归：181 项通过。
-- 浏览器：5 个视口、11 条交互通过。
+- 当前回归数量以 [实现状态](IMPLEMENTATION_STATUS.md) 的最新记录为准，不混用各轮历史数量。
+- 浏览器覆盖 5 视口，新增后端保存/显式检查/撤销交互；使用 MockTransport/FakeProvider。
 - 真实 Codex 已有一次关联重试完整完成；仍有历史超时和未知用量，新增隔离参数尚未做真实回归。
 - OpenMausBot 已完成固定 npm 包 + 合成 ACP 的 35/38 项隔离研究，但没有接入 mybot。
 
@@ -128,7 +131,7 @@ cancel()
 
 ### Phase 3：OpenMausBot 会话后端
 
-状态：合同骨架已完成，固定 fork 适配器未完成。
+状态：协议观察、离线适配和 B01–B03 配置/检查/撤销闭环已完成；真实会话接入未完成。
 
 已完成：
 
@@ -136,14 +139,18 @@ cancel()
 - SQLite backend binding/ref 表。
 - 只读空适配器和只读查询 API。
 - 隔离 MockTransport 只读 Adapter：分页、游标、重复 ID 去重、403/404/5xx/schema/revoked 映射。
+- 基于已有发布包观察的原生 `/api/health`、`/api/bots`、bounded messages 只读映射；不是 fork 源码构建验收。
+- 本机回环 IP 连接配置：保存/查询不联网，不接受凭证或自定义路径。
+- 显式 `POST /api/backends/{id}/check`，只发一次健康 GET；`GET .../health` 只查持久结果。
+- 连接撤销与在途检查竞争保护；UI 区分未检查、可达/认证未验证、已撤销。
 
 待交付：
 
-- `BackendConnection`。
-- `ConversationRef`。
-- 只读 Bot 列表、会话列表、分页消息、状态和成果引用。
-- 指定 `gottaBoy/OpenMausBot` 固定 commit，不自动跟随 upstream。
-- OpenMausBot MCP/HTTP 使用 Anti-Corruption Layer。
+- Web 只读 Bot/会话/消息工作区及来源。
+- 固定 fork 原生认证、读取 scope、历史任务及消息真实分页语义。
+- 明确 hasMore、游标、跨页去重和同步缺口，不能把截断当读完。
+- 健康可达和认证/会话读取分别验收；完整撤权、断线、schema 变化测试。
+- 专用环境中的只读接入验收；不直接沿用本机账号。
 
 mybot 权威：
 
@@ -341,12 +348,12 @@ web/i18n/en-US.json
 
 ## 3. 当前下一项
 
-下一项只做 Phase 3：
+执行包 B01–B03 已完成。下一项只做 Phase 3 的 B04/B05：
 
-1. 固定 `gottaBoy/OpenMausBot` commit 的只读 Adapter。
-2. MockTransport 合同测试：Bot/Conversation/Message 分页、游标去重、403/断线/schema 变化。
-3. Web Agent/会话只读列表和空状态。
-4. 更新 `PROGRESS_LOG.md`。
+1. B04：既有 Web 会话工作区、显式读取与可核查的消息/来源；不得静默联网或回落 fixture。
+2. B05：先读固定源码的认证/读取 scope，不把公共 health 当账号/权限认证。
+3. 原生协议和权限门槛未通过时只做隔离 fixture；真实账号测试另行授权。
+4. 完成包后更新 WORK_ITEMS/PROGRESS_LOG/CONTINUE，部分不等于完成。
 
 不同时做：
 

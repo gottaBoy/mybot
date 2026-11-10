@@ -1,6 +1,17 @@
 # 下次从这里继续
 
-更新日期：2026-11-09（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
+更新日期：2026-11-10（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
+
+**最新工作项口径：** [WORK_ITEMS.md](docs/WORK_ITEMS.md) 是当前单一清单，保留原 001–119：
+9 完成、35 部分、58 待办、15 授权门槛、2 暂缓，未完全完成合计 110。实现计划不重复计数，
+没有把仅有合同/mock 的原生接入标记完成。旧条目中的历史测试数/下一步以本条及台账覆盖。
+
+**最新交付 B01–B03：** 模型与控制页已可保存本机回环 Backend 配置；保存/列表/GET health
+不联网；显式 POST check + consent 才请求一次 `/api/health`，拒绝重定向、64 KiB/10 秒限制，
+不读取凭证、不启动 Agent。检查结果只标 reachable/authentication=unverified/read_access_verified=false。
+支持幂等撤销、在途检查不能覆盖撤销，撤销后禁止检查和缓存会话读取。测试只使用
+MockTransport，生产未新增连接/账号。下一执行包为 B04 会话工作区和 B05 离线认证读取合同，
+真实账号/付费/上游启动另行授权。逐包结果见 PROGRESS_LOG 2026-11-10。
 
 **最新真实执行成功（2026-11-09）：** 用户明确“你自己跑吧”后，仅创建一个关联重试 `49acc6c258094a2794b153a6b6629800`，来源 `bd69...`。规划复用，新增调用预算 3、Codex 单通道、单次时限 240 秒。两项研究与汇总均成功，耗时分别 109074/126864/88651 ms，总历时约 5 分 25 秒，3 份成果均待审查。CLI 报告 input 41460/output 9993 tokens；金额未知，不包含来源失败调用。没有再次重试、切换 Provider 或修改来源记录。仍未附加源码快照，输出为分析提案；正文引用了 CLI 自动上下文中的 AGENTS.md，因此不能声称输入严格只有 mybot 可见快照。CLI 无工具 ceiling、隐式上下文、输出 Token 硬上限仍是未验收边界。进度记录已更新，当前无活动 Run；后续不要重复消费这次真实执行授权。
 

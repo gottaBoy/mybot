@@ -74,6 +74,13 @@
 .model-row small { display: block; margin-top: 9px; color: #97abc7; font-size: 11px; overflow-wrap: anywhere; }
 .model-key { color: #8da4c5; font-size: 11px; overflow-wrap: anywhere; }
 .model-id { color: #788aa3 !important; }
+.backend-row { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 12px; padding: 20px 0; border-top: 1px solid #353b46; align-items: start; }
+.backend-identity { min-width: 0; }
+.backend-identity h3 { font-size: 14px; overflow-wrap: anywhere; margin-bottom: 8px; }
+.backend-identity code { color: #c3ced8; font-size: 12px; overflow-wrap: anywhere; }
+.backend-identity p { margin: 12px 0 8px; }
+.backend-identity small { color: #a3adbb; font-size: 11px; line-height: 1.8; }
+.backend-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .definition-note { display: block; margin-top: 7px; color: #8295ae; font-size: 10px; line-height: 1.7; }
 .control-boundaries p { display: flex; align-items: flex-start; gap: 8px; color: #a7b5cc; font-size: 12px; margin-bottom: 15px; }
 .control-boundaries p .icon { width: 14px; height: 14px; flex-basis: 14px; margin-top: 3px; }
@@ -185,6 +192,8 @@ body:has(dialog[open]) { overflow: hidden; }
   .agent-work-detail-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
 }
 @media (max-width: 599px) {
+  .backend-row { grid-template-columns: 24px minmax(0, 1fr); }
+  .backend-actions { grid-column: 2; }
   input, select, textarea { font-size: 16px !important; }
   .button, .icon-button { min-height: 40px; }
   .app-header { padding-left: 13px; padding-right: 13px; }

@@ -15,21 +15,25 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .config import Settings
+from .backend import BackendError
+from .backend_service import BackendService
 from .context import ContextError, snapshot, validate_directory
 from .engine import Engine
 from .harness import LocalSuperagentHarness
 from .provider import ProviderError, ProviderRouter, key_available
 from .recovery import MODEL_FIELDS
 from .schemas import (
-    ArtifactDecision, DefaultModel, Login, ModelCreate, ProjectCreate, Resume, RunCreate, RunRetry, TaskCreate,
+    ArtifactDecision, BackendCheck, BackendCreate, DefaultModel, Login, ModelCreate, ProjectCreate,
+    Resume, RunCreate, RunRetry, TaskCreate,
 )
 from .store import Store, now
 
 
-def create_app(settings=None, provider=None) -> FastAPI:
+def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     settings = settings or Settings.from_env()
     store = Store(settings.data_dir)
     engine = Engine(store, provider or ProviderRouter(), settings.poll_interval)
+    backends = BackendService(store, backend_adapter)
     sessions = {}
     login_attempts = {}
     root = Path(__file__).resolve().parents[1]
@@ -51,6 +55,7 @@ def create_app(settings=None, provider=None) -> FastAPI:
 
     app = FastAPI(title="AI Workbench", lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None)
     app.state.store, app.state.engine = store, engine
+    app.state.backends = backends
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=list(settings.allowed_hosts))
 
     def loopback(request):
@@ -115,6 +120,11 @@ def create_app(settings=None, provider=None) -> FastAPI:
     @app.exception_handler(ContextError)
     async def context_error(request, exc):
         return JSONResponse({"detail": str(exc)}, status_code=422)
+
+    @app.exception_handler(BackendError)
+    async def backend_error(request, exc):
+        status = 422 if exc.code == "backend_check_confirmation_required" else 409
+        return JSONResponse({"detail": exc.code}, status_code=status)
 
     @app.get("/api/auth/state")
     async def auth_state(request: Request):
@@ -278,9 +288,27 @@ def create_app(settings=None, provider=None) -> FastAPI:
     async def backend_list():
         return {"connections": store.list("backend_connections"), "read_only": True}
 
+    @app.post("/api/backends", status_code=201)
+    async def backend_configure(body: BackendCreate):
+        return backends.configure(body)
+
+    @app.get("/api/backends/{identifier}/health")
+    async def backend_health(identifier: str):
+        return backends.health(identifier)
+
+    @app.post("/api/backends/{identifier}/check")
+    async def backend_check(identifier: str, body: BackendCheck):
+        return await backends.check_health(identifier, body.consent)
+
+    @app.post("/api/backends/{identifier}/revoke")
+    async def backend_revoke(identifier: str):
+        return backends.revoke(identifier)
+
     @app.get("/api/backends/{identifier}/conversations")
     async def backend_conversations(identifier: str):
-        store.get("backend_connections", identifier)
+        connection = store.get("backend_connections", identifier)
+        if connection["status"] == "revoked" or connection["revoked_at"]:
+            raise BackendError("backend_revoked")
         return {"conversations": store.list("conversation_refs", identifier), "read_only": True}
 
     @app.get("/api/runs/{identifier}/retry-preview")
