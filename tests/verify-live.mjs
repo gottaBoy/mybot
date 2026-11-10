@@ -273,7 +273,7 @@ try {
   assert.equal(await page.locator(`.retry-lineage a[href="#run/${newRunId}"]`).count(), 1);
   report.interactions.push("resource-retry-submits-once-reuses-results-and-persists-lineage");
 
-  await page.goto(`${base}/#models`);
+  await page.goto(`${base}/#backends`);
   await page.getByRole("button", { name: "添加后端", exact: true }).click();
   await page.locator('[data-form="backend"] [name="name"]').fill("本机 OMB（测试夹具）");
   await page.locator('[data-form="backend"] [name="endpoint"]').fill("http://127.0.0.1:8000");

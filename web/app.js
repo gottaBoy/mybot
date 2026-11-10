@@ -21,7 +21,7 @@ const tone = (status) => status === "succeeded" || status === "accepted" ? "gree
 const pill = (status, custom) => `<span class="status status-${tone(status)}"><i></i>${esc(custom || labels[status] || status)}</span>`;
 const when = (value) => value ? new Date(value).toLocaleString("zh-CN", { hour12: false }) : "—";
 const duration = (value) => value === null || value === undefined ? "未知" : value >= 1000 ? `${(value / 1000).toFixed(1)}s` : `${value}ms`;
-let data = { projects: [], models: [], tasks: [], runs: [], backends: [], default_model_id: "", local_harnesses: [] };
+let data = { projects: [], models: [], tasks: [], runs: [], backends: [], backend_conversations: {}, default_model_id: "", local_harnesses: [] };
 let detail = null;
 let routeKey = "";
 let polling = false;
@@ -92,7 +92,7 @@ function navigation() {
   return `<a class="brand" href="#home"><span class="brand-mark">${icon("command")}</span><strong>Workbench<span class="brand-version">AI</span></strong></a>
     <div class="workspace-switch"><span class="workspace-avatar">研</span><span>研发工作空间<small>单用户 · 只读执行</small></span></div>
     <button class="nav-new" data-action="new-task">${icon("plus")}发起工作</button>
-    <nav class="primary-nav"><a class="nav-item ${route === "home" ? "is-active" : ""}" href="#home">${icon("layout-dashboard")}工作台</a><a class="nav-item ${route.startsWith("agent-work") ? "is-active" : ""}" href="#agent-work">${icon("git-branch")}Agent Work</a><a class="nav-item ${route === "models" ? "is-active" : ""}" href="#models">${icon("sliders-horizontal")}模型与控制</a></nav>
+    <nav class="primary-nav"><a class="nav-item ${route === "home" ? "is-active" : ""}" href="#home">${icon("layout-dashboard")}工作台</a><a class="nav-item ${route.startsWith("agent-work") ? "is-active" : ""}" href="#agent-work">${icon("git-branch")}Agent Work</a><a class="nav-item ${route === "models" ? "is-active" : ""}" href="#models">${icon("sliders-horizontal")}模型与控制</a><a class="nav-item ${route === "backends" ? "is-active" : ""}" href="#backends">${icon("network")}会话后端</a></nav>
     <div class="nav-projects"><div class="nav-section-heading"><span>项目</span><button class="icon-button" data-action="new-project" aria-label="创建项目">${icon("plus")}</button></div>${data.projects.map((p) => `<a class="nav-project ${route === `project/${p.id}` ? "is-active" : ""}" href="#project/${p.id}"><span class="project-monogram">${esc(p.name.slice(0, 1))}</span><span>${esc(p.name)}</span></a>`).join("") || '<p class="nav-empty">尚未创建项目</p>'}</div>
     <div class="nav-bottom"><div class="scope-note">${icon("shield-check")}<div>只读调研<small>仅显式选择的资料会发送给模型</small></div></div><a class="nav-item" href="#models">${icon("settings-2")}连接与设置</a><div class="identity"><span class="person-avatar">我</span><span><strong>项目所有者</strong><small>本机/私有工作空间</small></span></div></div>`;
 }
@@ -184,18 +184,25 @@ function modelsView() {
     ${harnesses.length ? `<section class="local-harnesses"><div class="section-heading"><h2>本地 Harness</h2><span class="table-footnote">仅检测可执行文件，认证未验证</span></div><div class="harness-discovery-list">${harnesses.map((item) => `<div><span class="agent-avatar agent-neutral">${icon("terminal")}</span><strong>${esc(item.label)}</strong><small>${esc(item.id)} · 已发现，认证未验证</small>${item.id === "codex" ? btn("启用 Codex Adapter", "plug", 'data-action="enable-codex"') : ""}</div>`).join("")}</div></section>` : ""}
     ${harnesses.length ? `<div class="notice notice-neutral local-harness-note">${icon("circle-help")}<div><strong>Codex CLI 尚未作为 Workbench 执行器启用</strong><p>当前只做可执行文件发现，不读取本机登录凭证。后续启用 Codex Adapter 后，用户明确选择的 Run 才会复用 CLI 登录态。</p></div></div>` : ""}
     <section class="page-section">${sectionHeading("模型连接")}${data.models.map((m) => `<div class="model-row">${icon("blocks")}<div><h3>${esc(m.name)} ${m.id === data.default_model_id ? pill("accepted", "默认") : ""}</h3><p><code>${esc(m.model)}</code></p><small>${esc(m.endpoint)}</small><p class="model-key">密钥：${m.key_env ? `${esc(m.key_env)} · ${m.key_available ? "服务端已提供" : "未提供"}` : "无（本地或免密端点）"}</p><small class="model-id">配置 ID：<code>${esc(m.id)}</code></small></div><div>${m.id !== data.default_model_id ? btn("设为默认", "check", `data-action="default-model" data-model="${m.id}"`) : ""}${pill(m.test_status === "reachable" ? "succeeded" : "pending", m.test_status === "reachable" ? "可达，能力未验证" : m.test_status || "未测试")}${btn("测试连接", "plug", `data-action="test-model" data-model="${m.id}"`)}</div></div>`).join("") || '<div class="empty-state"><h2>尚未配置模型</h2><p>支持本地或远程的 OpenAI-compatible Chat Completions 接口。</p></div>'}</section>
-    ${backendConnectionsView()}
     <section class="page-section">${sectionHeading("当前执行边界")}<div class="control-boundaries"><p>${icon("check")}单机一个后台 Worker，每次最多两个只读研究 Agent 并行</p><p>${icon("check")}规划、研究和汇总可以指定不同模型</p><p>${icon("x")}代码写入、Shell、部署和生产权限未实现</p><p>${icon("circle-help")}成本未知时不会填零；测试连接不证明工具能力</p></div></section></div>`;
 }
 
+function backendsView() {
+  shell("会话后端");
+  return `<div class="page">${heading("会话后端", "管理外部 Bot/Thread 的只读连接。保存不联网；读取和健康检查都必须显式确认。", btn("添加后端", "plus", 'data-action="new-backend"', true))}
+    <div class="backend-hero"><div class="backend-hero-icon">${icon("shield-check")}</div><div><strong>只读连接中心</strong><p>这里管理会话来源，不管理模型。连接可达不等于认证成功，也不代表 Agent 获得发送权限。</p></div></div>
+    ${backendConnectionsView()}</div>`;
+}
+
 function backendConnectionsView() {
-  return `<section class="page-section backend-section">${sectionHeading("会话后端", btn("添加后端", "plus", 'data-action="new-backend"'))}
+  return `<section class="page-section backend-section">${sectionHeading("已配置连接")}
     ${(data.backends || []).map((connection) => {
       const revoked = connection.status === "revoked";
       const reachable = connection.test_status === "reachable";
+      const conversations = (data.backend_conversations || {})[connection.id] || [];
       const status = revoked ? "已撤销" : reachable ? "服务可达 · 认证未验证"
         : connection.test_status ? errorLabel(connection.test_status) : "未检查";
-      return `<div class="backend-row"><span class="agent-avatar agent-neutral">${icon("network")}</span><div class="backend-identity"><h3>${esc(connection.name)}</h3><code>${esc(connection.endpoint)}</code><p>${pill(revoked ? "canceled" : reachable ? "succeeded" : "pending", status)}</p><small>会话读取未授权${connection.tested_at ? ` · 检查时间 ${when(connection.tested_at)}` : ""}</small></div><div class="backend-actions">${revoked ? "" : `${btn("检查服务", "plug", `data-action="check-backend" data-backend="${connection.id}"`)}${btn("撤销", "square", `data-action="revoke-backend" data-backend="${connection.id}"`)}`}</div></div>`;
+      return `<div class="backend-row"><span class="agent-avatar agent-neutral">${icon("network")}</span><div class="backend-identity"><h3>${esc(connection.name)}</h3><code>${esc(connection.endpoint)}</code><p>${pill(revoked ? "canceled" : reachable ? "succeeded" : "pending", status)}</p><small>${conversations.length ? `已保存 ${conversations.length} 个会话` : "尚未读取会话"}${connection.tested_at ? ` · 检查时间 ${when(connection.tested_at)}` : ""}</small><div class="conversation-list">${conversations.map((conversation) => `<div class="conversation-row"><span>${icon("file-text")}</span><div><strong>${esc(conversation.title)}</strong><small>${esc(conversation.status)} · ${esc(conversation.external_id)}</small></div><button type="button" data-action="sync-conversation" data-conversation="${conversation.id}">读取消息</button><button type="button" data-action="view-conversation" data-conversation="${conversation.id}">查看缓存</button></div>`).join("") || '<span class="empty-inline">会话列表为空</span>'}</div></div><div class="backend-actions">${revoked ? "" : `${btn("检查服务", "plug", `data-action="check-backend" data-backend="${connection.id}"`)}${btn("读取会话", "file-text", `data-action="sync-backend" data-backend="${connection.id}"`)}${btn("撤销", "square", `data-action="revoke-backend" data-backend="${connection.id}"`)}`}</div></div>`;
     }).join("") || '<p class="empty-message">尚未配置会话后端</p>'}
   </section>`;
 }
@@ -311,6 +318,7 @@ async function refresh(full = true) {
       data = nextData;
       if (route === "agent-work") draw(agentWorkView);
       else if (route === "models") draw(modelsView);
+      else if (route === "backends") draw(backendsView);
       else if (route.startsWith("project/")) draw(() => projectView(route.split("/")[1]));
       else draw(home);
     }
@@ -376,6 +384,19 @@ function backendCheckForm(identifier) {
   const connection = data.backends.find((item) => item.id === identifier);
   if (!connection) return;
   modal("检查后端服务", `<form data-form="backend-check" data-backend="${connection.id}" class="live-form"><dl class="definition-list"><dt>连接</dt><dd>${esc(connection.name)}</dd><dt>请求</dt><dd><code>GET ${esc(connection.endpoint)}/api/health</code></dd></dl><p>仅检查服务身份与可达性，不携带凭证、不读取会话、不调用模型。可达不代表认证或读取权限已验证。</p><label class="consent-label"><input type="checkbox" name="consent" required /><span>确认向此本机地址发送一次健康检查请求。</span></label><p class="form-error" role="alert"></p><div class="form-actions">${btn("确认检查", "plug", 'type="submit"', true)}</div></form>`);
+}
+
+function backendReadForm(identifier, conversation = null) {
+  const title = conversation ? `读取会话消息：${conversation.title}` : "读取会话列表";
+  const path = conversation ? `/api/conversations/${conversation.id}/sync` : `/api/backends/${identifier}/sync`;
+  modal(title, `<form data-form="${conversation ? "conversation-sync" : "backend-sync"}" data-path="${path}" class="live-form"><p>这是只读同步：不会发送消息、启动任务或调用模型。只会读取已配置后端返回的会话/消息，并保存安全投影。</p><label class="consent-label"><input type="checkbox" name="consent" required /><span>确认读取此后端的${conversation ? "会话消息" : "会话列表"}。</span></label><p class="form-error" role="alert"></p><div class="form-actions">${btn("确认读取", "file-text", 'type="submit"', true)}</div></form>`);
+}
+
+async function viewConversation(identifier) {
+  const messages = await api(`/conversations/${identifier}/messages`);
+  modal("会话消息（只读缓存）", messages.messages.length
+    ? `<div class="conversation-messages">${messages.messages.map((message) => `<article><header><strong>${esc(message.role)}</strong><time>${esc(message.created_at || "时间未知")}</time></header><p>${esc(message.content)}</p></article>`).join("")}</div><p class="field-hint">消息来自已确认读取的安全投影；没有发送入口。</p>`
+    : '<div class="empty-state"><h2>尚未读取消息</h2><p>先从会话后端执行一次明确的只读读取。</p></div>');
 }
 
 async function prepare(taskId) {
@@ -493,6 +514,13 @@ document.addEventListener("submit", async (event) => {
       await refresh();
       notify(result.status === "reachable" ? "服务可达；认证和会话读取权限仍未验证。" : errorLabel(result.status),
         result.status !== "reachable");
+    } else if (form.dataset.form === "backend-sync" || form.dataset.form === "conversation-sync") {
+      const result = await api(form.dataset.path, {
+        method: "POST", body: JSON.stringify({ consent: values.consent === "on" }),
+      });
+      $("#form-dialog").close();
+      await refresh();
+      notify(`只读读取完成：${result.count} 条记录。`);
     } else if (form.dataset.form === "task") {
       values.files = values.files.split("\n").map((v) => v.trim()).filter(Boolean);
       const result = await api("/tasks", { method: "POST", body: JSON.stringify(values) });
@@ -556,6 +584,17 @@ document.addEventListener("click", async (event) => {
     else if (action === "new-model") modelForm();
     else if (action === "new-backend") backendForm();
     else if (action === "check-backend") backendCheckForm(el.dataset.backend);
+    else if (action === "sync-backend") backendReadForm(el.dataset.backend);
+    else if (action === "view-conversation") {
+      const connection = Object.values(data.backend_conversations || {}).flat()
+        .find((conversation) => conversation.id === el.dataset.conversation);
+      if (connection) await viewConversation(connection.id);
+    }
+    else if (action === "sync-conversation") {
+      const conversation = Object.values(data.backend_conversations || {}).flat()
+        .find((item) => item.id === el.dataset.conversation);
+      if (conversation) backendReadForm(null, conversation);
+    }
     else if (action === "revoke-backend") {
       if (!confirm("撤销此连接？撤销后禁止检查服务或读取缓存会话。")) return;
       el.disabled = true;

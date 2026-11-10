@@ -167,9 +167,13 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
             for name, label in (("codex", "Codex CLI"), ("claude", "Claude Code"),
                                 ("opencode", "OpenCode"), ("t3", "T3 Code"))
         ]
+        backends = store.list("backend_connections")
         return {"projects": store.list("projects"), "models": [public_model(m) for m in store.list("models")],
                 "tasks": store.list("tasks"), "runs": store.list("runs"),
-                "backends": store.list("backend_connections"),
+                "backends": backends,
+                "backend_conversations": {
+                    backend["id"]: store.list("conversation_refs", backend["id"]) for backend in backends
+                },
                 "workspace": str(settings.workspace), "access": "read_only",
                 "default_model_id": store.get_setting("default_model_id", settings.default_model_id),
                 "local_harnesses": local_harnesses,
@@ -310,6 +314,19 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
         if connection["status"] == "revoked" or connection["revoked_at"]:
             raise BackendError("backend_revoked")
         return {"conversations": store.list("conversation_refs", identifier), "read_only": True}
+
+    @app.post("/api/backends/{identifier}/sync")
+    async def backend_sync(identifier: str, body: BackendCheck):
+        return await backends.sync_conversations(identifier, body.consent)
+
+    @app.get("/api/conversations/{identifier}/messages")
+    async def conversation_messages(identifier: str):
+        store.get("conversation_refs", identifier)
+        return {"messages": store.list("conversation_messages", identifier), "read_only": True}
+
+    @app.post("/api/conversations/{identifier}/sync")
+    async def conversation_sync(identifier: str, body: BackendCheck):
+        return await backends.sync_messages(identifier, body.consent)
 
     @app.get("/api/runs/{identifier}/retry-preview")
     async def run_retry_preview(identifier: str):

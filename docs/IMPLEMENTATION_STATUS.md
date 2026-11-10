@@ -111,11 +111,11 @@ App Server 草稿未通过最终协议/能力边界复核，已撤回生产入�
 
 最新真实执行：2026-11-09 用户授权的 Codex 关联重试 `49acc6c258094a2794b153a6b6629800` 已完成两项研究与汇总，规划复用，3 次新增调用、3 份待审查成果，约 325 秒。证明当时配置下的真实文本闭环可完成；不代表本次新增隔离实现、Backend Adapter 或工具 ceiling 已做真实账号/模型验收。详细用量和边界见 [进度记录](PROGRESS_LOG.md)。
 
-- 后端测试：本轮完整回归结果见 PROGRESS_LOG 的 2026-11-10 条目；保留 Starlette/httpx 弃用提醒。
+- 后端测试：本轮完整回归 231 项通过；保留 Starlette/httpx 弃用提醒。
 - 协议测试使用 HTTPX MockTransport；后台流程使用仅测试可注入的 FakeProvider。
 - 浏览器：`tests/verify-live.mjs` 创建临时服务器与临时 SQLite，以 FakeProvider 验证 UI→API→Worker→数据库，不访问外部模型。
 - 浏览器检查报告：[browser.json](../tests/evidence/browser.json)。
-- Chrome 五视口/14 条交互通过，新增后端保存不检查、显式健康确认和撤销持久化，使用 MockTransport 而非真实 OpenMausBot。
+- Chrome 五视口/14 条交互通过，新增后端保存不检查、显式健康确认、会话读取投影和撤销持久化，使用 MockTransport 而非真实 OpenMausBot。
 - [桌面截图](../tests/evidence/live-desktop.png)、[手机尺寸截图](../tests/evidence/live-android-size.png)的内容均为明确测试夹具，不是真实模型质量证明。
 
 尚未完成：隔离 cwd 变更后的真实 Codex 回归、OpenMausBot 固定 fork 真实接入/原生认证、SSE replay 和运行中恢复、本地 GPU 模型兼容性、Safari、设备真机、断电一致性/压力测试、TLS 反向代理、团队权限与生产安全审计。

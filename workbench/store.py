@@ -106,6 +106,12 @@ CREATE TABLE IF NOT EXISTS conversation_refs (
  cursor TEXT, created_at TEXT NOT NULL,
  UNIQUE(connection_id, external_id)
 );
+CREATE TABLE IF NOT EXISTS conversation_messages (
+ id TEXT PRIMARY KEY, conversation_id TEXT NOT NULL REFERENCES conversation_refs(id),
+ external_id TEXT NOT NULL, role TEXT NOT NULL, content TEXT NOT NULL,
+ created_at TEXT, synced_at TEXT NOT NULL,
+ UNIQUE(conversation_id, external_id)
+);
 """
 
 
@@ -176,7 +182,7 @@ class Store:
 
     def get(self, table: str, entity_id: str) -> dict:
         if table not in {"projects", "models", "tasks", "runs", "agents", "artifacts", "calls",
-                         "backend_connections", "conversation_refs"}:
+                         "backend_connections", "conversation_refs", "conversation_messages"}:
             raise ValueError("Invalid entity")
         with self.transaction() as db:
             row = decode(db.execute(f"SELECT * FROM {table} WHERE id=?", (entity_id,)).fetchone())
@@ -200,10 +206,12 @@ class Store:
 
     def list(self, table: str, run_id=None) -> list[dict]:
         if table not in {"projects", "models", "tasks", "runs", "agents", "artifacts", "calls",
-                         "backend_connections", "conversation_refs"}:
+                         "backend_connections", "conversation_refs", "conversation_messages"}:
             raise ValueError("Invalid entity")
         if table == "conversation_refs" and run_id:
             where = " WHERE connection_id=?"
+        elif table == "conversation_messages" and run_id:
+            where = " WHERE conversation_id=?"
         else:
             where = " WHERE run_id=?" if run_id else ""
         sort = "started_at" if table == "calls" else "created_at" if table != "agents" else "rowid"
@@ -247,6 +255,63 @@ class Store:
                 "read_only": True,
             }, entity_id=values["id"])
         return self.get("conversation_refs", values["id"])
+
+    def upsert_conversations(self, connection_id: str, refs: list[dict]) -> list[dict]:
+        saved = []
+        with self.transaction() as db:
+            for ref in refs:
+                existing = db.execute(
+                    "SELECT id FROM conversation_refs WHERE connection_id=? AND external_id=?",
+                    (connection_id, ref["external_id"]),
+                ).fetchone()
+                if existing:
+                    identifier = existing["id"]
+                    db.execute(
+                        "UPDATE conversation_refs SET title=?,status=?,cursor=? WHERE id=?",
+                        (ref["title"], ref["status"], ref.get("cursor"), identifier),
+                    )
+                else:
+                    identifier = uid()
+                    db.execute(
+                        "INSERT INTO conversation_refs(id,connection_id,external_id,title,status,cursor,created_at) "
+                        "VALUES(?,?,?,?,?,?,?)",
+                        (identifier, connection_id, ref["external_id"], ref["title"], ref["status"],
+                         ref.get("cursor"), now()),
+                    )
+                self.event(db, "conversation.ref.synced", {
+                    "connection_id": connection_id, "external_id": ref["external_id"],
+                    "read_only": True,
+                }, entity_id=identifier, actor="user")
+                saved.append(identifier)
+        return [self.get("conversation_refs", identifier) for identifier in saved]
+
+    def upsert_messages(self, conversation_id: str, messages: list[dict]) -> list[dict]:
+        saved = []
+        with self.transaction() as db:
+            for message in messages:
+                existing = db.execute(
+                    "SELECT id FROM conversation_messages WHERE conversation_id=? AND external_id=?",
+                    (conversation_id, message["external_id"]),
+                ).fetchone()
+                identifier = existing["id"] if existing else uid()
+                if existing:
+                    db.execute(
+                        "UPDATE conversation_messages SET role=?,content=?,created_at=?,synced_at=? WHERE id=?",
+                        (message["role"], message["content"], message.get("created_at"), now(), identifier),
+                    )
+                else:
+                    db.execute(
+                        "INSERT INTO conversation_messages(id,conversation_id,external_id,role,content,created_at,synced_at) "
+                        "VALUES(?,?,?,?,?,?,?)",
+                        (identifier, conversation_id, message["external_id"], message["role"],
+                         message["content"], message.get("created_at"), now()),
+                    )
+                self.event(db, "conversation.message.synced", {
+                    "conversation_id": conversation_id, "external_id": message["external_id"],
+                    "read_only": True,
+                }, entity_id=identifier, actor="user")
+                saved.append(identifier)
+        return [self.get("conversation_messages", identifier) for identifier in saved]
 
     def record_backend_check(self, identifier: str, status: str) -> dict:
         with self.transaction() as db:

@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from .backend import BackendConnection, BackendError, OPENMAUSBOT_FORK_COMMIT, OpenMausBotNativeReadAdapter
+from .backend import (
+    BackendConnection, BackendError, ConversationRef, MessageRef,
+    OPENMAUSBOT_FORK_COMMIT, OpenMausBotNativeReadAdapter,
+)
 from .schemas import BackendCreate
 from .store import Store
 
@@ -58,3 +61,39 @@ class BackendService:
 
     def revoke(self, identifier: str) -> dict:
         return self.store.revoke_backend(identifier)
+
+    async def sync_conversations(self, identifier: str, consent: bool) -> dict:
+        if not consent:
+            raise BackendError("backend_read_confirmation_required")
+        row = self.store.get("backend_connections", identifier)
+        if row["status"] == "revoked" or row["revoked_at"]:
+            raise BackendError("backend_revoked")
+        connection = BackendConnection(
+            row["id"], row["name"], row["kind"], row["endpoint"], row["status"],
+            row["revoked_at"], row["settings"],
+        )
+        refs, cursor = await self.adapter.list_conversations(connection)
+        saved = self.store.upsert_conversations(identifier, [
+            {"external_id": ref.external_id, "title": ref.title, "status": ref.status, "cursor": ref.cursor}
+            for ref in refs
+        ])
+        return {"status": "synced", "count": len(saved), "next_cursor": cursor, "read_only": True}
+
+    async def sync_messages(self, identifier: str, consent: bool) -> dict:
+        if not consent:
+            raise BackendError("backend_read_confirmation_required")
+        conversation = self.store.get("conversation_refs", identifier)
+        connection = self.store.get("backend_connections", conversation["connection_id"])
+        if connection["status"] == "revoked" or connection["revoked_at"]:
+            raise BackendError("backend_revoked")
+        ref = ConversationRef(
+            conversation["id"], conversation["connection_id"], conversation["external_id"],
+            conversation["title"], conversation["status"], conversation["cursor"],
+        )
+        messages, cursor = await self.adapter.list_messages(ref)
+        saved = self.store.upsert_messages(identifier, [
+            {"external_id": msg.external_id, "role": msg.role, "content": msg.content,
+             "created_at": msg.created_at}
+            for msg in messages
+        ])
+        return {"status": "synced", "count": len(saved), "next_cursor": cursor, "read_only": True}

@@ -176,6 +176,15 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
 - 未完成/unknown：未新增生产后端连接，没有接入真实账号、启动上游或调用模型；不包含认证/配对、Bot 读取授权、历史分页、SSE/replay、断线接续和会话产品界面，关联原 008/013/017/118 仍部分完成。
 - 下一步：B04 会话工作区 + B05 固定源码认证/读取 scope 离线核对；真实接入继续单独授权。
 
+### 工作项：B04 会话只读工作区与连接页信息架构
+
+- 领域/模块：`web/` 会话后端体验、Conversation Read Model
+- 实现：将会话后端从模型设置页拆为独立“会话后端”页面；模型页只保留模型/Harness。后端页支持显式添加、健康检查、读取会话、读取消息缓存、撤销；保存不联网，读取/检查均需 consent。Bootstrap 返回会话引用，消息只读投影可查看，无发送入口。
+- 验证命令：`.venv/bin/python -m pytest -q`；`PLAYWRIGHT_MODULE=/tmp/mybot-design-tools.VtVbIr/node_modules/playwright/index.mjs CHROME_PATH=/usr/bin/google-chrome TEST_PORT=4182 node tests/verify-live.mjs`；`node --check web/app.js`；`git diff --check`
+- 结果：231 项 Python 测试、5 视口/14 条浏览器交互通过；测试仅使用 FakeProvider/MockTransport，无外部请求。
+- 未完成/unknown：当前 UI 数据来自隔离 mock/本地投影，真实 OpenMausBot 认证、会话读取权限、SSE/replay 和跨端恢复未验收。
+- 下一步：B05 核对固定 fork 的认证与读取 scope；之后再决定是否为真实后端增加适配器注册/连接状态刷新。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。
