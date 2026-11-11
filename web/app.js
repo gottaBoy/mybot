@@ -189,8 +189,7 @@ function modelsView() {
 
 function backendsView() {
   shell("会话后端");
-  return `<div class="page">${heading("会话后端", "管理外部 Bot/Thread 的只读连接。保存不联网；读取和健康检查都必须显式确认。", btn("添加后端", "plus", 'data-action="new-backend"', true))}
-    <div class="backend-hero"><div class="backend-hero-icon">${icon("shield-check")}</div><div><strong>只读连接中心</strong><p>这里管理会话来源，不管理模型。连接可达不等于认证成功，也不代表 Agent 获得发送权限。</p></div></div>
+  return `<div class="page">${heading("会话后端", data.capabilities?.backend_sync ? "只读会话 · 近期消息" : "只读会话 · 读取权限待核实", btn("添加后端", "plus", 'data-action="new-backend"', true))}
     ${backendConnectionsView()}</div>`;
 }
 
@@ -199,10 +198,11 @@ function backendConnectionsView() {
     ${(data.backends || []).map((connection) => {
       const revoked = connection.status === "revoked";
       const reachable = connection.test_status === "reachable";
-      const conversations = (data.backend_conversations || {})[connection.id] || [];
+      const conversations = revoked ? [] : (data.backend_conversations || {})[connection.id] || [];
+      const readAttrs = data.capabilities?.backend_sync ? "" : 'disabled title="原生读取权限尚未核实"';
       const status = revoked ? "已撤销" : reachable ? "服务可达 · 认证未验证"
         : connection.test_status ? errorLabel(connection.test_status) : "未检查";
-      return `<div class="backend-row"><span class="agent-avatar agent-neutral">${icon("network")}</span><div class="backend-identity"><h3>${esc(connection.name)}</h3><code>${esc(connection.endpoint)}</code><p>${pill(revoked ? "canceled" : reachable ? "succeeded" : "pending", status)}</p><small>${conversations.length ? `已保存 ${conversations.length} 个会话` : "尚未读取会话"}${connection.tested_at ? ` · 检查时间 ${when(connection.tested_at)}` : ""}</small><div class="conversation-list">${conversations.map((conversation) => `<div class="conversation-row"><span>${icon("file-text")}</span><div><strong>${esc(conversation.title)}</strong><small>${esc(conversation.status)} · ${esc(conversation.external_id)}</small></div><button type="button" data-action="sync-conversation" data-conversation="${conversation.id}">读取消息</button><button type="button" data-action="view-conversation" data-conversation="${conversation.id}">查看缓存</button></div>`).join("") || '<span class="empty-inline">会话列表为空</span>'}</div></div><div class="backend-actions">${revoked ? "" : `${btn("检查服务", "plug", `data-action="check-backend" data-backend="${connection.id}"`)}${btn("读取会话", "file-text", `data-action="sync-backend" data-backend="${connection.id}"`)}${btn("撤销", "square", `data-action="revoke-backend" data-backend="${connection.id}"`)}`}</div></div>`;
+      return `<div class="backend-row"><span class="agent-avatar agent-neutral">${icon("network")}</span><div class="backend-identity"><h3>${esc(connection.name)}</h3><code>${esc(connection.endpoint)}</code><p>${pill(revoked ? "canceled" : reachable ? "succeeded" : "pending", status)}</p><small>${conversations.length ? `已保存 ${conversations.length} 个会话` : "尚未读取会话"}${connection.tested_at ? ` · 检查时间 ${when(connection.tested_at)}` : ""}</small><div class="conversation-list">${conversations.map((conversation) => `<div class="conversation-row"><span>${icon("file-text")}</span><div><strong>${esc(conversation.title)}</strong><small>${esc(conversation.status)} · ${esc(conversation.external_id)}</small></div><button type="button" ${readAttrs} data-action="sync-conversation" data-conversation="${conversation.id}">读取消息</button><button type="button" data-action="view-conversation" data-conversation="${conversation.id}">查看缓存</button></div>`).join("") || '<span class="empty-inline">会话列表为空</span>'}</div></div><div class="backend-actions">${revoked ? "" : `${btn("检查服务", "plug", `data-action="check-backend" data-backend="${connection.id}"`)}${btn("读取会话", "file-text", `data-action="sync-backend" data-backend="${connection.id}" ${readAttrs}`)}${btn("撤销", "square", `data-action="revoke-backend" data-backend="${connection.id}"`)}`}</div></div>`;
     }).join("") || '<p class="empty-message">尚未配置会话后端</p>'}
   </section>`;
 }
@@ -284,6 +284,9 @@ function errorLabel(code) {
     backend_schema_invalid: "后端响应结构不兼容",
     backend_response_too_large: "后端响应超过大小限制",
     backend_not_openmausbot: "后端身份不是 OpenMausBot",
+    backend_read_confirmation_required: "请确认本次只读同步",
+    backend_read_scope_unverified: "原生读取权限尚未核实，暂不开放会话同步",
+    backend_cursor_unsupported: "当前仅支持近期消息，不支持历史翻页",
   };
   if (typeof code === "string" && /^backend_http_\d+$/.test(code)) return `后端返回 HTTP ${code.split("_").at(-1)}`;
   return map[code] || code;
@@ -388,15 +391,18 @@ function backendCheckForm(identifier) {
 
 function backendReadForm(identifier, conversation = null) {
   const title = conversation ? `读取会话消息：${conversation.title}` : "读取会话列表";
-  const path = conversation ? `/api/conversations/${conversation.id}/sync` : `/api/backends/${identifier}/sync`;
+  const path = conversation ? `/conversations/${conversation.id}/sync` : `/backends/${identifier}/sync`;
   modal(title, `<form data-form="${conversation ? "conversation-sync" : "backend-sync"}" data-path="${path}" class="live-form"><p>这是只读同步：不会发送消息、启动任务或调用模型。只会读取已配置后端返回的会话/消息，并保存安全投影。</p><label class="consent-label"><input type="checkbox" name="consent" required /><span>确认读取此后端的${conversation ? "会话消息" : "会话列表"}。</span></label><p class="form-error" role="alert"></p><div class="form-actions">${btn("确认读取", "file-text", 'type="submit"', true)}</div></form>`);
 }
 
 async function viewConversation(identifier) {
   const messages = await api(`/conversations/${identifier}/messages`);
-  modal("会话消息（只读缓存）", messages.messages.length
-    ? `<div class="conversation-messages">${messages.messages.map((message) => `<article><header><strong>${esc(message.role)}</strong><time>${esc(message.created_at || "时间未知")}</time></header><p>${esc(message.content)}</p></article>`).join("")}</div><p class="field-hint">消息来自已确认读取的安全投影；没有发送入口。</p>`
-    : '<div class="empty-state"><h2>尚未读取消息</h2><p>先从会话后端执行一次明确的只读读取。</p></div>');
+  const ref = Object.values(data.backend_conversations || {}).flat().find((item) => item.id === identifier);
+  const source = data.backends.find((item) => item.id === ref?.connection_id);
+  modal(ref?.title || "近期消息", `<p class="field-hint">${esc(source?.name || "来源未知")} · ${messages.messages.length} 条文本 · ${messages.checked_at ? when(messages.checked_at) : "未同步"}</p>${messages.has_more === true ? '<p class="cache-gap" role="status">仅近期消息，较早历史尚未同步。</p>' : ""}
+    ${messages.messages.length
+    ? `<div class="conversation-messages">${messages.messages.map((message) => `<article><header><strong>${esc(message.role === "bot" ? "Agent" : message.role === "user" ? "用户" : message.role)}</strong><time>${esc(message.created_at || "时间未知")}</time></header><p>${esc(message.content)}</p></article>`).join("")}</div>`
+    : '<div class="empty-state"><h2>尚未读取消息</h2></div>'}`);
 }
 
 async function prepare(taskId) {

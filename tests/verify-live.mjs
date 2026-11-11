@@ -302,6 +302,48 @@ try {
   assert.equal(backendHealth.read_access_verified, false);
   report.interactions.push("explicit-backend-health-check-is-not-authentication");
 
+  let syncRequests = 0;
+  page.on("request", (request) => { if (request.url().endsWith("/sync")) syncRequests += 1; });
+  await page.getByRole("button", { name: "读取会话", exact: true }).click();
+  await page.locator('[data-form="backend-sync"]').waitFor();
+  assert.equal(await page.locator('[name="consent"]').isChecked(), false);
+  await page.locator('[name="consent"]').check();
+  await page.getByRole("button", { name: "确认读取", exact: true }).click();
+  await page.locator(".conversation-row").waitFor();
+  assert.equal(syncRequests, 1);
+  await page.getByRole("button", { name: "读取消息", exact: true }).click();
+  await page.locator('[data-form="conversation-sync"]').waitFor();
+  await page.locator('[name="consent"]').check();
+  await page.getByRole("button", { name: "确认读取", exact: true }).click();
+  await page.waitForFunction(() => !document.querySelector("#form-dialog").open);
+  assert.equal(syncRequests, 2);
+  await page.reload();
+  await page.locator(".conversation-row").waitFor();
+  await page.getByRole("button", { name: "查看缓存", exact: true }).click();
+  await page.locator(".conversation-messages").waitFor();
+  assert.equal(await page.locator(".conversation-messages article").count(), 2);
+  assert.equal(await page.locator(".conversation-messages strong").allTextContents().then((a) => a.join(",")), "用户,Agent");
+  assert.match(await page.locator("#form-dialog").innerText(), /本机 OMB/);
+  assert.match(await page.locator(".cache-gap").innerText(), /较早历史尚未同步/);
+  assert.match(await page.locator(".conversation-messages").innerText(), /<script>/);
+  assert.equal(await page.evaluate(() => Boolean(window.cacheInjected)), false);
+  assert.equal(await page.locator("#form-dialog script").count(), 0);
+  assert.doesNotMatch(await page.locator("#form-dialog").innerText(), /DO_NOT_SHOW_SECRET/);
+  assert.equal(syncRequests, 2);
+  for (const [name, width] of [["desktop", 1440], ["mobile", 390], ["small", 320]]) {
+    await page.setViewportSize({ width, height: 900 });
+    const geometry = await page.locator("#form-dialog").evaluate((dialog) => ({
+      fits: dialog.getBoundingClientRect().width <= innerWidth,
+      overflow: dialog.scrollWidth > dialog.clientWidth + 1,
+    }));
+    assert.ok(geometry.fits && !geometry.overflow, JSON.stringify(geometry));
+    if (width !== 320) {
+      await page.locator("#form-dialog").screenshot({ path: `${out}/conversation-${name}.png` });
+    }
+  }
+  await page.getByRole("button", { name: "关闭", exact: true }).click();
+  report.interactions.push("conversation-explicit-sync-restart-cache-and-text-only-projection");
+
   await page.waitForFunction(() => !document.querySelector("#toast").classList.contains("show"));
   await page.waitForFunction(() => Number(getComputedStyle(document.querySelector("#toast")).opacity) === 0);
   for (const [name, width, height] of [["desktop", 1440, 1000], ["mobile", 390, 844], ["small", 320, 740]]) {
@@ -329,6 +371,7 @@ try {
   assert.match(await page.locator(".backend-row").innerText(), /已撤销/);
   connections = await (await page.request.get(`${base}/api/backends`)).json();
   assert.equal(connections.connections[0].status, "revoked");
+  assert.equal(await page.locator(".conversation-row").count(), 0);
   report.interactions.push("backend-revocation-persists-and-layout-fits");
   assert.deepEqual(report.externalRequests, []);
   assert.deepEqual(report.errors, []);
@@ -339,7 +382,7 @@ try {
   server.kill("SIGTERM");
   await new Promise((resolve) => { if (server.exitCode !== null) resolve(); else server.once("exit", resolve); });
 }
-report.complete = report.interactions.length === 14 && report.viewports.length === 5 && report.errors.length === 0;
+report.complete = report.interactions.length === 15 && report.viewports.length === 5 && report.errors.length === 0;
 await writeFile(`${out}/browser.json`, `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify(report, null, 2));
 if (!report.complete) process.exitCode = 1;

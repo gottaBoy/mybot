@@ -21,6 +21,8 @@ Codex 故障测试只运行临时 fake CLI，覆盖事件用量、超时、取�
 `tests/test_backend_service.py` 通过 MockTransport 检查配置/GET 无网络、显式 POST consent、
 公共 health 不代表认证、回环地址限制、拒绝重定向/超大响应/慢流、幂等撤销和在途竞争。
 不读取凭证、不连接上游服务；`tests/test_work_items.py` 校验 119 个编号及统计口径。
+`tests/test_conversation_sync.py` 覆盖读取前确认、原生字段/hasMore、当前连接参数、
+默认生产禁用、撤销阻断缓存/Bootstrap/写回、失败不污染旧缓存、重复去重和重新验证 origin。
 
 本轮存在一条 Starlette TestClient/httpx 迁移警告，非测试失败；尚未迁移 httpx2。
 
@@ -42,6 +44,7 @@ node tests/verify-live.mjs
 超时诊断流程使用 BrowserProvider 固定故障夹具，检查 API 持久化和 320/1440px 弹窗，不是一次真实 Codex 超时。
 
 Backend 表单、显式健康检查、撤销及刷新状态使用 MockTransport，新增截图为 backend-desktop/mobile；
-不代表用户真实 OpenMausBot。当前完整报告覆盖 5 视口、14 条交互。
+不代表用户真实 OpenMausBot。新增 conversation-desktop/mobile 截图均为合成数据，
+完整报告新增一条完整读取/缓存流程；不将旧 14 条交互误认为已测试这条流程。
 
 结果写入 [evidence/browser.json](evidence/browser.json)，截图的“测试输出”是夹具，不是模型回答质量证明。

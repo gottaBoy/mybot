@@ -9,6 +9,7 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
+from .backend import BackendError
 from .recovery import fingerprint, retry_preview
 
 
@@ -141,6 +142,10 @@ class Store:
             for column in ("tested_at", "test_status"):
                 if column not in backend_columns:
                     db.execute(f"ALTER TABLE backend_connections ADD COLUMN {column} TEXT")
+            ref_columns = {row["name"] for row in db.execute("PRAGMA table_info(conversation_refs)")}
+            for column, kind in (("messages_checked_at", "TEXT"), ("messages_has_more", "INTEGER")):
+                if column not in ref_columns:
+                    db.execute(f"ALTER TABLE conversation_refs ADD COLUMN {column} {kind}")
         os.chmod(self.path, 0o600)
 
     @contextmanager
@@ -259,6 +264,7 @@ class Store:
     def upsert_conversations(self, connection_id: str, refs: list[dict]) -> list[dict]:
         saved = []
         with self.transaction() as db:
+            self._require_readable_backend(db, connection_id)
             for ref in refs:
                 existing = db.execute(
                     "SELECT id FROM conversation_refs WHERE connection_id=? AND external_id=?",
@@ -285,9 +291,12 @@ class Store:
                 saved.append(identifier)
         return [self.get("conversation_refs", identifier) for identifier in saved]
 
-    def upsert_messages(self, conversation_id: str, messages: list[dict]) -> list[dict]:
+    def save_recent_messages(self, conversation_id: str, messages: list[dict], has_more: bool) -> int:
         saved = []
         with self.transaction() as db:
+            ref = self._conversation_row(db, conversation_id)
+            self._require_readable_backend(db, ref["connection_id"])
+            synced = now()
             for message in messages:
                 existing = db.execute(
                     "SELECT id FROM conversation_messages WHERE conversation_id=? AND external_id=?",
@@ -297,21 +306,62 @@ class Store:
                 if existing:
                     db.execute(
                         "UPDATE conversation_messages SET role=?,content=?,created_at=?,synced_at=? WHERE id=?",
-                        (message["role"], message["content"], message.get("created_at"), now(), identifier),
+                        (message["role"], message["content"], message.get("created_at"), synced, identifier),
                     )
                 else:
                     db.execute(
                         "INSERT INTO conversation_messages(id,conversation_id,external_id,role,content,created_at,synced_at) "
                         "VALUES(?,?,?,?,?,?,?)",
                         (identifier, conversation_id, message["external_id"], message["role"],
-                         message["content"], message.get("created_at"), now()),
+                         message["content"], message.get("created_at"), synced),
                     )
                 self.event(db, "conversation.message.synced", {
                     "conversation_id": conversation_id, "external_id": message["external_id"],
                     "read_only": True,
                 }, entity_id=identifier, actor="user")
                 saved.append(identifier)
-        return [self.get("conversation_messages", identifier) for identifier in saved]
+            exclusion = f" AND id NOT IN ({','.join('?' for _ in saved)})" if saved else ""
+            db.execute(f"DELETE FROM conversation_messages WHERE conversation_id=?{exclusion}",
+                       (conversation_id, *saved))
+            db.execute("UPDATE conversation_refs SET messages_checked_at=?,messages_has_more=? WHERE id=?",
+                       (synced, has_more, conversation_id))
+        return len(saved)
+
+    @staticmethod
+    def _require_readable_backend(db, identifier: str):
+        row = db.execute("SELECT status,revoked_at FROM backend_connections WHERE id=?", (identifier,)).fetchone()
+        if row is None:
+            raise KeyError(identifier)
+        if row["status"] == "revoked" or row["revoked_at"]:
+            raise BackendError("backend_revoked")
+
+    @staticmethod
+    def _conversation_row(db, identifier: str):
+        row = db.execute("SELECT * FROM conversation_refs WHERE id=?", (identifier,)).fetchone()
+        if row is None:
+            raise KeyError(identifier)
+        return row
+
+    def cached_conversations(self, identifier: str) -> list[dict]:
+        with self.transaction() as db:
+            self._require_readable_backend(db, identifier)
+            return [decode(row) for row in db.execute(
+                "SELECT * FROM conversation_refs WHERE connection_id=? ORDER BY created_at DESC", (identifier,),
+            )]
+
+    def cached_recent_messages(self, identifier: str) -> dict:
+        with self.transaction() as db:
+            ref = self._conversation_row(db, identifier)
+            self._require_readable_backend(db, ref["connection_id"])
+            messages = [decode(row) for row in db.execute(
+                "SELECT * FROM conversation_messages WHERE conversation_id=? "
+                "ORDER BY created_at DESC, rowid DESC LIMIT 30", (identifier,),
+            )]
+            return {
+                "messages": list(reversed(messages)), "checked_at": ref["messages_checked_at"],
+                "has_more": None if ref["messages_has_more"] is None else bool(ref["messages_has_more"]),
+                "read_only": True,
+            }
 
     def record_backend_check(self, identifier: str, status: str) -> dict:
         with self.transaction() as db:

@@ -211,3 +211,9 @@ Adapter 另提供只读 `check_health()`，映射 `GET /api/health`，仅接受�
 验证使用 `httpx.MockTransport`，没有真实账号、HTTP 服务、MCP client 或上游网络。
 下一步必须先核对固定 fork 的原生协议/端点，再把 Adapter 接入配置服务；不能把合同
 夹具结果写成 OpenMausBot 已连接。
+
+2026-11-11 增补：已通过固定 Git 对象核对原生 scope、消息与 SSE，
+见 [OPENMAUSBOT_READ_SCOPE.md](OPENMAUSBOT_READ_SCOPE.md)。
+此前原生路径省略了 `messages=0`，现已补正。原生 recent messages 不再沿用 generic
+cursor 字段；显式返回/缓存 hasMore，只投影 kind=text、role=user/bot、at 毫秒。
+默认生产 transcript 同步关闭，仅离线注入可读；健康检查仍显式可用。不是 REA 或真实账号验收。

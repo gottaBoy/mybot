@@ -38,8 +38,23 @@ settings = Settings(root / "data", workspace, poll_interval=0.01,
                     access_token=sys.argv[3] if len(sys.argv) > 3 else "")
 
 def backend_health_fixture(request):
-    assert request.method == "GET" and request.url.path == "/api/health"
-    return httpx.Response(200, json={"app": "openmausbot", "static": True})
+    assert request.method == "GET"
+    if request.url.path == "/api/health":
+        return httpx.Response(200, json={"app": "openmausbot", "static": True})
+    if request.url.path == "/api/bots":
+        assert request.url.params["messages"] == "0"
+        return httpx.Response(200, json={"bots": [
+            {"id": "bot-research", "name": "研发调研（测试夹具）", "threadId": "thread-research", "status": "idle"},
+        ]})
+    assert request.url.path == "/api/threads/thread-research/messages"
+    return httpx.Response(200, json={"messages": [
+        {"id": "u1", "kind": "text", "role": "user", "at": 1794355200000,
+         "text": "检查多端协作的数据来源和权限边界。"},
+        {"id": "b1", "kind": "text", "role": "bot", "at": 1794355201000,
+         "text": "只读缓存测试夹具。尚未连接真实 OpenMausBot。\n"
+                 "待验证：设备撤销、断线补齐和会话归属。\n<script>window.cacheInjected=true</script>"},
+        {"id": "secret1", "kind": "secret", "secret": {"value": "DO_NOT_SHOW_SECRET"}},
+    ], "hasMore": True})
 
 
 backend_client = httpx.AsyncClient(

@@ -123,7 +123,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
 
     @app.exception_handler(BackendError)
     async def backend_error(request, exc):
-        status = 422 if exc.code == "backend_check_confirmation_required" else 409
+        status = 422 if exc.code in {"backend_check_confirmation_required", "backend_read_confirmation_required"} else 409
         return JSONResponse({"detail": exc.code}, status_code=status)
 
     @app.get("/api/auth/state")
@@ -167,17 +167,23 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
             for name, label in (("codex", "Codex CLI"), ("claude", "Claude Code"),
                                 ("opencode", "OpenCode"), ("t3", "T3 Code"))
         ]
-        backends = store.list("backend_connections")
+        connections = store.list("backend_connections")
+        cached = {}
+        for connection in connections:
+            try:
+                cached[connection["id"]] = store.cached_conversations(connection["id"])
+            except BackendError as exc:
+                if exc.code != "backend_revoked":
+                    raise
         return {"projects": store.list("projects"), "models": [public_model(m) for m in store.list("models")],
                 "tasks": store.list("tasks"), "runs": store.list("runs"),
-                "backends": backends,
-                "backend_conversations": {
-                    backend["id"]: store.list("conversation_refs", backend["id"]) for backend in backends
-                },
+                "backends": connections,
+                "backend_conversations": cached,
                 "workspace": str(settings.workspace), "access": "read_only",
                 "default_model_id": store.get_setting("default_model_id", settings.default_model_id),
                 "local_harnesses": local_harnesses,
                 "capabilities": {"code_write": False, "shell": False, "deployment": False,
+                                 "backend_sync": backends.read_adapter is not None,
                                  "parallel_research": True, "max_parallel": 2,
                                  "agent_work": True,
                                  "harness": LocalSuperagentHarness.capabilities()}}
@@ -310,10 +316,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
 
     @app.get("/api/backends/{identifier}/conversations")
     async def backend_conversations(identifier: str):
-        connection = store.get("backend_connections", identifier)
-        if connection["status"] == "revoked" or connection["revoked_at"]:
-            raise BackendError("backend_revoked")
-        return {"conversations": store.list("conversation_refs", identifier), "read_only": True}
+        return {"conversations": store.cached_conversations(identifier), "read_only": True}
 
     @app.post("/api/backends/{identifier}/sync")
     async def backend_sync(identifier: str, body: BackendCheck):
@@ -321,8 +324,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
 
     @app.get("/api/conversations/{identifier}/messages")
     async def conversation_messages(identifier: str):
-        store.get("conversation_refs", identifier)
-        return {"messages": store.list("conversation_messages", identifier), "read_only": True}
+        return store.cached_recent_messages(identifier)
 
     @app.post("/api/conversations/{identifier}/sync")
     async def conversation_sync(identifier: str, body: BackendCheck):

@@ -22,7 +22,7 @@ def test_unconfigured_backend_has_no_network_or_send_path():
     assert cursor is None
     with pytest.raises(BackendError, match="backend_adapter_not_configured"):
         asyncio.run(backend.list_messages(
-            ConversationRef("r1", "c1", "thread-1", "Thread", "unknown")
+            connection, ConversationRef("r1", "c1", "thread-1", "Thread", "unknown")
         ))
 
 
@@ -61,7 +61,7 @@ def test_openmausbot_read_adapter_maps_pages_and_deduplicates():
 
     async def run():
         conversations, cursor = await adapter.list_conversations(connection)
-        messages, next_cursor = await adapter.list_messages(conversations[0])
+        messages, next_cursor = await adapter.list_messages(connection, conversations[0])
         await client.aclose()
         return conversations, cursor, messages, next_cursor
 
@@ -110,13 +110,14 @@ def test_openmausbot_native_adapter_maps_observed_read_routes():
     def handler(request):
         requests.append(request)
         if request.url.path == "/api/bots":
+            assert request.url.params["messages"] == "0"
             return httpx.Response(200, json={"bots": [
-                {"id": "bot-1", "name": "Research bot", "threadId": "thread/one", "status": "idle"},
+                {"id": "bot-1", "name": "Research bot", "threadId": "thread-one", "status": "idle"},
             ]})
-        assert request.url.path == "/api/threads/thread/one/messages"
+        assert request.url.path == "/api/threads/thread-one/messages"
         assert request.url.params["limit"] == "30"
         return httpx.Response(200, json={"messages": [
-            {"id": "m1", "role": "assistant", "content": "answer"},
+            {"id": "m1", "kind": "text", "role": "bot", "text": "answer", "at": 1794355200000},
         ], "hasMore": False})
 
     client = httpx.AsyncClient(
@@ -127,12 +128,12 @@ def test_openmausbot_native_adapter_maps_observed_read_routes():
 
     async def run():
         conversations, cursor = await adapter.list_conversations(connection)
-        messages, next_cursor = await adapter.list_messages(conversations[0])
+        messages, next_cursor = await adapter.list_messages(connection, conversations[0])
         await client.aclose()
         return conversations, cursor, messages, next_cursor
 
     conversations, cursor, messages, next_cursor = asyncio.run(run())
-    assert conversations[0].external_id == "thread/one"
+    assert conversations[0].external_id == "thread-one"
     assert conversations[0].title == "Research bot"
     assert messages[0].content == "answer"
     assert cursor is None and next_cursor is None

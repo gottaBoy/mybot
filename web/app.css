@@ -90,6 +90,10 @@
 .conversation-row { display: flex; align-items: center; gap: 8px; padding: 8px; border: 1px solid #394454; background: #252b35; border-radius: 4px; min-width: 0; }
 .conversation-row > span .icon { width: 13px; height: 13px; }
 .conversation-row > div { min-width: 0; flex: 1; }
+.conversation-row { flex-wrap: wrap; }
+.conversation-row > div { flex-basis: 140px; }
+.cache-gap { color: #e0c38f; border-left: 2px solid #b89d6c; padding: 10px 12px; margin: 12px 0; font-size: 12px; line-height: 1.7; }
+.conversation-messages header { flex-wrap: wrap; }
 .conversation-row strong, .conversation-row small { display: block; overflow-wrap: anywhere; }
 .conversation-row strong { color: #c8d5df; font-size: 11px; }
 .conversation-row small { color: #8fa0b5; font-size: 10px; margin-top: 3px; }

@@ -185,6 +185,32 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
 - 未完成/unknown：当前 UI 数据来自隔离 mock/本地投影，真实 OpenMausBot 认证、会话读取权限、SSE/replay 和跨端恢复未验收。
 - 下一步：B05 核对固定 fork 的认证与读取 scope；之后再决定是否为真实后端增加适配器注册/连接状态刷新。
 
+## 2026-11-11
+
+### 工作项：B05 离线读取权限核对与 B04 完整读取回归
+
+- 领域/模块：Conversation/Backend 访问边界、原生 Adapter、近期缓存及 UI
+- 来源：本地固定 Git 对象 `gottaBoy/OpenMausBot` commit `1bc4749aa8307d7d6998bf86de4ef6478460dd93`；
+  实际阅读 auth/session、thread route、wire、MCP 读取及 SSE replay 代表路径，记录到 OPEN_SOURCE_RESEARCH 第 18 节和 OPENMAUSBOT_READ_SCOPE。未 checkout/安装/执行上游；无新 REA capture。
+- 发现：owner/service、admin/client 均不能当作天然只读 scope；Bot 列表必须显式 messages=0；
+  消息使用 kind/text/role=user|bot/at 毫秒及 hasMore；历史页用 before/around，SSE 为带进程 epoch 的内存 replay，不是跨重启持久日志。
+- 实现：默认生产 transcript 同步 fail closed，仅显式健康检查可联网；离线注入的 Adapter 测试允许合成读取。
+  所有同步重验 origin，连接参数来自当前 Store，不依赖进程内上一次列表调用。Bootstrap/缓存读取/同步落库均检查撤销，在途结果不能写回已撤销连接。
+- 数据边界：原生列表/消息 GET 拒绝重定向、10 秒总时限、1 MiB 上限；近期窗口 30 条，
+  只保存允许的文本字段，去重、时间归一化、更新窗口时清掉已不在窗口内的旧记录；hasMore 与同步时间持久化，不宣称历史完整或 SSE 接入。
+- UI：修正同步请求重复 `/api` 前缀；来源、角色、同步时间、近期条数和历史缺口可见；
+  生产未通过权限门槛时禁用读取按钮。未将设置页拆分视为完整视觉改版，用户体验仍待评审。
+- 验证：`.venv/bin/python -m pytest -q`：244 项通过，保留 Starlette/httpx 弃用提醒；
+  `tests/verify-live.mjs`：5 视口/15 条交互通过，无外部浏览器请求；JS 语法、Python 编译、
+  diff 检查通过。新增读取确认→消息→刷新缓存→转义/XSS→撤销的完整浏览器流程，补正此前 14 条交互未覆盖读取的证据缺口。
+- 截图：tests/evidence/conversation-desktop.png 与 conversation-mobile.png，均为 MockTransport 合成数据，
+  已实际查看，不是真实账号或真机认证。
+- 未完成：最小权限宿主/代理、真实账号读取、原生历史翻页、SSE/replay、跨设备恢复。
+  原台账仍 119 项中完成 9、未完全完成 110，不因新增 fixture 数量减少业务剩余项。
+- 下一步：先定义最小权限读取宿主合同，继续打磨会话产品；真实上游/账号/付费调用独立授权。
+- 服务：确认无活动 Run 后重载 4180；healthz=ok、backend_sync=false、生产连接数 0，
+  没有新增正式会话、模型调用或账号连接。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。

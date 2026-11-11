@@ -1,9 +1,19 @@
 # 下次从这里继续
 
-更新日期：2026-11-10（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
+更新日期：2026-11-11（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
+
+**最新 B04/B05 修正：** 固定源码权限核对已完成离线阶段，见
+[OPENMAUSBOT_READ_SCOPE.md](docs/OPENMAUSBOT_READ_SCOPE.md)。owner/service、admin/client 都不是
+天然只读 scope；默认生产 transcript 同步现 fail closed（backend_sync=false），仅显式健康检查可联网。
+测试注入的 MockTransport 可走完整会话读取。缓存 GET/Bootstrap/同步写回事务均检查撤销；
+Adapter 使用当前 Store 连接，不依赖进程内先列会话。原生 Bot GET 使用 messages=0，
+近期消息只投影 kind=text/role=user|bot/at，持久化 hasMore 并展示历史缺口；不宣称全历史或 SSE 接入。
+旧 32dd2fd 的浏览器测试未覆盖读取路径，本轮补齐确认、无重复请求、刷新、缓存/XSS 与撤销用例。
+当前 119 项仍 9 完成、37 部分、56 待办、15 授权门槛、2 暂缓，未完全完成 110。
+本轮完整回归 244 项 Python、5 视口/15 条浏览器交互通过，无真实模型/账号/上游运行。
 
 **最新工作项口径：** [WORK_ITEMS.md](docs/WORK_ITEMS.md) 是当前单一清单，保留原 001–119：
-9 完成、35 部分、58 待办、15 授权门槛、2 暂缓，未完全完成合计 110。实现计划不重复计数，
+9 完成、37 部分、56 待办、15 授权门槛、2 暂缓，未完全完成合计 110。实现计划不重复计数，
 没有把仅有合同/mock 的原生接入标记完成。旧条目中的历史测试数/下一步以本条及台账覆盖。
 
 **最新交付 B01–B03：** 模型与控制页已可保存本机回环 Backend 配置；保存/列表/GET health

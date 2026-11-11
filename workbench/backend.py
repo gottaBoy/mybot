@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import asyncio
 import json
+import re
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Protocol
 from urllib.parse import quote
 
@@ -56,6 +58,12 @@ class BackendHealth:
     packaged: bool | None = None
 
 
+@dataclass(frozen=True)
+class RecentMessages:
+    messages: list[MessageRef]
+    has_more: bool
+
+
 class ConversationBackendPort(Protocol):
     async def list_conversations(
         self, connection: BackendConnection, *, cursor: str | None = None,
@@ -63,8 +71,13 @@ class ConversationBackendPort(Protocol):
         ...
 
     async def list_messages(
-        self, conversation: ConversationRef, *, cursor: str | None = None,
+        self, connection: BackendConnection, conversation: ConversationRef, *, cursor: str | None = None,
     ) -> tuple[list[MessageRef], str | None]:
+        ...
+
+    async def recent_messages(
+        self, connection: BackendConnection, conversation: ConversationRef,
+    ) -> RecentMessages:
         ...
 
 
@@ -74,7 +87,10 @@ class UnconfiguredConversationBackend:
             raise BackendError("backend_adapter_not_configured")
         return [], None
 
-    async def list_messages(self, conversation, *, cursor=None):
+    async def list_messages(self, connection, conversation, *, cursor=None):
+        raise BackendError("backend_adapter_not_configured")
+
+    async def recent_messages(self, connection, conversation):
         raise BackendError("backend_adapter_not_configured")
 
 
@@ -87,14 +103,12 @@ class OpenMausBotReadOnlyAdapter:
 
     def __init__(self, client: httpx.AsyncClient | None = None):
         self.client = client
-        self._connections: dict[str, BackendConnection] = {}
 
     @classmethod
     def supported_commit(cls) -> str:
         return OPENMAUSBOT_FORK_COMMIT
 
     async def list_conversations(self, connection, *, cursor=None):
-        self._connections[connection.id] = connection
         return await self._list(
             connection, connection.settings.get("conversations_path", "/conversations")
             if connection.settings else "/conversations",
@@ -102,11 +116,10 @@ class OpenMausBotReadOnlyAdapter:
             mapper=lambda item: self._conversation(connection, item),
         )
 
-    async def list_messages(self, conversation, *, cursor=None):
-        connection = self._connections.get(conversation.connection_id)
-        if connection is None:
+    async def list_messages(self, connection, conversation, *, cursor=None):
+        if connection.id != conversation.connection_id:
             raise BackendError("backend_connection_unknown")
-        path = f"/conversations/{conversation.external_id}/messages"
+        path = f"/conversations/{quote(conversation.external_id, safe='')}/messages"
         return await self._list(
             connection, path, cursor=cursor, collection_keys=("messages", "items"),
             mapper=lambda item: self._message(conversation, item),
@@ -128,7 +141,7 @@ class OpenMausBotReadOnlyAdapter:
             params = dict(extra_params or {})
             if cursor:
                 params["cursor"] = cursor
-            response = await client.get(path, params=params)
+            response = await client.get(path, params=params, follow_redirects=False)
         except httpx.HTTPError as exc:
             raise BackendError("backend_unreachable") from exc
         finally:
@@ -197,6 +210,15 @@ class OpenMausBotNativeReadAdapter(OpenMausBotReadOnlyAdapter):
     """
 
     async def check_health(self, connection):
+        payload = await self._read_json(connection, "/api/health", max_bytes=65536)
+        if payload.get("app") != "openmausbot":
+            raise BackendError("backend_not_openmausbot")
+        packaged = payload.get("static")
+        if packaged is not None and not isinstance(packaged, bool):
+            raise BackendError("backend_schema_invalid")
+        return BackendHealth("reachable", "openmausbot", packaged)
+
+    async def _read_json(self, connection, path, *, max_bytes, params=None):
         if connection.status == "revoked" or connection.revoked_at:
             raise BackendError("backend_revoked")
         if connection.status != "configured":
@@ -210,19 +232,21 @@ class OpenMausBotNativeReadAdapter(OpenMausBotReadOnlyAdapter):
             )
         try:
             async with asyncio.timeout(10):
-                async with client.stream("GET", "/api/health", follow_redirects=False) as response:
+                async with client.stream("GET", path, params=params, follow_redirects=False) as response:
                     if response.status_code in {401, 403}:
                         raise BackendError(
                             "backend_auth_required" if response.status_code == 401 else "backend_access_denied"
                         )
                     if 300 <= response.status_code < 400:
                         raise BackendError("backend_redirect_denied")
+                    if response.status_code == 404 and path != "/api/health":
+                        raise BackendError("backend_not_found")
                     if response.status_code >= 400:
                         raise BackendError(f"backend_http_{response.status_code}")
                     data = bytearray()
                     async for chunk in response.aiter_bytes():
                         data.extend(chunk)
-                        if len(data) > 65536:
+                        if len(data) > max_bytes:
                             raise BackendError("backend_response_too_large")
         except (httpx.TimeoutException, TimeoutError) as exc:
             raise BackendError("backend_timeout") from exc
@@ -235,41 +259,63 @@ class OpenMausBotNativeReadAdapter(OpenMausBotReadOnlyAdapter):
             payload = json.loads(data)
         except ValueError as exc:
             raise BackendError("backend_schema_invalid") from exc
-        if not isinstance(payload, dict) or payload.get("app") != "openmausbot":
-            raise BackendError("backend_not_openmausbot")
-        packaged = payload.get("static")
-        if packaged is not None and not isinstance(packaged, bool):
+        if not isinstance(payload, dict):
             raise BackendError("backend_schema_invalid")
-        return BackendHealth("reachable", "openmausbot", packaged)
+        return payload
 
     async def list_conversations(self, connection, *, cursor=None):
-        self._connections[connection.id] = connection
-        return await self._list(
-            connection, "/api/bots", cursor=cursor,
-            collection_keys=("bots",), mapper=lambda item: self._native_bot(connection, item),
-        )
+        if cursor is not None:
+            raise BackendError("backend_cursor_unsupported")
+        payload = await self._read_json(connection, "/api/bots", params={"messages": 0}, max_bytes=1048576)
+        items = payload.get("bots")
+        if not isinstance(items, list) or len(items) > 500:
+            raise BackendError("backend_schema_invalid")
+        try:
+            return dedupe_refs([self._native_bot(connection, item) for item in items]), None
+        except (TypeError, ValueError) as exc:
+            raise BackendError("backend_schema_invalid") from exc
 
-    async def list_messages(self, conversation, *, cursor=None):
-        connection = self._connections.get(conversation.connection_id)
-        if connection is None:
+    async def recent_messages(self, connection, conversation) -> RecentMessages:
+        if connection.id != conversation.connection_id:
             raise BackendError("backend_connection_unknown")
-        limit = "30"
-        if connection.settings and isinstance(connection.settings.get("message_limit"), int):
-            limit = str(max(1, min(200, connection.settings["message_limit"])))
-        return await self._list(
-            connection,
-            f"/api/threads/{quote(conversation.external_id, safe='')}/messages",
-            cursor=cursor, extra_params={"limit": limit},
-            collection_keys=("messages",),
-            mapper=lambda item: self._message(conversation, item),
+        if not re.fullmatch(r"[A-Za-z0-9_-]{1,160}", conversation.external_id):
+            raise BackendError("backend_schema_invalid")
+        payload = await self._read_json(
+            connection, f"/api/threads/{conversation.external_id}/messages",
+            params={"limit": 30}, max_bytes=1048576,
         )
+        items, has_more = payload.get("messages"), payload.get("hasMore")
+        if not isinstance(items, list) or len(items) > 30 or not isinstance(has_more, bool):
+            raise BackendError("backend_schema_invalid")
+        result = []
+        for item in items:
+            if not isinstance(item, dict) or not isinstance(item.get("kind"), str):
+                raise BackendError("backend_schema_invalid")
+            if item["kind"] != "text":
+                continue
+            key, role, text, at = (item.get(field) for field in ("id", "role", "text", "at"))
+            if (not isinstance(key, str) or not key or len(key) > 160
+                    or role not in ("user", "bot") or not isinstance(text, str)
+                    or type(at) is not int):
+                raise BackendError("backend_schema_invalid")
+            try:
+                created = datetime.fromtimestamp(at / 1000, timezone.utc).isoformat(timespec="milliseconds")
+            except (ValueError, OverflowError, OSError) as exc:
+                raise BackendError("backend_schema_invalid") from exc
+            result.append(MessageRef(key, conversation.id, role, text, created))
+        return RecentMessages(dedupe_refs(result), has_more)
+
+    async def list_messages(self, connection, conversation, *, cursor=None):
+        if cursor is not None:
+            raise BackendError("backend_cursor_unsupported")
+        return (await self.recent_messages(connection, conversation)).messages, None
 
     @staticmethod
     def _native_bot(connection, item):
         if not isinstance(item, dict):
             raise TypeError
         thread_id = item.get("threadId")
-        if not isinstance(thread_id, str) or not thread_id:
+        if not isinstance(thread_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,160}", thread_id):
             raise ValueError
         return ConversationRef(
             id=f"{connection.id}:{thread_id}",

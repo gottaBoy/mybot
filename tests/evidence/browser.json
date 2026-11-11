@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T18:10:35.369Z",
+  "generatedAt": "2026-11-11T01:39:23.120Z",
   "fixture": "FakeProvider, no external model requests",
   "viewports": [
     {
@@ -52,6 +52,7 @@
     "resource-retry-submits-once-reuses-results-and-persists-lineage",
     "backend-config-persists-without-connection-check",
     "explicit-backend-health-check-is-not-authentication",
+    "conversation-explicit-sync-restart-cache-and-text-only-projection",
     "backend-revocation-persists-and-layout-fits"
   ],
   "errors": [],

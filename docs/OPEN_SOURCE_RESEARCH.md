@@ -476,3 +476,20 @@ fork 的同 commit 允许沿用历史 E1/E2 源码观察，但不是“所有分
 - 发现：完成通知的 ID 是 `params.turn.id`；读取通知与 RPC 响应必须关联；只读/never 不是无工具保证；单 thread 跨角色复用会扩大隐式上下文。
 - 决策：本轮可选 app-server 草稿撤回生产入口。先实施已验收的 exec 调度、清理与诊断，再按 [CODEX_RELIABILITY_PLAN.md](CODEX_RELIABILITY_PLAN.md) 冻结会话与权限合同。
 - 缺口：未取得源码 commit 对照、未验证长驻真实 Run、跨版本兼容和能力 ceiling。本轮无新真实模型调用、凭证导出或 REA capture，不能把简化 fake server 当成上游接入验收。
+
+## 18. OpenMausBot 固定源码读取权限核对（2026-11-11）
+
+身份：用户 fork `gottaBoy/OpenMausBot`，commit `1bc4749aa8307d7d6998bf86de4ef6478460dd93`；
+复用本地 Git 对象库 `git show`，不安装、checkout 或运行上游。
+
+新增阅读：`server/request-auth.ts`、`server/sessions.ts`、`server/routes/threads.ts`、
+`server/host/sse-replay.ts`、`server/index.ts` 的 stream ID/cursor/replay 段、
+`scripts/mcp-server.ts` 的 fleet/read 路径、`scripts/mcp-message-projection.ts`、`shared/wire.ts`。
+
+结论：loopback owner/service 与配对 admin/client 都不能天然视为只读 scope；
+Bot 列表需 `messages=0`；原生消息使用 `hasMore` 和 `at` 毫秒，不是 generic next_cursor；
+SSE 是带进程 epoch 的内存 replay，不能宣称跨重启可靠补齐。
+
+采用：默认生产会话同步 fail closed；只在显式注入的离线 fixture 中读取。
+修复本地缓存撤销/在途写回/重启连接归属，并显示历史缺口。
+详情：[读取权限合同](OPENMAUSBOT_READ_SCOPE.md)。本轮无 REA capture 或真实接入证据。

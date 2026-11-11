@@ -1,6 +1,6 @@
 # mybot AI Agent Work 分步骤实现计划
 
-更新：2026-11-10。状态：当前执行路线。每一阶段完成后追加到 [PROGRESS_LOG.md](PROGRESS_LOG.md)，不把设计计划写成已实现能力。
+更新：2026-11-11。状态：当前执行路线。每一阶段完成后追加到 [PROGRESS_LOG.md](PROGRESS_LOG.md)，不把设计计划写成已实现能力。
 
 工作项状态以 [WORK_ITEMS.md](WORK_ITEMS.md) 为单一清单：原编号 119 项，完成 9 项，
 未完全完成 110 项。阶段下列的是交付范围，不重复累加为额外工作项。
@@ -351,7 +351,7 @@ web/i18n/en-US.json
 执行包 B01–B03 已完成。下一项只做 Phase 3 的 B04/B05：
 
 1. B04：既有 Web 会话工作区、显式读取与可核查的消息/来源；不得静默联网或回落 fixture。
-2. B05：先读固定源码的认证/读取 scope，不把公共 health 当账号/权限认证。
+2. B05 离线 scope/消息/SSE 核对已完成；下一步为最小读取权限宿主合同，不导入宽权限既有账号。
 3. 原生协议和权限门槛未通过时只做隔离 fixture；真实账号测试另行授权。
 4. 完成包后更新 WORK_ITEMS/PROGRESS_LOG/CONTINUE，部分不等于完成。
 
