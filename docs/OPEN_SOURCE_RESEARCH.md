@@ -493,3 +493,23 @@ SSE 是带进程 epoch 的内存 replay，不能宣称跨重启可靠补齐。
 采用：默认生产会话同步 fail closed；只在显式注入的离线 fixture 中读取。
 修复本地缓存撤销/在途写回/重启连接归属，并显示历史缺口。
 详情：[读取权限合同](OPENMAUSBOT_READ_SCOPE.md)。本轮无 REA capture 或真实接入证据。
+
+## 19. Astryx Playground / Theme Editor（2026-11-12）
+
+- 身份：`meta/astryx`；用户指定本地源码路径
+  `/home/my/workspace/ainfra/mywork/astryx`，固定 commit
+  `5770e5b197cf80d5a824667c23046887cc8fa0f5`。本轮只读，不修改该仓库。
+- 包基线：Core、七个主题、CLI `0.7.13`；本地上游源码版本不同，单独做兼容验证。
+- 阅读/移植：`apps/docsite/src/app/playground/themeEditor/` 九文件、
+  `apps/docsite/src/lib/useLiveNumberInput.ts`、`defaultCode.ts`。
+  另对照 `PlaygroundClient`、`PreviewStage`、`previewChannel` 与 runner。
+- 产物：`frontend/src/theme-editor/`、局部 Playground 布局、主题消息/iframe 预览、
+  CLI 生成的 58 个本地页面模板。复制文件保留 copyright，MIT 全文与来源/本地改动
+  位于 `frontend/vendor/astryx/`。
+- 本地修正：StyleX 编译、安全主题导出转义、可访问颜色输入、关闭自动外部字体下载、
+  始终 opaque sandbox、预览 CSP/白名单/错误恢复、支付模板远程 Logo 改为离线文字。
+- 验证：独立 helper/protocol 单测、类型检查、生产构建、主题交互和全部模板的真实
+  Chrome 渲染。完整范围和剩余差异见 [REA_ASTRYX_THEME_EDITOR.md](REA_ASTRYX_THEME_EDITOR.md)。
+- 缺口：没有任意编辑 TSX 实时编译、Monaco、属性 targeting；没有把图库/字体收集当作
+  已获许可的 mybot 素材，也没有把示例交互当作真实业务或模型执行。这里的 REA 是
+  公开源码加浏览器运行对照，不声称使用了未提供的二进制逆向工具。

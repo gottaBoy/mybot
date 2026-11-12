@@ -1,0 +1,44 @@
+{
+  "name": "mybot-workbench-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:theme": "node scripts/verify-theme.mjs"
+  },
+  "dependencies": {
+    "@astryxdesign/core": "0.7.13",
+    "@astryxdesign/theme-butter": "0.7.13",
+    "@astryxdesign/theme-chocolate": "0.7.13",
+    "@astryxdesign/theme-gothic": "0.7.13",
+    "@astryxdesign/theme-matcha": "0.7.13",
+    "@astryxdesign/theme-neutral": "0.7.13",
+    "@astryxdesign/theme-stone": "0.7.13",
+    "@astryxdesign/theme-y2k": "0.7.13",
+    "@heroicons/react": "^2.2.0",
+    "@stylexjs/stylex": "^0.19.0",
+    "lucide-react": "^0.544.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "recharts": "^2.15.4"
+  },
+  "devDependencies": {
+    "@astryxdesign/cli": "0.7.13",
+    "@stylexjs/babel-plugin": "0.19.1",
+    "@types/node": "^22.13.10",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.4.1",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vitest": "3.2.7"
+  }
+}

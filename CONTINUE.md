@@ -1,6 +1,82 @@
 # 下次从这里继续
 
-更新日期：2026-11-11（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
+更新日期：2026-11-12（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
+
+**Theme Editor 完整接入（2026-11-12）：** 已按固定上游
+`5770e5b197cf80d5a824667c23046887cc8fa0f5` 移植三层编辑器：Base Styles
+（颜色/字体/字号比例/圆角/间距/尺寸/动效/四种预设）、Components（组件 Token 与自定义
+CSS 覆盖）、Advanced（分组原始 Token）。七种主题可选，支持独立明暗分支、切换确认、
+重置及安全导出 `defineTheme`。编辑通过结构化主题消息驱动 iframe，状态跨视图切换保留。
+本地源码已配置 StyleX 编译；不再只依赖预构建 CSS。
+
+**预览和构建边界（2026-11-12）：** 使用独立 `preview.html`、始终
+`sandbox="allow-scripts"`、nonce/MessageChannel、CSP 禁止连接/表单提交、运行时
+ErrorBoundary、提交后 rendered、白名单/主题校验、超时/重试；已撤销父页 fallback。
+模板页不读 `/api/bootstrap`。预览只运行可信本地模板，仍未实现任意 TSX 编译/Monaco/
+targeting，不称 Playground 全能力复刻。58 模板按需加载，源码也按需读取，生产构建
+最大 JS chunk 已低于 500 kB。支付模板远程 Logo 改为离线文字；字体不自动联网下载。
+
+**当前验证与继续位置：** 测试与生产浏览器证据见
+[REA_ASTRYX_THEME_EDITOR.md](docs/REA_ASTRYX_THEME_EDITOR.md)，本地入口仍为
+`http://127.0.0.1:5173/#templates`。旧 `web/` 未改、未替换生产静态入口，
+没有真实模型调用或后端权限变更。本次用户明确要求 commit + push；以后不能据此重复
+推送新的未请求改动。后续先补 Monaco/TSX 编译隔离或选定模板的业务迁移，不再恢复成静态
+Theme mock。
+
+**React/Astryx 迁移授权（2026-11-11）：** 用户已明确授权将当前 `web/` 原生
+HTML/CSS/JavaScript 应用逐步迁移到 React 19+ + Astryx。该授权只改变实施边界，
+不代表迁移已经开始或完成。按 [ADR-0006](docs/decisions/ADR-0006-react-astryx-frontend-migration.md)
+执行：先保留 vanilla 回滚路径，按切片替换并做桌面/移动端、键盘、无障碍和构建验证；
+不要一次性删除 `web/`，也不要把迁移工作混入模型、Provider 或 Agent 执行权限变更。
+
+**Astryx Playground 参考授权（2026-11-11）：** 用户先允许借鉴指定的
+`https://astryx.atmeta.com/playground` 组件和页面模式，以及两个带 `#code=...`
+的变体；随后明确升级为允许选定组件/模板的本地完整复刻。编码后的示例仍需经过
+项目封装、品牌替换和许可证检查，不能把 Astryx 官方身份带入产品。
+
+**Astryx 本地复刻授权（2026-11-11）：** 用户进一步明确允许使用
+`/components`、`/docs/theme`、`/templates` 和指定 Playground 变体，选择合适的
+组件/模板在本地完整复刻，作为 React + Astryx 迁移切片。复刻结果必须改成 mybot
+品牌，保留许可证和第三方依赖审查；该授权不代表已经完成迁移。
+
+**React 第一切片已实现（2026-11-11）：** 新增 `frontend/` Vite 应用，使用 React 19、
+Astryx Core 0.7.13、neutral theme 和项目自定义 `mybotTheme`；已接入 Theme 明暗切换、
+项目自有 Button/Text/Badge/Stack 适配层、响应式工作台 Shell，以及真实
+`GET /api/bootstrap` 的项目/任务/运行摘要。Vite `/api` 代理默认指向
+`http://127.0.0.1:4180`。旧 `web/` 仍是当前 FastAPI 静态入口，React 尚未替换生产入口。
+验证：`pnpm typecheck`、`pnpm build` 通过；Playwright/Chrome 已检查 1440px 与 390px
+截图。构建仍有单个 JS chunk 超过 500 kB 的性能警告，尚未做代码分割。
+
+**Astryx AI Chat 迁移切片已实现（2026-11-11）：** 新增
+`frontend/src/ChatWorkspace.tsx`，复用 Playground 的 ChatLayout、Composer、Message、
+ToolCalls、Markdown、Artifact 双栏、Resizable 和移动端 Dialog 能力；内容来自真实
+`GET /api/runs/{id}` 的 Agent/Call/Artifact，不使用示例对话冒充执行记录。入口为
+`#chat` 或侧栏“对话与成果”；发送保持只读并明确禁用。已验证桌面 1440px、手机 390px，
+手机点击“打开成果”能打开全屏 Dialog。当前生产静态入口仍是旧 `web/`，下一步是把
+React 路由接入 FastAPI 或继续迁移模型/后端/项目详情页面。
+
+**Astryx 页面模板本地化（2026-11-11）：** 通过 `@astryxdesign/cli@0.7.13`
+生成 58 个页面模板到 `frontend/src/templates/generated/`，包含 AI Chat、
+Dashboard、Shell、Table、Settings、Form、Login、Work Item 等页面形状；新增
+`#templates` 本地目录/预览入口和 `frontend/README.md`。模板源已通过 TypeScript
+检查和 Vite 构建，当前属于可预览的本地复刻层，不等于已把每个模板都接入 mybot
+业务事实。后续应按研发工作台需求，把合适模板替换进真实页面，不要把全部模板一次性
+加载进产品首页。
+
+**Astryx Playground REA 对比已完成（2026-11-11）：** 已直接读取本地
+`/home/my/workspace/ainfra/mywork/astryx/apps/docsite/src/app/playground/` 源码，
+对照 `PlaygroundClient`、`PreviewStage`、`ThemeEditor`、Monaco、iframe runner、
+postMessage channel 和移动端行为。报告见
+[REA_ASTRYX_PLAYGROUND_COMPARE.md](docs/REA_ASTRYX_PLAYGROUND_COMPARE.md)。
+当前 mybot 已补齐 Playground 壳层、58 个模板源码、hash 分享/恢复、模板切换确认、
+Desktop/Phone、暗色、全屏和导出；实时 TSX 编译、sandbox iframe、真实 ThemeEditor、
+Build 状态和 targeting 仍是后续 P0/P1。
+
+**Playground 安全预览切片（2026-11-11）：** 多 Agent 已补齐
+`frontend/src/playground-preview/`：nonce + MessageChannel、ready/building/rendered/
+error/rebuild、模板白名单、开发/生产 sandbox 差异和 iframe 恢复。生产预览使用
+`sandbox="allow-scripts"`，不会执行编辑器任意 TSX；当前仍不是 Astryx 的 Monaco + TSX
+编译器完全复刻。REA 报告已更新当前完成度和剩余 P0/P1。
 
 **最新 B04/B05 修正：** 固定源码权限核对已完成离线阶段，见
 [OPENMAUSBOT_READ_SCOPE.md](docs/OPENMAUSBOT_READ_SCOPE.md)。owner/service、admin/client 都不是
