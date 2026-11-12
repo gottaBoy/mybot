@@ -1,29 +1,30 @@
 import {useCallback, useEffect, useRef, useState} from 'react'
 import {RotateCw} from 'lucide-react'
 import type {ThemeSnapshot} from '../playground-themes'
-
 import {
   createPreviewConnector,
   previewSrc,
   type PreviewChildMessage,
   type PreviewGeneration,
-  type PreviewParentMessage,
 } from './protocol'
 
 type Props = {
   templateId: string
   mode: 'light' | 'dark'
   theme?: ThemeSnapshot
+  /** Editor source sent to the isolated runner. */
+  source?: string
+  onMessage?: (message: PreviewChildMessage) => void
+  targetingEnabled?: boolean
 }
 
 type PreviewState = 'connecting' | 'building' | 'ready' | 'error'
 
-export function SandboxTemplatePreview({templateId, mode, theme}: Props) {
+export function SandboxTemplatePreview({templateId, mode, theme, source, onMessage, targetingEnabled}: Props) {
   const [generation, setGeneration] = useState<PreviewGeneration | null>(null)
   const [state, setState] = useState<PreviewState>('connecting')
   const [error, setError] = useState<string | null>(null)
   const connectorRef = useRef<ReturnType<typeof createPreviewConnector> | null>(null)
-  const desiredRef = useRef({templateId, mode, theme})
   const readyRef = useRef(false)
   const generationRef = useRef(0)
   const timeoutRef = useRef<number | null>(null)
@@ -31,27 +32,59 @@ export function SandboxTemplatePreview({templateId, mode, theme}: Props) {
   const restartRef = useRef<() => void>(() => {})
   const templateRef = useRef(templateId)
 
+  const revisionRef = useRef(0)
+  const desiredRef = useRef({templateId, mode, theme, source})
+  const sentRef = useRef({templateId, source})
+
   const postDesired = useCallback(() => {
+    const revision = ++revisionRef.current
     connectorRef.current?.post({
       type: 'mybot-preview-template',
       templateId: desiredRef.current.templateId,
       mode: desiredRef.current.mode,
       theme: desiredRef.current.theme,
+      source: desiredRef.current.source,
+      revision,
     })
+    sentRef.current = {
+      templateId: desiredRef.current.templateId,
+      source: desiredRef.current.source,
+    }
   }, [])
 
   useEffect(() => {
-    desiredRef.current = {templateId, mode, theme}
-    if (readyRef.current) {
-      if (templateRef.current !== templateId) {
+    if (!readyRef.current) return
+    connectorRef.current?.post({
+      type: targetingEnabled ? 'mybot-targeting-enable' : 'mybot-targeting-disable',
+    })
+  }, [targetingEnabled])
+
+  useEffect(() => {
+    desiredRef.current = {templateId, mode, theme, source}
+    const push = () => {
+      if (!readyRef.current) return
+      const templateChanged = templateRef.current !== templateId
+      const sourceChanged = sentRef.current.templateId !== templateId || sentRef.current.source !== source
+      if (templateChanged || sourceChanged) {
         setState('building')
-        postDesired()
+        const revision = ++revisionRef.current
+        connectorRef.current?.post({
+          type: templateChanged ? 'mybot-preview-template' : 'mybot-preview-rebuild',
+          templateId,
+          mode,
+          theme,
+          source,
+          revision,
+        })
       } else {
         connectorRef.current?.post({type: 'mybot-preview-theme', mode, theme})
       }
+      templateRef.current = templateId
+      sentRef.current = {templateId, source}
     }
-    templateRef.current = templateId
-  }, [mode, templateId, theme, postDesired])
+    const timer = window.setTimeout(push, source != null ? 400 : 0)
+    return () => window.clearTimeout(timer)
+  }, [mode, templateId, theme, source, postDesired])
 
   useEffect(() => {
     const issue = () => {
@@ -81,6 +114,7 @@ export function SandboxTemplatePreview({templateId, mode, theme}: Props) {
       onReplaced: issue,
       onMessage: (event: MessageEvent<PreviewChildMessage>) => {
         const message = event.data
+        onMessage?.(message)
         if (!message || typeof message !== 'object') return
         if ('templateId' in message && message.templateId != null && message.templateId !== desiredRef.current.templateId) return
         if (message.type === 'mybot-preview-ready') {
@@ -125,7 +159,7 @@ export function SandboxTemplatePreview({templateId, mode, theme}: Props) {
       connector.stop()
       connectorRef.current = null
     }
-  }, [postDesired])
+  }, [postDesired, onMessage])
 
   const attachFrame = useCallback((element: HTMLIFrameElement | null) => {
     if (element?.contentWindow) connectorRef.current?.attachFrame(element.contentWindow)

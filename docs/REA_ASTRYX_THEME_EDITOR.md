@@ -344,27 +344,28 @@ Commands and evidence:
 
 ```text
 pnpm typecheck                         PASS
-pnpm test                              PASS (66 tests)
+pnpm test                              PASS (84 tests)
 pnpm build                             PASS (production multi-entry build)
 node scripts/verify-theme.mjs          PASS (13 browser checks)
 node scripts/verify-template-catalog.mjs PASS (58/58 templates)
 .venv/bin/python -m pytest -q          PASS (244 tests, 1 existing warning)
 ```
 
-Browser verification used Chrome with API and external requests blocked. Theme checks
-covered Base Styles numeric changes, component override add/remove, Advanced color edits
-against iframe computed style, light/dark branch preservation, theme replacement cancel/
-confirm/reset, theme export, mobile tabs, no horizontal overflow, and preview error retry.
-Template catalog checks covered all 58 generated templates, opaque iframe IDs, visible DOM,
-no uncaught page errors, and no business/external requests. Payment template remote payment
-logos were replaced with offline text labels so CSP does not leave broken image states.
+Additional current browser verification used Chrome with API and external requests blocked.
+It covered Monaco loading from `/monaco/vs`, `/playground-types.json`, live source edit and
+TSX recompile, compile-error state, template switching, Theme Editor controls, Targeting,
+property Apply source patch/re-render, desktop/phone layout and mobile tabs. The preview
+iframe stayed opaque and no business or external request was observed; Vite's expected
+development HMR websocket/CSP warning and missing favicon request are not product requests.
+Payment template remote payment logos were replaced with offline text labels so CSP does not
+leave broken image states.
 
 Remaining intentional gaps:
 
-- The editor is a textarea/highlight editor, not Monaco.
-- Edited arbitrary TSX is not evaluated. The sandbox only loads allowlisted generated
-  templates; this is intentional until a separate TypeScript compiler/runtime security
-  slice is approved.
-- Full targeting/property editor and exact upstream preview compiler are not implemented.
-- Build output still reports a large template/playground chunk; the templates are lazy,
-  but the editor/runtime dependency graph remains substantial.
+- The property editor has exact descriptors for the highest-value Button/Card/Text
+  components; other allowlisted Core components expose safe literal attributes inferred
+  from source, rather than the full upstream prop documentation registry.
+- The preview compiler intentionally allows only bundled React/Astryx/theme/icon/chart
+  modules and is not a general-purpose JavaScript capability sandbox.
+- Build output still reports a large preview runtime chunk; declaration/type data and
+  compiler dependencies remain substantial and should be code-split in a later pass.

@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import {fileURLToPath} from 'node:url'
+import {monacoAssets} from './scripts/monaco-assets'
 
 export default defineConfig({
-  plugins: [react({
+  plugins: [monacoAssets(), react({
     babel: {
       plugins: [['@stylexjs/babel-plugin', {
         dev: false,

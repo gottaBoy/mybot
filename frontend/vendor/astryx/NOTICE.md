@@ -15,9 +15,11 @@ Runtime components and seven theme packages are pinned to Astryx `0.7.13`.
 
 Local changes include relative imports, no automatic external font downloads,
 accessible native color controls, safe theme-source serialization, local preview
-transport, responsive shell sizing, and template compatibility adjustments.
-The preview protocol follows the upstream nonce/MessageChannel design but is
-implemented locally and does not execute arbitrary edited source.
+transport, responsive shell sizing, template compatibility adjustments, and a
+restricted TypeScript/TSX runner. Edited source is evaluated only inside the
+opaque preview iframe through an allowlisted local module resolver; it is never
+executed in the parent page and this boundary is not a complete JavaScript
+capability sandbox.
 
 See `LICENSE` beside this file for the MIT license. React, StyleX, Lucide,
 Heroicons, Recharts, and other dependencies retain their own licenses.

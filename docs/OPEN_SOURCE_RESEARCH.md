@@ -508,8 +508,10 @@ SSE 是带进程 epoch 的内存 replay，不能宣称跨重启可靠补齐。
   位于 `frontend/vendor/astryx/`。
 - 本地修正：StyleX 编译、安全主题导出转义、可访问颜色输入、关闭自动外部字体下载、
   始终 opaque sandbox、预览 CSP/白名单/错误恢复、支付模板远程 Logo 改为离线文字。
-- 验证：独立 helper/protocol 单测、类型检查、生产构建、主题交互和全部模板的真实
-  Chrome 渲染。完整范围和剩余差异见 [REA_ASTRYX_THEME_EDITOR.md](REA_ASTRYX_THEME_EDITOR.md)。
-- 缺口：没有任意编辑 TSX 实时编译、Monaco、属性 targeting；没有把图库/字体收集当作
-  已获许可的 mybot 素材，也没有把示例交互当作真实业务或模型执行。这里的 REA 是
-  公开源码加浏览器运行对照，不声称使用了未提供的二进制逆向工具。
+- 验证：独立 helper/protocol/runner/property 单测、类型检查、生产构建、Monaco
+  本地资源、主题交互、编辑后 TSX 编译、Targeting/属性回写和全部模板的真实 Chrome
+  渲染。完整范围和剩余差异见 [REA_ASTRYX_THEME_EDITOR.md](REA_ASTRYX_THEME_EDITOR.md)。
+- 缺口：属性面板尚未拥有上游完整 PropDoc/slot/嵌套 JSX 编辑能力；预览运行时只允许
+  本地白名单模块，不宣称是通用 JavaScript 能力沙箱。没有把图库/字体收集当作已获
+  许可的 mybot 素材，也没有把示例交互当作真实业务或模型执行。这里的 REA 是公开源码
+  加浏览器运行对照，不声称使用了未提供的二进制逆向工具。

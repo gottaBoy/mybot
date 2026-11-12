@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo, useRef, useState, type CSSProperties} from 'react'
-import {ChevronDown, Code2, Copy, Expand, ExternalLink, Monitor, Moon, Palette, Smartphone, Sparkles, Sun} from 'lucide-react'
+import {ChevronDown, Code2, Copy, Crosshair, Expand, ExternalLink, Monitor, Moon, Palette, Smartphone, Sparkles, Sun} from 'lucide-react'
 import {Button} from '@astryxdesign/core/Button'
 import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog'
 import {HStack, Layout, LayoutContent, LayoutFooter} from '@astryxdesign/core/Layout'
@@ -7,6 +7,8 @@ import {ResizeHandle, useResizable} from '@astryxdesign/core/Resizable'
 import {Theme, tokenDefaults, type DefinedTheme} from '@astryxdesign/core/theme'
 import {neutralTheme} from '@astryxdesign/theme-neutral/built'
 import {ThemeEditor} from './theme-editor/ThemeEditor'
+import {PropertyEditorPanel} from './playground-property/PropertyEditorPanel'
+import type {TargetSelection} from './playground-property/model'
 import {generateThemeCode} from './theme-editor/helpers'
 import {initialPreviewTheme, loadTheme, themeOptions, type ThemeId, type ThemeSnapshot} from './playground-themes'
 import {SandboxTemplatePreview} from './playground-preview/SandboxTemplatePreview'
@@ -15,6 +17,7 @@ import manifest from './templates/generated/manifest.json'
 import {readPlaygroundCodeFromHash, readTemplateFromHash, updatePlaygroundCodeInUrl} from './playground-code'
 import {DEFAULT_CODE} from './playground/defaultCode'
 import {CodeEditor} from './playground/CodeEditor'
+import type {PreviewChildMessage} from './playground-preview/protocol'
 
 type Mode = 'light' | 'dark'
 type Template = TemplateId | 'welcome'
@@ -62,6 +65,8 @@ export function TemplatesPage({onBack, mode = 'light', onModeChange}: {
   const [status, setStatus] = useState('')
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [resizing, setResizing] = useState(false)
+  const [targetingEnabled, setTargetingEnabled] = useState(false)
+  const [targetSelection, setTargetSelection] = useState<TargetSelection | null>(null)
   const baseline = useRef<string | undefined>(undefined)
   const themeRequest = useRef(0)
   const sourceRequest = useRef(0)
@@ -216,6 +221,16 @@ export function TemplatesPage({onBack, mode = 'light', onModeChange}: {
     onModeChange?.(next)
   }
 
+  const onPreviewMessage = useCallback((message: PreviewChildMessage) => {
+    if (message.type === 'mybot-targeting-select') {
+      setTargetSelection({id: message.id, component: message.component, index: message.index})
+    }
+    if (message.type === 'mybot-targeting-exit') {
+      setTargetingEnabled(false)
+      setTargetSelection(null)
+    }
+  }, [])
+
   return (
     <Theme theme={neutralTheme} mode={mode}>
       <div ref={rootRef} className={`pg-root ${mode === 'dark' ? 'pg-dark' : ''} ${resizing ? 'pg-resizing' : ''}`}
@@ -269,6 +284,8 @@ export function TemplatesPage({onBack, mode = 'light', onModeChange}: {
           <header className="pg-preview-toolbar">
             <button className="pg-icon-button" aria-label="Copy source link" title="Copy source link" onClick={share}><Copy size={17} /></button>
             <div className="pg-preview-controls">
+              <button className={`pg-icon-button ${targetingEnabled ? 'is-active' : ''}`} aria-label="Target element" aria-pressed={targetingEnabled} title="Target element"
+                onClick={() => { setTargetingEnabled(value => !value); setTargetSelection(null) }}><Crosshair size={17} /></button>
               <button className="pg-icon-button" aria-label="Toggle theme" title={previewMode === 'light' ? 'Dark preview' : 'Light preview'} onClick={toggleMode}>{previewMode === 'light' ? <Moon size={18} /> : <Sun size={18} />}</button>
               <div className="pg-viewport-switch" role="group" aria-label="Viewport size">
                 <button className={viewport === 'desktop' ? 'is-active' : ''} aria-label="Desktop" aria-pressed={viewport === 'desktop'} onClick={() => setViewport('desktop')}><Monitor size={17} /></button>
@@ -280,8 +297,12 @@ export function TemplatesPage({onBack, mode = 'light', onModeChange}: {
           </header>
           {status && <p className="pg-status" role="status">{status}</p>}
           <div className={`pg-preview-area ${viewport === 'phone' ? 'is-phone' : ''}`}>
-            <div className="pg-preview-card"><SandboxTemplatePreview templateId={selectedId} mode={previewMode} theme={snapshot} /></div>
+            <div className="pg-preview-card"><SandboxTemplatePreview templateId={selectedId} mode={previewMode} theme={snapshot} source={code}
+              targetingEnabled={targetingEnabled} onMessage={onPreviewMessage} /></div>
           </div>
+          {targetSelection ? <div className="pg-property-host"><PropertyEditorPanel selection={targetSelection} code={code}
+            onCodeChange={next => { setCode(next); setCommittedCode(next) }}
+            onClose={() => { setTargetSelection(null); setTargetingEnabled(false) }} /></div> : null}
         </section>
         <Dialog isOpen={pendingTheme != null || pendingTemplate != null} purpose="info" onOpenChange={open => {if (!open) {setPendingTheme(undefined); setPendingTemplate(undefined)}}}>
           <Layout header={<DialogHeader title={pendingTheme ? 'Replace theme?' : 'Load template?'} />}

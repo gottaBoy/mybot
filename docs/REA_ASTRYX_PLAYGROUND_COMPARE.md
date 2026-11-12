@@ -5,9 +5,28 @@
 > [REA_ASTRYX_THEME_EDITOR.md](REA_ASTRYX_THEME_EDITOR.md) 的 Delivery Verification。
 > 下列百分比是旧估计，已弃用；以功能和实际验证结果为准。
 
-## 结论
+## Current Delivery Snapshot (2026-11-12)
 
-当前 `mybot/#templates` 不是 Astryx Playground 的本地复刻，而是一个“模板选择器 + 静态预览”的早期外壳。两者的视觉结构、运行时模型和交互能力差异很大。
+The local `#templates` slice now has the core Playground loop: Monaco with
+self-hosted declarations, source-to-TSX compilation in an opaque preview
+iframe, build/runtime error recovery, seven theme presets plus three-layer
+Theme Editor, 58 on-demand template sources, hash restore/share, desktop/phone
+views, and Targeting with literal-property source patching. `pnpm typecheck`,
+84 frontend tests, and the production build pass; Chrome checks also cover
+live edits, template switching, theme controls, Targeting, property Apply and
+mobile layout.
+
+It is a functional local reproduction, not a claim of byte-for-byte upstream
+identity. Remaining differences are the breadth of upstream property metadata,
+some upstream editor polish, and the preview bundle size.
+
+## Initial Baseline (Historical)
+
+以下结论描述 2026-11-11 的初始差异，保留用于审计对照；不代表
+2026-11-12 当前实现：
+
+`mybot/#templates` 当时不是 Astryx Playground 的本地复刻，而是一个“模板选择器 +
+静态预览”的早期外壳。两者的视觉结构、运行时模型和交互能力差异很大。
 
 当前实现的主要问题不是某几个间距或颜色不一致，而是 Playground 的核心契约没有实现：
 

@@ -34,11 +34,14 @@ source export are supported. Editor state stays mounted across view switches.
 StyleX source is compiled with the Babel plugin; the runtime component library
 continues using its prebuilt CSS.
 
-The preview permits only bundled templates, uses `sandbox="allow-scripts"` in
+The preview runs in a dedicated opaque iframe with `sandbox="allow-scripts"` in
 both dev and production, and cannot connect to `/api`, external services or
-submit forms. Errors stay inside the iframe and have a retry action. Editing
-source updates the exported/shared text, **not** the running template. Monaco,
-arbitrary TSX evaluation and property targeting are not implemented.
+submit forms. Monaco edits are compiled by the self-hosted TypeScript runner
+inside the iframe; valid edits update the preview, while compile/runtime errors
+stay in the iframe lifecycle and expose a retry action. Targeting can select
+allowlisted Astryx Core instances and the property panel writes supported
+literal props back into source before recompiling. Imports remain restricted to
+the local allowlist; this is not a general-purpose JavaScript sandbox.
 
 Fonts are local/fallback only; no external font download happens automatically.
 Payment logo fixtures use offline labels instead of blocked third-party URLs.

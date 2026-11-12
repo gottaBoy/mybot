@@ -9,12 +9,19 @@ CSS 覆盖）、Advanced（分组原始 Token）。七种主题可选，支持�
 重置及安全导出 `defineTheme`。编辑通过结构化主题消息驱动 iframe，状态跨视图切换保留。
 本地源码已配置 StyleX 编译；不再只依赖预构建 CSS。
 
-**预览和构建边界（2026-11-12）：** 使用独立 `preview.html`、始终
+**Playground 运行时完成（2026-11-12）：** 使用独立 `preview.html`、始终
 `sandbox="allow-scripts"`、nonce/MessageChannel、CSP 禁止连接/表单提交、运行时
 ErrorBoundary、提交后 rendered、白名单/主题校验、超时/重试；已撤销父页 fallback。
-模板页不读 `/api/bootstrap`。预览只运行可信本地模板，仍未实现任意 TSX 编译/Monaco/
-targeting，不称 Playground 全能力复刻。58 模板按需加载，源码也按需读取，生产构建
-最大 JS chunk 已低于 500 kB。支付模板远程 Logo 改为离线文字；字体不自动联网下载。
+Monaco、self-hosted TypeScript/TSX 编译器、StyleX runtime shim、编辑后实时预览、
+编译/运行时错误恢复、Targeting 和属性源码回写已接通。模板页不读
+`/api/bootstrap`。58 模板按需加载，源码也按需读取；生产构建仍有较大的预览运行时
+chunk，属于可见性能债务。支付模板远程 Logo 改为离线文字；字体不自动联网下载。
+
+**最终验证（2026-11-12）：** `pnpm typecheck` 通过，前端 84 项测试通过，`pnpm
+build` 通过；Chrome 浏览器已验证 Monaco、本地类型声明、编辑/编译/错误状态、
+Theme Editor、模板切换、Targeting、属性 Apply 回写、桌面和手机视图。保留的差异
+是 Astryx 上游属性文档/编辑器的完整度，以及预览运行时的大 chunk；本地运行时只允许
+白名单模块，不把任意网络或业务 API 暴露给编辑器代码。
 
 **当前验证与继续位置：** 测试与生产浏览器证据见
 [REA_ASTRYX_THEME_EDITOR.md](docs/REA_ASTRYX_THEME_EDITOR.md)，本地入口仍为

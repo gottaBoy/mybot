@@ -6,8 +6,10 @@ import {Heading, Text} from '@astryxdesign/core/Text'
 import {defineTheme, Theme} from '@astryxdesign/core/theme'
 import {neutralTheme} from '@astryxdesign/theme-neutral/built'
 import {loadTheme, type ThemeSnapshot} from '../playground-themes'
+import '../playground-property/targeting.css'
 
 import {templateLoaders, type TemplateId} from '../templates/template-loaders'
+import {runCode} from './runner'
 import {
   acceptPreviewConnect,
   announcePreview,
@@ -15,6 +17,8 @@ import {
   isPreviewParentMessage,
   type PreviewParentMessage,
 } from './protocol'
+import {createTargetingController} from '../playground-property/TargetingController'
+import {annotateSource} from '../playground-property/sourcePatch'
 
 type Mode = 'light' | 'dark'
 
@@ -60,9 +64,9 @@ function Welcome() {
 }
 
 /**
- * This component is mounted only inside `/?preview=1`. It is deliberately
- * allowlisted: incoming messages can select a generated local template, but
- * cannot provide source text or invoke an evaluator.
+ * This component is mounted only inside `/?preview=1`. Incoming source is
+ * evaluated only in this opaque-origin iframe by the restricted runner; the
+ * parent page never evaluates editor code.
  */
 export function PreviewRunner() {
   const [mode, setMode] = useState<Mode>('light')
@@ -75,13 +79,17 @@ export function PreviewRunner() {
   const renderedRef = useRef(false)
   const loadRunRef = useRef(0)
   const themeRunRef = useRef(0)
+  const revisionRef = useRef(-1)
+  const targetingRef = useRef<ReturnType<typeof createTargetingController> | null>(null)
 
   const post = useCallback((message: Record<string, unknown>) => {
     portRef.current?.postMessage(message)
   }, [])
 
   const loadTemplate = useCallback(
-    (nextId: string, nextMode: Mode) => {
+    (nextId: string, nextMode: Mode, source?: string, revision?: number) => {
+      if (revision != null && revision < revisionRef.current) return
+      if (revision != null) revisionRef.current = revision
       setMode(nextMode)
       setTemplateId(nextId)
       setComponent(null)
@@ -89,6 +97,24 @@ export function PreviewRunner() {
       setRenderKey(value => value + 1)
       const run = ++loadRunRef.current
       post({type: 'mybot-preview-building', templateId: nextId})
+
+      if (source != null) {
+        const result = runCode(annotateSource(source))
+        if (run !== loadRunRef.current) return
+        if ('Component' in result && result.Component) {
+          setComponent(() => result.Component)
+          return
+        }
+        setComponent(null)
+        post({
+          type: 'mybot-preview-error',
+          templateId: nextId,
+          error: result.error,
+          phase: result.phase,
+          revision,
+        })
+        return
+      }
 
       if (nextId === 'welcome') {
         if (run !== loadRunRef.current) return
@@ -146,6 +172,7 @@ export function PreviewRunner() {
 
   const committed = useCallback(() => {
     renderedRef.current = true
+    targetingRef.current?.refresh()
     post({type: 'mybot-preview-rendered', templateId: templateId ?? 'welcome'})
   }, [templateId, post])
   const renderFailed = useCallback((error: Error) => {
@@ -158,6 +185,8 @@ export function PreviewRunner() {
       if (next == null) return
       portRef.current?.close()
       portRef.current = next
+      targetingRef.current?.disable()
+      targetingRef.current = createTargetingController(message => post(message))
       next.onmessage = (portEvent: MessageEvent<PreviewParentMessage>) => {
         const message = portEvent.data
         if (!isPreviewParentMessage(message)) {
@@ -167,6 +196,18 @@ export function PreviewRunner() {
         if (message?.type === 'mybot-preview-theme') {
           setMode(message.mode)
           applyTheme(message.theme)
+          return
+        }
+        if (message?.type === 'mybot-preview-targeting-enable' || message?.type === 'mybot-targeting-enable') {
+          targetingRef.current?.enable()
+          return
+        }
+        if (message?.type === 'mybot-preview-targeting-disable' || message?.type === 'mybot-targeting-disable') {
+          targetingRef.current?.disable()
+          return
+        }
+        if (message?.type === 'mybot-preview-property-patch') {
+          targetingRef.current?.applyPatch(message.patch)
           return
         }
         if (message?.type === 'mybot-preview-clear') {
@@ -179,7 +220,7 @@ export function PreviewRunner() {
           (message?.type === 'mybot-preview-template' || message?.type === 'mybot-preview-rebuild') &&
           typeof message.templateId === 'string'
         ) {
-          loadTemplate(message.templateId, message.mode)
+          loadTemplate(message.templateId, message.mode, message.source, message.revision)
           applyTheme(message.theme)
         }
       }
@@ -192,6 +233,8 @@ export function PreviewRunner() {
       window.removeEventListener('message', onWindowMessage)
       portRef.current?.close()
       portRef.current = null
+      targetingRef.current?.disable()
+      targetingRef.current = null
     }
   }, [loadTemplate, post, applyTheme])
 

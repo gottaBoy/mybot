@@ -398,6 +398,14 @@
   box-shadow: none;
 }
 
+.pg-property-host {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 8;
+  max-width: calc(100% - 32px);
+}
+
 .pg-preview-area.is-phone {
   align-items: center;
 }

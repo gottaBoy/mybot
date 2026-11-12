@@ -163,6 +163,7 @@ try {
   const beforeToggle = await buttonColor(page)
   await page.locator('.pg-preview-controls').getByRole('button', {name: 'Toggle theme', exact: true}).click()
   await waitForPreview(page)
+  await waitUntil(async () => await buttonColor(page) !== beforeToggle, 'Dark mode theme reaches the iframe')
   const darkColor = await buttonColor(page)
   assert.notEqual(darkColor, beforeToggle, 'Editing the light branch must not replace the dark branch')
   await page.locator('.pg-preview-controls').getByRole('button', {name: 'Toggle theme', exact: true}).click()

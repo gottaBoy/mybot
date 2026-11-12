@@ -1,0 +1,28 @@
+.mybot-target-overlay {
+  position: fixed;
+  z-index: 2147483646;
+  display: none;
+  pointer-events: none;
+  box-sizing: border-box;
+  border: 2px solid #1677ff;
+  background: color-mix(in srgb, #1677ff 10%, transparent);
+  color: #fff;
+  font: 600 11px/18px ui-sans-serif, system-ui, sans-serif;
+  padding: 0 6px;
+  white-space: nowrap;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 70%), 0 2px 8px rgb(0 0 0 / 22%);
+}
+
+.mybot-target-overlay[data-visible='true'] {
+  display: block;
+}
+
+.mybot-target-overlay::first-line {
+  background: #1677ff;
+}
+
+html.mybot-targeting,
+html.mybot-targeting body {
+  cursor: crosshair !important;
+}
+

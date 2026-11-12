@@ -1,0 +1,67 @@
+.pg-property-panel {
+  width: min(340px, calc(100vw - 32px));
+  border: 1px solid var(--pg-border, var(--color-border, #d9d9dd));
+  background: var(--pg-surface, var(--color-background-surface, #fff));
+}
+
+.pg-property-panel-empty {
+  max-width: 340px;
+}
+
+.pg-property-fields {
+  display: grid;
+  gap: 12px;
+}
+
+.pg-property-field {
+  display: grid;
+  grid-template-columns: minmax(90px, 1fr) minmax(120px, 1.2fr);
+  align-items: center;
+  gap: 12px;
+  color: var(--pg-text, var(--color-text-primary, #202022));
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.pg-property-field > span {
+  overflow-wrap: anywhere;
+}
+
+.pg-property-readonly {
+  justify-self: end;
+  color: var(--pg-text-secondary, var(--color-text-secondary, #737378));
+  font-size: 12px;
+}
+
+.pg-property-field input[type='text'],
+.pg-property-field input[type='number'],
+.pg-property-field select {
+  width: 100%;
+  min-width: 0;
+  height: 32px;
+  padding: 4px 8px;
+  border: 1px solid var(--pg-border, var(--color-border, #d9d9dd));
+  border-radius: 6px;
+  background: var(--pg-surface, var(--color-background-surface, #fff));
+  color: inherit;
+  font: inherit;
+}
+
+.pg-property-field input[type='checkbox'] {
+  justify-self: end;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--pg-accent, var(--color-accent, #1677ff));
+}
+
+.pg-property-field input:focus-visible,
+.pg-property-field select:focus-visible {
+  outline: 2px solid var(--pg-accent, var(--color-accent, #1677ff));
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .pg-property-panel {
+    width: calc(100vw - 24px);
+  }
+}

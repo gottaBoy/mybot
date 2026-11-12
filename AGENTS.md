@@ -128,9 +128,12 @@ For every new shared component:
   iframe recovery. Require confirmation before replacing unsaved theme edits.
 - Verify token and component edits against computed styles inside the preview
   iframe, and verify that exported `defineTheme` source contains the same values.
-- The local preview must not call business APIs, load arbitrary edited TSX, or
-  fall back to executing templates in the parent page. Keep its opaque sandbox,
-  dedicated CSP, allowlisted template IDs, message validation and retry behavior.
+- The local preview must not call business APIs, evaluate edited TSX in the parent
+  page, or fall back to executing templates outside the preview boundary. Edited
+  source may run only inside the opaque sandbox through the restricted local
+  module resolver and self-hosted compiler. Keep the dedicated CSP, import
+  allowlist, message validation and retry behavior; do not describe this as a
+  complete JavaScript capability sandbox.
 - Run `pnpm test`, `pnpm build`, `scripts/verify-theme.mjs` and
   `scripts/verify-template-catalog.mjs` for Playground changes. Preserve source and
   runtime evidence separately; do not label template import as TSX compilation.

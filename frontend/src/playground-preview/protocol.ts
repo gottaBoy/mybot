@@ -1,12 +1,13 @@
 /**
  * The mybot playground preview protocol.
  *
- * The preview is intentionally narrower than Astryx's arbitrary TSX runner:
- * the parent may request only a template id from the local generated registry.
- * User-authored source is never evaluated in the sandbox.
+ * The preview accepts source only over the attested MessagePort and evaluates
+ * it inside the opaque-origin iframe. The runner enforces an import allowlist
+ * and never receives a parent window reference or application data.
  */
 import type {ThemeSnapshot} from '../playground-themes'
 import {isThemeId} from '../playground-themes'
+import {isPropertyValue, isSafePropertyName, isTargetComponent, type PreviewPropertyPatch} from '../playground-property/model'
 
 export const PREVIEW_HELLO = 'mybot-preview-hello'
 export const PREVIEW_CONNECT = 'mybot-preview-connect'
@@ -19,6 +20,8 @@ export type PreviewParentMessage =
       templateId: PreviewTemplateId
       mode: 'light' | 'dark'
       theme?: ThemeSnapshot
+      source?: string
+      revision?: number
     }
   | {
       type: 'mybot-preview-theme'
@@ -30,7 +33,14 @@ export type PreviewParentMessage =
       templateId: PreviewTemplateId
       mode: 'light' | 'dark'
       theme?: ThemeSnapshot
+      source?: string
+      revision?: number
     }
+  | {type: 'mybot-preview-targeting-enable'}
+  | {type: 'mybot-preview-targeting-disable'}
+  | {type: 'mybot-targeting-enable'}
+  | {type: 'mybot-targeting-disable'}
+  | {type: 'mybot-preview-property-patch'; patch: PreviewPropertyPatch}
   | {type: 'mybot-preview-clear'}
 
 export type PreviewChildMessage =
@@ -41,8 +51,12 @@ export type PreviewChildMessage =
       type: 'mybot-preview-error'
       templateId?: PreviewTemplateId
       error: string
-      phase: 'protocol' | 'load' | 'runtime'
+      phase: 'protocol' | 'compile' | 'load' | 'runtime'
+      revision?: number
     }
+  | {type: 'mybot-targeting-hover'; id: string | null; component?: string; index?: number}
+  | {type: 'mybot-targeting-select'; id: string; component: string; index: number}
+  | {type: 'mybot-targeting-exit'}
 
 export type PreviewGeneration = {
   key: number
@@ -73,11 +87,29 @@ export function isThemeSnapshot(value: unknown): value is ThemeSnapshot {
 export function isPreviewParentMessage(value: unknown): value is PreviewParentMessage {
   if (!value || typeof value !== 'object') return false
   const message = value as PreviewParentMessage
-  if (message.type === 'mybot-preview-clear') return true
+  if (
+    message.type === 'mybot-preview-clear' ||
+    message.type === 'mybot-preview-targeting-enable' ||
+    message.type === 'mybot-preview-targeting-disable' ||
+    message.type === 'mybot-targeting-enable' ||
+    message.type === 'mybot-targeting-disable'
+  ) return true
+  if (message.type === 'mybot-preview-property-patch') {
+    const patch = message.patch
+    return !!patch && typeof patch === 'object' &&
+      typeof patch.id === 'string' && /^[A-Z][A-Za-z0-9]*#\d+$/.test(patch.id) &&
+      isTargetComponent(patch.component) &&
+      typeof patch.property === 'string' &&
+      isSafePropertyName(patch.component, patch.property) &&
+      isPropertyValue(patch.value)
+  }
   if (!['mybot-preview-template', 'mybot-preview-rebuild', 'mybot-preview-theme'].includes(message.type)) return false
   if (!('mode' in message) || !['light', 'dark'].includes(message.mode)) return false
   if (message.theme != null && !isThemeSnapshot(message.theme)) return false
-  return message.type === 'mybot-preview-theme' || typeof message.templateId === 'string'
+  if (message.type === 'mybot-preview-theme') return true
+  if (typeof message.templateId !== 'string') return false
+  if (message.source != null && (typeof message.source !== 'string' || message.source.length > 1_000_000)) return false
+  return message.revision == null || (Number.isSafeInteger(message.revision) && message.revision >= 0)
 }
 
 function createNonce() {
