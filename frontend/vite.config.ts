@@ -40,6 +40,13 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (/\/node_modules\/(?:react|react-dom|scheduler)\//.test(id)) return 'react-vendor'
+          if (id.includes('/node_modules/typescript/')) return 'preview-typescript'
+          if (id.includes('/node_modules/recharts/')) return 'preview-charts'
+          if (id.includes('/node_modules/lucide-react/')) return 'preview-lucide'
+          if (id.includes('/node_modules/@heroicons/')) return 'preview-heroicons'
+          if (id.includes('/node_modules/@astryxdesign/theme-')) return 'preview-themes'
+          if (id.includes('/node_modules/@astryxdesign/core/')) return 'preview-astryx-core'
+          if (id.includes('/node_modules/@babel/parser/')) return 'property-parser'
         },
       },
     },

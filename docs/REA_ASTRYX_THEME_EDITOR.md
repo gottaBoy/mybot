@@ -344,7 +344,7 @@ Commands and evidence:
 
 ```text
 pnpm typecheck                         PASS
-pnpm test                              PASS (84 tests)
+pnpm test                              PASS (85 tests)
 pnpm build                             PASS (production multi-entry build)
 node scripts/verify-theme.mjs          PASS (13 browser checks)
 node scripts/verify-template-catalog.mjs PASS (58/58 templates)
@@ -362,10 +362,12 @@ leave broken image states.
 
 Remaining intentional gaps:
 
-- The property editor has exact descriptors for the highest-value Button/Card/Text
-  components; other allowlisted Core components expose safe literal attributes inferred
-  from source, rather than the full upstream prop documentation registry.
+- The property editor now consumes generated PropDocs for 162 pinned Core components.
+  Literal boolean/string/number/enum props are editable across the registry; callback,
+  slot, ReactNode and expression-backed props remain read-only because they cannot be
+  safely represented as source literals.
 - The preview compiler intentionally allows only bundled React/Astryx/theme/icon/chart
   modules and is not a general-purpose JavaScript capability sandbox.
-- Build output still reports a large preview runtime chunk; declaration/type data and
-  compiler dependencies remain substantial and should be code-split in a later pass.
+- The preview entry is code-split from TypeScript/Core/theme/icon/chart runtime chunks.
+  The complete runtime dependency total remains substantial, but the entry no longer
+  carries a monolithic 5 MB PreviewRunner chunk.

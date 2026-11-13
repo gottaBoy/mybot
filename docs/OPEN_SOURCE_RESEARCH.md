@@ -511,7 +511,8 @@ SSE 是带进程 epoch 的内存 replay，不能宣称跨重启可靠补齐。
 - 验证：独立 helper/protocol/runner/property 单测、类型检查、生产构建、Monaco
   本地资源、主题交互、编辑后 TSX 编译、Targeting/属性回写和全部模板的真实 Chrome
   渲染。完整范围和剩余差异见 [REA_ASTRYX_THEME_EDITOR.md](REA_ASTRYX_THEME_EDITOR.md)。
-- 缺口：属性面板尚未拥有上游完整 PropDoc/slot/嵌套 JSX 编辑能力；预览运行时只允许
-  本地白名单模块，不宣称是通用 JavaScript 能力沙箱。没有把图库/字体收集当作已获
+- 缺口：属性面板已经接入 pinned Core 的 162 个 PropDoc，但 callback、slot、
+  ReactNode 和嵌套 JSX 仍按只读处理；预览运行时只允许本地白名单模块，不宣称是
+  通用 JavaScript 能力沙箱。没有把图库/字体收集当作已获
   许可的 mybot 素材，也没有把示例交互当作真实业务或模型执行。这里的 REA 是公开源码
   加浏览器运行对照，不声称使用了未提供的二进制逆向工具。

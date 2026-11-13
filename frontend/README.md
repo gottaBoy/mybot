@@ -39,9 +39,15 @@ both dev and production, and cannot connect to `/api`, external services or
 submit forms. Monaco edits are compiled by the self-hosted TypeScript runner
 inside the iframe; valid edits update the preview, while compile/runtime errors
 stay in the iframe lifecycle and expose a retry action. Targeting can select
-allowlisted Astryx Core instances and the property panel writes supported
-literal props back into source before recompiling. Imports remain restricted to
-the local allowlist; this is not a general-purpose JavaScript sandbox.
+allowlisted Astryx Core instances and the property panel is generated from the
+pinned Core PropDoc registry (162 components). Supported literal props write
+back into source before recompiling; callback, slot and expression props remain
+read-only. Imports remain restricted to the local allowlist; this is not a
+general-purpose JavaScript sandbox.
+
+The preview entry is code-split from TypeScript, Core, theme, icon and chart
+runtime chunks. The entry stays small, while the complete compiler/runtime
+dependencies remain available when a preview is built.
 
 Fonts are local/fallback only; no external font download happens automatically.
 Payment logo fixtures use offline labels instead of blocked third-party URLs.

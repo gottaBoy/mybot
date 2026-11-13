@@ -1,6 +1,7 @@
 import {describe, expect, it} from 'vitest'
 import {analyzeSource, annotateSource, patchSourceAttribute, readSourceValue} from '../src/playground-property/sourcePatch'
 import {CORE_COMPONENTS} from '../src/playground-property/model'
+import {editablePropsFor, PROP_DOC_COMPONENTS} from '../src/playground-property/propDocs'
 
 const source = `
 import {Button} from '@astryxdesign/core/Button';
@@ -69,5 +70,15 @@ describe('playground property source patching', () => {
     expect(CORE_COMPONENTS.has('Chat')).toBe(true)
     expect(CORE_COMPONENTS.has('Resizable')).toBe(true)
     expect(CORE_COMPONENTS.has('NotAComponent')).toBe(false)
+  })
+
+  it('loads the pinned Astryx PropDoc registry instead of a hand-written subset', () => {
+    const button = editablePropsFor('Button')
+    const card = editablePropsFor('Card')
+    expect(button.map(prop => prop.name)).toContain('elevation')
+    expect(button.map(prop => prop.name)).toContain('isInterruptible')
+    expect(card.map(prop => prop.name)).toContain('maxWidth')
+    expect(card.length).toBeGreaterThan(3)
+    expect(PROP_DOC_COMPONENTS.size).toBeGreaterThan(150)
   })
 })

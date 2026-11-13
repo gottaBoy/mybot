@@ -10,6 +10,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
+    "generate:prop-docs": "node scripts/generate-prop-docs.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:theme": "node scripts/verify-theme.mjs"

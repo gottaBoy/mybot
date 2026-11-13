@@ -1,5 +1,6 @@
 /** Astryx core component module name, e.g. `Button`, `DataTable`, or `Text`. */
 export type TargetComponent = string
+import {GENERATED_PROP_COMPONENT_NAMES} from './prop-component-names.generated'
 
 /** Core module names shipped by the pinned @astryxdesign/core package. */
 export const CORE_COMPONENTS_VERSION = '0.7.13'
@@ -19,6 +20,7 @@ export const CORE_COMPONENTS = new Set([
   'Thumbnail', 'TimeInput', 'Timer', 'Timestamp', 'Toast', 'ToggleButton', 'Token', 'Tokenizer',
   'Toolbar', 'Tooltip', 'TopNav', 'TreeList', 'Typeahead', 'VStack', 'VisuallyHidden',
 ])
+for (const name of GENERATED_PROP_COMPONENT_NAMES) CORE_COMPONENTS.add(name)
 
 export type TargetSelection = {
   id: string
@@ -33,7 +35,10 @@ export type PropertyDescriptor = {
   label: string
   kind: PropertyKind
   options?: readonly string[]
+  optionValues?: Readonly<Record<string, string | number | boolean>>
   defaultValue?: string | number | boolean
+  required?: boolean
+  description?: string
   /** A property is safe to reflect in the isolated preview DOM. */
   preview: boolean
 }

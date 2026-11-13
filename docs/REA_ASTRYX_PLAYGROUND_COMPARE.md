@@ -12,13 +12,14 @@ self-hosted declarations, source-to-TSX compilation in an opaque preview
 iframe, build/runtime error recovery, seven theme presets plus three-layer
 Theme Editor, 58 on-demand template sources, hash restore/share, desktop/phone
 views, and Targeting with literal-property source patching. `pnpm typecheck`,
-84 frontend tests, and the production build pass; Chrome checks also cover
+85 frontend tests, and the production build pass; Chrome checks also cover
 live edits, template switching, theme controls, Targeting, property Apply and
 mobile layout.
 
 It is a functional local reproduction, not a claim of byte-for-byte upstream
-identity. Remaining differences are the breadth of upstream property metadata,
-some upstream editor polish, and the preview bundle size.
+identity. Remaining differences are source editing for callback/slot values,
+some upstream editor polish, and the total size of optional preview runtime
+chunks; the PreviewRunner entry itself is now code-split.
 
 ## Initial Baseline (Historical)
 

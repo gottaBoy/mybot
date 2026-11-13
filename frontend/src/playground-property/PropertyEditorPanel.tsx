@@ -9,7 +9,9 @@ import {
   type PropertyValue,
   type TargetSelection,
 } from './model'
+import {defaultValueFor, displayNameFor, editablePropsFor} from './propDocs'
 import {analyzeSource, patchSourceAttribute, readSourceValue} from './sourcePatch'
+import type {PropControlDescriptor} from './propType'
 import './property-editor.css'
 
 type Props = {
@@ -34,11 +36,41 @@ function displayValue(value: PropertyValue) {
   return value == null ? '' : String(value)
 }
 
+function descriptorFromControl(
+  prop: ReturnType<typeof editablePropsFor>[number],
+): PropertyDescriptor {
+  const control: PropControlDescriptor = prop.control
+  if (control.kind === 'enum') {
+    return {
+      name: prop.name,
+      label: prop.name,
+      kind: 'enum',
+      options: control.options,
+      optionValues: control.optionValues,
+      defaultValue: defaultValueFor(prop),
+      required: prop.required,
+      description: prop.type,
+      preview: true,
+    }
+  }
+  const kind = control.kind as 'boolean' | 'string' | 'number'
+  return {
+    name: prop.name,
+    label: prop.name,
+    kind,
+    defaultValue: defaultValueFor(prop),
+    required: prop.required,
+    description: prop.type,
+    preview: true,
+  }
+}
+
 /**
  * Safe property editor for a selected local Astryx component.
  *
- * It never evaluates source. Literal values are patched with sourcePatch.ts;
- * the isolated iframe receives the same allowlisted value as a preview patch.
+ * It never evaluates source. Literal values are patched with sourcePatch.ts
+ * and only committed through the parent editor after Apply, which then
+ * recompiles the isolated preview.
  */
 export function PropertyEditorPanel({selection, code, onCodeChange, onClose}: Props) {
   const [draft, setDraft] = useState<Record<string, PropertyValue>>({})
@@ -46,7 +78,11 @@ export function PropertyEditorPanel({selection, code, onCodeChange, onClose}: Pr
   const descriptors = useMemo(() => {
     if (!selection) return []
     const instance = analyzeSource(code).find(entry => entry.component === selection.component && entry.index === selection.index)
-    return descriptorsFor(selection.component, instance?.attrs.map(attr => attr.name)).map(descriptor => {
+    const documented = editablePropsFor(selection.component).map(descriptorFromControl)
+    const sourceDescriptors = documented.length > 0
+      ? documented
+      : descriptorsFor(selection.component, instance?.attrs.map(attr => attr.name))
+    return sourceDescriptors.map(descriptor => {
       const attr = instance?.attrs.find(entry => entry.name === descriptor.name)
       if (descriptor.preview || !attr || attr.kind === 'expression' || attr.kind === 'unknown') return descriptor
       return {...descriptor, kind: attr.kind}
@@ -63,7 +99,7 @@ export function PropertyEditorPanel({selection, code, onCodeChange, onClose}: Pr
       <Card className="pg-property-panel-empty" padding={3} variant="muted">
         <VStack gap={1}>
           <Text type="label" weight="semibold">Targeting</Text>
-          <Text type="supporting" color="secondary">Enable target mode, then select a Button, Card, or Text in the preview.</Text>
+          <Text type="supporting" color="secondary">Enable target mode, then select an Astryx Core component in the preview.</Text>
         </VStack>
       </Card>
     )
@@ -80,7 +116,7 @@ export function PropertyEditorPanel({selection, code, onCodeChange, onClose}: Pr
       <VStack gap={3}>
         <HStack gap={2} vAlign="center" width="100%">
           <VStack gap={0} style={{flex: 1}}>
-            <Heading level={3}>{selection.component}</Heading>
+            <Heading level={3}>{displayNameFor(selection.component)}</Heading>
             <Text type="supporting" color="secondary">Instance {selection.index + 1}</Text>
           </VStack>
           {onClose ? <Button label="Close properties" variant="ghost" size="sm" onClick={onClose} /> : null}
@@ -101,7 +137,10 @@ export function PropertyEditorPanel({selection, code, onCodeChange, onClose}: Pr
                     onChange={event => update(descriptor, event.target.checked)}
                   />
                 ) : descriptor.kind === 'enum' ? (
-                  <select value={displayValue(value)} onChange={event => update(descriptor, event.target.value)}>
+                  <select
+                    value={displayValue(value)}
+                    title={descriptor.description}
+                    onChange={event => update(descriptor, descriptor.optionValues?.[event.target.value] ?? event.target.value)}>
                     {descriptor.options?.map(option => <option value={option} key={option}>{option}</option>)}
                   </select>
                 ) : (
@@ -109,6 +148,7 @@ export function PropertyEditorPanel({selection, code, onCodeChange, onClose}: Pr
                     type={descriptor.kind === 'number' ? 'number' : 'text'}
                     value={displayValue(value)}
                     placeholder={descriptor.kind === 'number' ? 'unset' : 'value'}
+                    title={descriptor.description}
                     onChange={event => {
                       const raw = event.target.value
                       update(descriptor, descriptor.kind === 'number' ? (raw === '' ? null : Number(raw)) : raw)
