@@ -705,6 +705,29 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
   下一批IZ-07先做受限服务端查询合同、稳定排序、真实计数/分页，前端接通另验。
   所有账号/付费/执行/部署/设备门槛仍按原台账单列，不将110项全部标完成。
 
+## 2026-11-16：基线推送与IZ-07.1服务端查询API
+
+- 上条提交前检查已完成实际提交push：`f9e5484`已推送origin/main，包含此前已验收的
+  工作台/恢复/模型测试/保存视图与记录。未强推或提交.runtime私有库/备份/日志。
+- 按用户逐项要求实现IZ-07.1，新增task_query.py、GET /api/tasks/query及两个查询索引。
+  复用SavedView严格有限定义；文本与Project/State OR/AND、固定scope、最多3层排序、
+  有限JQL排序、Task最新Run分类、20/50/100分页及真实总数，非法参数/项目明确拒绝。
+- 查询使用mode=ro/query_only和单次读取事务，不复用Store写锁。验证并发写未提交时读旧
+  状态，以及COUNT执行后另一个连接提交仍保持本响应总数/页一致；连接成功/错误均关闭。
+  请求不访问Provider、模型凭证、文件上下文或添加审计/运行记录。
+- 首轮68专项通过；增加关闭/Unicode等检查后全量出现1项测试线程归属失败：
+  测试主线程操作Worker创建的连接先触发thread检查。改在同Worker真实close后验证，
+  未改生产check_same_thread；最终477/477（71新增+原406）通过，保留httpx提醒。
+- 全新临时合成库2k任务/4.8kRun与20k任务/48kRun各3次。默认首页中位数15.80/172.45ms，
+  页面20项、约8–9KB。文字和排序仍有扫描，不声称生产HTTP/浏览器SLO或常数时间。
+  证据`docs/evidence/task-query-2026-11-16/`含JUnit和两个测量JSON，合同ADR-0011。
+- API显式unicode-natural-v1，不冒充当前Astryx Intl.Collator；没有静默接到UI或复制页面。
+  目前Bootstrap/Task/Run仍全量读，前端client/排序一致性/接入与减量是IZ-07.2–04。
+  794前端及build已在本轮基线提交前复跑，新API未改前端，不算新增界面验收。
+- 正式4180/5173不再次重启，查询路由实际仍404，原保存视图接口保持可用。
+  本项完成后独立提交push；原119/110计数不变，不把子项、测量和测试数量当全部完成。
+  无正式数据写入、真实模型/账号/外部写入、部署或设备权限扩张，授权门槛继续保留。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。

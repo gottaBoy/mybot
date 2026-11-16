@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS tasks (
  title TEXT NOT NULL, goal TEXT NOT NULL, acceptance TEXT NOT NULL,
  files TEXT NOT NULL, created_at TEXT NOT NULL
 );
+CREATE INDEX IF NOT EXISTS tasks_project_created ON tasks(project_id,created_at DESC);
 CREATE TABLE IF NOT EXISTS runs (
  id TEXT PRIMARY KEY, task_id TEXT NOT NULL REFERENCES tasks(id),
  request_id TEXT NOT NULL UNIQUE, status TEXT NOT NULL, config TEXT NOT NULL,
@@ -77,6 +78,7 @@ CREATE TABLE IF NOT EXISTS runs (
  source_run_id TEXT REFERENCES runs(id),
  error TEXT, started_at TEXT, ended_at TEXT, created_at TEXT NOT NULL
 );
+CREATE INDEX IF NOT EXISTS runs_task_created ON runs(task_id,created_at DESC);
 CREATE TABLE IF NOT EXISTS recovery_intents (
  request_id TEXT PRIMARY KEY, source_run_id TEXT NOT NULL REFERENCES runs(id),
  mode TEXT NOT NULL CHECK(mode IN ('retry','resume')),

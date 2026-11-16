@@ -1,0 +1,40 @@
+{
+  "synthetic": true,
+  "tasks": 20000,
+  "runs": 48000,
+  "samples": 3,
+  "sqlite_version": "3.45.1",
+  "provider_requests": 0,
+  "user_database_accessed": false,
+  "scenarios": {
+    "first_page": {
+      "total": 20000,
+      "page_items": 20,
+      "response_bytes": 8279,
+      "median_ms": 172.45,
+      "min_ms": 172.42,
+      "max_ms": 172.6
+    },
+    "scoped_natural_sort": {
+      "total": 4000,
+      "page_items": 20,
+      "response_bytes": 8873,
+      "median_ms": 68.01,
+      "min_ms": 67.64,
+      "max_ms": 68.19
+    },
+    "literal_text_search": {
+      "total": 1111,
+      "page_items": 20,
+      "response_bytes": 8325,
+      "median_ms": 183.07,
+      "min_ms": 182.67,
+      "max_ms": 185.57
+    }
+  },
+  "limits": [
+    "In-process, local SQLite measurement; not HTTP/browser or a production load test.",
+    "Text search and matching-row sorting are not constant-time or fully indexed.",
+    "No claim of Intl.Collator, frontend adoption, or cross-page snapshot equivalence."
+  ]
+}

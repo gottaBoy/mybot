@@ -255,6 +255,12 @@ product patterns, not replacing Astryx. Apply these rules to mybot:
   Render long view feedback below the page heading, not beside its title.
   Astryx busy required dialogs use `alertdialog`; adaptive touch actions use
   dialog/buttons. Browser tests must follow both actual presentations.
+  The new server task-query contract (ADR-0011) has a bounded response and explicit
+  `unicode-natural-v1` ordering. It is not currently consumed by the frontend or
+  identical to Intl.Collator. Do not silently enable server sorting or claim
+  scale improvements until client ordering, Bootstrap and history reads are
+  migrated and independently verified. A response snapshot is not a cross-page
+  cursor or an immutable result-set lease.
 - Route and query listeners must consult the shared navigation admission guard.
   Restoring a dirty form's URL in a capture listener alone does not preserve the
   form. One navigation event must share one decision across consumers; confirmed

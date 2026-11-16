@@ -29,6 +29,7 @@ from .schemas import (
     SavedViewCreate, SavedViewDelete, SavedViewUpdate,
 )
 from .saved_views import SavedViewError
+from .task_query import EMPTY_QUERY, MAX_PAGE, TaskQueryError, parse_task_query, read_task_page
 from .store import Store
 
 
@@ -135,6 +136,10 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     async def saved_view_error(request, exc):
         return JSONResponse({"detail": exc.detail()}, status_code=exc.status)
 
+    @app.exception_handler(TaskQueryError)
+    async def task_query_error(request, exc):
+        return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
+
     @app.get("/api/auth/state")
     async def auth_state(request: Request):
         return {"authenticated": authorized(request), "required": bool(settings.access_token),
@@ -202,6 +207,24 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     async def project_create(body: ProjectCreate):
         validate_directory(settings.workspace, body.directory)
         return store.add("projects", body.model_dump(), "project.created")
+
+    @app.get("/api/tasks/query")
+    def task_query(
+        request: Request,
+        query: str = Query(EMPTY_QUERY, max_length=24000),
+        sorts: str = Query("[]", max_length=1024),
+        scope_project_id: str | None = Query(None, min_length=1, max_length=100),
+        page: int = Query(1, ge=1, le=MAX_PAGE),
+        page_size: int = Query(20, ge=20, le=100),
+    ):
+        allowed = {"query", "sorts", "scope_project_id", "page", "page_size"}
+        if any(
+            key not in allowed or len(request.query_params.getlist(key)) != 1
+            for key in request.query_params
+        ):
+            raise TaskQueryError("task_query_parameters_invalid")
+        candidate = parse_task_query(query, sorts, scope_project_id, page, page_size)
+        return read_task_page(store.path, candidate)
 
     @app.get("/api/saved-views")
     async def saved_view_list(

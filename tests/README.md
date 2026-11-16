@@ -48,3 +48,19 @@ Backend 表单、显式健康检查、撤销及刷新状态使用 MockTransport�
 完整报告新增一条完整读取/缓存流程；不将旧 14 条交互误认为已测试这条流程。
 
 结果写入 [evidence/browser.json](evidence/browser.json)，截图的“测试输出”是夹具，不是模型回答质量证明。
+
+## Server Task Query Slice
+
+`test_task_query.py` covers the bounded read-only task query contract and uses
+isolated SQLite fixtures without starting an execution Worker. It does not
+invoke a model or read the user's database.
+
+```bash
+.venv/bin/python -m pytest -q tests/test_task_query.py
+PYTHONPATH=. .venv/bin/python tests/benchmark_task_query.py --tasks 2000 --samples 3
+```
+
+`benchmark_task_query.py` always creates and removes its own synthetic temporary
+directory. Measurements are not production load tests or frontend performance
+evidence. See `docs/decisions/ADR-0011-server-task-query.md` and
+`docs/evidence/task-query-2026-11-16/README.md`.

@@ -2,6 +2,21 @@
 
 更新日期：2026-11-16（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
 
+**最新开发切片（2026-11-16）：**
+已验收累计成果已提交`f9e5484`并push到origin/main，main无冲突/未强推。
+IZ-07.1新增task_query.py与GET /api/tasks/query，复用SavedView有限定义，
+OR/AND、固定项目、最新Run分类、三层排序、20/50/100真实分页与总数；
+单次SQLite只读快照、无写锁、连接必关闭，新增两个索引。文档ADR-0011及
+docs/evidence/task-query-2026-11-16/记录合同、测量和本地验收。
+API排序标识unicode-natural-v1，不宣称等于Intl.Collator；当前前端尚未消费此接口，
+Bootstrap尚未缩减、历史详情仍全量，IZ-07.2–04保留待办。原119/110计数不变。
+原4180未再次重启，新查询路由仍404，不把代码/提交当主环境启用；保存视图保持已启用。
+本批作为独立切片提交push，实际提交/推送状态以git log与origin/main为准；
+下一步先做严格client/排序对齐/页面接入，再减少Bootstrap。
+最终本轮477项Python通过（71新增+原406），无Provider请求；2k/20k隔离测量已记录。
+第一轮关闭连接测试误跨线程检查，已在同Worker线程验证并全量重跑通过。
+794前端/build为基线提交前本轮复跑结果，新API未改前端，不能算新增界面验收。
+
 **当前执行方式（2026-11-16）：**
 用户要求“完成每一项，提交push”，已授权按工作项验证、记录、提交并推送到现有origin/main。
 先提交此前已验收的React/Astryx工作台、恢复/模型测试和保存视图，作为下一批开发基线；
