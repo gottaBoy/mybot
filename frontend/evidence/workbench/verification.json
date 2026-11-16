@@ -1,0 +1,141 @@
+{
+  "fixture": true,
+  "base": "http://127.0.0.1:5176/",
+  "checks": [
+    {
+      "name": "Token login through same-origin proxy; token not persisted",
+      "passed": true
+    },
+    {
+      "name": "Project creation persists through API, without model invocation",
+      "passed": true
+    },
+    {
+      "name": "Task survives refresh; missing model prevents starting a run",
+      "passed": true
+    },
+    {
+      "name": "Local model preset and default selection save without connection tests",
+      "passed": true
+    },
+    {
+      "name": "Model test requires confirmation; Escape restores trigger focus",
+      "passed": true
+    },
+    {
+      "name": "Explicit snapshot consent starts one fixture run with selected budget; polling reaches completion",
+      "passed": true
+    },
+    {
+      "name": "Human review persists; call usage and diagnostics are real fixture facts",
+      "passed": true
+    },
+    {
+      "name": "Artifact download and dedicated artifact view work",
+      "passed": true
+    },
+    {
+      "name": "Backend save, explicitly consented MockTransport health check and revoke",
+      "passed": true
+    },
+    {
+      "name": "Desktop work list: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Search, filters, persisted dark theme and English locale",
+      "passed": true
+    },
+    {
+      "name": "Work list 390px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Projects 390px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Run artifacts 390px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Work list 320px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Projects 320px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Run artifacts 320px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Work list 768px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Projects 768px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Run artifacts 768px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile/tablet navigation dialog, artifact switching and long localized content",
+      "passed": true
+    },
+    {
+      "name": "Mobile task dialog: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Dialog keyboard dismissal under reduced motion",
+      "passed": true
+    },
+    {
+      "name": "Cooperative pause and explicitly confirmed cancellation retain prior calls",
+      "passed": true
+    },
+    {
+      "name": "Logout clears cached project and run content",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "writes": [
+    "/api/auth",
+    "/api/projects",
+    "/api/tasks",
+    "/api/tasks/719fb6e0ba3d424ba07be272c38a7f71/preview",
+    "/api/models",
+    "/api/settings/default-model",
+    "/api/tasks/719fb6e0ba3d424ba07be272c38a7f71/preview",
+    "/api/tasks/719fb6e0ba3d424ba07be272c38a7f71/runs",
+    "/api/artifacts/9936bc560d3e4c198691ec37d11b6ff0/decision",
+    "/api/backends",
+    "/api/backends/fc8c72b598bd40238b98db6f2c398f80/check",
+    "/api/backends/fc8c72b598bd40238b98db6f2c398f80/revoke",
+    "/api/tasks",
+    "/api/tasks/18dfff12ddb74d7ebb672c566697374c/preview",
+    "/api/tasks/18dfff12ddb74d7ebb672c566697374c/runs",
+    "/api/runs/56fa01e852b14538892f5cc1b9dc3cd1/pause",
+    "/api/runs/56fa01e852b14538892f5cc1b9dc3cd1/cancel",
+    "/api/logout"
+  ],
+  "screenshots": [
+    "run-desktop-light.png",
+    "work-desktop-light.png",
+    "work-desktop-dark.png",
+    "run-390-dark.png",
+    "run-320-dark.png",
+    "run-768-dark.png",
+    "task-mobile-dark.png"
+  ],
+  "initialScriptResources": [
+    "http://127.0.0.1:5176/assets/app-C30IOwFH.js",
+    "http://127.0.0.1:5176/assets/react-vendor-BJeFkKaq.js",
+    "http://127.0.0.1:5176/assets/playground-NKR9xina.js"
+  ]
+}

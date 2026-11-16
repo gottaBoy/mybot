@@ -1,4 +1,5 @@
 """Disposable browser test service. Never imported by the production application."""
+import asyncio
 import sys
 from pathlib import Path
 
@@ -18,6 +19,8 @@ class BrowserProvider(FakeProvider):
         self.review_failed = False
 
     async def complete(self, model, messages, max_tokens):
+        if "pause-cancel-fixture" in messages[-1]["content"]:
+            await asyncio.sleep(0.8)
         if ("resource-retry-fixture" in messages[-1]["content"]
                 and "以下是其他 Agent 的分析" in messages[-1]["content"] and not self.review_failed):
             self.review_failed = True

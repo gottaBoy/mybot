@@ -1,0 +1,226 @@
+{
+  "synthetic": true,
+  "base": "http://127.0.0.1:5176/",
+  "backendMutation": false,
+  "scenarioFilter": null,
+  "checks": [
+    {
+      "name": "Back cancel preserves the original entry and draft; discard reaches the real query target and Forward returns to its unchanged successor",
+      "passed": true
+    },
+    {
+      "name": "Consecutive Back and multi-step pop retain all requested steps behind one dialog without rewriting the traversed entries",
+      "passed": true
+    },
+    {
+      "name": "Forward cancel and consecutive Forward preserve direction, history identity and cumulative distance",
+      "passed": true
+    },
+    {
+      "name": "A second native Back queued during pop dispatch preserves both steps and settles at the real target",
+      "passed": true
+    },
+    {
+      "name": "Reload retains managed entry identity and range, so subsequent guarded traversal reaches its existing targets without rebuilding history",
+      "passed": true
+    },
+    {
+      "name": "An ordinary form link is admitted before push: Keep leaves URL/history untouched and Discard performs exactly one real navigation",
+      "passed": true
+    },
+    {
+      "name": "Busy navigation is retained: rejected saves prompt after settling; successful saves finish the original queued traversal without resubmission",
+      "passed": true
+    },
+    {
+      "name": "401 cleanup wins over busy/dirty protection, clears private projections and never replays the pending destination",
+      "passed": true
+    },
+    {
+      "name": "Unmanaged history is explicitly fail-closed without forged indices or rewritten entries; beforeunload requests native protection only",
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    "back-discard-prompt.png",
+    "back-forward-query-restored.png",
+    "consecutive-multistep-restored.png",
+    "forward-confirmed-target.png",
+    "interleaved-native-pop-target.png",
+    "managed-entry-reload-traversal.png",
+    "busy-success-retained-intent.png",
+    "authorization-clears-pending-navigation.png",
+    "unmanaged-entry-fail-closed.png"
+  ],
+  "requests": [
+    {
+      "scenario": "back-query",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "back-query",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "consecutive-pop",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "consecutive-pop",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "forward",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "forward",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "rapid-native-pop",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "rapid-native-pop",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "managed-reload",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "managed-reload",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "managed-reload",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "managed-reload",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "ordinary-link",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "ordinary-link",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "ordinary-link",
+      "method": "POST",
+      "path": "/api/tasks/history-task/preview"
+    },
+    {
+      "scenario": "busy-intent",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "busy-intent",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "busy-intent",
+      "method": "POST",
+      "path": "/api/projects"
+    },
+    {
+      "scenario": "busy-intent",
+      "method": "POST",
+      "path": "/api/projects"
+    },
+    {
+      "scenario": "busy-intent",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "busy-intent",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "authorization-priority",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "authorization-priority",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "authorization-priority",
+      "method": "POST",
+      "path": "/api/projects"
+    },
+    {
+      "scenario": "unmanaged-boundary",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "unmanaged-boundary",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    }
+  ],
+  "errors": [],
+  "scenarios": [
+    {
+      "name": "back-query",
+      "passed": true
+    },
+    {
+      "name": "consecutive-pop",
+      "passed": true
+    },
+    {
+      "name": "forward",
+      "passed": true
+    },
+    {
+      "name": "rapid-native-pop",
+      "passed": true
+    },
+    {
+      "name": "managed-reload",
+      "passed": true
+    },
+    {
+      "name": "ordinary-link",
+      "passed": true
+    },
+    {
+      "name": "busy-intent",
+      "passed": true
+    },
+    {
+      "name": "authorization-priority",
+      "passed": true
+    },
+    {
+      "name": "unmanaged-boundary",
+      "passed": true
+    }
+  ]
+}

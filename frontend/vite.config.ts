@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import {fileURLToPath} from 'node:url'
 import {monacoAssets} from './scripts/monaco-assets'
+import {apiProxy} from './scripts/api-proxy'
 
 export default defineConfig({
   plugins: [monacoAssets(), react({
@@ -19,10 +20,7 @@ export default defineConfig({
     strictPort: false,
     cors: {origin: ['null', 'http://127.0.0.1:5173', 'http://localhost:5173']},
     proxy: {
-      '/api': {
-        target: process.env.MYBOT_BACKEND_URL ?? 'http://127.0.0.1:4180',
-        changeOrigin: true,
-      },
+      '/api': apiProxy(process.env.MYBOT_BACKEND_URL ?? 'http://127.0.0.1:4180'),
     },
   },
   preview: {
@@ -42,10 +40,9 @@ export default defineConfig({
           if (/\/node_modules\/(?:react|react-dom|scheduler)\//.test(id)) return 'react-vendor'
           if (id.includes('/node_modules/typescript/')) return 'preview-typescript'
           if (id.includes('/node_modules/recharts/')) return 'preview-charts'
-          if (id.includes('/node_modules/lucide-react/')) return 'preview-lucide'
-          if (id.includes('/node_modules/@heroicons/')) return 'preview-heroicons'
-          if (id.includes('/node_modules/@astryxdesign/theme-')) return 'preview-themes'
-          if (id.includes('/node_modules/@astryxdesign/core/')) return 'preview-astryx-core'
+          // Let Rollup separate shared product primitives from preview-only
+          // components, icons and themes. Grouping all Core exports here made
+          // the workbench eagerly download the entire Playground runtime.
           if (id.includes('/node_modules/@babel/parser/')) return 'property-parser'
         },
       },

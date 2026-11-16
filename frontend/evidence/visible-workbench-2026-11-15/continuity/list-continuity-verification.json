@@ -1,0 +1,305 @@
+{
+  "date": "2026-11-15",
+  "base": "http://127.0.0.1:5176/",
+  "synthetic": true,
+  "scope": "Task/Run list continuity with intercepted API projections. No provider or business writes.",
+  "checks": [
+    {
+      "scenario": "desktop-entries",
+      "name": "Desktop native Back restores the selected task, both scroll axes and the original Run-link focus",
+      "passed": true
+    },
+    {
+      "scenario": "desktop-entries",
+      "name": "Forward and Back save the current snapshot rather than replaying an older offset",
+      "passed": true
+    },
+    {
+      "scenario": "desktop-entries",
+      "name": "Theme and a real read-only polling refresh do not overwrite user-changed scroll or selection",
+      "passed": true
+    },
+    {
+      "scenario": "desktop-entries",
+      "name": "Each pagination history entry has its own selection and scroll, while a new page starts clean",
+      "passed": true
+    },
+    {
+      "scenario": "responsive-chinese",
+      "name": "Chinese desktop-to-390px Back restores the same ID and visible portal focus without document overflow",
+      "passed": true
+    },
+    {
+      "scenario": "removed-task",
+      "name": "Removed saved task shows unavailable and never selects another task",
+      "passed": true
+    },
+    {
+      "scenario": "moved-result",
+      "name": "Moved-out saved task shows unavailable and never selects another task",
+      "passed": true
+    },
+    {
+      "scenario": "unmanaged-entry",
+      "name": "An entry stripped of its managed identity never restores by URL similarity or guessed index",
+      "passed": true
+    },
+    {
+      "scenario": "authentication-clear",
+      "name": "A real intercepted 401 clears private list projections without restoring a cached task",
+      "passed": true
+    },
+    {
+      "scenario": "authentication-clear",
+      "name": "All API responses are intercepted reads with no provider calls or writes",
+      "passed": true
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "requests": [
+    {
+      "scenario": "desktop-entries",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "desktop-entries",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "desktop-entries",
+      "method": "GET",
+      "path": "/api/runs/run-continuity-task-18"
+    },
+    {
+      "scenario": "desktop-entries",
+      "method": "GET",
+      "path": "/api/runs/run-continuity-task-18"
+    },
+    {
+      "scenario": "desktop-entries",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "desktop-entries",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "desktop-entries",
+      "method": "GET",
+      "path": "/api/runs/run-continuity-task-55"
+    },
+    {
+      "scenario": "responsive-chinese",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "responsive-chinese",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "responsive-chinese",
+      "method": "GET",
+      "path": "/api/runs/run-continuity-task-18"
+    },
+    {
+      "scenario": "removed-task",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "removed-task",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "removed-task",
+      "method": "GET",
+      "path": "/api/runs/run-continuity-task-18"
+    },
+    {
+      "scenario": "removed-task",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "removed-task",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "moved-result",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "moved-result",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "moved-result",
+      "method": "GET",
+      "path": "/api/runs/run-continuity-task-18"
+    },
+    {
+      "scenario": "moved-result",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "moved-result",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "unmanaged-entry",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "unmanaged-entry",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "unmanaged-entry",
+      "method": "GET",
+      "path": "/api/runs/run-continuity-task-18"
+    },
+    {
+      "scenario": "authentication-clear",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "authentication-clear",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "authentication-clear",
+      "method": "GET",
+      "path": "/api/runs/run-continuity-task-18"
+    },
+    {
+      "scenario": "authentication-clear",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "authentication-clear",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    }
+  ],
+  "writes": [],
+  "unexpectedApi": [],
+  "blockedExternal": [],
+  "screenshots": [
+    "desktop-restored.png",
+    "independent-page-entry.png",
+    "chinese-mobile-restored.png",
+    "removed-task-unavailable.png",
+    "moved-task-unavailable.png",
+    "authentication-cleared.png"
+  ],
+  "observations": [
+    {
+      "scenario": "desktop-entries",
+      "saved": {
+        "id": "continuity-task-18",
+        "position": {
+          "top": 620,
+          "left": 80,
+          "topLimit": 1579,
+          "leftLimit": 201
+        },
+        "focusKey": "latest-run:continuity-task-18",
+        "href": "http://127.0.0.1:5176/#project/continuity-project?view=list&pageSize=50&page=1",
+        "stamp": {
+          "session": "1b3ca253-1dfe-477d-9b91-c42c55a5cee1",
+          "index": 0,
+          "maxIndex": 0,
+          "key": "78248407-9485-49ab-8b2e-06cdf8949dd2"
+        }
+      }
+    },
+    {
+      "scenario": "desktop-entries",
+      "first": {
+        "id": "continuity-task-18",
+        "position": {
+          "top": 480,
+          "left": 55,
+          "topLimit": 1579,
+          "leftLimit": 201
+        },
+        "focusKey": "latest-run:continuity-task-18",
+        "href": "http://127.0.0.1:5176/#project/continuity-project?view=list&pageSize=50&page=1",
+        "stamp": {
+          "session": "1b3ca253-1dfe-477d-9b91-c42c55a5cee1",
+          "index": 0,
+          "maxIndex": 0,
+          "key": "78248407-9485-49ab-8b2e-06cdf8949dd2"
+        }
+      },
+      "second": {
+        "id": "continuity-task-55",
+        "position": {
+          "top": 0,
+          "left": 25,
+          "topLimit": 0,
+          "leftLimit": 201
+        },
+        "focusKey": "latest-run:continuity-task-55",
+        "href": "http://127.0.0.1:5176/#project/continuity-project?view=list&page=2&pageSize=50&project=continuity-project",
+        "stamp": {
+          "session": "1b3ca253-1dfe-477d-9b91-c42c55a5cee1",
+          "index": 1,
+          "maxIndex": 1,
+          "key": "8c22752f-34f3-4b1e-957e-0eb666790e7a"
+        }
+      }
+    },
+    {
+      "scenario": "unmanaged-entry",
+      "controlledUnmanagedEntry": true,
+      "historyState": null
+    },
+    {
+      "scenario": "authentication-clear",
+      "originalEntry": {
+        "session": "ea9464cf-12f3-41b4-ba30-df04a7ac1cf8",
+        "index": 0,
+        "maxIndex": 0,
+        "key": "0ad4ecd0-08f5-41b2-9ccb-7545639b4b73"
+      },
+      "reauthenticationNotTested": true
+    }
+  ],
+  "limitations": [
+    "Memory-only continuity: reload does not promise selection, focus or scroll durability.",
+    "Chrome desktop and 390px responsive projection, not Safari or physical-device certification.",
+    "401 verifies private DOM cleanup; no fake reauthentication or tools-page remount is used.",
+    "Offsets may clamp when responsive geometry removes an axis or shortens its scroll range."
+  ],
+  "browser": {
+    "executable": "/usr/bin/google-chrome",
+    "version": "154.0.8037.57"
+  },
+  "summary": {
+    "checks": 10,
+    "failures": 0,
+    "pageErrors": 0,
+    "writes": 0,
+    "unexpectedApi": 0,
+    "screenshots": 6
+  }
+}

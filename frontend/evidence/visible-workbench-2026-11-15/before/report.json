@@ -1,0 +1,223 @@
+{
+  "phase": "before",
+  "base": "http://127.0.0.1:5173/",
+  "synthetic": true,
+  "checks": [
+    "desktop: default geometry and no document overflow",
+    "desktop: inspector geometry and no document overflow",
+    "tablet: default geometry and no document overflow",
+    "tablet: inspector geometry and no document overflow",
+    "mobile: default geometry and no document overflow",
+    "mobile: inspector geometry and no document overflow"
+  ],
+  "screenshots": [
+    "desktop.png",
+    "desktop-inspector.png",
+    "tablet.png",
+    "tablet-inspector.png",
+    "mobile.png",
+    "mobile-inspector.png"
+  ],
+  "geometry": [
+    {
+      "case": "desktop",
+      "label": "default",
+      "document": 1440,
+      "viewport": 1440,
+      "search": {
+        "x": 432,
+        "y": 121,
+        "width": 135.3125,
+        "height": 32
+      },
+      "query": {
+        "x": 432,
+        "y": 113,
+        "width": 992,
+        "height": 48
+      },
+      "tools": {
+        "x": 1310,
+        "y": 121,
+        "width": 114,
+        "height": 32
+      },
+      "view": {
+        "x": 1011,
+        "y": 121,
+        "width": 291,
+        "height": 32
+      },
+      "resultsToolbar": null,
+      "inspector": null
+    },
+    {
+      "case": "desktop",
+      "label": "inspector",
+      "document": 1440,
+      "viewport": 1440,
+      "search": {
+        "x": 224,
+        "y": 121,
+        "width": 340,
+        "height": 32
+      },
+      "query": {
+        "x": 224,
+        "y": 113,
+        "width": 1200,
+        "height": 48
+      },
+      "tools": {
+        "x": 1310,
+        "y": 121,
+        "width": 114,
+        "height": 32
+      },
+      "view": {
+        "x": 1011,
+        "y": 121,
+        "width": 291,
+        "height": 32
+      },
+      "resultsToolbar": null,
+      "inspector": {
+        "x": 1100,
+        "y": 162,
+        "width": 340,
+        "height": 838
+      }
+    },
+    {
+      "case": "tablet",
+      "label": "default",
+      "document": 1024,
+      "viewport": 1024,
+      "search": {
+        "x": 216,
+        "y": 121,
+        "width": 143.3125,
+        "height": 32
+      },
+      "query": {
+        "x": 216,
+        "y": 113,
+        "width": 792,
+        "height": 48
+      },
+      "tools": {
+        "x": 894,
+        "y": 121,
+        "width": 114,
+        "height": 32
+      },
+      "view": {
+        "x": 595,
+        "y": 121,
+        "width": 291,
+        "height": 32
+      },
+      "resultsToolbar": null,
+      "inspector": null
+    },
+    {
+      "case": "tablet",
+      "label": "inspector",
+      "document": 1024,
+      "viewport": 1024,
+      "search": {
+        "x": 216,
+        "y": 121,
+        "width": 143.3125,
+        "height": 32
+      },
+      "query": {
+        "x": 216,
+        "y": 113,
+        "width": 792,
+        "height": 48
+      },
+      "tools": {
+        "x": 894,
+        "y": 121,
+        "width": 114,
+        "height": 32
+      },
+      "view": {
+        "x": 595,
+        "y": 121,
+        "width": 291,
+        "height": 32
+      },
+      "resultsToolbar": null,
+      "inspector": null
+    },
+    {
+      "case": "mobile",
+      "label": "default",
+      "document": 390,
+      "viewport": 390,
+      "search": {
+        "x": 12,
+        "y": 147,
+        "width": 114.3125,
+        "height": 32
+      },
+      "query": {
+        "x": 12,
+        "y": 137,
+        "width": 366,
+        "height": 49
+      },
+      "tools": {
+        "x": 346,
+        "y": 147,
+        "width": 32,
+        "height": 32
+      },
+      "view": {
+        "x": 246,
+        "y": 80,
+        "width": 132,
+        "height": 32
+      },
+      "resultsToolbar": null,
+      "inspector": null
+    },
+    {
+      "case": "mobile",
+      "label": "inspector",
+      "document": 390,
+      "viewport": 390,
+      "search": {
+        "x": 12,
+        "y": 147,
+        "width": 114.3125,
+        "height": 32
+      },
+      "query": {
+        "x": 12,
+        "y": 137,
+        "width": 366,
+        "height": 49
+      },
+      "tools": {
+        "x": 346,
+        "y": 147,
+        "width": 32,
+        "height": 32
+      },
+      "view": {
+        "x": 246,
+        "y": 80,
+        "width": 132,
+        "height": 32
+      },
+      "resultsToolbar": null,
+      "inspector": null
+    }
+  ],
+  "errors": [],
+  "writes": [],
+  "unexpectedApi": []
+}

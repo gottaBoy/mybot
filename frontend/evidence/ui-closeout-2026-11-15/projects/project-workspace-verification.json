@@ -1,0 +1,279 @@
+{
+  "date": "2026-11-15",
+  "base": "http://127.0.0.1:5176/",
+  "scope": "Synthetic, read-only project workspace browser verification. All /api requests fulfilled locally; provider and business writes forbidden.",
+  "fixture": {
+    "projects": [
+      {
+        "id": "scope-alpha",
+        "tasks": 65
+      },
+      {
+        "id": "scope-beta",
+        "tasks": 8
+      },
+      {
+        "id": "scope-empty",
+        "tasks": 0
+      }
+    ],
+    "alphaTaskCounts": {
+      "all": 65,
+      "active": 13,
+      "attention": 25,
+      "completed": 14
+    },
+    "betaTaskCounts": {
+      "all": 8,
+      "active": 2,
+      "attention": 4,
+      "completed": 2
+    },
+    "alphaRunCounts": {
+      "all": 53,
+      "active": 13,
+      "attention": 26,
+      "completed": 14
+    },
+    "recoveredTask": "alpha-task-02",
+    "originalHistoryRetained": true
+  },
+  "contracts": {
+    "projectScope": "Route project overrides a conflicting project URL parameter.",
+    "viewChange": "Normal view controls explicitly reset page to 1; query, filter, order and pageSize remain committed. Back/Forward restores the prior page.",
+    "sort": "Task-list order is asserted against real rendered task IDs. Run history and board retain URL order without claiming identical column semantics.",
+    "network": "Only same-origin static assets continue to the frontend. Every API response is fulfilled by this script; no real backend is contacted."
+  },
+  "browser": {
+    "executable": "/usr/bin/google-chrome",
+    "version": "154.0.8037.57"
+  },
+  "checks": [
+    {
+      "name": "Fixed project route rejects a conflicting project parameter and scopes all current counts",
+      "passed": true
+    },
+    {
+      "name": "Query drafts do not change the URL or results until explicit Enter commits within project scope",
+      "passed": true
+    },
+    {
+      "name": "Status changes share the committed query and do not reinterpret recovered historical failures as task failures",
+      "passed": true
+    },
+    {
+      "name": "Column-menu sort is committed and task-list pages render the correct fixed-project rows",
+      "passed": true
+    },
+    {
+      "name": "Page size and page are URL state, with a real final page rather than an all-results claim",
+      "passed": true
+    },
+    {
+      "name": "Refresh and browser Back/Forward restore the committed project page and page size",
+      "passed": true
+    },
+    {
+      "name": "Run history view retains committed controls but counts only the current project persisted Run records",
+      "passed": true
+    },
+    {
+      "name": "View transition Back/Forward restores the prior task page rather than global results",
+      "passed": true
+    },
+    {
+      "name": "Board and task-list transitions keep the same project and query without starting work",
+      "passed": true
+    },
+    {
+      "name": "A non-default query, status and sort combination survives refresh and Back/Forward together",
+      "passed": true
+    },
+    {
+      "name": "Clearing conditions retains fixed project scope, task order and page-size preference",
+      "passed": true
+    },
+    {
+      "name": "An empty fixed project shows its own empty state, not tasks from another project",
+      "passed": true
+    },
+    {
+      "name": "A second real project has independent current task counts",
+      "passed": true
+    },
+    {
+      "name": "Mobile uses the same fixed-project scope source and restores focus from its filter dialog",
+      "passed": true
+    },
+    {
+      "name": "Mobile task detail reads the same scoped item, restores task focus, and keeps the committed URL",
+      "passed": true
+    },
+    {
+      "name": "Read-only network boundary permits only fulfilled auth/bootstrap reads and no provider or business writes",
+      "passed": true
+    }
+  ],
+  "states": [
+    {
+      "label": "initial-conflicting-project",
+      "href": "http://127.0.0.1:5176/#project/scope-alpha?view=list&project=scope-beta",
+      "params": {
+        "view": "list",
+        "project": "scope-beta"
+      },
+      "heading": "Alpha Project",
+      "count": "65 tasks"
+    },
+    {
+      "label": "sorted-page-two",
+      "href": "http://127.0.0.1:5176/#project/scope-alpha?q=Alpha+task&view=list&filter=all&project=scope-alpha&order=title%3Adescending&page=2",
+      "params": {
+        "q": "Alpha task",
+        "view": "list",
+        "filter": "all",
+        "project": "scope-alpha",
+        "order": "title:descending",
+        "page": "2"
+      },
+      "heading": "Alpha Project",
+      "count": "65 tasks"
+    },
+    {
+      "label": "fifty-per-page-last-page",
+      "href": "http://127.0.0.1:5176/#project/scope-alpha?q=Alpha+task&view=list&filter=all&project=scope-alpha&order=title%3Adescending&page=2&pageSize=50",
+      "params": {
+        "q": "Alpha task",
+        "view": "list",
+        "filter": "all",
+        "project": "scope-alpha",
+        "order": "title:descending",
+        "page": "2",
+        "pageSize": "50"
+      },
+      "heading": "Alpha Project",
+      "count": "65 tasks"
+    },
+    {
+      "label": "project-run-records",
+      "href": "http://127.0.0.1:5176/#project/scope-alpha?q=Alpha+task&view=table&filter=all&project=scope-alpha&order=title%3Adescending&page=1&pageSize=50",
+      "params": {
+        "q": "Alpha task",
+        "view": "table",
+        "filter": "all",
+        "project": "scope-alpha",
+        "order": "title:descending",
+        "page": "1",
+        "pageSize": "50"
+      },
+      "heading": "Alpha Project",
+      "count": "53 runs"
+    },
+    {
+      "label": "back-to-task-list",
+      "href": "http://127.0.0.1:5176/#project/scope-alpha?q=Alpha+task&view=list&filter=all&project=scope-alpha&order=title%3Adescending&page=1&pageSize=50",
+      "params": {
+        "q": "Alpha task",
+        "view": "list",
+        "filter": "all",
+        "project": "scope-alpha",
+        "order": "title:descending",
+        "page": "1",
+        "pageSize": "50"
+      },
+      "heading": "Alpha Project",
+      "count": "65 tasks"
+    },
+    {
+      "label": "restored-nondefault-combination",
+      "href": "http://127.0.0.1:5176/#project/scope-alpha?q=Alpha+task+0&view=list&filter=completed&project=scope-alpha&order=title%3Adescending&page=1&pageSize=50",
+      "params": {
+        "q": "Alpha task 0",
+        "view": "list",
+        "filter": "completed",
+        "project": "scope-alpha",
+        "order": "title:descending",
+        "page": "1",
+        "pageSize": "50"
+      },
+      "heading": "Alpha Project",
+      "count": "2 tasks"
+    },
+    {
+      "label": "mobile-project-scope",
+      "href": "http://127.0.0.1:5176/#project/scope-alpha?q=Alpha+task&view=list&filter=active&project=scope-alpha&page=1",
+      "params": {
+        "q": "Alpha task",
+        "view": "list",
+        "filter": "active",
+        "project": "scope-alpha",
+        "page": "1"
+      },
+      "heading": "Alpha Project",
+      "count": "13 tasks"
+    }
+  ],
+  "screenshots": [
+    "project-alpha-desktop-initial.png",
+    "project-alpha-page-two.png",
+    "project-alpha-combined-query.png",
+    "project-empty-desktop.png",
+    "project-beta-desktop.png",
+    "project-alpha-mobile.png"
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    }
+  ],
+  "writeAttempts": [],
+  "unexpectedApi": [],
+  "blockedExternal": [],
+  "pageErrors": [],
+  "failures": [],
+  "summary": {
+    "checks": 16,
+    "failures": 0,
+    "pageErrors": 0,
+    "writeAttempts": 0,
+    "unexpectedApi": 0,
+    "screenshots": 6
+  }
+}

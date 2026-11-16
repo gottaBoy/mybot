@@ -3,6 +3,18 @@
 ## Resume
 
 Read `CONTINUE.md` before making assumptions about the project. Then read the latest ADR referenced there and the document relevant to the requested work.
+For frontend work, also read `docs/ASTRYX_TEMPLATE_INTEGRATION.md` and
+`docs/UI_ITERATIONS.md`. For Zira-derived work, read `docs/ZIRA_FRONTEND_STUDY.md`
+and `docs/REA_ZIRA_LAYOUT.md`; the 625-file structural index is not runtime evidence.
+For Issues-specific work, also read `docs/REA_ZIRA_ISSUES.md` and its shell/query/results
+studies. The supplied screenshot and the inspected Zira commit are different evidence;
+do not infer Basic/ZQL, column management, live page size or saved-view support from
+the screenshot alone.
+The three delegated source studies are `docs/ZIRA_STUDY_INTERACTIONS.md`,
+`docs/ZIRA_STUDY_DATA.md` and `docs/ZIRA_STUDY_ADMIN.md`; use the relevant one for
+action behavior, data contracts or configuration/workflow changes.
+Inspect the working tree before editing; an earlier
+iteration may still be uncommitted.
 
 ## Product And Phase
 
@@ -15,7 +27,21 @@ Read `CONTINUE.md` before making assumptions about the project. Then read the la
 
 ## UI
 
-- Create an original UI. Do not copy or borrow visual style, layout, or interaction design from sibling projects under `/home/my/workspace/ainfra`.
+- Create a mybot-owned UI. Do not copy or borrow visual style, layout, or interaction
+  design from sibling projects under `/home/my/workspace/ainfra`, except for the
+  explicit reference authorization below.
+- On 2026-11-13 the user authorized studying
+  `/home/my/workspace/ainfra/zira/frontend` for frontend layout. This is a narrow
+  read-only exception: inspect shell/header/toolbar/density/theme organization and
+  adapt the principles to mybot. The user subsequently explicitly authorized
+  learning its list/search/action layout and reproducing its color scheme as an
+  optional **Zira style** alongside mybot's own styles, still using Astryx components.
+  Reconstruct that palette through the mybot/Astryx token registry, not by importing
+  Zira's component library or maintaining a second page implementation. Do not
+  modify Zira, copy its branding/assets, or assume its APIs, authorization, tests or
+  license apply to mybot. Do not inspect sibling credentials, databases or session data.
+  Record inspected commit/paths, observations, local adaptations and gaps in
+  `docs/REA_ZIRA_LAYOUT.md`.
 - `prototype/` is an unadopted early sketch, not the visual or engineering baseline.
 - The user rejected the visual quality of `design/review-v1/`. Preserve it for comparison, not as the accepted baseline.
 - `design/review-v2/` contains the current task/call/coordinator/control/plan-revision visual proposal and static checks, not an accepted final design. Read `docs/UI_ITERATIONS.md` before continuing it.
@@ -40,6 +66,17 @@ Read `CONTINUE.md` before making assumptions about the project. Then read the la
   Rebrand the product for mybot, preserve required MIT/license notices, inspect
   third-party assets and dependencies separately, and do not copy unrelated Astryx
   marketing pages or example data into product behavior.
+- The user selected 20 templates via CLI commands on 2026-11-13, covering login,
+  shell, dashboards, tables, kanban, canvas, forms, settings, documents, chat and
+  work-item detail. The local scaffolds live under `frontend/src/app/<id>/page.tsx`.
+  These are reference artifacts, not automatically adopted routes. Integrate the
+  selected patterns into a coherent product rather than shipping 20 disconnected
+  demo pages. Keep a per-template source/adoption/evidence map.
+- Template passwords, SSO provider detection, sample task priorities/due dates,
+  saved indicators and no-op actions are not business facts. Replace them with
+  verified API behavior or omit them. SSO layout adoption is not OIDC/SAML support;
+  a canvas layout is not arbitrary workflow execution; a board must not change a
+  persisted Run's status through presentation-only dragging.
 
 ## Frontend Component System
 
@@ -65,12 +102,20 @@ component policy.
 - **Radix UI** is optional and belongs to behavior primitives that Astryx does not
   provide. Do not maintain duplicate Dialog, Popover, Menu, Tabs, or Tooltip
   implementations without recording the reason.
+  This is not permission to import Zira's UI library; document any missing Astryx
+  primitive before introducing an exception, while retaining Astryx tokens/wrappers.
 - Use `pnpm exec astryx template --list --type page` and
   `pnpm exec astryx template <id>` as the source-of-truth workflow for local
   template reproduction. Keep generated references under the frontend template
   boundary, expose them through an on-demand catalog/preview, and do not import all
   templates into the product shell or claim that a generated preview is connected to
   mybot business data.
+- Use the installed, pinned CLI for the user's `npx @astryxdesign/cli template ...`
+  requests. Do not silently download a newer CLI, run `astryx init`, overwrite
+  existing adaptations or upgrade React/Astryx. CLI "missing dependency" suggestions
+  can be false positives from example strings: inspect actual imports before
+  installing anything. A duplicate template request is not permission to discard
+  local work.
 
 ### Encapsulation boundary
 
@@ -138,6 +183,160 @@ For every new shared component:
   `scripts/verify-template-catalog.mjs` for Playground changes. Preserve source and
   runtime evidence separately; do not label template import as TSX compilation.
 
+### One Codebase, Multiple Styles
+
+- The user explicitly requires switching visual styles without maintaining separate
+  page/component implementations. Use a single business component tree.
+- Keep **style ID**, **accent ID**, **light/dark mode**, **language** and **density** independent.
+  Persist only these nonsensitive UI preferences; do not store tokens, credentials,
+  project notes or model output in preference storage.
+- `frontend/src/components/ui/themes.ts` owns the product style registry and lazy
+  theme loading. `AppTheme` owns theme application; product pages consume semantic
+  tokens. The product theme must remain separate from the Theme Editor's draft.
+- Map product `--wb-*` variables to Astryx semantic colors/fonts. Do not add a new
+  per-theme stylesheet, component branch or hardcoded light/dark palette in a feature.
+  Shared layout may vary with density, not with copied page implementations.
+- Prefer published theme packages and token overrides; do not copy fonts or load
+  remote font URLs automatically. Declare fallback fonts and preserve notices.
+- Keep mybot's default style and the user-authorized Zira palette selectable.
+  A theme-specific token adapter is allowed; theme-specific business components
+  and importing Zira's React/Radix/Tailwind implementation are not.
+- Share comfortable/compact/touch defaults through the UI density context. Controls in
+  the same toolbar must follow one size profile; a feature-local override needs a
+  concrete compact-chrome or accessibility reason. Verify rendered geometry, not
+  just preference values. Do not force every control into a fixed CSS height.
+- Keep filter collapse at the filter heading and table sort/visibility within the
+  table's upper-right tools. The inspected Zira commit and the user's screenshot
+  differ; record that distinction rather than claiming an exact source match.
+- Theme loading must handle stale requests and failure without remounting forms,
+  losing current filters or resetting a running task. Switching appearance must
+  never call a model, mutate a Run or change authorization.
+- Verify at least three styles, both modes, persistence, keyboard selection,
+  narrow-screen layout and reduced motion. Compare computed colors/font/radius,
+  not merely a selected radio state. Retain user input across appearance changes.
+- Use Badge for domain status, AvatarStatusDot for explicitly named Agent state,
+  AvatarGroup/Overflow for real Run membership, Skeleton only during loading, and
+  CommandPalette groups for actual navigation. Do not invent users, online devices,
+  progress percentages or model capability from these presentation components.
+
+### Zira-Derived Product Rules
+
+The user authorized learning the complete frontend structure and the relevant
+product patterns, not replacing Astryx. Apply these rules to mybot:
+
+- Keep a stable hierarchy: global navigation/search, page context and primary
+  action, query/filter controls, result toolbar, results and optional inspector.
+  Global quick find belongs in the top bar; mobile uses the same command source.
+- Reuse project-owned PageHeader/toolbar/result-state patterns as repetition grows.
+  Do not copy a new shell or whole page for each view, theme or template.
+- Keep query drafts separate from committed queries. Shareable query/view/sort/
+  pagination state belongs in the URL, with refresh/back/forward behavior.
+  Appearance preferences and modal state are not query state.
+  The Basic query row edits text/project/status locally; Search or non-composing
+  Enter commits the entire finite candidate in one URL patch and resets page.
+  Side-scope navigation remains immediate and rebases only its changed field.
+  Admitted `traverse` restores the whole committed Basic/JQL snapshot, while
+  presentation pushes preserve pending edits. Do not infer the reason from URL
+  differences or add a competing popstate listener. Keep clear as an icon in the
+  original query row, enabled even for draft-only edits. No draft is durable or
+  part of model authorization.
+  Structured `projects/states/sorts` use strict JSON schemas, not an expanded
+  handwritten JQL grammar. Multi-values are OR within a field and AND across
+  fields; empty means all. Malformed definitions or unavailable selections must
+  block results, not silently return unfiltered data. Fixed route scope wins.
+  Keep Task-latest and Run-history denominators distinct. Task column order and
+  up-to-three sort rules are not automatically Run-table or Board sort support.
+  Preserve legacy single-value links and the documented writer precedence in
+  ADR-0009. Settings Apply must not block its own synchronous URL commit.
+  Private SavedViews capture only committed Task query/applied table settings.
+  Load copies a snapshot, not an ID-bound live query; protect dirty candidates.
+  Preserve CAS, stable IDs and unknown-write locks. Reading current resource state
+  is not an exact mutation receipt or a durable operation journal. See ADR-0010.
+  Render long view feedback below the page heading, not beside its title.
+  Astryx busy required dialogs use `alertdialog`; adaptive touch actions use
+  dialog/buttons. Browser tests must follow both actual presentations.
+- Route and query listeners must consult the shared navigation admission guard.
+  Restoring a dirty form's URL in a capture listener alone does not preserve the
+  form. One navigation event must share one decision across consumers; confirmed
+  replay must not consume approval twice. Unauthorized cleanup bypasses draft
+  protection. Use `pushWorkbenchNavigation` and the canonical
+  `mybot:navigation` event, not independent hash assignments/listeners.
+  Managed entry metadata contains only session/index/key/maxIndex. Native
+  Navigation state and classic History state are separate: preserve both original
+  stores and mirror only the owned stamp. Supported browsers use absolute native
+  entry targets; the relative History fallback is not certified for interleaved
+  traversals. Unknown/unmanaged/cross-document targets must not be guessed or
+  overwritten. See ADR-0008 and retain its explicit browser limits.
+- URL parameter support is not query-language support. The current JQL compatibility
+  whitelist is sorting only; unsupported `assignee/currentUser`, grouping and
+  expressions must fail explicitly, not silently return unfiltered data.
+  Full JQL requires a real identity/field model and proven parser/query contract.
+- List selection, row activation, inspector selection and current page are independent
+  states. "Select this page" must not claim to select an entire result set.
+- Trace every visible command and shortcut through its label/icon, handler, actual
+  API/local side effect, prerequisites, pending state, outcome and affected read
+  models. A copy-link command must not trigger another action. No-op menus,
+  disconnected page-size options, TODO lifecycles and success-only announcements
+  are not adopted capabilities.
+- List, table, board, inbox, hierarchy, overview and detail must share domain read
+  models. Historic failed attempts are not current task failures after successful
+  recovery; counts must state whether they count tasks, runs or calls.
+- Distinguish initial loading, refreshing/stale data, network failure, forbidden,
+  missing object, true empty and unsupported capability. Never turn a failed read
+  into a success-shaped empty array, fake record or zero metric.
+- Keep outcome state structured. An error string must never be rendered with a
+  success tone just because it shares a notice variable. API boundaries must reject
+  malformed/error envelopes and missing required DTOs even when HTTP is 2xx.
+- Keep server state, nonsensitive UI preferences and unsaved form drafts separate.
+  Do not introduce a state library solely because Zira uses it.
+- After a successful mutation, refresh/invalidate all affected read models. Do not
+  announce success before confirmation. Abort or discard stale reads; 401/logout
+  must clear private projections and outstanding requests.
+- Build cache keys and invalidation prefixes from one factory/contract and test the
+  impact graph. Do not swallow 401/403/Abort in reference hydration or substitute a
+  mock user/project/default state when production references are unavailable.
+  Missing identity or capability metadata must not imply owner or permission.
+- Never transfer a generic read-retry policy to model requests or mutations.
+  Provider timeouts may have unknown outcomes/costs; manual retry requires stable
+  request IDs, budget and replay consent, preserving original history.
+- Recovery first registers a server-persisted prepared candidate without execution
+  consent, then explicitly executes that exact request ID. Reconcile by GET after
+  response loss/reload; never infer a receipt only from a child Run or changed
+  source status. Unknown locks cannot be abandoned, bypassed with another ID or
+  routed through legacy controls. Applied means control applied, not model
+  success, cost settlement or successful UI refresh. Candidate replacement must
+  reconcile the new ID, and a later legal recovery needs a fresh snapshot and
+  fresh consent. Validate full ledger identity consistency even when its history
+  is truncated. See ADR-0007.
+- Forms validate locally and at the API boundary, show field/action errors, preserve
+  input on failure and block duplicate submission. Dependent field/resource changes
+  invalidate prior consent. Unsupported required metadata is an error, not a field
+  to silently omit.
+- A board move is not a Run status write. Future execution actions require a legal
+  transition, capability/permission checks, cost preview, concurrency/timeout limits,
+  idempotency and confirmed outcome. Optimistic presentation is not execution evidence.
+- Workflow edits, saved drafts, immutable published versions and running snapshots
+  are separate. Refetch/theme switches must not overwrite dirty edits; publishing/
+  reloading requires explicit scope and conflict handling.
+- Scope editors to object ID plus baseline revision/hash and draft. Validation,
+  impact analysis and consent must bind the exact saved candidate and dependencies;
+  changes invalidate them. Dirty/unknown/sample definitions must not reach dangerous
+  real writes. A 409 is not resolved by dropping the revision or auto-retrying.
+- Preserve unknown metadata/configuration round-trip or reject the edit; do not
+  silently drop it or coerce an unknown permission/subject into a known type.
+  Whole-object replacement, local draft application and immediate per-item writes
+  need distinct contracts. Configuration saved, binding applied, capability tested,
+  execution finished and notification delivered are separate facts.
+- Keep keyboard shortcuts scoped, IME-safe and inactive for unrelated text editing.
+  Reuse Astryx focus/overlay behavior. Mobile inspectors become drawers/full views;
+  only the result/canvas region may scroll horizontally, not the document.
+- Record evidence source, unit, denominator, time window and unknowns for metrics.
+  Do not borrow default-zero statistics, static recent items, fabricated actors,
+  silent fallback, unverified optimistic rollback or disabled business placeholders.
+- Zira README/comments and routes include historical/placeholder material. Track
+  structure scan, source observation, mybot implementation and tested behavior
+  separately. Do not claim all Zira functionality is audited or locally integrated.
+
 ### Decision rule
 
 - New reusable React design-system capability: **Astryx first**.
@@ -155,6 +354,10 @@ For every new shared component:
 - Record upstream repository identity, commit, inspected paths, findings, and gaps in `docs/OPEN_SOURCE_RESEARCH.md`.
 - Source presence and upstream documentation are not local integration or test evidence.
 - Keep `CONTINUE.md` current when requirements, decisions, evidence, or next steps change.
+- On each completed frontend slice, update `docs/PROGRESS_LOG.md`, the template
+  adoption map and browser evidence. Report unverified behavior and existing build
+  warnings. Do not change the 119-item ledger counts just because more templates,
+  screenshots or tests were added.
 - Documents under `docs/archive/` are superseded, not active requirements.
 
 ## Boundaries

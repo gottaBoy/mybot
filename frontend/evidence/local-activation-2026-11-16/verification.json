@@ -1,0 +1,16 @@
+{
+  "kind": "actual-local-service-read-only",
+  "date": "2026-11-16",
+  "base": "http://127.0.0.1:5173/",
+  "checks": [
+    "desktop: actual scoped directory reads successfully and save command is enabled",
+    "desktop: an unsubmitted candidate disables saving without a URL or server write",
+    "mobile: actual scoped directory reads successfully and save command is enabled",
+    "mobile: an unsubmitted candidate disables saving without a URL or server write",
+    "Actual projects/tasks/runs/models/backends remain unchanged"
+  ],
+  "writesBlocked": [],
+  "unexpectedApi": [],
+  "pageErrors": [],
+  "screenshots": "Not captured: preserve private workspace content"
+}

@@ -1,0 +1,689 @@
+{
+  "date": "2026-11-15",
+  "base": "http://127.0.0.1:5176/",
+  "synthetic": true,
+  "scope": "Basic text/project/status drafts, atomic committed navigation, traversal restoration and responsive boundaries. Every API request is fulfilled locally.",
+  "contracts": {
+    "draft": "Project, status and text are local candidates until Search or non-composing Enter.",
+    "push": "View, mode, order, page and appearance preserve unsubmitted Basic/JQL drafts.",
+    "scope": "Immediate side-scope push rebases only the field it changes.",
+    "traverse": "Native Back/Forward restores the whole committed Basic/JQL query snapshot and discards local unsubmitted candidates.",
+    "ime": "Synthetic composition/keyboard events exercise browser handlers, not a physical IME engine."
+  },
+  "browser": {
+    "executable": "/usr/bin/google-chrome",
+    "version": "154.0.8037.57"
+  },
+  "checks": [
+    {
+      "scenario": "atomic-query",
+      "name": "Project, status and text edits leave URL, results and navigation untouched",
+      "passed": true
+    },
+    {
+      "scenario": "atomic-query",
+      "name": "Search atomically commits all three candidates with one canonical push event",
+      "passed": true
+    },
+    {
+      "scenario": "atomic-query",
+      "name": "Composing Enter cannot submit; a subsequent normal Enter commits the same complete candidate",
+      "passed": true
+    },
+    {
+      "scenario": "presentation-and-traverse",
+      "name": "View and query-mode pushes preserve both Basic and JQL drafts without applying them",
+      "passed": true
+    },
+    {
+      "scenario": "presentation-and-traverse",
+      "name": "Sort and pagination pushes retain unsubmitted criteria while only changing presentation",
+      "passed": true
+    },
+    {
+      "scenario": "presentation-and-traverse",
+      "name": "Light/dark and style changes retain draft controls and do not navigate or apply a query",
+      "passed": true
+    },
+    {
+      "scenario": "presentation-and-traverse",
+      "name": "Back/Forward traversals reset all Basic and JQL candidates to the committed snapshot",
+      "passed": true
+    },
+    {
+      "scenario": "side-status-rebase",
+      "name": "Immediate side status rebases only status, preserving dirty text and project candidates",
+      "passed": true
+    },
+    {
+      "scenario": "side-project-rebase",
+      "name": "Immediate side project rebases only project, preserving dirty text and status candidates",
+      "passed": true
+    },
+    {
+      "scenario": "clear-draft-only",
+      "name": "Clear is usable for draft-only changes and explicitly clears all three local candidates",
+      "passed": true
+    },
+    {
+      "scenario": "committed-traverse",
+      "name": "Traversing between committed three-field queries restores each complete query, not a mixed candidate",
+      "passed": true
+    },
+    {
+      "scenario": "fixed-project",
+      "name": "Fixed project route wins over conflicting URL and non-editable project draft on atomic submit",
+      "passed": true
+    },
+    {
+      "scenario": "mobile-query",
+      "name": "Responsive resize retains hidden condition drafts; mobile Search atomically commits the same candidate",
+      "passed": true
+    },
+    {
+      "scenario": "mobile-query",
+      "name": "Mobile scope dialog changes only its immediate field and returns focus without applying dirty text",
+      "passed": true
+    },
+    {
+      "scenario": "mobile-query",
+      "name": "Read-only boundary has no model calls, writes, unexpected API reads, external requests or page errors",
+      "passed": true
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "requests": [
+    {
+      "scenario": "atomic-query",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "atomic-query",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "presentation-and-traverse",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "presentation-and-traverse",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "side-status-rebase",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "side-status-rebase",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "side-project-rebase",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "side-project-rebase",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "clear-draft-only",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "clear-draft-only",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "committed-traverse",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "committed-traverse",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "fixed-project",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "fixed-project",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "mobile-query",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "mobile-query",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    }
+  ],
+  "writes": [],
+  "unexpectedApi": [],
+  "blockedExternal": [],
+  "screenshots": [
+    "atomic-three-field-draft.png",
+    "atomic-query-final.png",
+    "presentation-and-traverse-final.png",
+    "side-status-rebase-final.png",
+    "side-project-rebase-final.png",
+    "clear-draft-only-final.png",
+    "committed-traverse-final.png",
+    "fixed-project-final.png",
+    "mobile-query-final.png"
+  ],
+  "observations": [
+    {
+      "scenario": "atomic-query",
+      "type": "query-row",
+      "controls": [
+        {
+          "name": "",
+          "center": 164.796875
+        },
+        {
+          "name": "Clear Search",
+          "center": 164.796875
+        },
+        {
+          "name": "Beta Drafts",
+          "center": 164.796875
+        },
+        {
+          "name": "Clear all Project",
+          "center": 164.796875
+        },
+        {
+          "name": "Active",
+          "center": 164.796875
+        },
+        {
+          "name": "Clear all Status",
+          "center": 164.796875
+        },
+        {
+          "name": "Basic",
+          "center": 164.796875
+        },
+        {
+          "name": "JQL",
+          "center": 164.796875
+        },
+        {
+          "name": "Search",
+          "center": 164.796875
+        },
+        {
+          "name": "Clear filters",
+          "center": 164.796875
+        }
+      ],
+      "viewport": 1440,
+      "document": 1440
+    },
+    {
+      "scenario": "atomic-query",
+      "type": "navigation-events",
+      "events": [
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&q=Beta+release&filter=active&project=draft-beta&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "069420b3-81b5-4beb-9de7-793b16ba3dde",
+            "index": 1,
+            "maxIndex": 1,
+            "key": "2f2e784f-f251-464c-acb4-3dad3e170143"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?q=Alpha+release&mode=basic&view=list&filter=completed&project=draft-alpha&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "069420b3-81b5-4beb-9de7-793b16ba3dde",
+            "index": 2,
+            "maxIndex": 2,
+            "key": "d39b67b0-8f50-422f-af26-8d731a88e1ce"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "presentation-and-traverse",
+      "type": "navigation-events",
+      "events": [
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=board&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "777348e3-e8c7-4a9f-8871-944cd3c1f45e",
+            "index": 1,
+            "maxIndex": 1,
+            "key": "86d3085b-9504-4a83-a085-d8f556f15a2d"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=table&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "777348e3-e8c7-4a9f-8871-944cd3c1f45e",
+            "index": 2,
+            "maxIndex": 2,
+            "key": "cccbab02-8581-41c8-ad56-f143c9b9ea38"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "777348e3-e8c7-4a9f-8871-944cd3c1f45e",
+            "index": 3,
+            "maxIndex": 3,
+            "key": "ada655a2-d6a7-4bb6-b2f8-e5156ff5f89e"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=jql&view=list&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "777348e3-e8c7-4a9f-8871-944cd3c1f45e",
+            "index": 4,
+            "maxIndex": 4,
+            "key": "cc408392-ab5c-4829-802f-608329291510"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "777348e3-e8c7-4a9f-8871-944cd3c1f45e",
+            "index": 5,
+            "maxIndex": 5,
+            "key": "00fcd7d6-f962-4518-8061-0ba3e7de941a"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=jql&view=list&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "777348e3-e8c7-4a9f-8871-944cd3c1f45e",
+            "index": 6,
+            "maxIndex": 6,
+            "key": "fa400f37-aa50-4ff6-9cf1-7aedef20fc21"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "777348e3-e8c7-4a9f-8871-944cd3c1f45e",
+            "index": 7,
+            "maxIndex": 7,
+            "key": "5e147147-e521-42e4-b5f3-7887e8284847"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&page=1&order=title%3Adescending",
+          "kind": "push",
+          "stamp": {
+            "session": "777348e3-e8c7-4a9f-8871-944cd3c1f45e",
+            "index": 8,
+            "maxIndex": 8,
+            "key": "cb1021a0-76d6-41b7-8ef7-a0b8bbe6863e"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&order=title%3Adescending&page=2",
+          "kind": "push",
+          "stamp": {
+            "session": "777348e3-e8c7-4a9f-8871-944cd3c1f45e",
+            "index": 9,
+            "maxIndex": 9,
+            "key": "f5614b3c-046a-4260-91e2-69435ef59cf1"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=jql&view=list&order=title%3Adescending&page=2",
+          "kind": "push",
+          "stamp": {
+            "session": "777348e3-e8c7-4a9f-8871-944cd3c1f45e",
+            "index": 10,
+            "maxIndex": 10,
+            "key": "c736b03c-555b-4915-bf29-5dfa41a0d36d"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&order=title%3Adescending&page=2",
+          "kind": "traverse",
+          "stamp": {
+            "session": "777348e3-e8c7-4a9f-8871-944cd3c1f45e",
+            "index": 9,
+            "maxIndex": 10,
+            "key": "f5614b3c-046a-4260-91e2-69435ef59cf1"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=jql&view=list&order=title%3Adescending&page=2",
+          "kind": "traverse",
+          "stamp": {
+            "session": "777348e3-e8c7-4a9f-8871-944cd3c1f45e",
+            "index": 10,
+            "maxIndex": 10,
+            "key": "c736b03c-555b-4915-bf29-5dfa41a0d36d"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&order=title%3Adescending&page=2",
+          "kind": "push",
+          "stamp": {
+            "session": "777348e3-e8c7-4a9f-8871-944cd3c1f45e",
+            "index": 11,
+            "maxIndex": 11,
+            "key": "2ffff8dd-f7bc-4614-83c5-dff57f0d8bd2"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "side-status-rebase",
+      "type": "side-scope-no-op",
+      "field": "filter",
+      "committed": "all",
+      "candidate": "completed",
+      "navigationEvents": 1,
+      "pendingRetained": true
+    },
+    {
+      "scenario": "side-status-rebase",
+      "type": "navigation-events",
+      "events": [
+        {
+          "href": "http://127.0.0.1:5176/#workbench?q=release&view=list&project=draft-alpha&filter=all&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "b400a438-0e62-4faa-9560-8ece0f6ba350",
+            "index": 1,
+            "maxIndex": 1,
+            "key": "bb84f298-673f-40f6-b6d7-15ef36ed6723"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?q=release&view=list&filter=active&project=draft-alpha&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "b400a438-0e62-4faa-9560-8ece0f6ba350",
+            "index": 2,
+            "maxIndex": 2,
+            "key": "82e6e61d-6c0c-4806-8d57-9f2456013a74"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?q=Beta+release+0&view=list&filter=active&project=draft-beta&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "b400a438-0e62-4faa-9560-8ece0f6ba350",
+            "index": 3,
+            "maxIndex": 3,
+            "key": "dd50f0b5-f8ff-43b8-9107-d93458cc522d"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "side-project-rebase",
+      "type": "navigation-events",
+      "events": [
+        {
+          "href": "http://127.0.0.1:5176/#workbench?q=release&view=list&project=draft-beta&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "d6e7d2a7-67b6-4f16-9c22-97e831149034",
+            "index": 1,
+            "maxIndex": 1,
+            "key": "3f699f1d-dfa0-444b-bd8f-be7ca3130af3"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?q=release+0&view=list&project=draft-beta&page=1&filter=completed",
+          "kind": "push",
+          "stamp": {
+            "session": "d6e7d2a7-67b6-4f16-9c22-97e831149034",
+            "index": 2,
+            "maxIndex": 2,
+            "key": "7509f5bf-a2f6-4243-9c64-6463e441902e"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "clear-draft-only",
+      "type": "query-row",
+      "controls": [
+        {
+          "name": "",
+          "center": 164.796875
+        },
+        {
+          "name": "Project",
+          "center": 164.796875
+        },
+        {
+          "name": "Status",
+          "center": 164.796875
+        },
+        {
+          "name": "Basic",
+          "center": 164.796875
+        },
+        {
+          "name": "JQL",
+          "center": 164.796875
+        },
+        {
+          "name": "Search",
+          "center": 164.796875
+        },
+        {
+          "name": "Clear filters",
+          "center": 164.796875
+        }
+      ],
+      "viewport": 1440,
+      "document": 1440
+    },
+    {
+      "scenario": "clear-draft-only",
+      "type": "navigation-events",
+      "events": [
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&jql=&groupBy=&group=none&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "d9d3e6f1-1d43-4ca9-8679-23ef8c72aea9",
+            "index": 1,
+            "maxIndex": 1,
+            "key": "f00c75da-31f3-4cab-8216-949235f8f9f4"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "committed-traverse",
+      "type": "navigation-events",
+      "events": [
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&q=Alpha+release&filter=active&project=draft-alpha&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "509b91be-26a9-4687-bfc4-1559bfaabd04",
+            "index": 1,
+            "maxIndex": 1,
+            "key": "6f46f348-9983-4416-bb86-0c5c4380f72f"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?q=Beta+release&mode=basic&view=list&filter=completed&project=draft-beta&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "509b91be-26a9-4687-bfc4-1559bfaabd04",
+            "index": 2,
+            "maxIndex": 2,
+            "key": "43ca47c4-357f-458d-ac29-efc48e7e2f26"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&q=Alpha+release&filter=active&project=draft-alpha&page=1",
+          "kind": "traverse",
+          "stamp": {
+            "session": "509b91be-26a9-4687-bfc4-1559bfaabd04",
+            "index": 1,
+            "maxIndex": 2,
+            "key": "6f46f348-9983-4416-bb86-0c5c4380f72f"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?q=Beta+release&mode=basic&view=list&filter=completed&project=draft-beta&page=1",
+          "kind": "traverse",
+          "stamp": {
+            "session": "509b91be-26a9-4687-bfc4-1559bfaabd04",
+            "index": 2,
+            "maxIndex": 2,
+            "key": "43ca47c4-357f-458d-ac29-efc48e7e2f26"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "fixed-project",
+      "type": "navigation-events",
+      "events": [
+        {
+          "href": "http://127.0.0.1:5176/#project/draft-alpha?view=list&project=draft-alpha&q=release&filter=completed&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "e3ec80d9-9e9d-4b93-9ece-000ed831b0e9",
+            "index": 1,
+            "maxIndex": 1,
+            "key": "12957798-d270-4cfa-84cf-9cbfc76c543a"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "mobile-query",
+      "type": "query-row",
+      "controls": [
+        {
+          "name": "",
+          "center": 162
+        },
+        {
+          "name": "Clear Search",
+          "center": 162
+        },
+        {
+          "name": "Basic",
+          "center": 162
+        },
+        {
+          "name": "Search",
+          "center": 162
+        },
+        {
+          "name": "Clear filters",
+          "center": 162
+        }
+      ],
+      "viewport": 390,
+      "document": 390
+    },
+    {
+      "scenario": "mobile-query",
+      "type": "query-row",
+      "controls": [
+        {
+          "name": "",
+          "center": 162
+        },
+        {
+          "name": "Clear Search",
+          "center": 162
+        },
+        {
+          "name": "Basic",
+          "center": 162
+        },
+        {
+          "name": "Search",
+          "center": 162
+        },
+        {
+          "name": "Clear filters",
+          "center": 162
+        }
+      ],
+      "viewport": 390,
+      "document": 390
+    },
+    {
+      "scenario": "mobile-query",
+      "type": "navigation-events",
+      "events": [
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&q=release&filter=active&project=draft-beta&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "22b8d5ae-4140-4c60-990e-0ec2dc6a20c2",
+            "index": 1,
+            "maxIndex": 1,
+            "key": "eab2d209-89a5-40e4-81f6-98464aa02dfe"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?q=release&mode=basic&view=list&filter=completed&project=draft-beta&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "22b8d5ae-4140-4c60-990e-0ec2dc6a20c2",
+            "index": 2,
+            "maxIndex": 2,
+            "key": "a6f35d15-1827-4c57-9aeb-65bc772d09e5"
+          }
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?q=Beta+release+0&mode=basic&view=list&filter=completed&project=draft-beta&page=1",
+          "kind": "push",
+          "stamp": {
+            "session": "22b8d5ae-4140-4c60-990e-0ec2dc6a20c2",
+            "index": 3,
+            "maxIndex": 3,
+            "key": "de77a618-8bcc-4f65-b15e-2afd6928b8ba"
+          }
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "checks": 15,
+    "failures": 0,
+    "pageErrors": 0,
+    "writes": 0,
+    "unexpectedApi": 0,
+    "screenshots": 9
+  }
+}

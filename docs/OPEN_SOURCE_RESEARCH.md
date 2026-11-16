@@ -516,3 +516,166 @@ SSE 是带进程 epoch 的内存 replay，不能宣称跨重启可靠补齐。
   通用 JavaScript 能力沙箱。没有把图库/字体收集当作已获
   许可的 mybot 素材，也没有把示例交互当作真实业务或模型执行。这里的 REA 是公开源码
   加浏览器运行对照，不声称使用了未提供的二进制逆向工具。
+
+## 20. Astryx 业务工作台组件复核（2026-11-13）
+
+- 来源仍为 `meta/astryx`，研究固定 commit
+  `5770e5b197cf80d5a824667c23046887cc8fa0f5`，安装包 Core/neutral/CLI
+  0.7.13。不声称这是最新上游版本；本轮未新 clone、fetch 或升级。
+- 实际阅读安装包 `dist/{Button,Dialog,TextInput,TextArea,NumberInput,Selector,
+  CheckboxInput,Badge,Markdown}/` 的类型与代表实现，及
+  `dist/i18n/{InternationalizationProvider,types}`、neutral Token、
+  `locales/zh-CN.generated.js` 的导出合同。
+- 观察：TextInput 必填使用 aria-required，不等于原生 form validation；
+  Selector 提供 adaptive 弹层；Dialog 原生模态支持 Escape/focus return；
+  Markdown 通过 components 自定义图片/链接；Theme 可覆盖 radius Token。
+  本地继续由 API schema 验证长度、路径、URL 与调用权限。
+- 采用：发布包 + 项目包装层，未复制上述组件源码。工作台布局与业务读模型由
+  mybot 自有实现；没有复制第三方演示任务、Meta 品牌或无关产品 UI。
+- REA 本轮为包实现阅读与隔离浏览器运行对照；公开网站未获得新的有效页面正文，
+  不把本地源码观察写成官网抓取证据。运行与缺口见
+  [业务复核](ASTRYX_WORKBENCH_REASSESSMENT.md) 和进度日志。
+- 原 MIT NOTICE/LICENSE 保留于 `frontend/vendor/astryx/`。
+
+后续需要独立源码副本时可执行以下方法，本轮没有再次执行：
+
+```bash
+git clone https://github.com/meta/astryx.git /tmp/mybot-upstream-astryx
+git -C /tmp/mybot-upstream-astryx checkout --detach 5770e5b197cf80d5a824667c23046887cc8fa0f5
+git -C /tmp/mybot-upstream-astryx rev-parse HEAD
+```
+
+项目实现复现使用 `frontend/` 内 `pnpm install --frozen-lockfile`、`pnpm typecheck`、
+`pnpm test`、`pnpm build`；不通过拷贝上游 node_modules 或读取任何账号凭证接入。
+
+## 21. 用户指定模板与基础组件整合（2026-11-13）
+
+- 发布源：`meta/astryx`，安装包/CLI `0.7.13`；未 fetch/clone/升级上游。固定源码研究
+  commit 仍是 `5770e5b197cf80d5a824667c23046887cc8fa0f5`，不将该 Git commit 与
+  npm 发布包的逐字节等同性混为一谈。
+- 实际执行：用户逐条给出的 20 个模板在 `frontend/src/app/<id>/page.tsx` 生成；
+  使用已安装的 `pnpm exec astryx template` 等价执行 npx 命令。重复 canvas 请求
+  不覆盖副本。具体名单和落点见 ASTRYX_TEMPLATE_INTEGRATION。
+- 已读代表路径：CLI 生成的 login-sso、kanban-board、table-filter、table-tree、
+  canvas-editor 及 settings/work-item 代表结构；Core 的 Table sort/tree、
+  RadioList、SegmentedControl、Chat、CommandPalette/Group、Avatar/StatusDot、
+  AvatarGroup/Overflow、Skeleton、ProgressBar 的类型/实现。
+- 采用：共享组件与 Token；表格/看板/层级/收件箱/文档/总览/工作图/对话投影复用
+  mybot 持久数据；不搬运示例假数据、假保存、假 SSO、优先级或截止时间。
+- `CommandPalette` 通过 `auxiliaryData.group` 实际渲染 Core 的 CommandPaletteGroup；
+  主题色板用 RadioList，而非替换一套组件库。新业务代码仍只导入项目包装层。
+- CLI 提示安装 `canvas-editor` / `Next` 是示例文本扫描造成的误报；检查实际 imports
+  后未安装这两个包。原始 CLI 副本与已采用业务适配分别保留。
+- 用户授权学习的 Zira 排版及后续明确授权的同配色单独记在 REA_ZIRA_LAYOUT；
+  不称其为已核验许可证的开源依赖，未引入其运行时、账号或整套 CSS。
+- 验证结果见 PROGRESS_LOG，本条源码存在不等于 SSO、团队身份或任意 DAG 已接通。
+
+## 22. Zira 搜索与列表链路专项复核（2026-11-14）
+
+- 身份：用户授权只读的本地 `zira/frontend`，HEAD
+  `1ce0d0510cb590f3a79ca498f7239ff0852ed0d7`。不是新引入的开源依赖，未新 clone。
+- 阅读：IssueNavigatorPage、JqlBar/JqlInput、IssueTable/Row/Columns/Cell、
+  IssueCardList、Pagination、FilterSidebar、ResultsState、Toolbar 及页头/顶栏。
+  完整路径、采用/拒绝项见 [REA_ZIRA_LAYOUT](REA_ZIRA_LAYOUT.md) 专项节。
+- 实现：显式提交的 Basic 草稿、可恢复的 `q/filter/project/order/page/pageSize`、
+  全宽查询带、结果工具栏、可折叠真实范围导航、独立任务 ID 列和紧凑单行摘要。
+  手机用同份 Astryx Dialog；没有导入 Zira 组件/CSS/领域 API。
+- 缺口：Zira 没有运行联调；只学习其可核实结构，未复用 mock/不完整操作。
+  mybot 没有因此获得完整 JQL、团队身份、已保存过滤器、订阅或批量 Agent 执行。
+  Browser 测试与源观察分别记录，不能把旧迭代截图当新体验证据。
+
+## 23. Astryx 高级组件与全局优化候选复核（2026-11-14）
+
+- 身份：仍为 `meta/astryx`；安装包固定 Core/CLI/主题 `0.7.13`，此前源码研究
+  commit 为 `5770e5b197cf80d5a824667c23046887cc8fa0f5`。本轮读安装包类型，
+  不声称包与该commit逐字节相同或这是最新版本；未clone/fetch/升级。
+- 核查安装包路径：`dist/InputGroup/InputGroup.d.ts`、
+  `dist/PowerSearch/{PowerSearch,types}.d.ts`、
+  `dist/ComplexSelector/ComplexSelector.d.ts`、`dist/Pagination/Pagination.d.ts`、
+  `dist/Table/index.d.ts` 及对应Table sort/tree类型。
+- 已确认API：InputGroup连接输入/按钮几何与ARIA；PowerSearch结构化字段/操作符/
+  token及自适应触摸呈现；ComplexSelector受控值/自定义编辑；Pagination受控页/
+  容量/计数；Table导出列配置/列宽/固定列/选择/分组/树/虚拟化等插件。
+- 采用决定：继续通过mybot项目包装与语义Token使用，先统一页面模式与状态合同，
+  不因“高级组件”再造一份业务树。PowerSearch并不是完整JQL解析器、模型工具能力、
+  批量执行授权或服务端分页；源码存在不等于已经业务接通。
+- 本轮运行证据仅覆盖现有产品小修正与全局页面检查；没有宣称上述全部高级组件已
+  集成/验收。候选顺序和缺口见 `PRODUCT_UI_AUDIT.md`，未复制组件源码或新素材。
+
+## 24. Zira Issues 截图与三链专题研究（2026-11-14）
+
+- 身份：用户授权的本地参考项目，不称为新引入的公开开源依赖；已有仓库
+  `/home/my/workspace/ainfra/zira`，本轮未clone/fetch/切分支。核对HEAD
+  `1ce0d0510cb590f3a79ca498f7239ff0852ed0d7`，所读Issues/Filters/layout路径
+  工作树无差异；没有修改Zira、读凭证/数据库或运行其应用。
+- 截图：用户指定`Pasted image (5).png`，1853×963，SHA-256
+  `3ff3cc22a009c6a55e62fbc1542b04f127d2aa6bc2240ecf1ae5dfc9b1b3bd93`。
+  图像与固定源码不是同一证据，不能把Basic/ZQL/Type/Columns或20/50文案当运行验收。
+- 路径：AppShell/TopBar/PageHeader/ContextBar、IssueNavigatorPage/JqlBar/JqlInput、
+  FilterSidebar、filters API/hooks、search API/hooks/order-by、query-keys；
+  IssueTable/Columns/Cell/Row/CardList、DetailPreview、Pagination、ResultsState、
+  sort-issues、hotkeys、table原语、index.css与Tailwind token映射。
+- 发现：可借鉴区域责任、草稿/提交、查询键、结果状态和稳定列宽。不能照搬连续URL
+  setter、固定20但容量控件未接线、全匹配选择实际仅本页、所有错误回落示例、
+  未接输入器的metadata或Save/Save as共用Create等不完整行为。
+- mybot采用：保持Astryx0.7.13单树/Token/密度，按IZ-01–08渐进实施；
+  当前已有UI改动另做综合验收，研究报告完成不等于新查询语言/保存视图/共享权限完成。
+- 完整研究、来源行号、截图/源码差异、待办与限制：
+  [总报告](REA_ZIRA_ISSUES.md)、[壳层](REA_ZIRA_ISSUES_SHELL.md)、
+  [查询](REA_ZIRA_ISSUES_QUERY.md)、[结果](REA_ZIRA_ISSUES_RESULTS.md)。
+
+## 25. 浏览器导航主参考与本地适配（2026-11-15）
+
+- 来源身份：WHATWG HTML Living Standard导航章节，以及Chrome官方Navigation API
+  文档；这是浏览器平台API研究，不是新引入的npm依赖或开源仓库clone。
+  阅读入口为`https://html.spec.whatwg.org/multipage/nav-history-apis.html#navigation-api`
+  和`https://developer.chrome.com/docs/web-platform/navigation-api`。Living Standard
+  未固定Git commit，不声称对所有浏览器版本同时生效。
+- 阅读机制：classic History state与NavigationHistoryEntry state分离，
+  entries/currentEntry/getState、updateCurrentEntry、traverseTo及committed/finished。
+  不把URL相似等同同文档/受管entry，不将用户草稿或业务payload复制进原生导航state。
+- mybot采用：`frontend/src/workbench/navigation-guard.ts`在支持时仅同步自有stamp，
+  匹配session/index/key及sameDocument，按浏览器native key绝对遍历；
+  两Promise拒绝去重并失败关闭。无支持时保留相对History fallback。
+- 实测不是文档推断：生产插队Back先失败，修复后9个生产场景/20项导航单测通过；
+  完整报告见`frontend/evidence/ui-closeout-2026-11-15/navigation/`和ADR-0008。
+  资料存在不等于Safari/真机兼容、fallback插队压力或跨文档取消已经验证。
+- 无新包安装、源码复制、外部服务启动、账号读取或Provider调用；既有Astryx组件、
+  MIT许可/NOTICE与Zira只读授权边界均保持。
+
+## 26. Astryx多选与多排序实际采用（2026-11-15）
+
+- 来源：`meta/astryx`发布包Core固定0.7.13；既有源码研究commit仍为
+  `5770e5b197cf80d5a824667c23046887cc8fa0f5`，不声称npm与Git逐字节相同或这是最新版。
+  本轮没有clone/fetch/升级或复制上游源码，沿用既有MIT NOTICE/LICENSE。
+- 阅读安装包`dist/MultiSelector/MultiSelector.d.ts`与对应MultiSelector.js，
+  Table的useTableSortableState/useTableSortable类型与使用路径。确认受控多值、选项搜索、
+  clear、formatValue、adaptive及可搜索模式button trigger/popup combobox的实际语义。
+- 本地采用：`components/ui/MultiSelect.tsx`封装默认密度/单行计数触发器；
+  query-conditions.ts维护真实Project/状态分类，不用静态团队/assignee；
+  TaskTableSettings/AppTableControls与useAppTableRows承载列顺序和三层排序。
+- 不是类型推断即采用：9项wrapper单测、直接Astryx hook多排序/平局测试、
+  高级生产专项30项覆盖候选/键盘/隐藏排序/Apply/dirty关闭、真实表头移除和390/320px。完整产品
+  回归另见`frontend/evidence/advanced-workbench-2026-11-15/`，共634项前端单测。
+- Zira参考仍为已记录commit与REA专题，本轮不重新运行Zira、复制其控件或读取账号。
+  不采用源码TODO/假全选/无效容量等不完整行为。新增严格JSON为mybot有限合同，
+  不把MultiSelector/Table存在说成完整JQL、保存视图、权限或服务端查询能力。
+
+## 27. Astryx保存视图交互的REA复核（2026-11-16）
+
+- 身份：`meta/astryx`已安装Core0.7.13，未升级、clone/fetch或复制源码。既有Git研究
+  commit为`5770e5b197cf80d5a824667c23046887cc8fa0f5`，本轮不声称包与此commit逐字节相同，
+  也不称为最新版；沿用原MIT/NOTICE。复现使用现有pnpm安装包，不重新生成模板。
+- R：实际阅读包内`src/DropdownMenu/DropdownMenu.tsx`的adaptive解析、
+  DropdownMenuBottomSheet/MenuBottomSheetActionList，以及`src/Dialog/Dialog.tsx`
+  的purpose/dismissal/role。没有借用Zira运行时或领域接口。
+- E：required目的不允许Escape并显式使用alertdialog；手机adaptive菜单呈现为dialog内
+  button action list，桌面为menu/menuitem。真实浏览器树和截图确认了两种形态，
+  不能要求所有断点、busy状态都保持同一种role。
+- A：mybot继续封装AppActionMenu/AppDialog。测试用具名dialog/alertdialog并集等待实际提交
+  完成，手机在具名Views弹层内定位button；没有改Vendor DOM或另造一套菜单。
+  原只等dialog的延迟响应测试曾拖到15秒，按实际role修正后在真实超时前释放fixture。
+- 保存视图是mybot自己的严格v1资源/CAS/草稿/未知结果合同，不是上游模板自动提供的能力。
+  长反馈经React portal进入同一主题树内、页头下方的产品反馈区，不挤压手机标题。
+  所有运行结果与主服务启用状态分开，见ADR-0010及
+  `frontend/evidence/saved-views-2026-11-16/README.md`。

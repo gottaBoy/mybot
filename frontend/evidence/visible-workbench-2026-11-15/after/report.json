@@ -1,0 +1,589 @@
+{
+  "phase": "after",
+  "base": "http://127.0.0.1:5176/",
+  "synthetic": true,
+  "checks": [
+    "desktop: default geometry and no document overflow",
+    "desktop: inspector geometry and no document overflow",
+    "desktop: draft search commits only on Enter",
+    "desktop: view switch preserves working results",
+    "tablet: default geometry and no document overflow",
+    "tablet: inspector geometry and no document overflow",
+    "tablet: draft search commits only on Enter",
+    "tablet: view switch preserves working results",
+    "mobile: default geometry and no document overflow",
+    "mobile: inspector geometry and no document overflow",
+    "mobile: draft search commits only on Enter",
+    "mobile: adaptive query-mode selector is keyboard operable and preserves drafts",
+    "mobile: view switch preserves working results",
+    "zira-dark: default geometry and no document overflow",
+    "zira-dark: inspector geometry and no document overflow",
+    "zira-dark: draft search commits only on Enter",
+    "zira-dark: view switch preserves working results",
+    "gothic-touch: default geometry and no document overflow",
+    "gothic-touch: inspector geometry and no document overflow",
+    "gothic-touch: draft search commits only on Enter",
+    "gothic-touch: view switch preserves working results",
+    "mobile-dark: default geometry and no document overflow",
+    "mobile-dark: inspector geometry and no document overflow",
+    "mobile-dark: draft search commits only on Enter",
+    "mobile-dark: adaptive query-mode selector is keyboard operable and preserves drafts",
+    "mobile-dark: view switch preserves working results"
+  ],
+  "screenshots": [
+    "desktop.png",
+    "desktop-inspector.png",
+    "desktop-board.png",
+    "tablet.png",
+    "tablet-inspector.png",
+    "tablet-board.png",
+    "mobile.png",
+    "mobile-inspector.png",
+    "mobile-board.png",
+    "zira-dark.png",
+    "zira-dark-inspector.png",
+    "zira-dark-board.png",
+    "gothic-touch.png",
+    "gothic-touch-inspector.png",
+    "gothic-touch-board.png",
+    "mobile-dark.png",
+    "mobile-dark-inspector.png",
+    "mobile-dark-board.png"
+  ],
+  "geometry": [
+    {
+      "case": "desktop",
+      "label": "default",
+      "document": 1440,
+      "viewport": 1440,
+      "search": {
+        "x": 440,
+        "y": 148.796875,
+        "width": 484.3125,
+        "height": 32
+      },
+      "query": {
+        "x": 440,
+        "y": 136.796875,
+        "width": 976,
+        "height": 56
+      },
+      "tools": {
+        "x": 1302,
+        "y": 201.796875,
+        "width": 114,
+        "height": 32
+      },
+      "view": {
+        "x": 440,
+        "y": 201.796875,
+        "width": 284,
+        "height": 32
+      },
+      "resultsToolbar": {
+        "x": 416,
+        "y": 193.796875,
+        "width": 1024,
+        "height": 49
+      },
+      "inspector": null,
+      "results": {
+        "x": 416,
+        "y": 193.796875,
+        "width": 1024,
+        "height": 806.203125
+      }
+    },
+    {
+      "case": "desktop",
+      "label": "inspector",
+      "document": 1440,
+      "viewport": 1440,
+      "search": {
+        "x": 232,
+        "y": 148.796875,
+        "width": 692.3125,
+        "height": 32
+      },
+      "query": {
+        "x": 232,
+        "y": 136.796875,
+        "width": 1184,
+        "height": 56
+      },
+      "tools": {
+        "x": 962,
+        "y": 201.796875,
+        "width": 114,
+        "height": 32
+      },
+      "view": {
+        "x": 232,
+        "y": 201.796875,
+        "width": 284,
+        "height": 32
+      },
+      "resultsToolbar": {
+        "x": 208,
+        "y": 193.796875,
+        "width": 892,
+        "height": 49
+      },
+      "inspector": {
+        "x": 1100,
+        "y": 193.796875,
+        "width": 340,
+        "height": 806.203125
+      },
+      "results": {
+        "x": 208,
+        "y": 193.796875,
+        "width": 892,
+        "height": 806.203125
+      }
+    },
+    {
+      "case": "tablet",
+      "label": "default",
+      "document": 1024,
+      "viewport": 1024,
+      "search": {
+        "x": 224,
+        "y": 148.796875,
+        "width": 284.3125,
+        "height": 32
+      },
+      "query": {
+        "x": 224,
+        "y": 136.796875,
+        "width": 776,
+        "height": 56
+      },
+      "tools": {
+        "x": 886,
+        "y": 201.796875,
+        "width": 114,
+        "height": 32
+      },
+      "view": {
+        "x": 224,
+        "y": 201.796875,
+        "width": 284,
+        "height": 32
+      },
+      "resultsToolbar": {
+        "x": 200,
+        "y": 193.796875,
+        "width": 824,
+        "height": 49
+      },
+      "inspector": null,
+      "results": {
+        "x": 200,
+        "y": 193.796875,
+        "width": 824,
+        "height": 706.203125
+      }
+    },
+    {
+      "case": "tablet",
+      "label": "inspector",
+      "document": 1024,
+      "viewport": 1024,
+      "search": {
+        "x": 224,
+        "y": 148.796875,
+        "width": 284.3125,
+        "height": 32
+      },
+      "query": {
+        "x": 224,
+        "y": 136.796875,
+        "width": 776,
+        "height": 56
+      },
+      "tools": {
+        "x": 886,
+        "y": 201.796875,
+        "width": 114,
+        "height": 32
+      },
+      "view": {
+        "x": 224,
+        "y": 201.796875,
+        "width": 284,
+        "height": 32
+      },
+      "resultsToolbar": {
+        "x": 200,
+        "y": 193.796875,
+        "width": 824,
+        "height": 49
+      },
+      "inspector": null,
+      "results": {
+        "x": 200,
+        "y": 193.796875,
+        "width": 824,
+        "height": 706.203125
+      }
+    },
+    {
+      "case": "mobile",
+      "label": "default",
+      "document": 390,
+      "viewport": 390,
+      "search": {
+        "x": 12,
+        "y": 146,
+        "width": 202,
+        "height": 32
+      },
+      "query": {
+        "x": 12,
+        "y": 136,
+        "width": 366,
+        "height": 52
+      },
+      "tools": {
+        "x": 346,
+        "y": 197,
+        "width": 32,
+        "height": 32
+      },
+      "view": {
+        "x": 12,
+        "y": 197,
+        "width": 132,
+        "height": 32
+      },
+      "resultsToolbar": {
+        "x": 0,
+        "y": 189,
+        "width": 390,
+        "height": 49
+      },
+      "inspector": null,
+      "results": {
+        "x": 0,
+        "y": 189,
+        "width": 390,
+        "height": 655
+      }
+    },
+    {
+      "case": "mobile",
+      "label": "inspector",
+      "document": 390,
+      "viewport": 390,
+      "search": {
+        "x": 12,
+        "y": 146,
+        "width": 202,
+        "height": 32
+      },
+      "query": {
+        "x": 12,
+        "y": 136,
+        "width": 366,
+        "height": 52
+      },
+      "tools": {
+        "x": 346,
+        "y": 197,
+        "width": 32,
+        "height": 32
+      },
+      "view": {
+        "x": 12,
+        "y": 197,
+        "width": 132,
+        "height": 32
+      },
+      "resultsToolbar": {
+        "x": 0,
+        "y": 189,
+        "width": 390,
+        "height": 49
+      },
+      "inspector": null,
+      "results": {
+        "x": 0,
+        "y": 189,
+        "width": 390,
+        "height": 655
+      }
+    },
+    {
+      "case": "zira-dark",
+      "label": "default",
+      "document": 1440,
+      "viewport": 1440,
+      "search": {
+        "x": 440,
+        "y": 148.796875,
+        "width": 534.703125,
+        "height": 28
+      },
+      "query": {
+        "x": 440,
+        "y": 136.796875,
+        "width": 976,
+        "height": 52
+      },
+      "tools": {
+        "x": 1283.078125,
+        "y": 197.796875,
+        "width": 132.921875,
+        "height": 28
+      },
+      "view": {
+        "x": 440,
+        "y": 197.796875,
+        "width": 215.5625,
+        "height": 28
+      },
+      "resultsToolbar": {
+        "x": 416,
+        "y": 189.796875,
+        "width": 1024,
+        "height": 45
+      },
+      "inspector": null,
+      "results": {
+        "x": 416,
+        "y": 189.796875,
+        "width": 1024,
+        "height": 810.203125
+      }
+    },
+    {
+      "case": "zira-dark",
+      "label": "inspector",
+      "document": 1440,
+      "viewport": 1440,
+      "search": {
+        "x": 232,
+        "y": 148.796875,
+        "width": 742.703125,
+        "height": 28
+      },
+      "query": {
+        "x": 232,
+        "y": 136.796875,
+        "width": 1184,
+        "height": 52
+      },
+      "tools": {
+        "x": 943.078125,
+        "y": 197.796875,
+        "width": 132.921875,
+        "height": 28
+      },
+      "view": {
+        "x": 232,
+        "y": 197.796875,
+        "width": 215.5625,
+        "height": 28
+      },
+      "resultsToolbar": {
+        "x": 208,
+        "y": 189.796875,
+        "width": 892,
+        "height": 45
+      },
+      "inspector": {
+        "x": 1100,
+        "y": 189.796875,
+        "width": 340,
+        "height": 810.203125
+      },
+      "results": {
+        "x": 208,
+        "y": 189.796875,
+        "width": 892,
+        "height": 810.203125
+      }
+    },
+    {
+      "case": "gothic-touch",
+      "label": "default",
+      "document": 1280,
+      "viewport": 1280,
+      "search": {
+        "x": 440,
+        "y": 148.796875,
+        "width": 321.953125,
+        "height": 40
+      },
+      "query": {
+        "x": 440,
+        "y": 136.796875,
+        "width": 816,
+        "height": 64
+      },
+      "tools": {
+        "x": 1116.859375,
+        "y": 209.796875,
+        "width": 139.140625,
+        "height": 40
+      },
+      "view": {
+        "x": 440,
+        "y": 209.796875,
+        "width": 270.25,
+        "height": 40
+      },
+      "resultsToolbar": {
+        "x": 416,
+        "y": 201.796875,
+        "width": 864,
+        "height": 57
+      },
+      "inspector": null,
+      "results": {
+        "x": 416,
+        "y": 201.796875,
+        "width": 864,
+        "height": 698.203125
+      }
+    },
+    {
+      "case": "gothic-touch",
+      "label": "inspector",
+      "document": 1280,
+      "viewport": 1280,
+      "search": {
+        "x": 232,
+        "y": 148.796875,
+        "width": 529.953125,
+        "height": 40
+      },
+      "query": {
+        "x": 232,
+        "y": 136.796875,
+        "width": 1024,
+        "height": 64
+      },
+      "tools": {
+        "x": 776.859375,
+        "y": 209.796875,
+        "width": 139.140625,
+        "height": 40
+      },
+      "view": {
+        "x": 232,
+        "y": 209.796875,
+        "width": 270.25,
+        "height": 40
+      },
+      "resultsToolbar": {
+        "x": 208,
+        "y": 201.796875,
+        "width": 732,
+        "height": 57
+      },
+      "inspector": {
+        "x": 940,
+        "y": 201.796875,
+        "width": 340,
+        "height": 698.203125
+      },
+      "results": {
+        "x": 208,
+        "y": 201.796875,
+        "width": 732,
+        "height": 698.203125
+      }
+    },
+    {
+      "case": "mobile-dark",
+      "label": "default",
+      "document": 360,
+      "viewport": 360,
+      "search": {
+        "x": 12,
+        "y": 146,
+        "width": 156,
+        "height": 40
+      },
+      "query": {
+        "x": 12,
+        "y": 136,
+        "width": 336,
+        "height": 60
+      },
+      "tools": {
+        "x": 308,
+        "y": 205,
+        "width": 40,
+        "height": 40
+      },
+      "view": {
+        "x": 12,
+        "y": 205,
+        "width": 138,
+        "height": 40
+      },
+      "resultsToolbar": {
+        "x": 0,
+        "y": 197,
+        "width": 360,
+        "height": 57
+      },
+      "inspector": null,
+      "results": {
+        "x": 0,
+        "y": 197,
+        "width": 360,
+        "height": 603
+      }
+    },
+    {
+      "case": "mobile-dark",
+      "label": "inspector",
+      "document": 360,
+      "viewport": 360,
+      "search": {
+        "x": 12,
+        "y": 146,
+        "width": 156,
+        "height": 40
+      },
+      "query": {
+        "x": 12,
+        "y": 136,
+        "width": 336,
+        "height": 60
+      },
+      "tools": {
+        "x": 308,
+        "y": 205,
+        "width": 40,
+        "height": 40
+      },
+      "view": {
+        "x": 12,
+        "y": 205,
+        "width": 138,
+        "height": 40
+      },
+      "resultsToolbar": {
+        "x": 0,
+        "y": 197,
+        "width": 360,
+        "height": 57
+      },
+      "inspector": null,
+      "results": {
+        "x": 0,
+        "y": 197,
+        "width": 360,
+        "height": 603
+      }
+    }
+  ],
+  "errors": [],
+  "writes": [],
+  "unexpectedApi": []
+}

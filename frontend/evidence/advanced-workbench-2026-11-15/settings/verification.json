@@ -1,0 +1,16 @@
+{
+  "checks": [
+    "Apply callback writes the managed URL exactly once before close",
+    "Keyboard reorder, max-three, title lock and dirty Cancel/Keep/Discard",
+    "Failed Apply preserves draft and restores dirty navigation guard",
+    "JQL lock preserves sort while columns remain editable",
+    "320px Chinese dark dialog has no overflow and retains focus trap",
+    "No API/external requests or page errors"
+  ],
+  "errors": [],
+  "blocked": [],
+  "screenshots": [
+    "desktop-three-sort-draft.png",
+    "mobile-dark-zh-three-sorts.png"
+  ]
+}

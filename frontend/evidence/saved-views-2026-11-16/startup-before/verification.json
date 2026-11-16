@@ -1,0 +1,95 @@
+{
+  "date": "2026-11-16",
+  "base": "http://127.0.0.1:5176/",
+  "synthetic": true,
+  "backendMutation": false,
+  "scope": "Saved-view client contract and UI with every API fulfilled locally. CRUD writes modify only this script memory.",
+  "contracts": {
+    "reads": "Directory is on demand; scoped pagination is not a full-result claim.",
+    "save": "Only committed query and applied table state; fixed editor snapshots, stable create ID, CAS revisions and no automatic write retries.",
+    "load": "A confirmed resource snapshot is copied into literal URL/table state, not dynamically bound by saved-view ID.",
+    "unknown": "GET reads current resource state, not an exact receipt for the original mutation. No durable unknown-operation journal is claimed.",
+    "browser": "Chrome desktop/mobile viewports, synthetic composition and local fixtures are not real-provider, physical-device, Safari or final visual acceptance."
+  },
+  "checks": [],
+  "screenshots": [
+    "startup-navigation-failure.png"
+  ],
+  "requests": [
+    {
+      "scenario": "startup-navigation",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "startup-navigation",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "startup-navigation",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "startup-navigation",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    }
+  ],
+  "errors": [],
+  "failures": [
+    {
+      "scenario": "startup-navigation",
+      "check": "A URL change before the first React navigation subscription initializes the actual project and query",
+      "message": "Initial query reads the current URL after subscription\n\n'' !== 'Beta'\n",
+      "stack": "AssertionError [ERR_ASSERTION]: Initial query reads the current URL after subscription\n\n'' !== 'Beta'\n\n    at poll (file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-saved-views.mjs:173:10)\n    at async file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-saved-views.mjs:502:7\n    at async check (file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-saved-views.mjs:177:3)\n    at async fixture.startupHref (file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-saved-views.mjs:501:5)\n    at async fixture (file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-saved-views.mjs:472:5)\n    at async file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-saved-views.mjs:500:3",
+      "url": null
+    }
+  ],
+  "unexpectedApi": [],
+  "blockedExternal": [],
+  "observations": [
+    {
+      "scenario": "startup-navigation",
+      "tree": "- link \"Skip to content\":\n  - /url: \"#wb-main\"\n- complementary:\n  - link \"mybot WORKSPACE\":\n    - /url: \"#workbench\"\n    - strong: mybot\n    - text: WORKSPACE\n  - strong: R&D workspace\n  - text: Local · Single user\n  - button \"New task\":\n    - text: New task\n    - status\n  - navigation \"Main navigation\":\n    - link \"Overview\":\n      - /url: \"#overview\"\n    - link \"Workbench 6\":\n      - /url: \"#workbench\"\n    - link \"Inbox 12\":\n      - /url: \"#inbox\"\n    - link \"Projects\":\n      - /url: \"#projects\"\n    - link \"Documents\":\n      - /url: \"#documents\"\n    - link \"Models & resources\":\n      - /url: \"#models\"\n    - link \"Conversation backends\":\n      - /url: \"#backends\"\n  - text: PROJECTS\n  - button \"Create project\":\n    - status\n  - link \"Alpha Project\":\n    - /url: \"#project/saved-alpha\"\n  - link \"Beta Project\":\n    - /url: \"#project/saved-beta\"\n  - button \"Preferences\":\n    - text: Preferences\n    - status\n  - link \"Component lab\":\n    - /url: \"#templates\"\n  - link \"Classic workbench\":\n    - /url: http://127.0.0.1:4180/\n  - text: Read-only research\n- banner:\n  - text: Workspace\n  - strong: Workbench\n  - button \"Quick find\":\n    - text: Quick find\n    - status\n  - status: Synced\n  - button \"切换为中文\":\n    - status\n  - button \"Dark mode\":\n    - status\n  - button \"Refresh\":\n    - status\n- main:\n  - region \"Task list workspace\":\n    - complementary:\n      - navigation \"Task scope\":\n        - heading \"Filters\" [level=2]\n        - button \"Collapse filters\" [expanded]:\n          - status\n        - heading \"Task status\" [level=3]\n        - button \"All tasks\" [pressed]:\n          - text: All tasks 24\n          - status\n        - button \"Active\":\n          - text: Active 6\n          - status\n        - button \"Needs attention\":\n          - text: Needs attention 6\n          - status\n        - button \"Completed\":\n          - text: Completed 6\n          - status\n        - heading \"Projects\" [level=3]\n        - button \"All projects\" [pressed]:\n          - text: All projects 24\n          - status\n        - button \"Alpha Project\":\n          - text: Alpha Project 12\n          - status\n        - button \"Beta Project\":\n          - text: Beta Project 12\n          - status\n    - heading \"Tasks\" [level=1]\n    - text: All projects\n    - status:\n      - strong: \"24\"\n      - text: tasks\n    - button \"Views\":\n      - text: Views\n      - status\n    - region \"List search\":\n      - text: Search\n      - searchbox \"Search\"\n      - text: Project\n      - button \"Project\"\n      - text: Status\n      - button \"Status\"\n      - radiogroup \"Query mode\":\n        - radio \"Basic\" [checked]\n        - radio \"JQL\"\n      - button \"Search\":\n        - status\n      - button \"Clear filters\" [disabled]:\n        - status\n    - region \"Workbench results\":\n      - toolbar \"Result views and table tools\":\n        - radiogroup \"Work view\":\n          - radio \"Tasks\" [checked]\n          - radio \"Board\"\n          - radio \"Runs\"\n        - button \"Columns\":\n          - text: Columns\n          - status\n      - group \"Tasks\":\n        - table \"Tasks\":\n          - rowgroup:\n            - row \"ID Task Project Execution Latest run History\":\n              - columnheader \"ID\":\n                - button \"ID\"\n              - columnheader \"Task\":\n                - button \"Task\"\n              - columnheader \"Project\"\n              - columnheader \"Execution\":\n                - button \"Execution\"\n              - columnheader \"Latest run\":\n                - button \"Latest run\"\n              - columnheader \"History\":\n                - button \"History\"\n          - rowgroup:\n            - row \"saved-a Alpha release 01 Alpha Project Not started - 0 runs\":\n              - cell \"saved-a\":\n                - code: saved-a\n              - cell \"Alpha release 01\":\n                - button \"Alpha release 01\":\n                  - text: Alpha release 01\n                  - status\n              - cell \"Alpha Project\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"saved-a Alpha release 02 Alpha Project Running Nov 15, 10:00 AM 1 runs\":\n              - cell \"saved-a\":\n                - code: saved-a\n              - cell \"Alpha release 02\":\n                - button \"Alpha release 02\":\n                  - text: Alpha release 02\n                  - status\n              - cell \"Alpha Project\"\n              - cell \"Running\"\n              - cell \"Nov 15, 10:00 AM\"\n              - cell \"1 runs\":\n                - button \"1 runs\":\n                  - text: \"1\"\n                  - status\n            - row \"saved-a Alpha release 03 Alpha Project Failed Nov 15, 10:00 AM 1 runs\":\n              - cell \"saved-a\":\n                - code: saved-a\n              - cell \"Alpha release 03\":\n                - button \"Alpha release 03\":\n                  - text: Alpha release 03\n                  - status\n              - cell \"Alpha Project\"\n              - cell \"Failed\"\n              - cell \"Nov 15, 10:00 AM\"\n              - cell \"1 runs\":\n                - button \"1 runs\":\n                  - text: \"1\"\n                  - status\n            - row \"saved-a Alpha release 04 Alpha Project Completed Nov 15, 10:00 AM 1 runs\":\n              - cell \"saved-a\":\n                - code: saved-a\n              - cell \"Alpha release 04\":\n                - button \"Alpha release 04\":\n                  - text: Alpha release 04\n                  - status\n              - cell \"Alpha Project\"\n              - cell \"Completed\"\n              - cell \"Nov 15, 10:00 AM\"\n              - cell \"1 runs\":\n                - button \"1 runs\":\n                  - text: \"1\"\n                  - status\n            - row \"saved-a Alpha release 05 Alpha Project Not started - 0 runs\":\n              - cell \"saved-a\":\n                - code: saved-a\n              - cell \"Alpha release 05\":\n                - button \"Alpha release 05\":\n                  - text: Alpha release 05\n                  - status\n              - cell \"Alpha Project\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"saved-a Alpha release 06 Alpha Project Running Nov 15, 10:00 AM 1 runs\":\n              - cell \"saved-a\":\n                - code: saved-a\n              - cell \"Alpha release 06\":\n                - button \"Alpha release 06\":\n                  - text: Alpha release 06\n                  - status\n              - cell \"Alpha Project\"\n              - cell \"Running\"\n              - cell \"Nov 15, 10:00 AM\"\n              - cell \"1 runs\":\n                - button \"1 runs\":\n                  - text: \"1\"\n                  - status\n            - row \"saved-a Alpha release 07 Alpha Project Failed Nov 15, 10:00 AM 1 runs\":\n              - cell \"saved-a\":\n                - code: saved-a\n              - cell \"Alpha release 07\":\n                - button \"Alpha release 07\":\n                  - text: Alpha release 07\n                  - status\n              - cell \"Alpha Project\"\n              - cell \"Failed\"\n              - cell \"Nov 15, 10:00 AM\"\n              - cell \"1 runs\":\n                - button \"1 runs\":\n                  - text: \"1\"\n                  - status\n            - row \"saved-a Alpha release 08 Alpha Project Completed Nov 15, 10:00 AM 1 runs\":\n              - cell \"saved-a\":\n                - code: saved-a\n              - cell \"Alpha release 08\":\n                - button \"Alpha release 08\":\n                  - text: Alpha release 08\n                  - status\n              - cell \"Alpha Project\"\n              - cell \"Completed\"\n              - cell \"Nov 15, 10:00 AM\"\n              - cell \"1 runs\":\n                - button \"1 runs\":\n                  - text: \"1\"\n                  - status\n            - row \"saved-a Alpha release 09 Alpha Project Not started - 0 runs\":\n              - cell \"saved-a\":\n                - code: saved-a\n              - cell \"Alpha release 09\":\n                - button \"Alpha release 09\":\n                  - text: Alpha release 09\n                  - status\n              - cell \"Alpha Project\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"saved-a Alpha release 10 Alpha Project Running Nov 15, 10:00 AM 1 runs\":\n              - cell \"saved-a\":\n                - code: saved-a\n              - cell \"Alpha release 10\":\n                - button \"Alpha release 10\":\n                  - text: Alpha release 10\n                  - status\n              - cell \"Alpha Project\"\n              - cell \"Running\"\n              - cell \"Nov 15, 10:00 AM\"\n              - cell \"1 runs\":\n                - button \"1 runs\":\n                  - text: \"1\"\n                  - status\n            - row \"saved-a Alpha release 11 Alpha Project Failed Nov 15, 10:00 AM 1 runs\":\n              - cell \"saved-a\":\n                - code: saved-a\n              - cell \"Alpha release 11\":\n                - button \"Alpha release 11\":\n                  - text: Alpha release 11\n                  - status\n              - cell \"Alpha Project\"\n              - cell \"Failed\"\n              - cell \"Nov 15, 10:00 AM\"\n              - cell \"1 runs\":\n                - button \"1 runs\":\n                  - text: \"1\"\n                  - status\n            - row \"saved-a Alpha release 12 Alpha Project Completed Nov 15, 10:00 AM 1 runs\":\n              - cell \"saved-a\":\n                - code: saved-a\n              - cell \"Alpha release 12\":\n                - button \"Alpha release 12\":\n                  - text: Alpha release 12\n                  - status\n              - cell \"Alpha Project\"\n              - cell \"Completed\"\n              - cell \"Nov 15, 10:00 AM\"\n              - cell \"1 runs\":\n                - button \"1 runs\":\n                  - text: \"1\"\n                  - status\n            - row \"saved-b Beta release 01 Beta Project Not started - 0 runs\":\n              - cell \"saved-b\":\n                - code: saved-b\n              - cell \"Beta release 01\":\n                - button \"Beta release 01\":\n                  - text: Beta release 01\n                  - status\n              - cell \"Beta Project\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"saved-b Beta release 02 Beta Project Running Nov 15, 10:00 AM 1 runs\":\n              - cell \"saved-b\":\n                - code: saved-b\n              - cell \"Beta release 02\":\n                - button \"Beta release 02\":\n                  - text: Beta release 02\n                  - status\n              - cell \"Beta Project\"\n              - cell \"Running\"\n              - cell \"Nov 15, 10:00 AM\"\n              - cell \"1 runs\":\n                - button \"1 runs\":\n                  - text: \"1\"\n                  - status\n            - row \"saved-b Beta release 03 Beta Project Failed Nov 15, 10:00 AM 1 runs\":\n              - cell \"saved-b\":\n                - code: saved-b\n              - cell \"Beta release 03\":\n                - button \"Beta release 03\":\n                  - text: Beta release 03\n                  - status\n              - cell \"Beta Project\"\n              - cell \"Failed\"\n              - cell \"Nov 15, 10:00 AM\"\n              - cell \"1 runs\":\n                - button \"1 runs\":\n                  - text: \"1\"\n                  - status\n            - row \"saved-b Beta release 04 Beta Project Completed Nov 15, 10:00 AM 1 runs\":\n              - cell \"saved-b\":\n                - code: saved-b\n              - cell \"Beta release 04\":\n                - button \"Beta release 04\":\n                  - text: Beta release 04\n                  - status\n              - cell \"Beta Project\"\n              - cell \"Completed\"\n              - cell \"Nov 15, 10:00 AM\"\n              - cell \"1 runs\":\n                - button \"1 runs\":\n                  - text: \"1\"\n                  - status\n            - row \"saved-b Beta release 05 Beta Project Not started - 0 runs\":\n              - cell \"saved-b\":\n                - code: saved-b\n              - cell \"Beta release 05\":\n                - button \"Beta release 05\":\n                  - text: Beta release 05\n                  - status\n              - cell \"Beta Project\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"saved-b Beta release 06 Beta Project Running Nov 15, 10:00 AM 1 runs\":\n              - cell \"saved-b\":\n                - code: saved-b\n              - cell \"Beta release 06\":\n                - button \"Beta release 06\":\n                  - text: Beta release 06\n                  - status\n              - cell \"Beta Project\"\n              - cell \"Running\"\n              - cell \"Nov 15, 10:00 AM\"\n              - cell \"1 runs\":\n                - button \"1 runs\":\n                  - text: \"1\"\n                  - status\n            - row \"saved-b Beta release 07 Beta Project Failed Nov 15, 10:00 AM 1 runs\":\n              - cell \"saved-b\":\n                - code: saved-b\n              - cell \"Beta release 07\":\n                - button \"Beta release 07\":\n                  - text: Beta release 07\n                  - status\n              - cell \"Beta Project\"\n              - cell \"Failed\"\n              - cell \"Nov 15, 10:00 AM\"\n              - cell \"1 runs\":\n                - button \"1 runs\":\n                  - text: \"1\"\n                  - status\n            - row \"saved-b Beta release 08 Beta Project Completed Nov 15, 10:00 AM 1 runs\":\n              - cell \"saved-b\":\n                - code: saved-b\n              - cell \"Beta release 08\":\n                - button \"Beta release 08\":\n                  - text: Beta release 08\n                  - status\n              - cell \"Beta Project\"\n              - cell \"Completed\"\n              - cell \"Nov 15, 10:00 AM\"\n              - cell \"1 runs\":\n                - button \"1 runs\":\n                  - text: \"1\"\n                  - status\n      - text: 1-20 / 24 Tasks per page\n      - combobox \"Tasks per page\": 20 / page\n      - button \"Previous page\" [disabled]:\n        - status\n      - status: 1 / 2\n      - button \"Next page\":\n        - status",
+      "savedNames": [
+        "Alpha active",
+        "Beta complete",
+        "Window view 03",
+        "Window view 04",
+        "Window view 05",
+        "Window view 06",
+        "Window view 07",
+        "Window view 08",
+        "Window view 09",
+        "Window view 10",
+        "Window view 11",
+        "Window view 12",
+        "Window view 13",
+        "Window view 14",
+        "Window view 15",
+        "Window view 16",
+        "Window view 17",
+        "Window view 18",
+        "Window view 19",
+        "Window view 20",
+        "Window view 21",
+        "Window view 22",
+        "Alpha project scope"
+      ]
+    }
+  ],
+  "browser": {
+    "executable": "/usr/bin/google-chrome",
+    "version": "154.0.8037.57"
+  }
+}

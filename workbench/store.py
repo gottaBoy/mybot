@@ -11,6 +11,13 @@ from pathlib import Path
 
 from .backend import BackendError
 from .recovery import fingerprint, retry_preview
+from .recovery_intent import (
+    public_recovery_intent, recovery_candidate, safe_recovery_rejection,
+)
+from .saved_views import (
+    SavedViewCreate, SavedViewError, SavedViewUpdate, public_saved_view,
+    require_identifier, require_scope, saved_view_delete_receipt,
+)
 
 
 def now() -> str:
@@ -50,6 +57,14 @@ CREATE TABLE IF NOT EXISTS models (
  kind TEXT NOT NULL DEFAULT 'chat_completions',
  created_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS model_tests (
+ request_id TEXT PRIMARY KEY, model_id TEXT NOT NULL REFERENCES models(id),
+ candidate_hash TEXT NOT NULL,
+ state TEXT NOT NULL CHECK(state IN ('running','succeeded','failed','unknown')),
+ status TEXT NOT NULL, input_tokens INTEGER, output_tokens INTEGER,
+ started_at TEXT NOT NULL, ended_at TEXT
+);
+CREATE INDEX IF NOT EXISTS model_tests_model ON model_tests(model_id);
 CREATE TABLE IF NOT EXISTS tasks (
  id TEXT PRIMARY KEY, project_id TEXT NOT NULL REFERENCES projects(id),
  title TEXT NOT NULL, goal TEXT NOT NULL, acceptance TEXT NOT NULL,
@@ -62,6 +77,19 @@ CREATE TABLE IF NOT EXISTS runs (
  source_run_id TEXT REFERENCES runs(id),
  error TEXT, started_at TEXT, ended_at TEXT, created_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS recovery_intents (
+ request_id TEXT PRIMARY KEY, source_run_id TEXT NOT NULL REFERENCES runs(id),
+ mode TEXT NOT NULL CHECK(mode IN ('retry','resume')),
+ input_hash TEXT NOT NULL, snapshot_hash TEXT NOT NULL, candidate_hash TEXT NOT NULL,
+ config TEXT NOT NULL, requires_acknowledgement INTEGER NOT NULL,
+ replay_acknowledged INTEGER NOT NULL DEFAULT 0,
+ state TEXT NOT NULL CHECK(state IN ('prepared','applying','applied','rejected','unknown','abandoned')),
+ target_run_id TEXT REFERENCES runs(id), error_code TEXT,
+ created_at TEXT NOT NULL, updated_at TEXT NOT NULL, settled_at TEXT
+);
+CREATE INDEX IF NOT EXISTS recovery_intents_source ON recovery_intents(source_run_id);
+CREATE UNIQUE INDEX IF NOT EXISTS recovery_intents_unresolved ON recovery_intents(source_run_id)
+ WHERE state IN ('prepared','applying','unknown');
 CREATE TABLE IF NOT EXISTS agents (
  id TEXT PRIMARY KEY, run_id TEXT NOT NULL REFERENCES runs(id), parent_id TEXT,
  step_key TEXT NOT NULL, role TEXT NOT NULL, title TEXT NOT NULL,
@@ -96,6 +124,21 @@ CREATE INDEX IF NOT EXISTS agents_run ON agents(run_id);
 CREATE TABLE IF NOT EXISTS workspace_settings (
  key TEXT PRIMARY KEY, value TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS saved_views (
+ id TEXT PRIMARY KEY, name TEXT,
+ scope_type TEXT NOT NULL CHECK(scope_type IN ('workspace','project')),
+ project_id TEXT REFERENCES projects(id), definition TEXT,
+ revision INTEGER NOT NULL CHECK(revision >= 1), create_hash TEXT NOT NULL,
+ created_at TEXT NOT NULL, updated_at TEXT NOT NULL,
+ deleted_at TEXT, delete_expected_revision INTEGER,
+ CHECK((scope_type='workspace' AND project_id IS NULL) OR
+       (scope_type='project' AND project_id IS NOT NULL)),
+ CHECK((deleted_at IS NULL AND name IS NOT NULL AND definition IS NOT NULL
+        AND delete_expected_revision IS NULL) OR
+       (deleted_at IS NOT NULL AND name IS NULL AND definition IS NULL
+        AND delete_expected_revision IS NOT NULL))
+);
+CREATE INDEX IF NOT EXISTS saved_views_scope ON saved_views(scope_type,project_id,updated_at);
 CREATE TABLE IF NOT EXISTS backend_connections (
  id TEXT PRIMARY KEY, name TEXT NOT NULL, kind TEXT NOT NULL,
  endpoint TEXT NOT NULL, status TEXT NOT NULL, settings TEXT NOT NULL DEFAULT '{}',
@@ -200,6 +243,143 @@ class Store:
             row = db.execute("SELECT value FROM workspace_settings WHERE key=?", (key,)).fetchone()
         return row["value"] if row else default
 
+    @staticmethod
+    def _saved_view_row(db, identifier):
+        row = db.execute("SELECT * FROM saved_views WHERE id=?", (identifier,)).fetchone()
+        if row is None:
+            raise SavedViewError("saved_view_not_found", 404)
+        return dict(row)
+
+    @staticmethod
+    def _saved_view_projects(db, scope_type, project_id, definition):
+        require_scope(scope_type, project_id, definition)
+        identifiers = set(definition["query"]["projects"])
+        if project_id is not None:
+            identifiers.add(project_id)
+        for identifier in identifiers:
+            if db.execute("SELECT 1 FROM projects WHERE id=?", (identifier,)).fetchone() is None:
+                raise SavedViewError("saved_view_project_unavailable", 422)
+
+    @staticmethod
+    def _saved_view_event(db, kind, record):
+        Store.event(db, kind, {
+            "view_id": record["id"], "scope_type": record["scope_type"],
+            "project_id": record["project_id"], "revision": record["revision"],
+        }, entity_id=record["id"], actor="user")
+
+    def create_saved_view(self, values):
+        values = SavedViewCreate.model_validate(values).model_dump()
+        submitted_hash = fingerprint(values)
+        with self.transaction() as db:
+            existing = db.execute("SELECT * FROM saved_views WHERE id=?", (values["id"],)).fetchone()
+            if existing:
+                record = dict(existing)
+                if record["deleted_at"] is not None:
+                    raise SavedViewError("saved_view_deleted", 409, record["revision"])
+                if record["create_hash"] != submitted_hash:
+                    raise SavedViewError("saved_view_id_conflict", 409, record["revision"])
+                if record["revision"] != 1:
+                    raise SavedViewError("saved_view_create_superseded", 409, record["revision"])
+                return public_saved_view(record)
+            self._saved_view_projects(
+                db, values["scope_type"], values["project_id"], values["definition"],
+            )
+            at = now()
+            db.execute(
+                "INSERT INTO saved_views(id,name,scope_type,project_id,definition,revision,"
+                "create_hash,created_at,updated_at) VALUES(?,?,?,?,?,1,?,?,?)",
+                (values["id"], values["name"], values["scope_type"], values["project_id"],
+                 dump(values["definition"]), submitted_hash, at, at),
+            )
+            record = self._saved_view_row(db, values["id"])
+            self._saved_view_event(db, "saved_view.created", record)
+            return public_saved_view(record)
+
+    def saved_view(self, identifier):
+        require_identifier(identifier)
+        with self.transaction() as db:
+            record = self._saved_view_row(db, identifier)
+            if record["deleted_at"] is not None:
+                raise SavedViewError("saved_view_not_found", 404)
+            return public_saved_view(record)
+
+    def list_saved_views(self, scope_type=None, project_id=None, offset=0, limit=100):
+        if (
+            scope_type not in {None, "workspace", "project"} or
+            (scope_type == "project" and not project_id) or
+            (scope_type != "project" and project_id is not None) or
+            type(offset) is not int or not 0 <= offset <= 9007199254740991 or
+            type(limit) is not int or not 1 <= limit <= 100
+        ):
+            raise SavedViewError("saved_view_scope_invalid", 422)
+        with self.transaction() as db:
+            if project_id is not None and db.execute(
+                "SELECT 1 FROM projects WHERE id=?", (project_id,),
+            ).fetchone() is None:
+                raise SavedViewError("saved_view_project_unavailable", 422)
+            where = "deleted_at IS NULL"
+            arguments = []
+            if scope_type is not None:
+                where += " AND scope_type=?"
+                arguments.append(scope_type)
+            if project_id is not None:
+                where += " AND project_id=?"
+                arguments.append(project_id)
+            total = db.execute(
+                f"SELECT COUNT(*) FROM saved_views WHERE {where}", arguments,
+            ).fetchone()[0]
+            rows = db.execute(
+                f"SELECT * FROM saved_views WHERE {where} ORDER BY updated_at DESC,id ASC LIMIT ? OFFSET ?",
+                [*arguments, limit, offset],
+            ).fetchall()
+            items = [public_saved_view(dict(row)) for row in rows]
+            return {
+                "items": items, "total": total, "limit": limit, "offset": offset,
+                "has_more": offset + len(items) < total,
+            }
+
+    def update_saved_view(self, identifier, values):
+        require_identifier(identifier)
+        values = SavedViewUpdate.model_validate(values).model_dump()
+        with self.transaction() as db:
+            record = self._saved_view_row(db, identifier)
+            if record["deleted_at"] is not None:
+                raise SavedViewError("saved_view_deleted", 409, record["revision"])
+            if record["revision"] != values["expected_revision"]:
+                raise SavedViewError("saved_view_revision_conflict", 409, record["revision"])
+            self._saved_view_projects(
+                db, record["scope_type"], record["project_id"], values["definition"],
+            )
+            db.execute(
+                "UPDATE saved_views SET name=?,definition=?,revision=revision+1,updated_at=? WHERE id=?",
+                (values["name"], dump(values["definition"]), now(), identifier),
+            )
+            updated = self._saved_view_row(db, identifier)
+            self._saved_view_event(db, "saved_view.updated", updated)
+            return public_saved_view(updated)
+
+    def delete_saved_view(self, identifier, expected_revision):
+        require_identifier(identifier)
+        if type(expected_revision) is not int or expected_revision < 1:
+            raise SavedViewError("saved_view_revision_invalid", 422)
+        with self.transaction() as db:
+            record = self._saved_view_row(db, identifier)
+            if record["deleted_at"] is not None:
+                if record["delete_expected_revision"] != expected_revision:
+                    raise SavedViewError("saved_view_revision_conflict", 409, record["revision"])
+                return saved_view_delete_receipt(record)
+            if record["revision"] != expected_revision:
+                raise SavedViewError("saved_view_revision_conflict", 409, record["revision"])
+            at = now()
+            db.execute(
+                "UPDATE saved_views SET name=NULL,definition=NULL,revision=revision+1,"
+                "updated_at=?,deleted_at=?,delete_expected_revision=? WHERE id=?",
+                (at, at, expected_revision, identifier),
+            )
+            deleted = self._saved_view_row(db, identifier)
+            self._saved_view_event(db, "saved_view.deleted", deleted)
+            return saved_view_delete_receipt(deleted)
+
     def set_setting(self, key: str, value: str, actor="user"):
         with self.transaction() as db:
             db.execute(
@@ -208,6 +388,91 @@ class Store:
                 (key, value),
             )
             self.event(db, "workspace.setting.updated", {"key": key}, actor=actor)
+
+    @staticmethod
+    def _model_test_summary(db, record):
+        db.execute(
+            "UPDATE models SET tested_at=?,test_status=? WHERE id=? AND ?=("
+            "SELECT request_id FROM model_tests WHERE model_id=? ORDER BY rowid DESC LIMIT 1)",
+            (record["ended_at"] or record["started_at"], record["status"], record["model_id"],
+             record["request_id"], record["model_id"]),
+        )
+
+    def claim_model_test(self, model_id: str, request_id: str) -> tuple[dict, bool, dict]:
+        with self.transaction() as db:
+            model = decode(db.execute("SELECT * FROM models WHERE id=?", (model_id,)).fetchone())
+            if model is None:
+                raise KeyError(model_id)
+            candidate_hash = fingerprint({
+                key: model[key] for key in ("kind", "endpoint", "model", "key_env")
+            })
+            existing = decode(db.execute(
+                "SELECT * FROM model_tests WHERE request_id=?", (request_id,),
+            ).fetchone())
+            if existing:
+                if existing["model_id"] != model_id or existing["candidate_hash"] != candidate_hash:
+                    raise ValueError("model_test_request_id_conflict")
+                return existing, False, model
+            db.execute(
+                "INSERT INTO model_tests(request_id,model_id,candidate_hash,state,status,started_at) "
+                "VALUES(?,?,?,'running','running',?)",
+                (request_id, model_id, candidate_hash, now()),
+            )
+            record = decode(db.execute(
+                "SELECT * FROM model_tests WHERE request_id=?", (request_id,),
+            ).fetchone())
+            self._model_test_summary(db, record)
+            self.event(db, "model.test.started", {
+                "request_id": request_id, "consent": True,
+            }, entity_id=model_id, actor="user")
+            return record, True, model
+
+    def model_test(self, model_id: str, request_id: str) -> dict:
+        with self.transaction() as db:
+            record = decode(db.execute(
+                "SELECT * FROM model_tests WHERE request_id=?", (request_id,),
+            ).fetchone())
+        if record is None:
+            raise KeyError(request_id)
+        if record["model_id"] != model_id:
+            raise ValueError("model_test_request_id_conflict")
+        return record
+
+    def latest_model_test(self, model_id: str) -> dict | None:
+        with self.transaction() as db:
+            return decode(db.execute(
+                "SELECT * FROM model_tests WHERE model_id=? ORDER BY rowid DESC LIMIT 1",
+                (model_id,),
+            ).fetchone())
+
+    def finish_model_test(
+        self, model_id: str, request_id: str, state: str, status: str,
+        input_tokens=None, output_tokens=None,
+    ) -> dict:
+        with self.transaction() as db:
+            record = decode(db.execute(
+                "SELECT * FROM model_tests WHERE request_id=?", (request_id,),
+            ).fetchone())
+            if record is None:
+                raise KeyError(request_id)
+            if record["model_id"] != model_id:
+                raise ValueError("model_test_request_id_conflict")
+            if record["state"] != "running":
+                return record
+            db.execute(
+                "UPDATE model_tests SET state=?,status=?,input_tokens=?,output_tokens=?,ended_at=? "
+                "WHERE request_id=? AND state='running'",
+                (state, status, input_tokens, output_tokens, now(), request_id),
+            )
+            record = decode(db.execute(
+                "SELECT * FROM model_tests WHERE request_id=?", (request_id,),
+            ).fetchone())
+            self._model_test_summary(db, record)
+            self.event(db, "model.tested", {
+                "request_id": request_id, "state": state, "status": status,
+                "usage_unknown": input_tokens is None or output_tokens is None,
+            }, entity_id=model_id, actor="user")
+            return record
 
     def list(self, table: str, run_id=None) -> list[dict]:
         if table not in {"projects", "models", "tasks", "runs", "agents", "artifacts", "calls",
@@ -444,80 +709,285 @@ class Store:
                 (identifier,),
             )]
 
-    def create_retry(self, identifier, request_id, config, models, snapshot_hash, acknowledge):
-        request_hash = fingerprint([identifier, snapshot_hash, config])
-        with self.transaction() as db:
-            existing = decode(db.execute("SELECT * FROM runs WHERE request_id=?", (request_id,)).fetchone())
-            if existing:
-                if existing.get("source_run_id") != identifier or existing["context"].get("retry_request_hash") != request_hash:
-                    raise ValueError("retry_request_id_conflict")
-                return existing
-            source, facts, preview = self._retry_state(db, identifier)
-            if not preview["allowed"]:
-                raise ValueError("retry_source_not_ready")
-            if preview["snapshot_hash"] != snapshot_hash:
-                raise ValueError("retry_snapshot_changed")
-            if preview["requires_acknowledgement"] and not acknowledge:
-                raise ValueError("retry_replay_confirmation_required")
-            if config["max_calls"] < preview["minimum_calls"]:
-                raise ValueError("retry_budget_insufficient")
-            active = db.execute(
-                "SELECT id FROM runs WHERE task_id=? AND id!=? "
-                "AND status NOT IN ('succeeded','failed','canceled') "
-                "AND NOT EXISTS(SELECT 1 FROM runs child WHERE child.source_run_id=runs.id)",
-                (source["task_id"], identifier),
-            ).fetchone()
-            if active:
-                raise ValueError("retry_other_run_active")
-            new_id = uid()
-            keep = set(preview["reuse_step_keys"])
-            plan = source["plan"] if "plan" in keep else []
-            context = {
-                **source["context"],
-                "models": {**source["context"]["models"], **models},
-                "retry_request_hash": request_hash,
-            }
+    @staticmethod
+    def _recovery_intent_row(db, source_id, request_id):
+        record = decode(db.execute(
+            "SELECT * FROM recovery_intents WHERE request_id=?", (request_id,),
+        ).fetchone())
+        if record is None:
+            raise KeyError(request_id)
+        if record["source_run_id"] != source_id:
+            raise ValueError("recovery_intent_request_id_conflict")
+        return record
+
+    @staticmethod
+    def _require_no_recovery_intent(db, source_id, own_request_id=None):
+        row = db.execute(
+            "SELECT request_id FROM recovery_intents WHERE source_run_id=? "
+            "AND state IN ('prepared','applying','unknown')",
+            (source_id,),
+        ).fetchone()
+        if row and row["request_id"] != own_request_id:
+            raise ValueError("recovery_intent_pending")
+
+    @staticmethod
+    def _recovery_candidate(db, source, facts, preview, mode, config):
+        return recovery_candidate(
+            source, facts, preview, mode, config,
+            lambda identifier: decode(db.execute(
+                "SELECT * FROM models WHERE id=?", (identifier,),
+            ).fetchone()),
             db.execute(
-                "INSERT INTO runs(id,task_id,request_id,status,config,context,plan,source_run_id,created_at) "
-                "VALUES(?,?,?,'queued',?,?,?,?,?)",
-                (new_id, source["task_id"], request_id, dump(config), dump(context), dump(plan), identifier, now()),
+                "SELECT 1 FROM runs WHERE source_run_id=? LIMIT 1", (source["id"],),
+            ).fetchone() is not None,
+        )
+
+    def prepare_recovery_intent(self, source_id, request_id, mode, snapshot_hash, config):
+        input_hash = fingerprint([source_id, mode, snapshot_hash, config])
+        with self.transaction() as db:
+            existing = decode(db.execute(
+                "SELECT * FROM recovery_intents WHERE request_id=?", (request_id,),
+            ).fetchone())
+            if existing:
+                if existing["source_run_id"] != source_id or existing["input_hash"] != input_hash:
+                    raise ValueError("recovery_intent_request_id_conflict")
+                return public_recovery_intent(existing)
+            self._require_no_recovery_intent(db, source_id)
+            if db.execute("SELECT 1 FROM runs WHERE request_id=?", (request_id,)).fetchone():
+                raise ValueError("recovery_intent_request_id_conflict")
+            source, facts, preview = self._retry_state(db, source_id)
+            if snapshot_hash != preview["snapshot_hash"]:
+                raise ValueError("recovery_intent_snapshot_changed")
+            resources, candidate_hash, _ = self._recovery_candidate(
+                db, source, facts, preview, mode, config,
             )
-            agents, _, artifacts = facts
-            reusable = [agent for agent in agents if agent["step_key"] in keep]
-            agent_ids = {agent["id"]: uid() for agent in reusable}
-            for agent in reusable:
-                copied_id = agent_ids[agent["id"]]
-                db.execute(
-                    "INSERT INTO agents(id,run_id,parent_id,step_key,role,title,objective,model_id,status,output,source_agent_id) "
-                    "VALUES(?,?,?,?,?,?,?,?,'succeeded',?,?)",
-                    (copied_id, new_id, agent_ids.get(agent["parent_id"]), agent["step_key"], agent["role"],
-                     agent["title"], agent["objective"], agent["model_id"], agent["output"], agent["id"]),
+            at = now()
+            db.execute(
+                "INSERT INTO recovery_intents(request_id,source_run_id,mode,input_hash,"
+                "snapshot_hash,candidate_hash,config,requires_acknowledgement,state,created_at,updated_at) "
+                "VALUES(?,?,?,?,?,?,?,?,'prepared',?,?)",
+                (request_id, source_id, mode, input_hash, snapshot_hash, candidate_hash,
+                 dump(resources), int(mode == "retry" and preview["requires_acknowledgement"]), at, at),
+            )
+            self.event(db, "recovery.intent.prepared", {
+                "request_id": request_id, "mode": mode, "candidate_hash": candidate_hash,
+                "execution_authorized": False,
+            }, source_id, actor="user")
+            return public_recovery_intent(self._recovery_intent_row(db, source_id, request_id))
+
+    def recovery_intent(self, source_id, request_id):
+        with self.transaction() as db:
+            return public_recovery_intent(self._recovery_intent_row(db, source_id, request_id))
+
+    def recovery_intents(self, source_id):
+        with self.transaction() as db:
+            if db.execute("SELECT 1 FROM runs WHERE id=?", (source_id,)).fetchone() is None:
+                raise KeyError(source_id)
+            rows = [decode(row) for row in db.execute(
+                "SELECT * FROM recovery_intents WHERE source_run_id=? ORDER BY rowid DESC LIMIT 50",
+                (source_id,),
+            )]
+            unresolved = decode(db.execute(
+                "SELECT * FROM recovery_intents WHERE source_run_id=? "
+                "AND state IN ('prepared','applying','unknown') LIMIT 1", (source_id,),
+            ).fetchone())
+            total = db.execute(
+                "SELECT COUNT(*) FROM recovery_intents WHERE source_run_id=?", (source_id,),
+            ).fetchone()[0]
+            return {
+                "latest": public_recovery_intent(rows[0]) if rows else None,
+                "unresolved": public_recovery_intent(unresolved) if unresolved else None,
+                "history": [public_recovery_intent(row) for row in rows],
+                "total": total, "history_truncated": total > len(rows),
+            }
+
+    def abandon_recovery_intent(self, source_id, request_id):
+        with self.transaction() as db:
+            record = self._recovery_intent_row(db, source_id, request_id)
+            if record["state"] == "abandoned":
+                return public_recovery_intent(record)
+            if record["state"] != "prepared":
+                raise ValueError("recovery_intent_not_prepared")
+            at = now()
+            db.execute(
+                "UPDATE recovery_intents SET state='abandoned',updated_at=?,settled_at=? "
+                "WHERE request_id=? AND state='prepared'", (at, at, request_id),
+            )
+            self.event(db, "recovery.intent.abandoned", {
+                "request_id": request_id, "execution_authorized": False,
+            }, source_id, actor="user")
+            return public_recovery_intent(self._recovery_intent_row(db, source_id, request_id))
+
+    def _claim_recovery_execution(self, source_id, request_id, acknowledge):
+        with self.transaction() as db:
+            record = self._recovery_intent_row(db, source_id, request_id)
+            if record["state"] != "prepared":
+                return record, False
+            if record["requires_acknowledgement"] and not acknowledge:
+                raise ValueError("retry_replay_confirmation_required")
+            db.execute(
+                "UPDATE recovery_intents SET state='applying',replay_acknowledged=?,updated_at=? "
+                "WHERE request_id=? AND state='prepared'", (int(acknowledge), now(), request_id),
+            )
+            self.event(db, "recovery.intent.authorized", {
+                "request_id": request_id, "mode": record["mode"], "consent": True,
+                "replay_acknowledged": acknowledge,
+            }, source_id, actor="user")
+            return self._recovery_intent_row(db, source_id, request_id), True
+
+    def _settle_recovery_intent(self, db, record, state, target_run_id=None, error_code=None):
+        at = now()
+        changed = db.execute(
+            "UPDATE recovery_intents SET state=?,target_run_id=?,error_code=?,updated_at=?,settled_at=? "
+            "WHERE request_id=? AND state='applying'",
+            (state, target_run_id, error_code, at, at, record["request_id"]),
+        )
+        settled = self._recovery_intent_row(db, record["source_run_id"], record["request_id"])
+        if changed.rowcount != 1:
+            return public_recovery_intent(settled)
+        self.event(db, f"recovery.intent.{state}", {
+            "request_id": record["request_id"], "mode": record["mode"],
+            "candidate_hash": record["candidate_hash"], "target_run_id": target_run_id,
+            "error_code": error_code, "model_execution_success": False,
+        }, record["source_run_id"], actor="user")
+        return public_recovery_intent(settled)
+
+    def _apply_recovery_intent(self, source_id, request_id, workspace):
+        with self.transaction() as db:
+            record = self._recovery_intent_row(db, source_id, request_id)
+            if record["state"] != "applying":
+                return public_recovery_intent(record)
+            db.execute("SAVEPOINT recovery_application")
+            try:
+                source, facts, preview = self._retry_state(db, source_id)
+                if record["snapshot_hash"] != preview["snapshot_hash"]:
+                    raise ValueError("recovery_intent_snapshot_changed")
+                config, candidate_hash, models = self._recovery_candidate(
+                    db, source, facts, preview, record["mode"], record["config"],
                 )
-                self.event(db, "agent.reused", {
-                    "source_run_id": identifier, "source_agent_id": agent["id"],
-                    "step_key": agent["step_key"], "new_model_call": False,
-                }, new_id, copied_id)
-            for artifact in artifacts:
-                if artifact["agent_id"] not in agent_ids:
-                    continue
-                artifact_id = uid()
-                db.execute(
-                    "INSERT INTO artifacts(id,run_id,agent_id,title,kind,content,decision,source_artifact_id,created_at) "
-                    "VALUES(?,?,?,?,?,?,?,?,?)",
-                    (artifact_id, new_id, agent_ids[artifact["agent_id"]], artifact["title"], artifact["kind"],
-                     artifact["content"], artifact["decision"], artifact["id"], now()),
+                if candidate_hash != record["candidate_hash"]:
+                    raise ValueError("recovery_intent_candidate_changed")
+                if record["mode"] == "retry":
+                    models = {
+                        identifier: {**model, "workspace": str(workspace)}
+                        if model.get("kind") == "codex_cli" else model
+                        for identifier, model in models.items()
+                    }
+                    target = self._create_retry(
+                        db, source_id, request_id, config, models, record["snapshot_hash"],
+                        bool(record["replay_acknowledged"]), own_intent_id=request_id,
+                    )
+                else:
+                    target = self._control(
+                        db, source_id, "resume", False, own_intent_id=request_id,
+                    )
+            except ValueError as error:
+                db.execute("ROLLBACK TO recovery_application")
+                db.execute("RELEASE recovery_application")
+                return self._settle_recovery_intent(
+                    db, record, "rejected", error_code=safe_recovery_rejection(error),
                 )
-                self.event(db, "artifact.reused", {
-                    "source_run_id": identifier, "source_artifact_id": artifact["id"],
-                }, new_id, artifact_id)
-            self.event(db, "run.retry.created", {
-                "source_run_id": identifier, "source_snapshot_hash": snapshot_hash,
-                "reused_steps": sorted(keep), "resources": config,
-                "new_call_budget": config["max_calls"],
-                "source_call_count": preview["source_call_count"],
-                "replay_acknowledged": acknowledge, "consent": True,
-            }, new_id, actor="user")
-        return self.get("runs", new_id)
+            db.execute("RELEASE recovery_application")
+            return self._settle_recovery_intent(db, record, "applied", target["id"])
+
+    def execute_recovery_intent(self, source_id, request_id, acknowledge, workspace):
+        record, claimed = self._claim_recovery_execution(source_id, request_id, acknowledge)
+        if not claimed:
+            return public_recovery_intent(record)
+        try:
+            return self._apply_recovery_intent(source_id, request_id, workspace)
+        except Exception:
+            with self.transaction() as db:
+                current = self._recovery_intent_row(db, source_id, request_id)
+                if current["state"] != "applying":
+                    return public_recovery_intent(current)
+                return self._settle_recovery_intent(
+                    db, current, "unknown", error_code="recovery_intent_execution_outcome_unknown",
+                )
+
+    def create_retry(self, identifier, request_id, config, models, snapshot_hash, acknowledge):
+        with self.transaction() as db:
+            return self._create_retry(
+                db, identifier, request_id, config, models, snapshot_hash, acknowledge,
+            )
+
+    def _create_retry(
+        self, db, identifier, request_id, config, models, snapshot_hash, acknowledge,
+        own_intent_id=None,
+    ):
+        request_hash = fingerprint([identifier, snapshot_hash, config])
+        existing = decode(db.execute("SELECT * FROM runs WHERE request_id=?", (request_id,)).fetchone())
+        if existing:
+            if existing.get("source_run_id") != identifier or existing["context"].get("retry_request_hash") != request_hash:
+                raise ValueError("retry_request_id_conflict")
+            return existing
+        self._require_no_recovery_intent(db, identifier, own_intent_id)
+        source, facts, preview = self._retry_state(db, identifier)
+        if not preview["allowed"]:
+            raise ValueError("retry_source_not_ready")
+        if preview["snapshot_hash"] != snapshot_hash:
+            raise ValueError("retry_snapshot_changed")
+        if preview["requires_acknowledgement"] and not acknowledge:
+            raise ValueError("retry_replay_confirmation_required")
+        if config["max_calls"] < preview["minimum_calls"]:
+            raise ValueError("retry_budget_insufficient")
+        active = db.execute(
+            "SELECT id FROM runs WHERE task_id=? AND id!=? "
+            "AND status NOT IN ('succeeded','failed','canceled') "
+            "AND NOT EXISTS(SELECT 1 FROM runs child WHERE child.source_run_id=runs.id)",
+            (source["task_id"], identifier),
+        ).fetchone()
+        if active:
+            raise ValueError("retry_other_run_active")
+        new_id = uid()
+        keep = set(preview["reuse_step_keys"])
+        plan = source["plan"] if "plan" in keep else []
+        context = {
+            **source["context"],
+            "models": {**source["context"]["models"], **models},
+            "retry_request_hash": request_hash,
+        }
+        db.execute(
+            "INSERT INTO runs(id,task_id,request_id,status,config,context,plan,source_run_id,created_at) "
+            "VALUES(?,?,?,'queued',?,?,?,?,?)",
+            (new_id, source["task_id"], request_id, dump(config), dump(context), dump(plan), identifier, now()),
+        )
+        agents, _, artifacts = facts
+        reusable = [agent for agent in agents if agent["step_key"] in keep]
+        agent_ids = {agent["id"]: uid() for agent in reusable}
+        for agent in reusable:
+            copied_id = agent_ids[agent["id"]]
+            db.execute(
+                "INSERT INTO agents(id,run_id,parent_id,step_key,role,title,objective,model_id,status,output,source_agent_id) "
+                "VALUES(?,?,?,?,?,?,?,?,'succeeded',?,?)",
+                (copied_id, new_id, agent_ids.get(agent["parent_id"]), agent["step_key"], agent["role"],
+                 agent["title"], agent["objective"], agent["model_id"], agent["output"], agent["id"]),
+            )
+            self.event(db, "agent.reused", {
+                "source_run_id": identifier, "source_agent_id": agent["id"],
+                "step_key": agent["step_key"], "new_model_call": False,
+            }, new_id, copied_id)
+        for artifact in artifacts:
+            if artifact["agent_id"] not in agent_ids:
+                continue
+            artifact_id = uid()
+            db.execute(
+                "INSERT INTO artifacts(id,run_id,agent_id,title,kind,content,decision,source_artifact_id,created_at) "
+                "VALUES(?,?,?,?,?,?,?,?,?)",
+                (artifact_id, new_id, agent_ids[artifact["agent_id"]], artifact["title"], artifact["kind"],
+                 artifact["content"], artifact["decision"], artifact["id"], now()),
+            )
+            self.event(db, "artifact.reused", {
+                "source_run_id": identifier, "source_artifact_id": artifact["id"],
+            }, new_id, artifact_id)
+        self.event(db, "run.retry.created", {
+            "source_run_id": identifier, "source_snapshot_hash": snapshot_hash,
+            "reused_steps": sorted(keep), "resources": config,
+            "new_call_budget": config["max_calls"],
+            "source_call_count": preview["source_call_count"],
+            "replay_acknowledged": acknowledge, "consent": True,
+        }, new_id, actor="user")
+        return decode(db.execute("SELECT * FROM runs WHERE id=?", (new_id,)).fetchone())
 
     def claim(self) -> dict | None:
         with self.transaction() as db:
@@ -617,46 +1087,71 @@ class Store:
 
     def control(self, identifier: str, action: str, acknowledge=False) -> dict:
         with self.transaction() as db:
-            row = db.execute("SELECT * FROM runs WHERE id=?", (identifier,)).fetchone()
-            if not row:
-                raise KeyError(identifier)
-            src = row["status"]
-            if action == "pause" and src in {"queued", "running"}:
-                dst = "paused" if src == "queued" else "pause_requested"
-            elif action == "cancel" and src in ACTIVE | {"failed"}:
-                dst = "cancel_requested" if src in {"running", "pause_requested", "cancel_requested"} else "canceled"
-            elif action == "resume" and src in {"paused", "interrupted", "failed"}:
-                if db.execute("SELECT 1 FROM runs WHERE source_run_id=? LIMIT 1", (identifier,)).fetchone():
-                    raise ValueError("retry_source_has_child")
-                if db.execute(
-                    "SELECT 1 FROM runs WHERE task_id=? AND id!=? "
-                    "AND status NOT IN ('succeeded','failed','canceled') "
-                    "AND NOT EXISTS(SELECT 1 FROM runs child WHERE child.source_run_id=runs.id)",
-                    (row["task_id"], identifier),
-                ).fetchone():
-                    raise ValueError("retry_other_run_active")
-                if src in {"interrupted", "failed"} and not acknowledge:
-                    raise ValueError("Confirm that incomplete read-only model calls may run and incur costs again")
-                if src == "failed":
-                    retries = db.execute(
-                        "SELECT COALESCE(MAX(attempt), 0) FROM calls WHERE run_id=? AND status IN ('failed','canceled','interrupted')",
-                        (identifier,),
-                    ).fetchone()[0]
-                    if retries >= 2:
-                        raise ValueError("Retry limit reached for this run; create a new run or choose another adapter")
-                dst = "queued"
-            elif (action == "cancel" and src == "canceled") or (action == "pause" and src in {"paused", "pause_requested"}):
-                return decode(db.execute("SELECT * FROM runs WHERE id=?", (identifier,)).fetchone())
-            else:
-                raise ValueError(f"Cannot {action} run in state {src}")
-            db.execute("UPDATE runs SET status=?,error=NULL,ended_at=? WHERE id=?",
-                       (dst, now() if dst == "canceled" else None, identifier))
-            self.event(db, f"control.{action}", {"from": src, "to": dst, "replay_acknowledged": acknowledge},
-                       identifier, actor="user")
-        return self.get("runs", identifier)
+            return self._control(db, identifier, action, acknowledge)
+
+    def _control(self, db, identifier: str, action: str, acknowledge=False, own_intent_id=None) -> dict:
+        row = db.execute("SELECT * FROM runs WHERE id=?", (identifier,)).fetchone()
+        if not row:
+            raise KeyError(identifier)
+        if action == "resume":
+            self._require_no_recovery_intent(db, identifier, own_intent_id)
+        src = row["status"]
+        if action == "pause" and src in {"queued", "running"}:
+            dst = "paused" if src == "queued" else "pause_requested"
+        elif action == "cancel" and src in ACTIVE | {"failed"}:
+            dst = "cancel_requested" if src in {"running", "pause_requested", "cancel_requested"} else "canceled"
+        elif action == "resume" and src in {"paused", "interrupted", "failed"}:
+            if db.execute("SELECT 1 FROM runs WHERE source_run_id=? LIMIT 1", (identifier,)).fetchone():
+                raise ValueError("retry_source_has_child")
+            if db.execute(
+                "SELECT 1 FROM runs WHERE task_id=? AND id!=? "
+                "AND status NOT IN ('succeeded','failed','canceled') "
+                "AND NOT EXISTS(SELECT 1 FROM runs child WHERE child.source_run_id=runs.id)",
+                (row["task_id"], identifier),
+            ).fetchone():
+                raise ValueError("retry_other_run_active")
+            if src in {"interrupted", "failed"} and not acknowledge:
+                raise ValueError("Confirm that incomplete read-only model calls may run and incur costs again")
+            if src == "failed":
+                retries = db.execute(
+                    "SELECT COALESCE(MAX(attempt), 0) FROM calls WHERE run_id=? AND status IN ('failed','canceled','interrupted')",
+                    (identifier,),
+                ).fetchone()[0]
+                if retries >= 2:
+                    raise ValueError("Retry limit reached for this run; create a new run or choose another adapter")
+            dst = "queued"
+        elif (action == "cancel" and src == "canceled") or (action == "pause" and src in {"paused", "pause_requested"}):
+            return decode(db.execute("SELECT * FROM runs WHERE id=?", (identifier,)).fetchone())
+        else:
+            raise ValueError(f"Cannot {action} run in state {src}")
+        db.execute("UPDATE runs SET status=?,error=NULL,ended_at=? WHERE id=?",
+                   (dst, now() if dst == "canceled" else None, identifier))
+        self.event(db, f"control.{action}", {"from": src, "to": dst, "replay_acknowledged": acknowledge},
+                   identifier, actor="user")
+        return decode(db.execute("SELECT * FROM runs WHERE id=?", (identifier,)).fetchone())
 
     def recover(self):
         with self.transaction() as db:
+            intents = db.execute("SELECT * FROM recovery_intents WHERE state='applying'").fetchall()
+            for row in intents:
+                self._settle_recovery_intent(
+                    db, decode(row), "unknown", error_code="recovery_intent_interrupted_outcome_unknown",
+                )
+            tests = db.execute("SELECT * FROM model_tests WHERE state='running'").fetchall()
+            for row in tests:
+                db.execute(
+                    "UPDATE model_tests SET state='unknown',status=?,ended_at=? WHERE request_id=?",
+                    ("model_test_interrupted_outcome_unknown", now(), row["request_id"]),
+                )
+                record = decode(db.execute(
+                    "SELECT * FROM model_tests WHERE request_id=?", (row["request_id"],),
+                ).fetchone())
+                self._model_test_summary(db, record)
+                self.event(db, "model.test.recovered", {
+                    "request_id": row["request_id"], "state": "unknown",
+                    "status": "model_test_interrupted_outcome_unknown",
+                    "usage_unknown": True, "automatic_replay": False,
+                }, entity_id=row["model_id"])
             rows = db.execute("SELECT id,status FROM runs WHERE status IN ('running','pause_requested','cancel_requested')").fetchall()
             for row in rows:
                 dst = "canceled" if row["status"] == "cancel_requested" else "interrupted"

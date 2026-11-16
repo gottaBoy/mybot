@@ -1,0 +1,73 @@
+{
+  "baseUrl": "http://127.0.0.1:5176/",
+  "checks": [
+    {
+      "name": "Theme Editor rail, Base Styles controls and numeric spacing update",
+      "result": "passed"
+    },
+    {
+      "name": "Components tab adds and removes a live custom button override",
+      "result": "passed"
+    },
+    {
+      "name": "Advanced color edit changes the iframe primary-button computed style",
+      "result": "passed",
+      "color": "rgb(201, 43, 75)"
+    },
+    {
+      "name": "Light/dark color branches remain independent",
+      "result": "passed",
+      "light": "rgb(201, 43, 75)",
+      "dark": "rgb(241, 241, 241)"
+    },
+    {
+      "name": "Cancelling preset replacement retains custom edits",
+      "result": "passed"
+    },
+    {
+      "name": "Theme export contains live token edits",
+      "result": "passed",
+      "filename": "mybot-theme.ts"
+    },
+    {
+      "name": "Confirmed preset replacement clears custom edits",
+      "result": "passed"
+    },
+    {
+      "name": "Reset remounts the current preset and restores its original values",
+      "result": "passed"
+    },
+    {
+      "name": "Desktop 1440px: no document horizontal overflow",
+      "result": "passed",
+      "viewport": 1440,
+      "root": 1440,
+      "body": 1440
+    },
+    {
+      "name": "Mobile Theme 390px: no document horizontal overflow",
+      "result": "passed",
+      "viewport": 390,
+      "root": 390,
+      "body": 390
+    },
+    {
+      "name": "Mobile Preview 390px: no document horizontal overflow",
+      "result": "passed",
+      "viewport": 390,
+      "root": 390,
+      "body": 390
+    },
+    {
+      "name": "Mobile Theme/Preview switching retains live edits",
+      "result": "passed"
+    },
+    {
+      "name": "Preview runtime error is visible and retry establishes a new working frame",
+      "result": "passed"
+    }
+  ],
+  "blockedBusinessRequests": 0,
+  "blockedExternalRequests": 0,
+  "result": "passed"
+}

@@ -1,0 +1,154 @@
+{
+  "date": "2026-11-16",
+  "base": "http://127.0.0.1:5173/",
+  "synthetic": true,
+  "backendMutation": false,
+  "scope": "Saved-view client contract and UI with every API fulfilled locally. CRUD writes modify only this script memory.",
+  "contracts": {
+    "reads": "Directory is on demand; scoped pagination is not a full-result claim.",
+    "save": "Only committed query and applied table state; fixed editor snapshots, stable create ID, CAS revisions and no automatic write retries.",
+    "load": "A confirmed resource snapshot is copied into literal URL/table state, not dynamically bound by saved-view ID.",
+    "unknown": "GET reads current resource state, not an exact receipt for the original mutation. No durable unknown-operation journal is claimed.",
+    "browser": "Chrome desktop/mobile viewports, synthetic composition and local fixtures are not real-provider, physical-device, Safari or final visual acceptance."
+  },
+  "checks": [
+    {
+      "scenario": "mobile-unknown",
+      "name": "Mobile unknown creation preserves its stable ID and fits both error and acknowledged-state feedback",
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    "saved-views-mobile-unknown-acknowledged.png",
+    "mobile-unknown-final.png"
+  ],
+  "requests": [
+    {
+      "scenario": "mobile-unknown",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "mobile-unknown",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "mobile-unknown",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "mobile-unknown",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "mobile-unknown",
+      "method": "POST",
+      "path": "/api/saved-views",
+      "search": "",
+      "body": {
+        "id": "6432de88-bf68-4952-9ca8-4172c4f42b04",
+        "name": "Mobile unresolved view",
+        "definition": {
+          "schema_version": 1,
+          "query": {
+            "text": "",
+            "projects": [],
+            "states": [],
+            "jql": "",
+            "mode": "basic"
+          },
+          "table": {
+            "page_size": 20,
+            "sorts": [],
+            "columns": [
+              "id",
+              "title",
+              "projectName",
+              "status",
+              "updated",
+              "attempts"
+            ],
+            "column_order": [
+              "id",
+              "title",
+              "projectName",
+              "status",
+              "updated",
+              "attempts",
+              "created_at"
+            ]
+          }
+        },
+        "scope_type": "workspace",
+        "project_id": null
+      }
+    },
+    {
+      "scenario": "mobile-unknown",
+      "method": "GET",
+      "path": "/api/saved-views/6432de88-bf68-4952-9ca8-4172c4f42b04",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "mobile-unknown",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    }
+  ],
+  "errors": [],
+  "failures": [],
+  "unexpectedApi": [],
+  "blockedExternal": [],
+  "observations": [
+    {
+      "scenario": "mobile-unknown",
+      "type": "request-failed",
+      "path": "/api/saved-views",
+      "failure": {
+        "errorText": "net::ERR_FAILED"
+      }
+    },
+    {
+      "scenario": "mobile-unknown",
+      "geometry": {
+        "width": 320,
+        "scroll": 320
+      }
+    },
+    {
+      "scenario": "mobile-unknown",
+      "geometry": {
+        "width": 320,
+        "scroll": 320
+      }
+    },
+    {
+      "scenario": "mobile-unknown",
+      "type": "mobile-feedback-layout",
+      "titleHeight": 30.796875,
+      "feedbackTop": 136,
+      "headerBottom": 136,
+      "pageSizeWidth": 136,
+      "pageSizeBottom": 698,
+      "nextTop": 702
+    }
+  ],
+  "browser": {
+    "executable": "/usr/bin/google-chrome",
+    "version": "154.0.8037.57"
+  }
+}

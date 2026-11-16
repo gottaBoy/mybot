@@ -1,0 +1,790 @@
+{
+  "fixture": true,
+  "transport": "real local API with FakeProvider",
+  "checks": [
+    {
+      "name": "A failed research source is produced through the isolated API and FakeProvider",
+      "passed": true
+    },
+    {
+      "name": "Registering a prepared candidate persists its ID without queuing a run or invoking a provider",
+      "passed": true
+    },
+    {
+      "name": "A replacement registration lost after commit reconciles new ID B, not abandoned ID A, without executing either",
+      "passed": true
+    },
+    {
+      "name": "A response lost after the real retry transaction locks the client without replay",
+      "passed": true
+    },
+    {
+      "name": "Full reload restores the exact applied receipt and one child while preserving all source facts",
+      "passed": true
+    },
+    {
+      "name": "An explicitly repeated request ID returns the original receipt without a second child or model call",
+      "passed": true
+    },
+    {
+      "name": "Resume registers its original resources without inventing a timeout and requires fresh consent after reload",
+      "passed": true
+    },
+    {
+      "name": "A paused-again source can register a fresh explicit candidate without replaying an old applied request",
+      "passed": true
+    },
+    {
+      "name": "A completed source retains a read-only history entry for exact resume reconciliation",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "POST",
+      "path": "/api/projects"
+    },
+    {
+      "method": "POST",
+      "path": "/api/models"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks/6c4093a61cbd419dbfccfd7dfbd53547/preview"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks/6c4093a61cbd419dbfccfd7dfbd53547/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/retry-preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/retry-preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents"
+    },
+    {
+      "method": "POST",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/retry-preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents"
+    },
+    {
+      "method": "POST",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents/a6752653-628a-42df-bc21-2babcc66e908/abandon"
+    },
+    {
+      "method": "POST",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents/a6752653-628a-42df-bc21-2babcc66e908"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/retry-preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents/8b1167ab-3661-461a-9913-643bf2b6d120"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/retry-preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/retry-preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents"
+    },
+    {
+      "method": "POST",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents/8b1167ab-3661-461a-9913-643bf2b6d120/execute"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/retry-preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents/8b1167ab-3661-461a-9913-643bf2b6d120"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/520e1a6e17664919ba6885878c7a39a5"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/520e1a6e17664919ba6885878c7a39a5"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662"
+    },
+    {
+      "method": "POST",
+      "path": "/api/runs/24e98c65446843ab895743adbe285662/recovery-intents/8b1167ab-3661-461a-9913-643bf2b6d120/execute"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/520e1a6e17664919ba6885878c7a39a5"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks/0ae6b7b120d2430d95add9e54feb400e/preview"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks/0ae6b7b120d2430d95add9e54feb400e/runs"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "POST",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/pause"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/retry-preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/recovery-intents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/retry-preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/recovery-intents"
+    },
+    {
+      "method": "POST",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/recovery-intents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/recovery-intents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/retry-preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/recovery-intents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/retry-preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/recovery-intents"
+    },
+    {
+      "method": "POST",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/recovery-intents/569a9c0d-43de-4ba1-b754-df0bcc53aedc/execute"
+    },
+    {
+      "method": "POST",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/pause"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/retry-preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/recovery-intents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/recovery-intents/569a9c0d-43de-4ba1-b754-df0bcc53aedc"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/retry-preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/recovery-intents"
+    },
+    {
+      "method": "POST",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/recovery-intents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/recovery-intents"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/recovery-intents/569a9c0d-43de-4ba1-b754-df0bcc53aedc"
+    },
+    {
+      "method": "POST",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/recovery-intents/5fdb225b-45c0-4f81-bca7-36706c40c0e7/execute"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/retry-preview"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/runs/89c36c8d1f72456e8ccfdaf48a1f1d3f/recovery-intents"
+    }
+  ],
+  "droppedReceipts": [
+    {
+      "request_id": "8b1167ab-3661-461a-9913-643bf2b6d120",
+      "source_run_id": "24e98c65446843ab895743adbe285662",
+      "mode": "retry",
+      "snapshot_hash": "24f100a8c4bfecbb5d10336263f7f5d471f24d76689335e87e3793764539e312",
+      "candidate_hash": "5ec073bc719ea30a934b0719edd77c42457dbe59ba090e0575aea9950b989b02",
+      "config": {
+        "coordinator_model": "cc517afe6b4849968bf5b4aa618a2780",
+        "researcher_model": "cc517afe6b4849968bf5b4aa618a2780",
+        "reviewer_model": "cc517afe6b4849968bf5b4aa618a2780",
+        "max_calls": 2,
+        "parallel": 1,
+        "minutes": 10,
+        "max_output_tokens": 1800,
+        "call_timeout_seconds": 120
+      },
+      "state": "applied",
+      "target_run_id": "520e1a6e17664919ba6885878c7a39a5",
+      "error_code": null,
+      "created_at": "2026-11-14T21:27:39.500380+00:00",
+      "updated_at": "2026-11-14T21:27:41.591316+00:00",
+      "settled_at": "2026-11-14T21:27:41.591316+00:00",
+      "requires_acknowledgement": true,
+      "outcome_unknown": false,
+      "consent_required": false,
+      "note": "Applied confirms the queue/control command, not model execution success"
+    },
+    {
+      "request_id": "569a9c0d-43de-4ba1-b754-df0bcc53aedc",
+      "source_run_id": "89c36c8d1f72456e8ccfdaf48a1f1d3f",
+      "mode": "resume",
+      "snapshot_hash": "2ca1f9651efe994c9561bc45852b842549a0dfc3279fc4e63495d092749d45ff",
+      "candidate_hash": "371129eedac38f1d6ac3d608353146967c34701e9861e17fc012b7ef168da297",
+      "config": {
+        "coordinator_model": "cc517afe6b4849968bf5b4aa618a2780",
+        "researcher_model": "cc517afe6b4849968bf5b4aa618a2780",
+        "reviewer_model": "cc517afe6b4849968bf5b4aa618a2780",
+        "max_calls": 4,
+        "parallel": 1,
+        "minutes": 10,
+        "max_output_tokens": 1800
+      },
+      "state": "applied",
+      "target_run_id": "89c36c8d1f72456e8ccfdaf48a1f1d3f",
+      "error_code": null,
+      "created_at": "2026-11-14T21:27:44.927003+00:00",
+      "updated_at": "2026-11-14T21:27:46.849778+00:00",
+      "settled_at": "2026-11-14T21:27:46.849778+00:00",
+      "requires_acknowledgement": false,
+      "outcome_unknown": false,
+      "consent_required": false,
+      "note": "Applied confirms the queue/control command, not model execution success"
+    }
+  ],
+  "droppedRegistrations": [
+    {
+      "request_id": "8b1167ab-3661-461a-9913-643bf2b6d120",
+      "source_run_id": "24e98c65446843ab895743adbe285662",
+      "mode": "retry",
+      "snapshot_hash": "24f100a8c4bfecbb5d10336263f7f5d471f24d76689335e87e3793764539e312",
+      "candidate_hash": "5ec073bc719ea30a934b0719edd77c42457dbe59ba090e0575aea9950b989b02",
+      "config": {
+        "coordinator_model": "cc517afe6b4849968bf5b4aa618a2780",
+        "researcher_model": "cc517afe6b4849968bf5b4aa618a2780",
+        "reviewer_model": "cc517afe6b4849968bf5b4aa618a2780",
+        "max_calls": 2,
+        "parallel": 1,
+        "minutes": 10,
+        "max_output_tokens": 1800,
+        "call_timeout_seconds": 120
+      },
+      "state": "prepared",
+      "target_run_id": null,
+      "error_code": null,
+      "created_at": "2026-11-14T21:27:39.500380+00:00",
+      "updated_at": "2026-11-14T21:27:39.500380+00:00",
+      "settled_at": null,
+      "requires_acknowledgement": true,
+      "outcome_unknown": false,
+      "consent_required": true,
+      "note": "Applied confirms the queue/control command, not model execution success"
+    }
+  ],
+  "screenshots": [
+    "retry-lost-receipt-locked.png",
+    "retry-reloaded-exact-applied.png",
+    "resume-reloaded-applied-history.png"
+  ]
+}

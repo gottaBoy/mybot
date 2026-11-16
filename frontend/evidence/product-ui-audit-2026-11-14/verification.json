@@ -1,0 +1,707 @@
+{
+  "fixture": true,
+  "base": "http://127.0.0.1:5176/",
+  "checks": [
+    {
+      "name": "Token login through same-origin proxy; token not persisted",
+      "passed": true
+    },
+    {
+      "name": "Project creation persists through API, without model invocation",
+      "passed": true
+    },
+    {
+      "name": "Task survives refresh; missing model prevents starting a run",
+      "passed": true
+    },
+    {
+      "name": "Local model preset and default selection save without connection tests",
+      "passed": true
+    },
+    {
+      "name": "Model test requires confirmation; Escape restores trigger focus",
+      "passed": true
+    },
+    {
+      "name": "Explicit snapshot consent starts one fixture run with selected budget; polling reaches completion",
+      "passed": true
+    },
+    {
+      "name": "Human review persists; call usage and diagnostics are real fixture facts",
+      "passed": true
+    },
+    {
+      "name": "Artifact download and dedicated artifact view work",
+      "passed": true
+    },
+    {
+      "name": "Read-only work graph, inspector, zoom, Agent avatars and real transcript",
+      "passed": true
+    },
+    {
+      "name": "Backend save, explicitly consented MockTransport health check and revoke",
+      "passed": true
+    },
+    {
+      "name": "Task-first list renders one latest-state row per task; optional inspector retains both real fixture runs",
+      "passed": true
+    },
+    {
+      "name": "Run history keeps both attempts with real rows, sorting, column visibility and density",
+      "passed": true
+    },
+    {
+      "name": "Grouped command palette keyboard navigation and persisted project/task/run hierarchy",
+      "passed": true
+    },
+    {
+      "name": "Inbox, documentation, progress and alert rail share persisted business projections",
+      "passed": true
+    },
+    {
+      "name": "Page inventory: 10 routes at 1440/1024/390px and three configuration forms render without overflow or API writes",
+      "passed": true
+    },
+    {
+      "name": "Desktop work list: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Eight styles × two modes: computed tokens differ, preferences persist, keyboard works, no API writes",
+      "passed": true
+    },
+    {
+      "name": "JQL draft and IME Enter do not submit; URL survives refresh/back/view changes and unsupported assignee/currentUser fails closed",
+      "passed": true
+    },
+    {
+      "name": "Search, filters, persisted dark theme and English locale",
+      "passed": true
+    },
+    {
+      "name": "Work list 390px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Task inspector 390px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Projects 390px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Run artifacts 390px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Work list 320px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Task inspector 320px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Projects 320px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Run artifacts 320px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Work list 768px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Task inspector 768px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Projects 768px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Run artifacts 768px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile/tablet task inspector retains history and restores focus; navigation, artifacts and long localized content work",
+      "passed": true
+    },
+    {
+      "name": "Mobile task dialog: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Dialog keyboard dismissal under reduced motion",
+      "passed": true
+    },
+    {
+      "name": "Open desktop Inspector survives mobile resize; Escape restores visible mobile title focus, not a hidden desktop trigger",
+      "passed": true
+    },
+    {
+      "name": "Dirty JQL survives mode/view/theme changes, while explicit Clear filters removes an uncommitted JQL draft",
+      "passed": true
+    },
+    {
+      "name": "Read-only 45-task projection: submitted search and scope/order/page/capacity restore via URL; mobile filters restore focus, global sorting matches mobile, long titles stay compact, and views make no API mutations",
+      "passed": true
+    },
+    {
+      "name": "Cooperative pause and explicitly confirmed cancellation retain prior calls",
+      "passed": true
+    },
+    {
+      "name": "Logout clears cached project and run content",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "writes": [
+    "/api/auth",
+    "/api/projects",
+    "/api/tasks",
+    "/api/tasks/c35fa999bfdb4c3da496b20cdd1f1166/preview",
+    "/api/models",
+    "/api/settings/default-model",
+    "/api/tasks/c35fa999bfdb4c3da496b20cdd1f1166/preview",
+    "/api/tasks/c35fa999bfdb4c3da496b20cdd1f1166/runs",
+    "/api/artifacts/470eeb9f6a7947528323673a356651f2/decision",
+    "/api/backends",
+    "/api/backends/85ce787337884abeb76c1cc759432934/check",
+    "/api/backends/85ce787337884abeb76c1cc759432934/revoke",
+    "/api/tasks/c35fa999bfdb4c3da496b20cdd1f1166/preview",
+    "/api/tasks/c35fa999bfdb4c3da496b20cdd1f1166/runs",
+    "/api/tasks",
+    "/api/tasks",
+    "/api/tasks/aaf4b8a67fd64d549b1d402b6588a0c1/preview",
+    "/api/tasks/aaf4b8a67fd64d549b1d402b6588a0c1/runs",
+    "/api/runs/c2e084263d0f416e9fc5ea79e5fb4d1c/pause",
+    "/api/runs/c2e084263d0f416e9fc5ea79e5fb4d1c/cancel",
+    "/api/logout"
+  ],
+  "screenshots": [
+    "login-desktop.png",
+    "run-desktop-light.png",
+    "work-graph-desktop.png",
+    "task-board-desktop.png",
+    "overview-desktop.png",
+    "audit-overview-1440.png",
+    "audit-workbench-1440.png",
+    "audit-inbox-1440.png",
+    "audit-projects-1440.png",
+    "audit-project-detail-1440.png",
+    "audit-hierarchy-1440.png",
+    "audit-documents-1440.png",
+    "audit-models-1440.png",
+    "audit-backends-1440.png",
+    "audit-run-1440.png",
+    "audit-overview-1024.png",
+    "audit-workbench-1024.png",
+    "audit-inbox-1024.png",
+    "audit-projects-1024.png",
+    "audit-project-detail-1024.png",
+    "audit-hierarchy-1024.png",
+    "audit-documents-1024.png",
+    "audit-models-1024.png",
+    "audit-backends-1024.png",
+    "audit-run-1024.png",
+    "audit-overview-390.png",
+    "audit-workbench-390.png",
+    "audit-inbox-390.png",
+    "audit-projects-390.png",
+    "audit-project-detail-390.png",
+    "audit-hierarchy-390.png",
+    "audit-documents-390.png",
+    "audit-models-390.png",
+    "audit-backends-390.png",
+    "audit-run-390.png",
+    "audit-form-projects.png",
+    "audit-form-models.png",
+    "audit-form-backends.png",
+    "work-desktop-light.png",
+    "work-zira-light.png",
+    "work-zira-dark.png",
+    "work-matcha-dark.png",
+    "work-desktop-dark.png",
+    "task-inspector-390-dark.png",
+    "run-390-dark.png",
+    "task-inspector-320-dark.png",
+    "run-320-dark.png",
+    "task-inspector-768-dark.png",
+    "run-768-dark.png",
+    "task-mobile-dark.png",
+    "pagination-mobile-sort-390.png",
+    "filters-mobile-390.png",
+    "pagination-45-readonly.png",
+    "search-list-45-desktop.png"
+  ],
+  "initialScriptResources": [
+    "http://127.0.0.1:5176/assets/app-CQTxIoD6.js",
+    "http://127.0.0.1:5176/assets/react-vendor-BJeFkKaq.js",
+    "http://127.0.0.1:5176/assets/playground-DpEBiNsn.js",
+    "http://127.0.0.1:5176/assets/FocusedWorkbench-6TBB3YPQ.js",
+    "http://127.0.0.1:5176/assets/DataTable-D6YFz0XP.js",
+    "http://127.0.0.1:5176/assets/useTableSortableState-Bu1uTSDP.js",
+    "http://127.0.0.1:5176/assets/useTableSortable-BKIHZ1-u.js",
+    "http://127.0.0.1:5176/assets/ComponentIcon-DAtprbDS.js",
+    "http://127.0.0.1:5176/assets/useIcon-DRgpOoZW.js",
+    "http://127.0.0.1:5176/assets/useScrollableArea-DATibU8O.js",
+    "http://127.0.0.1:5176/assets/Table-XL1cKAqj.js",
+    "http://127.0.0.1:5176/assets/scrollKeyboardDelegation-DhAczx5F.js",
+    "http://127.0.0.1:5176/assets/scrollGeometry-B7jAdN05.js",
+    "http://127.0.0.1:5176/assets/MenuBottomSheetActionList-CYJmgouz.js",
+    "http://127.0.0.1:5176/assets/List-CINed6rF.js",
+    "http://127.0.0.1:5176/assets/listLayoutUpdates-IX7EpUUL.js",
+    "http://127.0.0.1:5176/assets/LayoutChangeSnapshot-CWqOmSUx.js",
+    "http://127.0.0.1:5176/assets/animatedLayout-Dz1ikJjE.js",
+    "http://127.0.0.1:5176/assets/ListItem-BsS5KMk9.js",
+    "http://127.0.0.1:5176/assets/menuItemRoles-xckg4NWh.js",
+    "http://127.0.0.1:5176/assets/useMenuDrillIn-DQ_v5hzu.js",
+    "http://127.0.0.1:5176/assets/useMenuHover-BA0o_fVC.js",
+    "http://127.0.0.1:5176/assets/clampInlineSize-C6G3hOHP.js",
+    "http://127.0.0.1:5176/assets/EmptyState-CiJIKHEG.js",
+    "http://127.0.0.1:5176/assets/useTableTreeState-IC_r4tgS.js",
+    "http://127.0.0.1:5176/assets/history-DknYgRxe.js",
+    "http://127.0.0.1:5176/assets/panel-left-D1_xSWdT.js",
+    "http://127.0.0.1:5176/assets/file-search-BeKNlwVP.js"
+  ],
+  "pageAudit": [
+    {
+      "page": "overview",
+      "width": 1440,
+      "title": "工作总览 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "workbench",
+      "width": 1440,
+      "title": "工作台 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "inbox",
+      "width": 1440,
+      "title": "待处理 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "projects",
+      "width": 1440,
+      "title": "项目 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "project-detail",
+      "width": 1440,
+      "title": "mybot 研发协作 · 隔离验收 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "hierarchy",
+      "width": 1440,
+      "title": "项目层级 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "documents",
+      "width": 1440,
+      "title": "项目资料 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "models",
+      "width": 1440,
+      "title": "模型与资源 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "backends",
+      "width": 1440,
+      "title": "会话后端 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "run",
+      "width": 1440,
+      "title": "运行工作区 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "overview",
+      "width": 1024,
+      "title": "工作总览 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "workbench",
+      "width": 1024,
+      "title": "工作台 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "inbox",
+      "width": 1024,
+      "title": "待处理 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "projects",
+      "width": 1024,
+      "title": "项目 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "project-detail",
+      "width": 1024,
+      "title": "mybot 研发协作 · 隔离验收 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "hierarchy",
+      "width": 1024,
+      "title": "项目层级 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "documents",
+      "width": 1024,
+      "title": "项目资料 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "models",
+      "width": 1024,
+      "title": "模型与资源 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "backends",
+      "width": 1024,
+      "title": "会话后端 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "run",
+      "width": 1024,
+      "title": "运行工作区 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "overview",
+      "width": 390,
+      "title": "工作总览 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "workbench",
+      "width": 390,
+      "title": "工作台 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "inbox",
+      "width": 390,
+      "title": "待处理 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "projects",
+      "width": 390,
+      "title": "项目 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "project-detail",
+      "width": 390,
+      "title": "mybot 研发协作 · 隔离验收 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "hierarchy",
+      "width": 390,
+      "title": "项目层级 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "documents",
+      "width": 390,
+      "title": "项目资料 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "models",
+      "width": 390,
+      "title": "模型与资源 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "backends",
+      "width": 390,
+      "title": "会话后端 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "run",
+      "width": 390,
+      "title": "运行工作区 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    }
+  ],
+  "productStyles": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(0, 0, 0)",
+      "radius": "8px",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "neutral",
+      "mode": "dark",
+      "background": "rgb(28, 31, 34)",
+      "color": "rgb(255, 255, 255)",
+      "radius": "8px",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "zira",
+      "mode": "light",
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(23, 43, 77)",
+      "radius": "8px",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+    },
+    {
+      "style": "zira",
+      "mode": "dark",
+      "background": "rgb(22, 26, 34)",
+      "color": "rgb(230, 233, 239)",
+      "radius": "8px",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+    },
+    {
+      "style": "gothic",
+      "mode": "light",
+      "background": "rgb(16, 19, 20)",
+      "color": "rgb(232, 241, 246)",
+      "radius": "4px",
+      "font": "Fustat, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "gothic",
+      "mode": "dark",
+      "background": "rgb(16, 19, 20)",
+      "color": "rgb(232, 241, 246)",
+      "radius": "4px",
+      "font": "Fustat, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "matcha",
+      "mode": "light",
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(62, 72, 29)",
+      "radius": "8px",
+      "font": "\"Playwrite US Trad\", Georgia, \"Times New Roman\", Times, serif"
+    },
+    {
+      "style": "matcha",
+      "mode": "dark",
+      "background": "rgb(26, 28, 20)",
+      "color": "rgb(192, 203, 169)",
+      "radius": "8px",
+      "font": "\"Playwrite US Trad\", Georgia, \"Times New Roman\", Times, serif"
+    },
+    {
+      "style": "stone",
+      "mode": "light",
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(37, 37, 42)",
+      "radius": "8px",
+      "font": "Montserrat, Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "stone",
+      "mode": "dark",
+      "background": "rgb(27, 27, 33)",
+      "color": "rgb(240, 240, 249)",
+      "radius": "8px",
+      "font": "Montserrat, Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "butter",
+      "mode": "light",
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(29, 28, 17)",
+      "radius": "8px",
+      "font": "Outfit, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "butter",
+      "mode": "dark",
+      "background": "rgb(46, 33, 23)",
+      "color": "rgb(243, 242, 226)",
+      "radius": "8px",
+      "font": "Outfit, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "chocolate",
+      "mode": "light",
+      "background": "rgb(255, 252, 247)",
+      "color": "rgb(74, 53, 32)",
+      "radius": "8px",
+      "font": "Fraunces, Georgia, \"Times New Roman\", Times, serif"
+    },
+    {
+      "style": "chocolate",
+      "mode": "dark",
+      "background": "rgb(28, 22, 16)",
+      "color": "rgb(237, 228, 212)",
+      "radius": "8px",
+      "font": "Fraunces, Georgia, \"Times New Roman\", Times, serif"
+    },
+    {
+      "style": "y2k",
+      "mode": "light",
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(45, 36, 27)",
+      "radius": "8px",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "y2k",
+      "mode": "dark",
+      "background": "rgb(22, 24, 43)",
+      "color": "rgb(237, 239, 252)",
+      "radius": "8px",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    }
+  ],
+  "paginationProjection": {
+    "synthetic": true,
+    "readOnly": true,
+    "taskCount": 45,
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      }
+    ]
+  }
+}

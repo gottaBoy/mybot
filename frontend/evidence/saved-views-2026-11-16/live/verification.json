@@ -1,0 +1,226 @@
+{
+  "fixture": true,
+  "transport": "real local API/SQLite, no provider commands",
+  "checks": [
+    {
+      "name": "Creating a saved view persists the exact committed task query and applied table settings through the real API",
+      "passed": true
+    },
+    {
+      "name": "Loading a persisted record applies its query, page capacity, hidden columns and ordering without executing work",
+      "passed": true
+    },
+    {
+      "name": "A real external revision change rejects stale update and preserves the local draft without overwriting the newer resource",
+      "passed": true
+    },
+    {
+      "name": "Explicit Save as creates a distinct ID while retaining the concurrent original revision",
+      "passed": true
+    },
+    {
+      "name": "Deletion uses revision checks, repeats safely and cannot resurrect a tombstoned ID or change the current literal query",
+      "passed": true
+    },
+    {
+      "name": "Lost real creation response locks replay and reads only the stable ID; current-state acknowledgement is not presented as an exact mutation receipt",
+      "passed": true
+    },
+    {
+      "name": "Project view persistence keeps the fixed route scope and separate workspace/project directories",
+      "passed": true
+    },
+    {
+      "name": "The entire actual saved-view workflow leaves Run counts unchanged and never sends a model/test/control command",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "POST",
+      "path": "/api/projects"
+    },
+    {
+      "method": "POST",
+      "path": "/api/projects"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tasks"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "POST",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views/85dc6514-0516-4ce8-94b8-471719252615"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/saved-views/85dc6514-0516-4ce8-94b8-471719252615"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/saved-views/85dc6514-0516-4ce8-94b8-471719252615"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views/85dc6514-0516-4ce8-94b8-471719252615"
+    },
+    {
+      "method": "POST",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views/85dc6514-0516-4ce8-94b8-471719252615"
+    },
+    {
+      "method": "POST",
+      "path": "/api/saved-views/0d593ff0-30f3-44a8-83ec-0748a0ae86bb/delete"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views/0d593ff0-30f3-44a8-83ec-0748a0ae86bb"
+    },
+    {
+      "method": "POST",
+      "path": "/api/saved-views/0d593ff0-30f3-44a8-83ec-0748a0ae86bb/delete"
+    },
+    {
+      "method": "POST",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "POST",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views/aa606c9b-691a-4ec1-a735-9ff248076c5b"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views/aa606c9b-691a-4ec1-a735-9ff248076c5b"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "POST",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "GET",
+      "path": "/api/saved-views"
+    },
+    {
+      "method": "GET",
+      "path": "/api/bootstrap"
+    }
+  ],
+  "screenshots": [
+    "live-saved-view-loaded.png",
+    "live-saved-view-conflict.png",
+    "live-saved-view-lost-response.png"
+  ],
+  "lostCreation": {
+    "id": "aa606c9b-691a-4ec1-a735-9ff248076c5b",
+    "revision": 1
+  }
+}

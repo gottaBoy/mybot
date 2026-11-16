@@ -9,7 +9,7 @@ import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi import FastAPI, HTTPException, Query, Request, Response
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
@@ -20,19 +20,23 @@ from .backend_service import BackendService
 from .context import ContextError, snapshot, validate_directory
 from .engine import Engine
 from .harness import LocalSuperagentHarness
-from .provider import ProviderError, ProviderRouter, key_available
+from .model_test_service import ModelTestService
+from .provider import ProviderRouter, key_available
 from .recovery import MODEL_FIELDS
 from .schemas import (
-    ArtifactDecision, BackendCheck, BackendCreate, DefaultModel, Login, ModelCreate, ProjectCreate,
-    Resume, RunCreate, RunRetry, TaskCreate,
+    ArtifactDecision, BackendCheck, BackendCreate, DefaultModel, Login, ModelCreate, ModelTest, ProjectCreate,
+    RecoveryIntentCreate, RecoveryIntentExecute, Resume, RunCreate, RunRetry, TaskCreate,
+    SavedViewCreate, SavedViewDelete, SavedViewUpdate,
 )
-from .store import Store, now
+from .saved_views import SavedViewError
+from .store import Store
 
 
 def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     settings = settings or Settings.from_env()
     store = Store(settings.data_dir)
     engine = Engine(store, provider or ProviderRouter(), settings.poll_interval)
+    model_tests = ModelTestService(store, engine.provider, settings.workspace)
     backends = BackendService(store, backend_adapter)
     sessions = {}
     login_attempts = {}
@@ -56,6 +60,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     app = FastAPI(title="AI Workbench", lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None)
     app.state.store, app.state.engine = store, engine
     app.state.backends = backends
+    app.state.model_tests = model_tests
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=list(settings.allowed_hosts))
 
     def loopback(request):
@@ -126,6 +131,10 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
         status = 422 if exc.code in {"backend_check_confirmation_required", "backend_read_confirmation_required"} else 409
         return JSONResponse({"detail": exc.code}, status_code=status)
 
+    @app.exception_handler(SavedViewError)
+    async def saved_view_error(request, exc):
+        return JSONResponse({"detail": exc.detail()}, status_code=exc.status)
+
     @app.get("/api/auth/state")
     async def auth_state(request: Request):
         return {"authenticated": authorized(request), "required": bool(settings.access_token),
@@ -158,7 +167,8 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
         return {"status": "ok"}
 
     def public_model(model):
-        return {**model, "key_available": key_available(model)}
+        return {**model, "key_available": key_available(model),
+                "latest_test": model_tests.latest(model["id"])}
 
     @app.get("/api/bootstrap")
     async def bootstrap():
@@ -193,6 +203,35 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
         validate_directory(settings.workspace, body.directory)
         return store.add("projects", body.model_dump(), "project.created")
 
+    @app.get("/api/saved-views")
+    async def saved_view_list(
+        request: Request, scope_type: str | None = None, project_id: str | None = None,
+        offset: int = Query(0, ge=0, le=9007199254740991), limit: int = Query(100, ge=1, le=100),
+    ):
+        allowed = {"scope_type", "project_id", "offset", "limit"}
+        if any(
+            key not in allowed or len(request.query_params.getlist(key)) != 1
+            for key in request.query_params
+        ):
+            raise SavedViewError("saved_view_query_invalid", 422)
+        return store.list_saved_views(scope_type, project_id, offset, limit)
+
+    @app.get("/api/saved-views/{identifier}")
+    async def saved_view_read(identifier: str):
+        return store.saved_view(identifier)
+
+    @app.post("/api/saved-views", status_code=201)
+    async def saved_view_create(body: SavedViewCreate):
+        return store.create_saved_view(body.model_dump())
+
+    @app.put("/api/saved-views/{identifier}")
+    async def saved_view_update(identifier: str, body: SavedViewUpdate):
+        return store.update_saved_view(identifier, body.model_dump())
+
+    @app.post("/api/saved-views/{identifier}/delete")
+    async def saved_view_delete(identifier: str, body: SavedViewDelete):
+        return store.delete_saved_view(identifier, body.expected_revision)
+
     @app.post("/api/models", status_code=201)
     async def model_create(body: ModelCreate):
         return public_model(store.add("models", body.model_dump(), "model.configured"))
@@ -213,19 +252,20 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                 "note": "Codex CLI 配置已启用；尚未发起请求"}
 
     @app.post("/api/models/{identifier}/test")
-    async def model_test(identifier: str):
-        model = store.get("models", identifier)
-        if model.get("kind") == "codex_cli":
-            model = {**model, "workspace": str(settings.workspace)}
+    async def model_test(identifier: str, body: ModelTest):
+        if not body.consent:
+            raise HTTPException(422, "model_test_confirmation_required")
         try:
-            await engine.provider.complete(model, [{"role": "user", "content": "Reply only OK."}], 16)
-            status = "reachable"
-        except ProviderError as exc:
-            status = exc.code
-        with store.transaction() as db:
-            db.execute("UPDATE models SET tested_at=?,test_status=? WHERE id=?", (now(), status, identifier))
-            store.event(db, "model.tested", {"status": status}, entity_id=identifier, actor="user")
-        return {"status": status, "note": "A minimal request tests reachability, not full tool capability"}
+            return await model_tests.start(identifier, body.request_id)
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from exc
+
+    @app.get("/api/models/{identifier}/tests/{request_id}")
+    async def model_test_status(identifier: str, request_id: str):
+        try:
+            return model_tests.read(identifier, request_id)
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from exc
 
     @app.post("/api/settings/default-model")
     async def default_model(body: DefaultModel):
@@ -359,6 +399,46 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
             )
         except ValueError as exc:
             raise HTTPException(409, str(exc)) from exc
+
+    @app.post("/api/runs/{identifier}/recovery-intents")
+    async def recovery_intent_prepare(identifier: str, body: RecoveryIntentCreate):
+        try:
+            return store.prepare_recovery_intent(
+                identifier, body.request_id, body.mode, body.snapshot_hash,
+                body.config.model_dump() if body.config is not None else None,
+            )
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from exc
+
+    @app.get("/api/runs/{identifier}/recovery-intents")
+    async def recovery_intent_list(identifier: str):
+        return store.recovery_intents(identifier)
+
+    @app.get("/api/runs/{identifier}/recovery-intents/{request_id}")
+    async def recovery_intent_read(identifier: str, request_id: str):
+        try:
+            return store.recovery_intent(identifier, request_id)
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from exc
+
+    @app.post("/api/runs/{identifier}/recovery-intents/{request_id}/abandon")
+    async def recovery_intent_abandon(identifier: str, request_id: str):
+        try:
+            return store.abandon_recovery_intent(identifier, request_id)
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from exc
+
+    @app.post("/api/runs/{identifier}/recovery-intents/{request_id}/execute")
+    async def recovery_intent_execute(identifier: str, request_id: str, body: RecoveryIntentExecute):
+        if not body.consent:
+            raise HTTPException(422, "recovery_intent_consent_required")
+        try:
+            return store.execute_recovery_intent(
+                identifier, request_id, body.acknowledge_replay, settings.workspace,
+            )
+        except ValueError as exc:
+            status = 422 if str(exc) == "retry_replay_confirmation_required" else 409
+            raise HTTPException(status, str(exc)) from exc
 
     @app.post("/api/runs/{identifier}/{action}")
     async def run_control(identifier: str, action: str, body: Resume):

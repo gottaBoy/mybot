@@ -36,6 +36,7 @@ let callFilter = "all";
 const requestId = () => crypto.randomUUID?.() || Array.from(
   crypto.getRandomValues(new Uint8Array(16)), (value) => value.toString(16).padStart(2, "0")
 ).join("");
+const modelTestRequests = new Map();
 
 async function api(path, options = {}) {
   let response;
@@ -45,6 +46,7 @@ async function api(path, options = {}) {
     });
   } catch { throw new Error("无法连接服务器，稍后可重新同步。"); }
   if (response.status === 401) {
+    modelTestRequests.clear();
     authenticated = false;
     data = { projects: [], models: [], tasks: [], runs: [] };
     detail = null;
@@ -175,6 +177,14 @@ function projectView(id) {
     }).join("") || '<p class="empty-message">项目下暂无任务。</p>'}</section><aside class="project-context">${sectionHeading("上下文边界")}<dl class="definition-list"><dt>服务器目录</dt><dd><code>${esc(project.directory)}</code><br /><small>仅作为项目相对路径边界，不会自动扫描全部内容。</small></dd><dt>项目资料</dt><dd class="pre-wrap">${esc(project.notes || "无额外资料")}<small class="definition-note">这是项目说明，不等于已读取文件。</small></dd><dt>实际读取范围</dt><dd>每个任务只读取用户明确选择的文本文件，最多 10 个；隐藏/凭证路径、二进制、符号链接和超大文件会拒绝。</dd><dt>发送边界</dt><dd>只有预览后确认的文本快照才会发送给模型；未确认的目录内容不会发送。</dd><dt>执行权限</dt><dd>没有 Shell、代码写入、浏览器或部署工具。当前仅做只读分析。</dd></dl></aside></div></div>`;
 }
 
+function modelTestActions(model) {
+  const pending = modelTestRequests.has(model.id);
+  if (!pending && !model.latest_test) return btn("测试连接", "plug", `data-action="test-model" data-model="${model.id}"`);
+  return btn("查看测试状态", "refresh-cw", `data-action="test-model" data-model="${model.id}"`)
+    + (!pending && model.latest_test?.state !== "running"
+      ? btn("重新测试", "plug", `data-action="new-model-test" data-model="${model.id}"`) : "");
+}
+
 function modelsView() {
   shell("模型与控制");
   const defaultModel = data.models.find((model) => model.id === data.default_model_id);
@@ -183,7 +193,7 @@ function modelsView() {
     <div class="notice notice-neutral">${icon("shield-check")}<div><strong>Harness 与模型连接是两条路径</strong><p>Codex CLI 等本地 Harness 负责控制本机 Agent；OpenAI-compatible 配置负责直接调用模型。保存配置、发现 CLI 和打开页面都不会调用模型。当前默认模型：${defaultModel ? `<strong>${esc(defaultModel.name)}</strong>` : "未设置"}。</p></div></div>
     ${harnesses.length ? `<section class="local-harnesses"><div class="section-heading"><h2>本地 Harness</h2><span class="table-footnote">仅检测可执行文件，认证未验证</span></div><div class="harness-discovery-list">${harnesses.map((item) => `<div><span class="agent-avatar agent-neutral">${icon("terminal")}</span><strong>${esc(item.label)}</strong><small>${esc(item.id)} · 已发现，认证未验证</small>${item.id === "codex" ? btn("启用 Codex Adapter", "plug", 'data-action="enable-codex"') : ""}</div>`).join("")}</div></section>` : ""}
     ${harnesses.length ? `<div class="notice notice-neutral local-harness-note">${icon("circle-help")}<div><strong>Codex CLI 尚未作为 Workbench 执行器启用</strong><p>当前只做可执行文件发现，不读取本机登录凭证。后续启用 Codex Adapter 后，用户明确选择的 Run 才会复用 CLI 登录态。</p></div></div>` : ""}
-    <section class="page-section">${sectionHeading("模型连接")}${data.models.map((m) => `<div class="model-row">${icon("blocks")}<div><h3>${esc(m.name)} ${m.id === data.default_model_id ? pill("accepted", "默认") : ""}</h3><p><code>${esc(m.model)}</code></p><small>${esc(m.endpoint)}</small><p class="model-key">密钥：${m.key_env ? `${esc(m.key_env)} · ${m.key_available ? "服务端已提供" : "未提供"}` : "无（本地或免密端点）"}</p><small class="model-id">配置 ID：<code>${esc(m.id)}</code></small></div><div>${m.id !== data.default_model_id ? btn("设为默认", "check", `data-action="default-model" data-model="${m.id}"`) : ""}${pill(m.test_status === "reachable" ? "succeeded" : "pending", m.test_status === "reachable" ? "可达，能力未验证" : m.test_status || "未测试")}${btn("测试连接", "plug", `data-action="test-model" data-model="${m.id}"`)}</div></div>`).join("") || '<div class="empty-state"><h2>尚未配置模型</h2><p>支持本地或远程的 OpenAI-compatible Chat Completions 接口。</p></div>'}</section>
+    <section class="page-section">${sectionHeading("模型连接")}${data.models.map((m) => `<div class="model-row">${icon("blocks")}<div><h3>${esc(m.name)} ${m.id === data.default_model_id ? pill("accepted", "默认") : ""}</h3><p><code>${esc(m.model)}</code></p><small>${esc(m.endpoint)}</small><p class="model-key">密钥：${m.key_env ? `${esc(m.key_env)} · ${m.key_available ? "服务端已提供" : "未提供"}` : "无（本地或免密端点）"}</p><small class="model-id">配置 ID：<code>${esc(m.id)}</code></small></div><div>${m.id !== data.default_model_id ? btn("设为默认", "check", `data-action="default-model" data-model="${m.id}"`) : ""}${pill(m.test_status === "reachable" ? "succeeded" : "pending", m.test_status === "reachable" ? "可达，能力未验证" : m.test_status || "未测试")}${modelTestActions(m)}</div></div>`).join("") || '<div class="empty-state"><h2>尚未配置模型</h2><p>支持本地或远程的 OpenAI-compatible Chat Completions 接口。</p></div>'}</section>
     <section class="page-section">${sectionHeading("当前执行边界")}<div class="control-boundaries"><p>${icon("check")}单机一个后台 Worker，每次最多两个只读研究 Agent 并行</p><p>${icon("check")}规划、研究和汇总可以指定不同模型</p><p>${icon("x")}代码写入、Shell、部署和生产权限未实现</p><p>${icon("circle-help")}成本未知时不会填零；测试连接不证明工具能力</p></div></section></div>`;
 }
 
@@ -580,6 +590,7 @@ document.addEventListener("click", async (event) => {
     else if (action === "login") showLogin();
     else if (action === "logout") {
       await api("/logout", { method: "POST", body: "{}" });
+      modelTestRequests.clear();
       authenticated = false;
       data = { projects: [], models: [], tasks: [], runs: [] };
       detail = null;
@@ -610,11 +621,41 @@ document.addEventListener("click", async (event) => {
     }
     else if (action === "prepare") await prepare(el.dataset.task);
     else if (action === "retry") await prepareRetry();
-    else if (action === "test-model") {
-      if (!confirm("将发送一条最小模型请求，可能产生费用。继续？")) return;
+    else if (action === "test-model" || action === "new-model-test") {
+      const modelId = el.dataset.model;
+      const latest = data.models.find((model) => model.id === modelId)?.latest_test;
+      if (action === "new-model-test" && (modelTestRequests.has(modelId) || latest?.state === "running")) {
+        notify("请先查询原测试状态，不会重复发起模型请求。", true);
+        return;
+      }
+      const pendingRequest = action === "new-model-test"
+        ? undefined : modelTestRequests.get(modelId) || latest?.request_id;
+      const confirmation = latest?.state === "unknown"
+        ? "原测试结果和用量未知。新测试将再次发送模型请求，可能重复产生费用。确认重新测试？"
+        : "将发送一条最小模型请求，可能产生费用。继续？";
+      if (!pendingRequest && !confirm(confirmation)) return;
       el.disabled = true;
-      const result = await api(`/models/${el.dataset.model}/test`, { method: "POST", body: "{}" });
-      notify(result.status === "reachable" ? "连接可达，尚未验证工具能力。" : errorLabel(result.status), result.status !== "reachable");
+      let result;
+      if (pendingRequest) {
+        result = await api(`/models/${modelId}/tests/${encodeURIComponent(pendingRequest)}`);
+      } else {
+        const identifier = requestId();
+        modelTestRequests.set(modelId, identifier);
+        try {
+          result = await api(`/models/${modelId}/test`, {
+            method: "POST", body: JSON.stringify({ request_id: identifier, consent: true }),
+          });
+        } catch {
+          el.disabled = false;
+          notify("测试响应未确认，结果和用量可能未知。再次点击只查询原测试状态，不会重新调用模型。", true);
+          return;
+        }
+      }
+      if (result.state !== "running") modelTestRequests.delete(modelId);
+      const message = result.state === "running" ? "原测试仍在进行；未重复发起模型请求。"
+        : result.state === "succeeded" ? "连接可达，尚未验证工具能力。"
+          : `${errorLabel(result.status)}${result.usage_unknown ? "；用量未知不等于免费。" : ""}`;
+      notify(message, result.state === "failed" || result.state === "unknown");
       await refresh();
     } else if (action === "default-model") {
       el.disabled = true;

@@ -1,0 +1,635 @@
+{
+  "date": "2026-11-15",
+  "base": "http://127.0.0.1:5176/",
+  "synthetic": true,
+  "backendMutation": false,
+  "scope": "Project/state candidate multiselect, bounded JSON query and multi-sort URL contracts, column order and responsive interactions. Every API request is intercepted.",
+  "contracts": {
+    "query": "OR within each selected field; AND across fields and text. Empty means all. Current Task state, not historic Run failures.",
+    "canonical": "Single project and active/attention/completed state use legacy project/filter. Multiple projects/states and single pending/other use JSON projects/states.",
+    "sorting": "At most three unique sort keys, applied in declared priority before pagination; hidden columns may remain sort keys.",
+    "ime": "Synthetic composition events cover application handlers, not a physical IME.",
+    "browser": "Local Chrome desktop/mobile viewports, not cross-browser or physical-device certification."
+  },
+  "fixture": {
+    "projects": [
+      {
+        "id": "advanced-alpha",
+        "name": "Alpha Research"
+      },
+      {
+        "id": "advanced-beta",
+        "name": "Beta Research"
+      },
+      {
+        "id": "advanced-gamma",
+        "name": "Gamma Research"
+      }
+    ],
+    "tasks": 72,
+    "runs": 72,
+    "stateCounts": {
+      "pending": 12,
+      "active": 12,
+      "attention": 12,
+      "completed": 12,
+      "other": 24
+    },
+    "historicFailuresExcludedFromCurrentAttention": true
+  },
+  "browser": {
+    "executable": "/usr/bin/google-chrome",
+    "version": "154.0.8037.57"
+  },
+  "checks": [
+    {
+      "scenario": "multi-candidates",
+      "name": "Multiselect edits remain candidates and preserve keyboard focus",
+      "passed": true
+    },
+    {
+      "scenario": "multi-candidates",
+      "name": "Search commits project OR and state OR with fieldwise AND exactly once",
+      "passed": true
+    },
+    {
+      "scenario": "multi-candidates",
+      "name": "Text is ANDed with both committed multiselect fields",
+      "passed": true
+    },
+    {
+      "scenario": "multi-candidates",
+      "name": "Back and Forward restore full committed selection snapshots and discard candidates",
+      "passed": true
+    },
+    {
+      "scenario": "canonical-empty-and-single",
+      "name": "A single project and legacy state canonicalize to project/filter",
+      "passed": true
+    },
+    {
+      "scenario": "canonical-empty-and-single",
+      "name": "Empty selections mean all without an invented All option",
+      "passed": true
+    },
+    {
+      "scenario": "canonical-empty-and-single",
+      "name": "Pending and Other are real current-task categories with JSON single-state URLs",
+      "passed": true
+    },
+    {
+      "scenario": "ime-multiselect",
+      "name": "Composing Enter does not submit any candidates; noncomposing Enter submits once",
+      "passed": true
+    },
+    {
+      "scenario": "fixed-project-scope",
+      "name": "A project route is the authoritative fixed scope despite a conflicting multiselect URL",
+      "passed": true
+    },
+    {
+      "scenario": "multi-sort-url",
+      "name": "Three-level URL sorting applies declared priority before real pagination",
+      "passed": true
+    },
+    {
+      "scenario": "legacy-single-sort-url",
+      "name": "The legacy single-order URL remains compatible with real task sorting",
+      "passed": true
+    },
+    {
+      "scenario": "header-sort-removal",
+      "name": "The real header context menu removes only its sort and preserves the other two priorities",
+      "passed": true
+    },
+    {
+      "scenario": "header-sort-removal",
+      "name": "Removing another real header sort retains its remaining single priority through legacy order",
+      "passed": true
+    },
+    {
+      "scenario": "column-and-sort-dialog",
+      "name": "Column and sorting controls are unapplied local drafts with keyboard reordering",
+      "passed": true
+    },
+    {
+      "scenario": "column-and-sort-dialog",
+      "name": "Apply preserves main query drafts and input identity while sorting hidden fields",
+      "passed": true
+    },
+    {
+      "scenario": "column-and-sort-dialog",
+      "name": "Settings close offers Keep and Discard without mutating applied column preferences",
+      "passed": true
+    },
+    {
+      "scenario": "column-and-sort-dialog",
+      "name": "Changing sort priority reorders actual tasks and persists ordered hidden-column sort rules",
+      "passed": true
+    },
+    {
+      "scenario": "column-and-sort-dialog",
+      "name": "Removing rules retains exactly one supported sort without stale secondary priorities",
+      "passed": true
+    },
+    {
+      "scenario": "settings-native-history-guard",
+      "name": "Native Back keeps dirty table drafts until an explicit discard decision",
+      "passed": true
+    },
+    {
+      "scenario": "mobile-candidates-dark",
+      "name": "Mobile Filters edits the same candidates and Search commits once then restores focus",
+      "passed": true
+    },
+    {
+      "scenario": "mobile-candidates-dark",
+      "name": "Closing and reopening mobile Filters retains unapplied candidates without changing committed results",
+      "passed": true
+    },
+    {
+      "scenario": "mobile-multi-sort",
+      "name": "Narrow mobile uses the same three-level sorted page and a reachable column settings dialog",
+      "passed": true
+    },
+    {
+      "scenario": "invalid-unknown-project",
+      "name": "unknown-project is explicitly rejected instead of returning unfiltered success",
+      "passed": true
+    },
+    {
+      "scenario": "invalid-unknown-state",
+      "name": "unknown-state is explicitly rejected instead of returning unfiltered success",
+      "passed": true
+    },
+    {
+      "scenario": "invalid-malformed-projects",
+      "name": "malformed-projects is explicitly rejected instead of returning unfiltered success",
+      "passed": true
+    },
+    {
+      "scenario": "invalid-object-states",
+      "name": "object-states is explicitly rejected instead of returning unfiltered success",
+      "passed": true
+    },
+    {
+      "scenario": "invalid-duplicate-sort",
+      "name": "duplicate-sort is explicitly rejected instead of returning unfiltered success",
+      "passed": true
+    },
+    {
+      "scenario": "invalid-too-many-sorts",
+      "name": "too-many-sorts is explicitly rejected instead of returning unfiltered success",
+      "passed": true
+    },
+    {
+      "scenario": "invalid-unknown-sort-field",
+      "name": "unknown-sort-field is explicitly rejected instead of returning unfiltered success",
+      "passed": true
+    },
+    {
+      "scenario": "invalid-unknown-sort-direction",
+      "name": "unknown-sort-direction is explicitly rejected instead of returning unfiltered success",
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    "multiselect-uncommitted-candidates.png",
+    "multi-candidates-final.png",
+    "canonical-empty-and-single-final.png",
+    "ime-multiselect-final.png",
+    "fixed-project-scope-final.png",
+    "multi-sort-url-final.png",
+    "legacy-single-sort-url-final.png",
+    "header-sort-context-menu.png",
+    "header-sort-removal-final.png",
+    "column-sort-unapplied-dialog.png",
+    "column-and-sort-dialog-final.png",
+    "settings-native-history-guard-final.png",
+    "mobile-dark-candidates.png",
+    "mobile-candidates-dark-final.png",
+    "mobile-multi-sort-dialog.png",
+    "mobile-multi-sort-final.png",
+    "invalid-unknown-project-final.png",
+    "invalid-unknown-state-final.png",
+    "invalid-malformed-projects-final.png",
+    "invalid-object-states-final.png",
+    "invalid-duplicate-sort-final.png",
+    "invalid-too-many-sorts-final.png",
+    "invalid-unknown-sort-field-final.png",
+    "invalid-unknown-sort-direction-final.png"
+  ],
+  "observations": [
+    {
+      "scenario": "multi-candidates",
+      "type": "viewport-width",
+      "viewport": 1440,
+      "document": 1440
+    },
+    {
+      "scenario": "multi-candidates",
+      "type": "canonical-navigation",
+      "events": []
+    },
+    {
+      "scenario": "canonical-empty-and-single",
+      "type": "canonical-navigation",
+      "events": [
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&filter=completed&project=advanced-beta&page=1",
+          "kind": "push"
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&page=1",
+          "kind": "push"
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&page=1&states=%5B%22pending%22%5D",
+          "kind": "push"
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&states=%5B%22other%22%5D&page=1",
+          "kind": "push"
+        }
+      ]
+    },
+    {
+      "scenario": "ime-multiselect",
+      "type": "canonical-navigation",
+      "events": [
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&q=release&page=1&projects=%5B%22advanced-alpha%22%2C%22advanced-gamma%22%5D&states=%5B%22active%22%2C%22completed%22%5D",
+          "kind": "push"
+        }
+      ]
+    },
+    {
+      "scenario": "fixed-project-scope",
+      "type": "canonical-navigation",
+      "events": [
+        {
+          "href": "http://127.0.0.1:5176/#project/advanced-alpha?mode=basic&view=list&states=%5B%22active%22%2C%22completed%22%5D&q=even&project=advanced-alpha&page=1",
+          "kind": "push"
+        }
+      ]
+    },
+    {
+      "scenario": "multi-sort-url",
+      "type": "canonical-navigation",
+      "events": []
+    },
+    {
+      "scenario": "legacy-single-sort-url",
+      "type": "canonical-navigation",
+      "events": []
+    },
+    {
+      "scenario": "header-sort-removal",
+      "type": "canonical-navigation",
+      "events": [
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&sorts=%5B%7B%22sortKey%22%3A%22projectName%22%2C%22direction%22%3A%22descending%22%7D%2C%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22ascending%22%7D%5D&page=1",
+          "kind": "push"
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&page=1&order=projectName%3Adescending",
+          "kind": "push"
+        }
+      ]
+    },
+    {
+      "scenario": "column-and-sort-dialog",
+      "type": "canonical-navigation",
+      "events": [
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&sorts=%5B%7B%22sortKey%22%3A%22projectName%22%2C%22direction%22%3A%22descending%22%7D%5D&page=1",
+          "kind": "push"
+        }
+      ]
+    },
+    {
+      "scenario": "settings-native-history-guard",
+      "type": "canonical-navigation",
+      "events": [
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&page=2",
+          "kind": "push"
+        },
+        {
+          "href": "http://127.0.0.1:5176/#workbench?view=list&mode=basic",
+          "kind": "traverse"
+        }
+      ]
+    },
+    {
+      "scenario": "mobile-candidates-dark",
+      "type": "viewport-width",
+      "viewport": 390,
+      "document": 390
+    },
+    {
+      "scenario": "mobile-candidates-dark",
+      "type": "canonical-navigation",
+      "events": [
+        {
+          "href": "http://127.0.0.1:5176/#workbench?mode=basic&view=list&q=release&page=1&projects=%5B%22advanced-alpha%22%2C%22advanced-beta%22%5D&states=%5B%22active%22%2C%22completed%22%5D",
+          "kind": "push"
+        }
+      ]
+    },
+    {
+      "scenario": "mobile-multi-sort",
+      "type": "viewport-width",
+      "viewport": 320,
+      "document": 320
+    },
+    {
+      "scenario": "mobile-multi-sort",
+      "type": "viewport-width",
+      "viewport": 320,
+      "document": 320
+    },
+    {
+      "scenario": "mobile-multi-sort",
+      "type": "canonical-navigation",
+      "events": []
+    },
+    {
+      "scenario": "invalid-unknown-project",
+      "type": "canonical-navigation",
+      "events": []
+    },
+    {
+      "scenario": "invalid-unknown-state",
+      "type": "canonical-navigation",
+      "events": []
+    },
+    {
+      "scenario": "invalid-malformed-projects",
+      "type": "canonical-navigation",
+      "events": []
+    },
+    {
+      "scenario": "invalid-object-states",
+      "type": "canonical-navigation",
+      "events": []
+    },
+    {
+      "scenario": "invalid-duplicate-sort",
+      "type": "canonical-navigation",
+      "events": []
+    },
+    {
+      "scenario": "invalid-too-many-sorts",
+      "type": "canonical-navigation",
+      "events": []
+    },
+    {
+      "scenario": "invalid-unknown-sort-field",
+      "type": "canonical-navigation",
+      "events": []
+    },
+    {
+      "scenario": "invalid-unknown-sort-direction",
+      "type": "canonical-navigation",
+      "events": []
+    }
+  ],
+  "errors": [],
+  "failures": [],
+  "requests": [
+    {
+      "scenario": "multi-candidates",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "multi-candidates",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "multi-candidates",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "multi-candidates",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "canonical-empty-and-single",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "canonical-empty-and-single",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "ime-multiselect",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "ime-multiselect",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "fixed-project-scope",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "fixed-project-scope",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "multi-sort-url",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "multi-sort-url",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "multi-sort-url",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "multi-sort-url",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "legacy-single-sort-url",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "legacy-single-sort-url",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "legacy-single-sort-url",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "legacy-single-sort-url",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "header-sort-removal",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "header-sort-removal",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "column-and-sort-dialog",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "column-and-sort-dialog",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "column-and-sort-dialog",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "column-and-sort-dialog",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "settings-native-history-guard",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "settings-native-history-guard",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "mobile-candidates-dark",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "mobile-candidates-dark",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "mobile-multi-sort",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "mobile-multi-sort",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "invalid-unknown-project",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "invalid-unknown-project",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "invalid-unknown-state",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "invalid-unknown-state",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "invalid-malformed-projects",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "invalid-malformed-projects",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "invalid-object-states",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "invalid-object-states",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "invalid-duplicate-sort",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "invalid-duplicate-sort",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "invalid-too-many-sorts",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "invalid-too-many-sorts",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "invalid-unknown-sort-field",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "invalid-unknown-sort-field",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    },
+    {
+      "scenario": "invalid-unknown-sort-direction",
+      "method": "GET",
+      "path": "/api/auth/state"
+    },
+    {
+      "scenario": "invalid-unknown-sort-direction",
+      "method": "GET",
+      "path": "/api/bootstrap"
+    }
+  ],
+  "writes": [],
+  "unexpectedApi": [],
+  "blockedExternal": []
+}

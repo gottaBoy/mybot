@@ -3,9 +3,12 @@ from __future__ import annotations
 import ipaddress
 import re
 from pathlib import PurePosixPath
+from typing import Literal
 from urllib.parse import urlsplit
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+
+from .saved_views import SavedViewCreate, SavedViewDelete, SavedViewUpdate
 
 
 class Input(BaseModel):
@@ -79,6 +82,11 @@ class DefaultModel(Input):
     model_id: str = Field(min_length=1, max_length=100)
 
 
+class ModelTest(Input):
+    request_id: str = Field(min_length=8, max_length=100, pattern=r"^[A-Za-z0-9_-]+$")
+    consent: bool = False
+
+
 class BackendCreate(Input):
     name: str = Field(min_length=1, max_length=80)
     kind: str = Field(default="openmausbot", pattern="^openmausbot$")
@@ -150,6 +158,37 @@ class RunRetry(Input):
     acknowledge_replay: bool = False
     request_id: str = Field(min_length=8, max_length=100)
     snapshot_hash: str = Field(pattern="^[0-9a-f]{64}$")
+
+
+class RecoveryIntentConfig(Input):
+    coordinator_model: str = Field(min_length=1, max_length=100)
+    researcher_model: str = Field(min_length=1, max_length=100)
+    reviewer_model: str = Field(min_length=1, max_length=100)
+    max_calls: int = Field(ge=1, le=8)
+    parallel: int = Field(ge=1, le=2)
+    minutes: int = Field(ge=1, le=30)
+    max_output_tokens: int = Field(ge=256, le=4096)
+    call_timeout_seconds: int = Field(ge=10, le=300)
+
+
+class RecoveryIntentCreate(Input):
+    request_id: str = Field(min_length=8, max_length=100, pattern=r"^[A-Za-z0-9_-]+$")
+    mode: Literal["retry", "resume"]
+    snapshot_hash: str = Field(pattern="^[0-9a-f]{64}$")
+    config: RecoveryIntentConfig | None = None
+
+    @model_validator(mode="after")
+    def resources_match_operation(self):
+        if self.mode == "retry" and self.config is None:
+            raise ValueError("recovery_intent_config_required")
+        if self.mode == "resume" and self.config is not None:
+            raise ValueError("recovery_resume_resources_locked")
+        return self
+
+
+class RecoveryIntentExecute(Input):
+    consent: bool = False
+    acknowledge_replay: bool = False
 
 
 class ArtifactDecision(Input):
