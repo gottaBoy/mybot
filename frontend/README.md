@@ -267,3 +267,47 @@ explicit `MYBOT_BROWSER_FIXTURE=1`; never point it at the user's 4180.
 checks the actual local service using intercepted GET-only browser traffic. It
 must not seed records, start models or collect private DOM/screenshots. Its
 reports default to the Git-ignored private `.runtime` directory.
+
+## Bounded Task Query Client
+
+The task list uses `GET /api/tasks/query` only when Bootstrap explicitly
+advertises `capabilities.task_query: true`. Older backends keep their existing
+local list. An advertised query endpoint failing, returning 403/404, or returning
+an invalid 2xx body never silently falls back to Bootstrap rows.
+
+The client validates the exact response contract and sent request snapshot,
+including scope, effective sorts, page arithmetic and task/Run relationships.
+The server owns text matching and ordering. Astryx renders each returned page
+unchanged, with its sort controls retained; it does not re-sort or slice it.
+Browser and Python Unicode tables are not assumed to be identical.
+
+Drafts do not make query requests. Obsolete reads are aborted and discarded.
+Same-query refresh retains rows with a busy state; failed reads hide the rows
+and offer explicit GET-only retry. Background Bootstrap polling does not cancel
+an in-flight query or automatically retry a failed one.
+
+Run the fully intercepted client suite without business writes:
+
+```bash
+MYBOT_BROWSER_SYNTHETIC=1 \
+MYBOT_FRONTEND_URL=http://127.0.0.1:5176/ \
+TASK_QUERY_CLIENT_EVIDENCE_DIR=/tmp/mybot-task-query-client \
+node scripts/verify-task-query-client.mjs
+```
+
+This synthetic script imports a typed test fixture and was verified with
+Node 24.21.0. Older supported Node releases may require
+`node --experimental-strip-types scripts/verify-task-query-client.mjs`.
+
+`verify-task-query-live.mjs` requires `MYBOT_BROWSER_FIXTURE=1` and a **fresh**
+empty disposable fixture started as above. It seeds only synthetic projects and
+tasks, compares the actual API's exact page IDs to rendered desktop/mobile
+rows, and must never target the user's backend. Its output directory is
+`TASK_QUERY_LIVE_EVIDENCE_DIR`.
+
+Evidence and rollout limits:
+`evidence/server-pagination-2026-11-17/README.md` and
+`../docs/decisions/ADR-0012-task-query-client-admission.md`.
+This slice does not reduce Bootstrap or paginate Inspector history. The user's
+4180 backend has not been restarted for this capability, so 5173 continues its
+legacy list path there. Commit/push does not activate a running backend.

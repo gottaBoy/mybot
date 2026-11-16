@@ -59,7 +59,7 @@ export type Bootstrap = {
     available: boolean
     auth: string
   }>
-  capabilities: { backend_sync: boolean }
+  capabilities: { backend_sync: boolean; task_query?: boolean }
 }
 export type Snapshot = {
   context_hash: string

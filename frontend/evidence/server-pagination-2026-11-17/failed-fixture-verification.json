@@ -1,0 +1,56 @@
+{
+  "fixture": true,
+  "scenario": "full",
+  "base": "http://127.0.0.1:5176/",
+  "checks": [],
+  "errors": [],
+  "writes": [
+    "/api/auth"
+  ],
+  "screenshots": [
+    "login-desktop.png"
+  ],
+  "initialScriptResources": [
+    "http://127.0.0.1:5176/assets/app-DCbTM7E1.js",
+    "http://127.0.0.1:5176/assets/react-vendor-BJeFkKaq.js",
+    "http://127.0.0.1:5176/assets/playground-CBcEIhiZ.js",
+    "http://127.0.0.1:5176/assets/FocusedWorkbench-zPHhI4K0.js",
+    "http://127.0.0.1:5176/assets/useViewport-DMKi1Rn3.js",
+    "http://127.0.0.1:5176/assets/useTableTreeState-BdJOQMWd.js",
+    "http://127.0.0.1:5176/assets/Table-CaXOTihq.js",
+    "http://127.0.0.1:5176/assets/useScrollableArea-BBpUqFsJ.js",
+    "http://127.0.0.1:5176/assets/scrollKeyboardDelegation-Bod-kY1l.js",
+    "http://127.0.0.1:5176/assets/scrollGeometry-B7jAdN05.js",
+    "http://127.0.0.1:5176/assets/MenuBottomSheetActionList-DEVnSW8E.js",
+    "http://127.0.0.1:5176/assets/List-CmPfVKML.js",
+    "http://127.0.0.1:5176/assets/listLayoutUpdates-DNN3FHkf.js",
+    "http://127.0.0.1:5176/assets/animatedLayout-BfqAVktC.js",
+    "http://127.0.0.1:5176/assets/LayoutChangeSnapshot-CWqOmSUx.js",
+    "http://127.0.0.1:5176/assets/ListItem-BXYHg-_A.js",
+    "http://127.0.0.1:5176/assets/menuItemRoles-Dx6Khe-i.js",
+    "http://127.0.0.1:5176/assets/useMenuDrillIn-UVY6q2DI.js",
+    "http://127.0.0.1:5176/assets/useMenuHover-BrcGgfhZ.js",
+    "http://127.0.0.1:5176/assets/clampInlineSize-C6G3hOHP.js",
+    "http://127.0.0.1:5176/assets/EmptyState-DLva25wb.js",
+    "http://127.0.0.1:5176/assets/useTableSortableState-BxKim3Vc.js",
+    "http://127.0.0.1:5176/assets/useTableSortable-BiYrQUDm.js",
+    "http://127.0.0.1:5176/assets/ComponentIcon-BnyozdUP.js",
+    "http://127.0.0.1:5176/assets/useIcon-CBgdp67-.js",
+    "http://127.0.0.1:5176/assets/DropdownMenu-zUvHa50K.js",
+    "http://127.0.0.1:5176/assets/accessibleName-C1nHDYs1.js",
+    "http://127.0.0.1:5176/assets/menuTouchAction.stylex-Bjo3-Llu.js",
+    "http://127.0.0.1:5176/assets/DropdownMenuRadioItem-DXyyHfU5.js",
+    "http://127.0.0.1:5176/assets/DropdownMenuGroup-Cl3QBdeh.js",
+    "http://127.0.0.1:5176/assets/rotate-ccw-CQBwj1EQ.js",
+    "http://127.0.0.1:5176/assets/table-2-BCssbLFK.js",
+    "http://127.0.0.1:5176/assets/MultiSelector-CAgeePHl.js",
+    "http://127.0.0.1:5176/assets/copy-ByERUVLI.js",
+    "http://127.0.0.1:5176/assets/download-B2N1NQeY.js",
+    "http://127.0.0.1:5176/assets/file-search-Cc5xXY2q.js",
+    "http://127.0.0.1:5176/assets/circle-check-CB1m_WJ9.js"
+  ],
+  "failure": {
+    "message": "Use a fresh disposable fixture directory for each verification\n\n1 !== 0\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Use a fresh disposable fixture directory for each verification\n\n1 !== 0\n\n    at verifyFullWorkbench (file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-workbench.mjs:2321:10)\n    at async file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-workbench.mjs:3171:5"
+  }
+}

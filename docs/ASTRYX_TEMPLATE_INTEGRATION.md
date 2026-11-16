@@ -217,3 +217,28 @@ PowerSearch/ComplexSelector已接通、完整JQL/字段多选、私有保存视�
 
 合同和限制见ADR-0010；证据`frontend/evidence/saved-views-2026-11-16/README.md`。
 原4180未重启，主服务启用仍需独立确认；不是新的执行型Workflow、连接器或设备接力。
+
+## 15. 服务端任务页接入
+
+2026-11-17，IZ-07.2沿现有table-filter/Table模式接入bounded task-query，不重生模板、
+不升级React/Astryx、不复制任务页或主题分支。既有单行查询、顶栏Quick find、表格右上列/
+排序工具、密度与中英文保持同一业务树。
+
+| 采用模式 | 本批适配 | 明确未扩大为 |
+| --- | --- | --- |
+| table-filter / query wrappers | 只从committed URL查询请求；能力明确准入，固定项目与SavedView保持合同 | 完整JQL、自动模型请求或未知backend静默回退 |
+| Table / sort hooks | server页原序透传，表头仍可设置排序，提供全量行数/页起点ARIA坐标 | 在browser重排一页来冒充全局排序、跨页不可变快照 |
+| Skeleton / result state | 不同query隐藏旧结果；同key刷新保留行并busy；失败显式GET重试 | Provider/写请求自动重试、错误归零或成功空态 |
+| refresh / query state | explicit成功revision触发显式重读；poll只使ready页失效，不取消loading或重试error | 每次Bootstrap对象变化即重放、403/404后台无限重试 |
+| shell / canonical navigation | Back/Forward保留请求页；clamped页只影响展示，不rewrite history | 全浏览器/真机导航认证或持久结果租约 |
+
+严格DTO与请求绑定不在browser重算文本匹配/排序：JS与Python可能使用不同Unicode版本；
+server算法标识不是Intl等价或冻结所有Unicode映射，有限15样例不构成全域证明。
+合同ADR-0012；870前端（38文件）/499Python/typecheck/build通过；稳定生产专项35项/6PNG、
+实际API6项/2PNG、高级30项/24PNG最终通过。包含真实6s poll不取消8s query、不重试403，
+显式Retry只1GET及HTML401清理。最终综合58项/60PNG也已通过，共92PNG、无pageerror。
+非空fixture的fresh guard失败保留，换只读确认空库的fixture.OaPiOM后重跑成功。采用证据见
+`frontend/evidence/server-pagination-2026-11-17/README.md`。
+Bootstrap及Quick find/侧栏计数/Inspector历史尚未减量，不宣称全站规模改进。
+原4180/5173未重启，新能力未主环境启用；保存视图已启用事实不变。没有新增执行、
+设备、连接器或真实模型调用，原119/110统计不变。临时4187/5176已停止，本批提交push另记。

@@ -679,3 +679,20 @@ git -C /tmp/mybot-upstream-astryx rev-parse HEAD
   长反馈经React portal进入同一主题树内、页头下方的产品反馈区，不挤压手机标题。
   所有运行结果与主服务启用状态分开，见ADR-0010及
   `frontend/evidence/saved-views-2026-11-16/README.md`。
+
+## 28. Astryx服务端分页保序的REA复核（2026-11-17）
+
+- 身份：继续使用`meta/astryx`已安装Core0.7.13，既有研究commit为
+  `5770e5b197cf80d5a824667c23046887cc8fa0f5`。未升级、clone/fetch、复制源码或引入新依赖，
+  不把npm包和研究commit视为逐字节相同；原MIT/NOTICE保留。
+- R：阅读安装包`dist/Table/plugins/sortable/useTableSortableState.js`、
+  `useTableSortable.js`及对应`.d.ts`，并核对Table的`rowCount/rowIndexStart`接口。
+  状态hook会按自己的collator排序，而headless插件可只接收受控sort和onSortChange。
+- E：已有客户端Intl顺序不等于API的`unicode-natural-v1`；若将服务端第2页再次交给
+  本地排序/分页，可能改变页内顺序甚至得到空页。Python与浏览器Unicode表也不保证同版。
+- A：项目`DataTable.tsx`在服务端模式下向状态hook传空sort、将实际sort交给headless插件，
+  原样显示当前页并传全局行数/起始位置。旧后端保持原本地排序/分页，不复制第二套表格。
+  文字匹配/排序由服务端负责；前端严格验证DTO、请求绑定、页算术和身份/状态关系，
+  不复算Unicode排序作为准入。比较器只留在测试fixture，15个共用样例不构成全域证明。
+- 验证与限制见ADR-0012和`frontend/evidence/server-pagination-2026-11-17/README.md`；
+  源码观察、隔离浏览器证据与主服务启用分列。没有引入任意Workflow、代码执行或多端能力。

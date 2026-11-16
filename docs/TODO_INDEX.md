@@ -1,6 +1,6 @@
 # 全部待办索引
 
-更新：2026-11-16（Asia/Singapore）。本页是集中阅读入口，不替代
+更新：2026-11-17（Asia/Singapore）。本页是集中阅读入口，不替代
 [原工作项台账](WORK_ITEMS.md) 或 [产品 UI 审计](PRODUCT_UI_AUDIT.md)。
 
 **最新研究入口：** 用户提供新的 Issues 截图，要求深度学习后继续。
@@ -18,8 +18,34 @@ UI 的 WUI 编号是交叉整改视图，执行包是实施组织方式，均可
 
 ## 当前执行包
 
+### 2026-11-17 多Agent接入服务端任务列表
+
+本批IZ-07.2已完成所列本地合同验收和证据归档；下表不增加原119项计数。
+新API基线`608b8bd`已push，本批按独立提交交付，实际回执以git log及origin/main为准；
+不能把进度描述或提交当作主环境启用。
+
+| 工作项 / 分工 | 当前状态 | 合同与边界 |
+| --- | --- | --- |
+| 严格查询client / 合同Agent | 本地完成并回归 | 校验DTO/分页/请求绑定/ID关系/项目范围与分类；文字与排序以server为权威 |
+| 页面与Table接入 / 根Agent | 本地完成并回归 | capability=true准入；保序、竞态/GET重试/clamp；explicit与poll隔离，loading/error不被poll重放 |
+| 浏览器异常/权限补测 / 浏览器Agent | 本地完成并回归 | 35项/6PNG；真实poll不取消慢query/不重放403，HTML401清理；均隔离数据 |
+| ADR与进度 / 文档Agent | 已记录本地验收 | ADR-0012及最终证据已归档；提交与push回执另记 |
+| IZ-07.3 Bootstrap与详情减量 | 待办 | Quick find/侧栏/Inspector仍读全量，先立独立详情/历史与计数合同 |
+| IZ-07.4 规模化与统一验收 | 部分证据，不关闭 | 已有隔离分页/浏览器结果，尚无主环境启用或整链规模结论 |
+
+最终870项前端（38文件）/499Python/typecheck/build通过；专项35项/6PNG、实际API6项/2PNG、
+高级30项/24PNG、综合58项/60PNG稳定生产构建通过，共92PNG、无pageerror。
+首轮fresh guard发现非空fixture即停止，保留失败后切到只读确认空库的fixture.OaPiOM并通过。
+[证据汇总](../frontend/evidence/server-pagination-2026-11-17/README.md)为准。
+合同：[ADR-0012](decisions/ADR-0012-task-query-client-admission.md)。
+JS/Python Unicode数据版本可能不同，有限共享样例不等于全Unicode等价证明；
+浏览器保序，不重新判定文本命中或全量顺序。旧backend保留Intl本地路径。
+原4180/5173未重启，主backend没有task_query能力，继续legacy；保存视图仍启用。
+临时4187/5176已停止。无真实模型/凭证/正式DB写入/执行权限或部署，119/9/110不变。
+
 ### 2026-11-16 逐项提交与IZ-07服务端查询
 
+以下为11月16日执行快照，IZ-07.2待办现已由上方11月17日本地验收取代。
 已验收的累计工作已提交并推送`f9e5484`至`origin/main`。之后按下面独立子项交付，
 每项都需记录和验证再提交push，不能将IZ-07.1当全部分页迁移或关闭全部110项。
 

@@ -1,6 +1,31 @@
 # 下次从这里继续
 
-更新日期：2026-11-16（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
+更新日期：2026-11-17（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
+
+**最新完成切片（2026-11-17，IZ-07.2本地验收完成）：**
+用户明确要求多Agent实现；根Agent负责页面/表格整合和全量回归，合同Agent复核严格client，
+浏览器Agent补异常/权限场景，文档Agent整理ADR与进度。已推送基线为`f9e5484`及查询API
+`608b8bd`；本批IZ-07.2已完成本地验收/记录，按独立提交交付。
+实际commit/push状态以git log及origin/main为准，不把代码记录当主环境启用。
+先读[ADR-0012](docs/decisions/ADR-0012-task-query-client-admission.md)。
+新后端明确advertise task_query=true才采用服务端任务列表，缺能力保留原Bootstrap路径；
+声明能力后404/503/异常2xx明确失败，不能静默回退。草稿不请求，响应按query key隔离、
+取消/丢弃旧读，分页不再二次sort/slice，server clamped page只用于展示，不改请求URL/history。
+Bootstrap区分explicit/poll刷新：显式成功推进refreshRevision，poll只使ready页失效重查，
+不取消loading或自动重试403/404/error，请求不再依赖每轮data对象identity；慢查询补测已通过。
+服务端是文字匹配/排序权威，browser仅严格校验结构/算术/请求绑定/身份与分类关系并保序；
+不能因JS/Python Unicode版本不同而重算文字/排序拒绝合法页。15共享样例不是全Unicode证明。
+最终870前端（38文件）/499Python/typecheck/build通过；专项35项/6PNG、实际API6项/2PNG、
+高级30项/24PNG均在稳定生产构建通过，无pageerror。含8s慢GET跨真实6s poll只1GET、
+403后6.5s poll无自动重试、显式Retry恰好1GET及HTML401清私有投影。
+综合最终58项/60PNG通过，四份报告合计92PNG、无pageerror。首轮因fixture已有记录在
+fresh guard停止，保留失败后改用只读确认空库的全新fixture.OaPiOM，非用户正式库。
+证据`frontend/evidence/server-pagination-2026-11-17/`已归档；既有大包/httpx警告保留。
+本批跨11月16/17日，保留各报告实际时间，不用早期2项检查冒充最终验收。
+Bootstrap、Quick find/侧栏计数与Inspector历史仍全量，下一项IZ-07.3待办，07.4不关闭，
+不宣称整体提速。临时验收4187/5176已停止。
+原4180/5173未重启，新能力尚未在主后端启用，用户主入口继续legacy，保存视图仍已启用。
+原119项仍9完成/110未完全完成，无真实Provider/凭证读取/正式DB写入/执行权限提升或部署。
 
 **最新开发切片（2026-11-16）：**
 已验收累计成果已提交`f9e5484`并push到origin/main，main无冲突/未强推。

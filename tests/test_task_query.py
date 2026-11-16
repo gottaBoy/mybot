@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 import sqlite3
 
 from fastapi.testclient import TestClient
@@ -72,6 +73,35 @@ def page(client, **kwargs):
 
 def ids(value):
     return [item["task"]["id"] for item in value["items"]]
+
+
+def test_bootstrap_explicitly_advertises_readonly_task_query_support(task_query):
+    client, _, _ = task_query
+    assert client.get("/api/bootstrap").json()["capabilities"]["task_query"] is True
+
+
+@pytest.mark.parametrize("space", ["\u0085", "\u001c", "\u001d", "\u001e", "\u001f"])
+def test_query_canonicalization_uses_python_whitespace(task_query, space):
+    client, _, _ = task_query
+    value = page(client, query=criteria(
+        text=f"{space}release{space}",
+        jql=f"{space}order{space}by{space}summary{space}desc{space}",
+    ))
+    assert value["query"]["text"] == "release"
+    assert value["query"]["jql"] == "ORDER BY SUMMARY DESC"
+    assert value["sorts"] == [{"sortKey": "title", "direction": "descending"}]
+    assert value["total"] == 72
+
+
+def test_query_keeps_bom_as_literal_text_instead_of_whitespace(task_query):
+    client, _, _ = task_query
+    value = page(client, query=criteria(text="\ufeffrelease\ufeff"))
+    assert value["query"]["text"] == "\ufeffrelease\ufeff"
+    assert value["total"] == 0
+    response = client.get("/api/tasks/query", params=params(
+        query=criteria(jql="\ufeffORDER BY SUMMARY DESC"),
+    ))
+    assert response.status_code == 422
 
 
 def test_default_page_counts_current_tasks_not_attempts_and_has_bounded_projection(task_query):
@@ -373,3 +403,10 @@ def test_collation_handles_leading_zero_and_long_numbers_without_integer_coercio
     assert natural_compare("Release 2", "release 10") < 0
     assert natural_compare("Release 02", "Release 2") == 0
     assert natural_compare("a" + "9" * 5000, "a1" + "0" * 5000) < 0
+
+
+@pytest.mark.parametrize("left,right,expected", json.loads(
+    (Path(__file__).parent / "fixtures/task-query-order.json").read_text()
+))
+def test_versioned_collation_shared_browser_cases(left, right, expected):
+    assert natural_compare(left, right) == expected

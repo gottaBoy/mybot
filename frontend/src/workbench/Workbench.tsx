@@ -145,6 +145,7 @@ export function Workbench() {
   )
   const t: Copy = (zh, en) => (locale === 'zh' ? zh : en)
   const [data, setData] = useState<Bootstrap | null>(null)
+  const [queryRefreshRevision, setQueryRefreshRevision] = useState(0)
   const [auth, setAuth] = useState({ authenticated: true, required: false })
   const [authChecked, setAuthChecked] = useState(false)
   const [error, setError] = useState('')
@@ -179,41 +180,46 @@ export function Workbench() {
   const [actionBusy, setActionBusy] = useState('')
   const request = useRef<AbortController | null>(null)
   const generation = useRef(0)
-  const refresh = useCallback(async () => {
-    const version = ++generation.current
-    request.current?.abort()
-    const controller = new AbortController()
-    request.current = controller
-    setLoading(true)
-    try {
-      const state = await api<{ authenticated: boolean; required: boolean }>(
-        '/auth/state',
-        { signal: controller.signal },
-      )
-      if (version !== generation.current) return
-      setAuth(state)
-      setAuthChecked(true)
-      if (!state.authenticated) {
-        resetWorkbenchNavigation()
-        clearModelTests()
-        clearListContinuityCache()
-        setData(null)
-        return
+  const refresh = useCallback(
+    async (cause: 'explicit' | 'poll' = 'explicit') => {
+      const version = ++generation.current
+      request.current?.abort()
+      const controller = new AbortController()
+      request.current = controller
+      setLoading(true)
+      try {
+        const state = await api<{ authenticated: boolean; required: boolean }>(
+          '/auth/state',
+          { signal: controller.signal },
+        )
+        if (version !== generation.current) return
+        setAuth(state)
+        setAuthChecked(true)
+        if (!state.authenticated) {
+          resetWorkbenchNavigation()
+          clearModelTests()
+          clearListContinuityCache()
+          setData(null)
+          return
+        }
+        const next = await api<Bootstrap>('/bootstrap', {
+          signal: controller.signal,
+        })
+        if (version === generation.current) {
+          setData(next)
+          if (cause === 'explicit')
+            setQueryRefreshRevision((revision) => revision + 1)
+          setError('')
+        }
+      } catch (reason) {
+        if (!controller.signal.aborted && version === generation.current)
+          setError(reason instanceof Error ? reason.message : String(reason))
+      } finally {
+        if (version === generation.current) setLoading(false)
       }
-      const next = await api<Bootstrap>('/bootstrap', {
-        signal: controller.signal,
-      })
-      if (version === generation.current) {
-        setData(next)
-        setError('')
-      }
-    } catch (reason) {
-      if (!controller.signal.aborted && version === generation.current)
-        setError(reason instanceof Error ? reason.message : String(reason))
-    } finally {
-      if (version === generation.current) setLoading(false)
-    }
-  }, [])
+    },
+    [],
+  )
   useEffect(() => {
     const sync = (event?: Event) => {
       if (event && !allowWorkbenchNavigation(event)) return
@@ -287,7 +293,8 @@ export function Workbench() {
   useEffect(() => {
     if (!data?.runs.some((run) => activeStatuses.has(run.status))) return
     const timer = window.setInterval(() => {
-      if (!document.hidden && !loading && !form && !commands) void refresh()
+      if (!document.hidden && !loading && !form && !commands)
+        void refresh('poll')
     }, 6000)
     return () => clearInterval(timer)
   }, [data, refresh, loading, form, commands])
@@ -786,6 +793,7 @@ export function Workbench() {
               >
                 <FocusedWorkbench
                   data={data}
+                  refreshRevision={queryRefreshRevision}
                   t={t}
                   locale={locale}
                   contextProject={

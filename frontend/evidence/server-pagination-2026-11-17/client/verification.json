@@ -1,0 +1,538 @@
+{
+  "synthetic": true,
+  "checks": [
+    "desktop: exact first-page IDs follow server order",
+    "desktop: draft stays local and Enter applies the complete query",
+    "desktop: page 2 has exact rows, is not resliced, and survives reload",
+    "desktop: Back and Forward restore exact server pages",
+    "desktop: descending server sorting is preserved without local resorting",
+    "desktop: a read failure hides old results and explicit retry preserves the query",
+    "desktop: malformed 2xx is rejected instead of falling back to local data",
+    "desktop: a delayed old query cannot replace the current results",
+    "desktop: SavedView replacement protects drafts and issues one exact snapshot query",
+    "desktop: fixed project scope wins over a conflicting URL",
+    "desktop: clamped server pages do not rewrite the requested history entry",
+    "desktop: an old backend without capability keeps the existing local projection",
+    "desktop: advertised capability with a missing route is an error, never local fallback",
+    "desktop: same-query refresh retains exact rows while marked busy",
+    "desktop: an 8-second query survives active-Run polling without being restarted",
+    "desktop: selected Inspector survives a same-query refresh",
+    "desktop: server query, draft isolation, committed search and pagination",
+    "desktop: 403 hides results, keeps the query and requires explicit retry",
+    "desktop: non-JSON 401 clears private list/Inspector state before showing sign-in",
+    "mobile: exact first-page IDs follow server order",
+    "mobile: draft stays local and Enter applies the complete query",
+    "mobile: page 2 has exact rows, is not resliced, and survives reload",
+    "mobile: Back and Forward restore exact server pages",
+    "mobile: descending server sorting is preserved without local resorting",
+    "mobile: a read failure hides old results and explicit retry preserves the query",
+    "mobile: malformed 2xx is rejected instead of falling back to local data",
+    "mobile: a delayed old query cannot replace the current results",
+    "mobile: SavedView replacement protects drafts and issues one exact snapshot query",
+    "mobile: fixed project scope wins over a conflicting URL",
+    "mobile: clamped server pages do not rewrite the requested history entry",
+    "mobile: an old backend without capability keeps the existing local projection",
+    "mobile: advertised capability with a missing route is an error, never local fallback",
+    "mobile: server query, draft isolation, committed search and pagination",
+    "mobile: 403 hides results, keeps the query and requires explicit retry",
+    "mobile: non-JSON 401 clears private list/Inspector state before showing sign-in"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+4%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=3&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=3&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22descending%22%7D%5D&page=2&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+3%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22descending%22%7D%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+3%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22descending%22%7D%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22descending%22%7D%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22descending%22%7D%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+4%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22descending%22%7D%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+2%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22descending%22%7D%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22descending%22%7D%5D&page=2&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/saved-views/11111111-1111-4111-8111-111111111111",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/saved-views/11111111-1111-4111-8111-111111111111",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+4%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22ascending%22%7D%5D&page=1&page_size=50"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%22query-alpha%22%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20&scope_project_id=query-alpha"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=99&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+2%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+2%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+3%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+4%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=3&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=3&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22descending%22%7D%5D&page=2&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+3%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22descending%22%7D%5D&page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+3%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22descending%22%7D%5D&page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22descending%22%7D%5D&page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22descending%22%7D%5D&page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+4%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22descending%22%7D%5D&page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+2%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22descending%22%7D%5D&page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22descending%22%7D%5D&page=2&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/saved-views/11111111-1111-4111-8111-111111111111",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/saved-views/11111111-1111-4111-8111-111111111111",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+4%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22ascending%22%7D%5D&page=1&page_size=50"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%22query-alpha%22%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20&scope_project_id=query-alpha"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=99&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+2%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+2%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+3%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    }
+  ],
+  "writes": [],
+  "errors": [],
+  "screenshots": [
+    "desktop.png",
+    "desktop-forbidden.png",
+    "desktop-signed-out.png",
+    "mobile.png",
+    "mobile-forbidden.png",
+    "mobile-signed-out.png"
+  ]
+}

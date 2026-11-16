@@ -64,6 +64,9 @@ export function AppDataTable<T extends Record<string, unknown>>({
   page,
   pageSize,
   sorting,
+  serverSorted = false,
+  totalRows,
+  rowStart,
 }: {
   rows: T[]
   columns: AppColumn<T>[]
@@ -73,17 +76,30 @@ export function AppDataTable<T extends Record<string, unknown>>({
   page?: number
   pageSize?: number
   sorting?: AppTableSorting
+  serverSorted?: boolean
+  totalRows?: number
+  rowStart?: number
 }) {
   const density = useAppDensity()
   const { sortedData, sortConfig } = useTableSortableState({
     data: rows,
     ...sorting,
+    ...(serverSorted ? { sort: [] } : {}),
   })
-  const sortable = useTableSortable<T>(sortConfig)
+  const sortable = useTableSortable<T>(
+    serverSorted
+      ? {
+          ...sortConfig,
+          sort: sorting?.sort ?? [],
+        }
+      : sortConfig,
+  )
   const offset = page && pageSize ? (page - 1) * pageSize : 0
-  const visible = pageSize
-    ? sortedData.slice(offset, offset + pageSize)
-    : sortedData
+  const ordered = serverSorted ? rows : sortedData
+  const visible =
+    !serverSorted && pageSize
+      ? ordered.slice(offset, offset + pageSize)
+      : ordered
   return (
     <Table<T>
       data={visible}
@@ -94,8 +110,10 @@ export function AppDataTable<T extends Record<string, unknown>>({
       density={resolveAppTableDensity(density, compact)}
       plugins={{ sortable }}
       emptyState={empty}
-      rowCount={pageSize ? rows.length : undefined}
-      rowIndexStart={pageSize ? offset + 1 : undefined}
+      rowCount={serverSorted ? totalRows : pageSize ? rows.length : undefined}
+      rowIndexStart={
+        serverSorted ? rowStart : pageSize ? offset + 1 : undefined
+      }
     />
   )
 }

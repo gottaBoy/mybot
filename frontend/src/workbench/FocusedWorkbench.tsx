@@ -18,6 +18,7 @@ import {
   CircleAlert,
   CircleCheck,
   CircleDot,
+  RefreshCw,
   X,
 } from 'lucide-react'
 import {
@@ -45,6 +46,7 @@ import {
   useSimultaneousTaskPanels,
 } from '../components/ui/useViewport'
 import type { Bootstrap, Project, Task } from './api'
+import { ApiError } from './api'
 import type { ListLocation } from './list-location'
 import { supportedListQuery } from './list-location'
 import { filterTaskItems, type WorkItem } from './projections'
@@ -62,6 +64,11 @@ import {
 } from './query-conditions'
 import { TaskTableSettings } from './TaskTableSettings'
 import { parseTaskSort } from './task-sort'
+import {
+  fetchTaskQueryPage,
+  type ServerTaskQueryPage,
+  type ServerTaskQuery,
+} from './task-query'
 import { useListContinuity } from './list-continuity'
 import { SavedViewsMenu } from './SavedViewsMenu'
 import {
@@ -98,6 +105,7 @@ const TaskBoard = lazy(() =>
 
 type Props = {
   data: Bootstrap
+  refreshRevision: number
   t: Copy
   locale: Locale
   query: string
@@ -120,6 +128,7 @@ type Props = {
 export function FocusedWorkbench(props: Props) {
   const {
     data,
+    refreshRevision,
     t,
     locale,
     query,
@@ -206,7 +215,7 @@ export function FocusedWorkbench(props: Props) {
     committedConditions.states.length ||
     (!contextProject && committedConditions.projects.length),
   )
-  const tasks = filterTaskItems(data, query, 'all', scope).filter((item) =>
+  const localTasks = filterTaskItems(data, query, 'all', scope).filter((item) =>
     matchesTaskConditions(item, committedConditions, scope),
   )
   const unavailableProject =
@@ -215,11 +224,145 @@ export function FocusedWorkbench(props: Props) {
       (id) => !data.projects.some((project) => project.id === id),
     )
   const queryPolicy = supportedListQuery(location)
-  const problem =
+  const localProblem =
     queryPolicy.error ??
     committedSelection.error ??
     (unavailableProject ? 'condition_value_unavailable' : undefined) ??
     (view === 'board' && location.jql ? 'jql_unavailable' : undefined)
+  const [serverPage, setServerPage] = useState<{
+    key?: string
+    kind: 'idle' | 'loading' | 'ready' | 'unavailable' | 'error'
+    value?: ServerTaskQueryPage
+    error?: string
+  }>({ kind: 'idle' })
+  const [queryRefresh, setQueryRefresh] = useState(0)
+  const observedRefresh = useRef({ data, refreshRevision })
+  const taskQueryEnabled = data.capabilities.task_query === true
+  const remoteQuery: ServerTaskQuery = {
+    text: query,
+    projects: [...committedConditions.projects],
+    states: [...committedConditions.states],
+    jql: location.jql,
+    mode: location.mode,
+  }
+  const remoteSorts = queryPolicy.sort ? [] : (parseTaskSort(sort) ?? [])
+  const remoteQueryKey = JSON.stringify([
+    data.workspace,
+    taskQueryEnabled,
+    view,
+    remoteQuery,
+    remoteSorts,
+    scope,
+    page,
+    pageSize,
+    localProblem,
+  ])
+  useEffect(() => {
+    if (!taskQueryEnabled || view !== 'list' || localProblem) {
+      setServerPage({ kind: 'idle' })
+      return
+    }
+    const controller = new AbortController()
+    let active = true
+    let timedOut = false
+    const timeout = setTimeout(() => {
+      timedOut = true
+      controller.abort()
+    }, 15_000)
+    setServerPage((previous) => ({
+      key: remoteQueryKey,
+      kind: 'loading',
+      value: previous.key === remoteQueryKey ? previous.value : undefined,
+    }))
+    void fetchTaskQueryPage(
+      {
+        query: remoteQuery,
+        sorts: remoteSorts,
+        scopeProjectId: scope,
+        page,
+        pageSize,
+      },
+      controller.signal,
+    )
+      .then((value) => {
+        if (active && !controller.signal.aborted)
+          setServerPage({ key: remoteQueryKey, kind: 'ready', value })
+      })
+      .catch((error: unknown) => {
+        if (!active || (controller.signal.aborted && !timedOut)) return
+        if (error instanceof ApiError && error.status === 404) {
+          setServerPage({
+            key: remoteQueryKey,
+            kind: 'unavailable',
+            error: 'unavailable',
+          })
+          return
+        }
+        setServerPage({
+          key: remoteQueryKey,
+          kind: 'error',
+          error:
+            error instanceof ApiError && error.status === 403
+              ? 'forbidden'
+              : 'invalid',
+        })
+      })
+      .finally(() => clearTimeout(timeout))
+    return () => {
+      active = false
+      clearTimeout(timeout)
+      controller.abort()
+    }
+  }, [remoteQueryKey, refreshRevision, queryRefresh])
+  useEffect(() => {
+    const previous = observedRefresh.current
+    observedRefresh.current = { data, refreshRevision }
+    // Background polls may revalidate a ready page, not interrupt a slow read
+    // or replay a failed query. Explicit refresh has its own revision.
+    if (
+      previous.data !== data &&
+      previous.refreshRevision === refreshRevision &&
+      serverPage.key === remoteQueryKey &&
+      serverPage.kind === 'ready'
+    )
+      setQueryRefresh((value) => value + 1)
+  }, [data, refreshRevision, remoteQueryKey, serverPage])
+  const currentServerPage =
+    serverPage.key === remoteQueryKey ? serverPage : undefined
+  const serverQueryProblem =
+    currentServerPage?.kind === 'error' ||
+    currentServerPage?.kind === 'unavailable'
+      ? 'task_query_error'
+      : undefined
+  const problem = localProblem ?? serverQueryProblem
+  const serverQueryErrorText =
+    currentServerPage?.error === 'unavailable'
+      ? t('服务端任务查询接口不可用。', 'The server task query is unavailable.')
+      : currentServerPage?.error === 'forbidden'
+        ? t('没有读取任务列表的权限。', 'Task list access is forbidden.')
+        : t(
+            '服务端查询未通过验证，未显示结果。',
+            'The server query could not be validated. No results were shown.',
+          )
+  const remoteReady = view === 'list' && Boolean(currentServerPage?.value)
+  const remoteActive = taskQueryEnabled && view === 'list' && !localProblem
+  const remoteBusy =
+    remoteActive &&
+    (!currentServerPage ||
+      currentServerPage.kind === 'loading' ||
+      currentServerPage.kind === 'idle')
+  const tasks =
+    remoteReady || !remoteActive
+      ? remoteReady
+        ? currentServerPage!.value!.items
+        : localTasks
+      : []
+  const resultTotal = remoteReady
+    ? currentServerPage!.value!.total
+    : tasks.length
+  const resultTotalPages = remoteReady
+    ? currentServerPage!.value!.total_pages
+    : Math.max(1, Math.ceil(tasks.length / pageSize))
   const runs = selectRuns(data, query, 'all', scope).filter((run) =>
     matchesRunConditions(
       run,
@@ -232,15 +375,16 @@ export function FocusedWorkbench(props: Props) {
   const scopeVisible =
     scopeRailOpen && dockedScope && (!active || !wide || simultaneousPanels)
   const collapsedScopeVisible = dockedScope && !scopeVisible && !active
-  const totalPages = Math.max(1, Math.ceil(tasks.length / pageSize))
-  const currentPage = Math.min(page, totalPages)
+  const currentPage = remoteReady
+    ? currentServerPage!.value!.page
+    : Math.min(page, resultTotalPages)
   const continuity = useListContinuity({
     rootRef: pageRoot,
     scrollRef: listScroll,
     selected,
     onSelectedChange: setSelected,
     resultIds: tasks.map((item) => item.id),
-    ready: view === 'list' && !problem,
+    ready: view === 'list' && !problem && (!remoteActive || remoteReady),
     scopeKey: JSON.stringify([data.workspace, contextProject?.id ?? 'work']),
   })
   useEffect(() => {
@@ -349,7 +493,14 @@ export function FocusedWorkbench(props: Props) {
       })
     },
   }
-  const sortedRows = useAppTableRows(rows, sorting)
+  const locallySortedRows = useAppTableRows(
+    rows,
+    remoteReady ? { ...sorting, sort: [] } : sorting,
+  )
+  const sortedRows = remoteReady ? rows : locallySortedRows
+  const pageRows = remoteReady
+    ? sortedRows
+    : sortedRows.slice((currentPage - 1) * pageSize, currentPage * pageSize)
   const pick = (item: WorkItem, button: HTMLButtonElement) => {
     trigger.current = button
     setSelected(item.id)
@@ -848,11 +999,11 @@ export function FocusedWorkbench(props: Props) {
               </span>
               <span className="wf-result-count" role="status">
                 <strong>
-                  {problem
+                  {problem || (remoteBusy && !remoteReady)
                     ? '-'
                     : view === 'table'
                       ? runs.length
-                      : tasks.length}
+                      : resultTotal}
                 </strong>{' '}
                 {view === 'table' ? t('次运行', 'runs') : t('项任务', 'tasks')}
               </span>
@@ -1065,15 +1216,26 @@ export function FocusedWorkbench(props: Props) {
                             '排序定义无效，未执行查询。',
                             'Invalid sort definition. No query was applied.',
                           )
-                        : t(
-                            '仅支持 created/summary ORDER BY 排序，其他 JQL 条件尚未实现。',
-                            'Only created/summary ordering is supported.',
-                          )}
+                        : problem === 'task_query_error'
+                          ? serverQueryErrorText
+                          : t(
+                              '仅支持 created/summary ORDER BY 排序，其他 JQL 条件尚未实现。',
+                              'Only created/summary ordering is supported.',
+                            )}
             </span>
             <AppButton
-              label={t('清除查询', 'Clear query')}
+              label={
+                serverQueryProblem
+                  ? t('重试查询', 'Retry query')
+                  : t('清除查询', 'Clear query')
+              }
+              icon={serverQueryProblem ? <RefreshCw size={15} /> : undefined}
               size="sm"
-              onClick={clear}
+              onClick={
+                serverQueryProblem
+                  ? () => setQueryRefresh((value) => value + 1)
+                  : clear
+              }
             />
           </div>
         )}
@@ -1085,9 +1247,14 @@ export function FocusedWorkbench(props: Props) {
             <section
               className="wf-results"
               aria-label={t('工作台结果', 'Workbench results')}
+              aria-busy={remoteBusy || undefined}
             >
               {resultTools}
-              {view === 'list' ? (
+              {remoteBusy && !remoteReady ? (
+                <div className="wf-empty">
+                  <AppLoading label={t('正在读取任务', 'Loading tasks')} />
+                </div>
+              ) : view === 'list' ? (
                 tasks.length ? (
                   <>
                     <div
@@ -1104,70 +1271,72 @@ export function FocusedWorkbench(props: Props) {
                               columns.find((column) => column.key === key)!,
                             )}
                           label={t('任务列表', 'Tasks')}
-                          page={currentPage}
-                          pageSize={pageSize}
+                          page={remoteReady ? undefined : currentPage}
+                          pageSize={remoteReady ? undefined : pageSize}
                           sorting={sorting}
+                          serverSorted={remoteReady}
+                          totalRows={remoteReady ? resultTotal : undefined}
+                          rowStart={
+                            remoteReady
+                              ? (currentPage - 1) * pageSize + 1
+                              : undefined
+                          }
                           empty={null}
                         />
                       </div>
                       <div className="wf-mobile-list">
-                        {sortedRows
-                          .slice(
-                            (currentPage - 1) * pageSize,
-                            currentPage * pageSize,
-                          )
-                          .map((row) => (
-                            <article key={row.id} className="wf-mobile-row">
-                              <div className="wf-mobile-task">
-                                <AppButton
-                                  label={row.title}
-                                  tone="ghost"
-                                  className="wf-title-button"
-                                  data-task-trigger={row.id}
-                                  {...disclosure(row.id)}
-                                  onClick={(event) =>
-                                    pick(row, event.currentTarget)
-                                  }
-                                >
-                                  <span>{row.title}</span>
-                                </AppButton>
-                                <AppBadge
-                                  tone={
-                                    row.run ? statusTone(row.status) : 'neutral'
-                                  }
-                                >
-                                  {row.run
-                                    ? statusText(row.status, t)
-                                    : t('未运行', 'Not started')}
-                                </AppBadge>
-                              </div>
-                              <div className="wf-mobile-meta">
-                                <span>{row.projectName}</span>
-                                <code className="wf-task-id">
-                                  {row.id.slice(0, 7)}
-                                </code>
-                                <AppButton
-                                  label={t('查看任务详情', 'Inspect task')}
-                                  icon={<ChevronRight size={15} />}
-                                  iconOnly
-                                  tone="ghost"
-                                  size="sm"
-                                  data-task-trigger={row.id}
-                                  {...disclosure(row.id)}
-                                  onClick={(event) =>
-                                    pick(row, event.currentTarget)
-                                  }
-                                />
-                              </div>
-                            </article>
-                          ))}
+                        {pageRows.map((row) => (
+                          <article key={row.id} className="wf-mobile-row">
+                            <div className="wf-mobile-task">
+                              <AppButton
+                                label={row.title}
+                                tone="ghost"
+                                className="wf-title-button"
+                                data-task-trigger={row.id}
+                                {...disclosure(row.id)}
+                                onClick={(event) =>
+                                  pick(row, event.currentTarget)
+                                }
+                              >
+                                <span>{row.title}</span>
+                              </AppButton>
+                              <AppBadge
+                                tone={
+                                  row.run ? statusTone(row.status) : 'neutral'
+                                }
+                              >
+                                {row.run
+                                  ? statusText(row.status, t)
+                                  : t('未运行', 'Not started')}
+                              </AppBadge>
+                            </div>
+                            <div className="wf-mobile-meta">
+                              <span>{row.projectName}</span>
+                              <code className="wf-task-id">
+                                {row.id.slice(0, 7)}
+                              </code>
+                              <AppButton
+                                label={t('查看任务详情', 'Inspect task')}
+                                icon={<ChevronRight size={15} />}
+                                iconOnly
+                                tone="ghost"
+                                size="sm"
+                                data-task-trigger={row.id}
+                                {...disclosure(row.id)}
+                                onClick={(event) =>
+                                  pick(row, event.currentTarget)
+                                }
+                              />
+                            </div>
+                          </article>
+                        ))}
                       </div>
                     </div>
                     <footer className="wf-pagination">
                       <span>
                         {(currentPage - 1) * pageSize + 1}-
-                        {Math.min(currentPage * pageSize, tasks.length)} /{' '}
-                        {tasks.length}
+                        {Math.min(currentPage * pageSize, resultTotal)} /{' '}
+                        {resultTotal}
                       </span>
                       <div className="wf-page-size">
                         <AppSelect
@@ -1202,7 +1371,7 @@ export function FocusedWorkbench(props: Props) {
                         onClick={() => setPage(currentPage - 1)}
                       />
                       <output>
-                        {currentPage} / {totalPages}
+                        {currentPage} / {resultTotalPages}
                       </output>
                       <AppButton
                         label={t('下一页', 'Next page')}
@@ -1211,7 +1380,7 @@ export function FocusedWorkbench(props: Props) {
                         iconOnly
                         tone="ghost"
                         size="sm"
-                        disabled={currentPage >= totalPages}
+                        disabled={currentPage >= resultTotalPages}
                         onClick={() => setPage(currentPage + 1)}
                       />
                     </footer>

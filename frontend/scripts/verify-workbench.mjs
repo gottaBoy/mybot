@@ -188,7 +188,7 @@ async function verifyContextConflict(sourceDetail, bootstrap) {
     if (url.pathname === '/api/bootstrap' && request.method() === 'GET')
       return route.fulfill({
         status: 200,
-        json: { ...bootstrap, projects: [project], tasks: [task], runs: [] },
+        json: { ...bootstrap, capabilities: { ...bootstrap.capabilities, task_query: false }, projects: [project], tasks: [task], runs: [] },
       })
     if (url.pathname === `/api/tasks/${task.id}/preview` && request.method() === 'POST') {
       previewCount++
@@ -374,7 +374,7 @@ async function verifyRecoveryWorkflow(sourceDetail, bootstrap) {
     if (url.pathname === '/api/bootstrap' && request.method() === 'GET')
       return route.fulfill({
         status: 200,
-        json: { ...bootstrap, projects: [source.project], tasks: [source.task], runs: [source.run] },
+        json: { ...bootstrap, capabilities: { ...bootstrap.capabilities, task_query: false }, projects: [source.project], tasks: [source.task], runs: [source.run] },
       })
     if (request.method() === 'GET') {
       for (const id of [sourceId, childId, pausedId, unknownId]) {
@@ -650,7 +650,7 @@ async function verifyFormsAndModelReceipts(bootstrap) {
     if (url.pathname === '/api/bootstrap' && request.method() === 'GET')
       return route.fulfill({
         status: 200,
-        json: { ...bootstrap, tasks: [], runs: [], models: [model], default_model_id: model.id },
+        json: { ...bootstrap, capabilities: { ...bootstrap.capabilities, task_query: false }, tasks: [], runs: [], models: [model], default_model_id: model.id },
       })
     if (url.pathname === '/api/projects' && request.method() === 'POST') {
       projectPosts++
@@ -2751,6 +2751,7 @@ async function verifyFullWorkbench() {
     .getByRole('link', { name: '工作台', exact: true })
     .click()
   await page.getByRole('radio', { name: '任务列表', exact: true }).click()
+  await taskTable().waitFor()
   await page.getByRole('searchbox', { name: '搜索', exact: true }).fill('does-not-exist')
   const basicDraftHref = page.url()
   assert.equal(await taskTable().locator('tbody tr').count(), 2)
@@ -2788,6 +2789,7 @@ async function verifyFullWorkbench() {
   await shot('work-desktop-light')
   await page.getByRole('searchbox', { name: '搜索', exact: true }).fill('梳理')
   await page.getByRole('button', { name: '搜索', exact: true }).click()
+  await taskTable().getByRole('button', { name: primaryTaskTitle, exact: true }).waitFor()
   assert.equal(await taskTable().locator('tbody tr').count(), 1)
   const queryBar = page.locator('.wf-querybar')
   const committedConditionHref = page.url()

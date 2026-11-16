@@ -105,3 +105,16 @@ The frontend still uses Bootstrap; the running 4180 process has not been
 restarted for this API and still returns 404. Commit/push is not activation.
 No new Provider, execution permission, connector, identity/ACL or device control
 is introduced.
+
+## Follow-up: Frontend Admission
+
+On 2026-11-17, IZ-07.2 implements explicit capability admission, strict response
+validation, asynchronous task-list reads and server-page passthrough. Its local
+acceptance is complete and recorded separately. See
+[ADR-0012](ADR-0012-task-query-client-admission.md) for the adopted client contract,
+including server-authoritative Unicode matching/order and the reason browser
+recomputation is not a valid all-Unicode acceptance check.
+
+The statements above describe the original IZ-07.1 slice. Bootstrap reduction
+and detail/history paging remain unimplemented, and the existing 4180 process
+has not been restarted for the new query capability.

@@ -201,6 +201,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "backend_sync": backends.read_adapter is not None,
                                  "parallel_research": True, "max_parallel": 2,
                                  "agent_work": True,
+                                 "task_query": True,
                                  "harness": LocalSuperagentHarness.capabilities()}}
 
     @app.post("/api/projects", status_code=201)

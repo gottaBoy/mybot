@@ -728,6 +728,42 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
   本项完成后独立提交push；原119/110计数不变，不把子项、测量和测试数量当全部完成。
   无正式数据写入、真实模型/账号/外部写入、部署或设备权限扩张，授权门槛继续保留。
 
+## 2026-11-17
+
+### 工作项：IZ-07.2 多Agent接入服务端任务查询本地验收完成
+
+- 分工：根Agent整合页面/Table与综合回归；合同Agent复核严格client与Unicode边界；
+  浏览器Agent补异常/权限场景；文档Agent记录ADR、采用映射与待办。均沿既有工作树实施，
+  未生成第二套页面或升级Astryx。
+- 实现：明确capability=true才使用bounded任务页，缺能力保留legacy；声明后404/503或
+  异常2xx明确失败。严格校验DTO/页算术/请求绑定/身份与分类关系；草稿不请求，query-key/
+  Abort丢弃旧读；不同query不显示旧行，同key刷新保留并busy；失败显式GET重试。
+- 表格与导航：server页保序、不二次sort/slice，Astryx表头控制保持；总行数和页起点用于
+  ARIA坐标。server clamped页只作显示，不覆盖请求URL/history，修复旧页响应重置新页问题。
+- 复核又发现6s Bootstrap poll的数据对象变化会取消慢query并后台重试403/404。已将
+  explicit刷新成功的refreshRevision与poll分开，请求不再依赖data identity；poll只使
+  ready页失效，不打断loading或重放error/unavailable。最终35项专项已验8s查询跨6s poll仅
+  1GET、403后6.5s真实poll无重试、显式Retry恰好1GET，以及HTML401清理与桌面/手机。
+- 复核取舍：JS/Python Unicode数据版本可能不同，browser重新计算文本命中/顺序会误拒
+  合法server页，故server为权威，client不重新判断文字或排序。15共享例是有限回归，
+  不是全Unicode等价/计数正确性证明，算法标识不冻结跨运行时所有映射。
+- 后端最终499项通过（bootstrap能力声明、Python特殊白空格/BOM共7项补测），70.27s，
+  保留1条既有warning；JUnit为`/tmp/mybot-server-pagination-python-20261117.xml`。
+  前端最终870项/38文件、typecheck/build通过。稳定生产构建专项35项/6PNG、真实API6项/
+  2PNG、高级30项/24PNG通过，无pageerror；最终报告分别来自final-r2/final-r2/final。
+  综合最终首轮fresh guard发现fixture已有1项目/3任务/3Run，认证后即停止且保留失败；
+  新fixture.OaPiOM已只读确认projects/tasks/runs/models全0，最终综合final-r2为58项/
+  60PNG通过，errors为空；四份最终报告共92PNG，无pageerror。
+  证据`frontend/evidence/server-pagination-2026-11-17/`已归档，早期2项检查只保留为预检。
+- 记录：[ADR-0012](decisions/ADR-0012-task-query-client-admission.md)解释准入/保序/异步/
+  history合同；ADR-0011保留原slice内容并加follow-up。基线`608b8bd`已push，
+  本批所列本地合同验收完成并按独立提交交付，实际commit/push回执以git log及origin/main为准。
+- 边界：Bootstrap、Quick find/侧栏计数与Inspector历史仍全量，IZ-07.3/04未关闭，
+  无整链规模改进结论。原4180/5173未重启，新task_query能力未主环境启用，继续legacy；
+  保存视图仍已启用。临时4187/5176已停止，无真实Provider/凭证读取/正式DB写入/
+  执行权限提升或部署。原119项仍9完成/110未完全完成，下一项IZ-07.3，07.4不关闭。
+  已有大包/httpx警告、用户视觉接受/真机未验继续保留。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。

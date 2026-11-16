@@ -1,6 +1,6 @@
 # UI 迭代记录
 
-更新日期：2026-11-14（以下历史日期原样保留）。
+更新日期：2026-11-17（以下历史日期原样保留）。
 
 原则：每轮先聚焦真实研发操作，保留前后截图、技术检查和用户反馈；自动检查通过不等于用户体验或视觉通过。
 
@@ -468,3 +468,30 @@ React portal进入同主题树、页头下方的产品区域；窄屏分页固�
 本轮证据`frontend/evidence/saved-views-2026-11-16/README.md`列出最终构建、专项/综合、
 初始化失败基线与截图。原4180/5173保留，保存视图主后端仍未启用；不得把隔离API通过
 写成当前用户工作区已可用。启用门槛见SAVED_VIEWS_ACTIVATION，视觉仍待用户评审。
+
+## 26. 服务端分页接入与异步结果边界
+
+日期：2026-11-17，Asia/Singapore，本批跨11月16/17日。用户要求多Agent实现，本项
+沿现有可见分层补任务列表的数据合同，不声称新的整页视觉改版或用户已经接受体验。
+
+task_query能力明确为true时采用bounded server页，缺能力保留原本地路径；已声明但
+404/503/异常2xx明确报错，不悄悄显示另一套计数/排序。主查询草稿与committed请求分离，
+不同query加载期间隐藏旧页，same-key刷新保留行并busy；失败保留输入，显式Retry只GET。
+query-key与取消/丢弃防止旧响应覆盖新条件；server已分页的行不再二次排序/切片。
+复核发现Bootstrap每6s轮询会因data identity变化取消慢query，甚至后台重试403/404。
+现区分explicit/poll：显式成功推进refreshRevision；poll只使ready页失效重查，不打断
+loading、不重试error/unavailable，8s慢读跨实际6s poll和403后无GET的生产补测已通过。
+
+clamped页只用于当前显示与ARIA坐标，不自动改写URL请求页/history，避免旧page1响应
+把新page2推回。Table仍用既有Astryx包装和表头交互，不改主题/密度或拆第二套业务树。
+服务端负责文本/排序，browser不复算Unicode准入，有限共享样例不冒充跨运行时全域证明。
+
+最终870前端（38文件）/499Python/typecheck/build通过；稳定生产专项35项/6PNG、实际API6项/
+2PNG、高级30项/24PNG通过。实际8s query跨6s poll只1GET，403后6.5s poll不重试、显式
+Retry恰好1GET，HTML401清私有投影。综合首轮非空fixture被fresh guard阻止，保留失败后
+换只读确认空库的fixture.OaPiOM，最终58项/60PNG通过，四份报告共92PNG，无pageerror。范围见
+`frontend/evidence/server-pagination-2026-11-17/README.md`。保留中途失败与弱检查历史，
+不把早期2项脚本通过当完整验收。已有大包/httpx提醒和用户视觉未接受边界继续保留。
+Bootstrap/Quick find/侧栏/Inspector历史仍全量，本项不是整链性能结论。
+4180/5173没有重启，新能力尚未主环境启用，原入口继续legacy，无真实模型或正式数据写入。
+临时4187/5176已停止，提交push另记；本地验收不等于用户视觉接受。

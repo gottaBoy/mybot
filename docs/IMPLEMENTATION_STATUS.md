@@ -1,8 +1,25 @@
 # 实现进度与平台范围
 
-更新日期：2026-11-16。
+更新日期：2026-11-17。
 
-最新开发切片：IZ-07.1服务端任务查询API本地完成，复用严格查询/排序定义，支持OR/AND、
+最新切片：IZ-07.2严格查询client与Astryx任务表接入已完成所列本地验收并归档。
+只有Bootstrap明确task_query=true才启用新路径；缺能力保留legacy，已声明但404/503或
+异常2xx是失败而非本地回退。query-key隔离/Abort丢弃旧读；草稿不请求；server页保序，
+不二次排序/切片，clamped page不覆盖请求URL。文字命中、计数和顺序以server为权威，
+不因JS/Python不同Unicode映射在browser重算准入；有限共享样例不是全Unicode证明。
+Bootstrap显式刷新成功推进refreshRevision；poll只使ready页失效，不取消loading或重试
+error/403/404，请求不再依赖data identity；8s慢查询跨6s poll只1GET、403后真实poll不重试已通过。
+合同：[ADR-0012](decisions/ADR-0012-task-query-client-admission.md)。
+最终870前端（38文件）/499Python/typecheck/build通过；稳定生产构建专项35项/6PNG、
+实际API6项/2PNG、高级30项/24PNG、综合58项/60PNG通过，共92PNG、无pageerror。
+首轮非空fixture在fresh guard停止，保留失败后改只读确认空库的fixture.OaPiOM完成最终综合。
+证据：[本批目录](../frontend/evidence/server-pagination-2026-11-17/README.md)；提交push尚未完成。
+Bootstrap、Quick find、侧栏计数和Inspector历史仍全量，IZ-07.3/04仍待推进，
+没有整链传输/性能提升结论。原4180/5173未重启，新能力未在主backend启用，主入口走legacy；
+保存视图保持已启用。119总/9完成/110未完全完成不变，无真实Provider/凭证/正式DB写入或权限提升。
+临时4187/5176验收服务已停止；既有大包及Starlette/httpx警告保留。
+
+上轮开发切片：IZ-07.1服务端任务查询API本地完成，复用严格查询/排序定义，支持OR/AND、
 固定scope、最新Run分类、最多3层排序、真实计数与20/50/100分页；单次只读SQLite快照，
 成功/失败均关闭连接，无新依赖或Provider请求。477项后端通过（71新增），2k/20k隔离
 测量见[任务查询证据](evidence/task-query-2026-11-16/README.md)及
