@@ -2,7 +2,21 @@
 
 更新日期：2026-11-17。
 
-最新切片：IZ-07.2严格查询client与Astryx任务表接入已完成所列本地验收并归档。
+最新完成IZ-07.3a本地验收：新增按需任务详情与分页历史合同，Inspector选中后读取，
+Task/最小Project/latestRun/attempts及历史页在同一只读SQLite快照内返回。
+明确task_detail=true才采用，旧能力缺失保留原路径，声明能力后错误不读Bootstrap兜底。
+客户端复用严格Task投影，历史与列表分页独立；不同任务identity重挂并从第1页，
+跨桌面/手机布局切换也会回历史第1页，任务选择保留。
+943前端（39文件）/562Python/typecheck/build通过，详情40/真实API6/查询35/综合58项通过，
+77最终PNG已归档。键盘ARIA禁用与异步reload断言失败已保留并在修复后重跑通过。
+合同见[ADR-0013](decisions/ADR-0013-on-demand-task-detail.md)；Bootstrap未减量，
+全局查找、计数与其他视图迁移单列下一切片，不关闭IZ-07.3/04或原119台账。
+证据：[按需详情](../frontend/evidence/task-detail-2026-11-17/README.md)。
+上批`f917608`已在main/origin/main，本批按独立提交交付，以git实际回执为准。
+主4180未重启，task_query/task_detail均未advertise；已启动原本停止的5173并核验200，
+该入口继续legacy读取。临时4187/5176已停，没有真实Provider或正式DB写入。
+
+上批切片：IZ-07.2严格查询client与Astryx任务表接入已完成所列本地验收并归档。
 只有Bootstrap明确task_query=true才启用新路径；缺能力保留legacy，已声明但404/503或
 异常2xx是失败而非本地回退。query-key隔离/Abort丢弃旧读；草稿不请求；server页保序，
 不二次排序/切片，clamped page不覆盖请求URL。文字命中、计数和顺序以server为权威，
@@ -13,7 +27,7 @@ error/403/404，请求不再依赖data identity；8s慢查询跨6s poll只1GET�
 最终870前端（38文件）/499Python/typecheck/build通过；稳定生产构建专项35项/6PNG、
 实际API6项/2PNG、高级30项/24PNG、综合58项/60PNG通过，共92PNG、无pageerror。
 首轮非空fixture在fresh guard停止，保留失败后改只读确认空库的fixture.OaPiOM完成最终综合。
-证据：[本批目录](../frontend/evidence/server-pagination-2026-11-17/README.md)；提交push尚未完成。
+证据：[本批目录](../frontend/evidence/server-pagination-2026-11-17/README.md)；已提交并push为`f917608`。
 Bootstrap、Quick find、侧栏计数和Inspector历史仍全量，IZ-07.3/04仍待推进，
 没有整链传输/性能提升结论。原4180/5173未重启，新能力未在主backend启用，主入口走legacy；
 保存视图保持已启用。119总/9完成/110未完全完成不变，无真实Provider/凭证/正式DB写入或权限提升。

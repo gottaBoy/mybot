@@ -1,0 +1,23 @@
+{
+  "fixture": true,
+  "source": "Actual disposable HTTP/API/SQLite and production frontend",
+  "checks": [
+    "Actual detail response agrees with the seeded 45-Run history and latest task state",
+    "Selected task opens real bounded detail through the same server-query list",
+    "History page 2 displays exact server IDs without changing the task-list page",
+    "Last history page has five exact rows and a disabled Next action",
+    "390px modal retains the selected task, restarts history at page 1, and can page real history",
+    "Inspection leaves tasks/Runs unchanged and issues no model, control or configuration write"
+  ],
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "actual-history-page2.png",
+    "actual-history-mobile.png"
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "synthetic": true,
+  "source": "Production frontend with all APIs locally intercepted",
+  "checks": [
+    "desktop: no task detail request before selecting a task",
+    "desktop: selected task uses exact bounded server history and authoritative detail, not Bootstrap",
+    "desktop: same-query refresh retains detail and exact history while explicitly busy",
+    "desktop: an eight-second detail read spans a real active-Run Bootstrap poll without interruption or replay",
+    "desktop: history page 2 has exact server IDs without reslicing",
+    "desktop: keyboard Next preserves focus on the enabled Next control after page 2 loads"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=2&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=3&page_size=20"
+    }
+  ],
+  "writes": [],
+  "errors": [],
+  "screenshots": [
+    "desktop-page-1.png"
+  ],
+  "failure": {
+    "message": "page.waitForFunction: Timeout 30000ms exceeded.",
+    "stack": "page.waitForFunction: Timeout 30000ms exceeded.\n    at expectPageFocus (/home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-task-detail.mjs:333:18)\n    at /home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-task-detail.mjs:493:13",
+    "tree": "- main:\n  - region \"Task list workspace\":\n    - heading \"Tasks\" [level=1]\n    - text: All projects\n    - status:\n      - strong: \"3\"\n      - text: tasks\n    - button \"Views\":\n      - text: Views\n      - status\n    - region \"List search\":\n      - text: Search\n      - searchbox \"Search\"\n      - text: Project\n      - button \"Project\"\n      - text: Status\n      - button \"Status\"\n      - radiogroup \"Query mode\":\n        - radio \"Basic\" [checked]\n        - radio \"JQL\"\n      - button \"Search\":\n        - status\n      - button \"Clear filters\" [disabled]:\n        - status\n    - region \"Workbench results\":\n      - toolbar \"Result views and table tools\":\n        - radiogroup \"Work view\":\n          - radio \"Tasks\" [checked]\n          - radio \"Board\"\n          - radio \"Runs\"\n        - button \"Columns\":\n          - text: Columns\n          - status\n      - group \"Tasks\":\n        - table \"Tasks\":\n          - rowgroup:\n            - row \"ID Task Project Execution Latest run History\":\n              - columnheader \"ID\":\n                - button \"ID\"\n              - columnheader \"Task\":\n                - button \"Task\"\n              - columnheader \"Project\"\n              - columnheader \"Execution\":\n                - button \"Execution\"\n              - columnheader \"Latest run\":\n                - button \"Latest run\"\n              - columnheader \"History\":\n                - button \"History\"\n          - rowgroup:\n            - row \"detail- Task Alpha Detail research Failed Nov 16, 08:00 AM 1 runs\":\n              - cell \"detail-\":\n                - code: detail-\n              - cell \"Task Alpha\":\n                - button \"Task Alpha\" [expanded]:\n                  - text: Task Alpha\n                  - status\n              - cell \"Detail research\"\n              - cell \"Failed\"\n              - cell \"Nov 16, 08:00 AM\"\n              - cell \"1 runs\":\n                - button \"1 runs\" [expanded]:\n                  - text: \"1\"\n                  - status\n            - row \"detail- Task Beta Detail research Not started - 0 runs\":\n              - cell \"detail-\":\n                - code: detail-\n              - cell \"Task Beta\":\n                - button \"Task Beta\":\n                  - text: Task Beta\n                  - status\n              - cell \"Detail research\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"detail- Task Empty Detail research Not started - 0 runs\":\n              - cell \"detail-\":\n                - code: detail-\n              - cell \"Task Empty\":\n                - button \"Task Empty\":\n                  - text: Task Empty\n                  - status\n              - cell \"Detail research\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n      - text: 1-3 / 3 Tasks per page\n      - combobox \"Tasks per page\": 20 / page\n      - button \"Previous page\" [disabled]:\n        - status\n      - status: 1 / 1\n      - button \"Next page\" [disabled]:\n        - status\n    - complementary \"Task Alpha\":\n      - text: Task details\n      - button \"Close task details\":\n        - status\n      - text: Detail research\n      - code: detail-\n      - heading \"Task Alpha\" [level=2]\n      - text: Completed\n      - link \"Open latest run\":\n        - /url: \"#run/detail-task-alpha-run-045\"\n        - text: Open latest run\n        - status\n      - heading \"Goal\" [level=3]\n      - paragraph: Fetched goal Alpha\n      - heading \"Acceptance\" [level=3]\n      - paragraph: Synthetic acceptance\n      - heading \"Explicit files\" [level=3]\n      - code: README.md\n      - heading \"Run history 45\" [level=3]\n      - link \"detail- Nov 17, 09:05 AM Failed\":\n        - /url: \"#run/detail-task-alpha-run-005\"\n        - code: detail-\n        - text: Nov 17, 09:05 AM Failed\n      - link \"detail- Nov 17, 09:04 AM Failed\":\n        - /url: \"#run/detail-task-alpha-run-004\"\n        - code: detail-\n        - text: Nov 17, 09:04 AM Failed\n      - link \"detail- Nov 17, 09:03 AM Failed\":\n        - /url: \"#run/detail-task-alpha-run-003\"\n        - code: detail-\n        - text: Nov 17, 09:03 AM Failed\n      - link \"detail- Nov 17, 09:02 AM Failed\":\n        - /url: \"#run/detail-task-alpha-run-002\"\n        - code: detail-\n        - text: Nov 17, 09:02 AM Failed\n      - link \"detail- Nov 17, 09:01 AM Failed\":\n        - /url: \"#run/detail-task-alpha-run-001\"\n        - code: detail-\n        - text: Nov 17, 09:01 AM Failed\n      - navigation \"Run history pagination\":\n        - text: 41-45 / 45\n        - button \"Previous history page\":\n          - status\n        - status: 3 / 3\n        - button \"Next history page\" [disabled]:\n          - status\n        - tooltip \"Next history page\""
+  }
+}

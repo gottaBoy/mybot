@@ -311,3 +311,40 @@ Evidence and rollout limits:
 This slice does not reduce Bootstrap or paginate Inspector history. The user's
 4180 backend has not been restarted for this capability, so 5173 continues its
 legacy list path there. Commit/push does not activate a running backend.
+
+## On-Demand Task Detail
+
+Selecting a task uses `GET /api/tasks/{id}/detail` only when Bootstrap explicitly
+advertises `task_detail: true`. Task data, latest Run, total attempts and one
+history page come from a single read-only snapshot. Minimal history rows contain
+only Run identity, task identity, status and created time.
+
+The Inspector uses the existing Astryx wrappers and an independent history pager.
+Task changes and close/reopen start at page one. A desktop/mobile container change
+also restarts history at page one while retaining task selection. Same-query
+refresh is marked busy; failed reads never fall back to Bootstrap history.
+Explicit retry is GET-only. Paging restores focus to an enabled control or Retry
+without overriding a user-directed focus change.
+
+Synthetic browser acceptance:
+
+```bash
+MYBOT_BROWSER_SYNTHETIC=1 \
+MYBOT_FRONTEND_URL=http://127.0.0.1:5176/ \
+node scripts/verify-task-detail.mjs
+```
+
+`verify-task-detail-live.mjs` requires a fresh disposable fixture initialized by
+`tests/browser_server.py`, seeded with the root-level
+`tests/seed_task_detail_fixture.py` and explicit `MYBOT_BROWSER_FIXTURE=1`.
+The seed requires the exact fixture marker, matching schema, empty business
+tables and nonsymlink paths; it creates two synthetic tasks and 45 terminal Runs,
+without models. Never use it on production data or reuse the fixture for the
+comprehensive mutation suite.
+
+Final results and reproduction:
+`evidence/task-detail-2026-11-17/README.md` and
+`../docs/decisions/ADR-0013-on-demand-task-detail.md`.
+This does not remove Bootstrap task/Run arrays or migrate other global consumers.
+Main backend 4180 has not loaded the new capability, so the current 5173 development
+entry keeps the legacy Inspector there.

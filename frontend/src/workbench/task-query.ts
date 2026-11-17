@@ -46,7 +46,7 @@ export class TaskQueryInputError extends Error {
     super('task_query_input_invalid')
   }
 }
-const maxPage = 90071992547409
+export const maxTaskQueryPage = 90071992547409
 const sortQueries = new Set([
   '',
   'ORDER BY CREATED ASC',
@@ -90,6 +90,7 @@ const identifier = (value: unknown): value is string =>
   [...value].length > 0 &&
   [...value].length <= 100 &&
   wellFormed(value)
+export { identifier as isTaskReadIdentifier }
 const integer = (value: unknown, min: number): value is number =>
   typeof value === 'number' && Number.isSafeInteger(value) && value >= min
 const timestamp = (value: unknown): value is string =>
@@ -171,7 +172,7 @@ export function prepareTaskQueryRequest(value: ServerTaskQueryRequest) {
     if (
       sorts === undefined ||
       !integer(value.page, 1) ||
-      value.page > maxPage ||
+      value.page > maxTaskQueryPage ||
       ![20, 50, 100].includes(value.pageSize) ||
       (value.scopeProjectId !== undefined && !identifier(value.scopeProjectId))
     )
@@ -230,7 +231,10 @@ function parseTask(value: unknown): Task {
     created_at: value.created_at,
   }
 }
-function latestRun(value: unknown, taskId: string): Run | undefined {
+export function parseTaskQueryRun(
+  value: unknown,
+  taskId: string,
+): Run | undefined {
   if (value === null) return undefined
   if (
     !exactObject(value, ['id', 'task_id', 'status', 'created_at']) ||
@@ -246,6 +250,39 @@ function latestRun(value: unknown, taskId: string): Run | undefined {
     task_id: taskId,
     status: value.status,
     created_at: value.created_at,
+  }
+}
+export function parseTaskQueryItem(value: unknown): WorkItem {
+  if (
+    !exactObject(value, [
+      'task',
+      'project',
+      'latest_run',
+      'state_category',
+      'attempts',
+    ]) ||
+    !exactObject(value.project, ['id', 'name']) ||
+    !identifier(value.project.id) ||
+    !text(value.project.name) ||
+    !integer(value.attempts, 0)
+  )
+    throw new TaskQueryResponseError()
+  const task = parseTask(value.task)
+  const run = parseTaskQueryRun(value.latest_run, task.id)
+  const column = queryRunState(run)
+  if (
+    task.project_id !== value.project.id ||
+    value.state_category !== column ||
+    (run ? value.attempts < 1 : value.attempts !== 0)
+  )
+    throw new TaskQueryResponseError()
+  return {
+    id: task.id,
+    task,
+    projectName: value.project.name,
+    run,
+    column,
+    attempts: value.attempts,
   }
 }
 export function parseTaskQueryPage(
@@ -274,7 +311,7 @@ export function parseTaskQueryPage(
       !Array.isArray(value.items) ||
       !integer(value.total, 0) ||
       !integer(value.requested_page, 1) ||
-      value.requested_page > maxPage ||
+      value.requested_page > maxTaskQueryPage ||
       !integer(value.page, 1) ||
       !integer(value.page_size, 1) ||
       ![20, 50, 100].includes(value.page_size) ||
@@ -322,44 +359,19 @@ export function parseTaskQueryPage(
     const runIds = new Set<string>()
     const projectNames = new Map<string, string>()
     const items: WorkItem[] = value.items.map((record) => {
+      const item = parseTaskQueryItem(record)
+      const { task, run, column, projectName } = item
       if (
-        !exactObject(record, [
-          'task',
-          'project',
-          'latest_run',
-          'state_category',
-          'attempts',
-        ]) ||
-        !exactObject(record.project, ['id', 'name']) ||
-        !identifier(record.project.id) ||
-        !text(record.project.name) ||
-        !integer(record.attempts, 0)
-      )
-        throw new TaskQueryResponseError()
-      const task = parseTask(record.task)
-      const run = latestRun(record.latest_run, task.id)
-      const column = queryRunState(run)
-      if (
-        task.project_id !== record.project.id ||
-        record.state_category !== column ||
-        (run ? record.attempts < 1 : record.attempts !== 0) ||
         (query.projects.length && !query.projects.includes(task.project_id)) ||
         (query.states.length && !query.states.includes(column)) ||
         (run && runIds.has(run.id)) ||
-        (projectNames.has(record.project.id) &&
-          projectNames.get(record.project.id) !== record.project.name)
+        (projectNames.has(task.project_id) &&
+          projectNames.get(task.project_id) !== projectName)
       )
         throw new TaskQueryResponseError()
       if (run) runIds.add(run.id)
-      projectNames.set(record.project.id, record.project.name)
-      return {
-        id: task.id,
-        task,
-        projectName: record.project.name,
-        run,
-        column,
-        attempts: record.attempts,
-      }
+      projectNames.set(task.project_id, projectName)
+      return item
     })
     if (new Set(items.map((item) => item.id)).size !== items.length)
       throw new TaskQueryResponseError()

@@ -495,3 +495,24 @@ Retry恰好1GET，HTML401清私有投影。综合首轮非空fixture被fresh gua
 Bootstrap/Quick find/侧栏/Inspector历史仍全量，本项不是整链性能结论。
 4180/5173没有重启，新能力尚未主环境启用，原入口继续legacy，无真实模型或正式数据写入。
 临时4187/5176已停止，提交push另记；本地验收不等于用户视觉接受。
+
+## 27. 任务详情按需读取与历史分页
+
+日期：2026-11-17。用户要求核对现状、提交后继续；起始工作树干净，`f917608`已在
+main/origin/main。本轮沿当前Astryx界面推进IZ-07.3a，不是整页视觉改版。
+
+Inspector改为选中后读取Task和独立20条历史页，真实总数与latest来自同一SQLite快照。
+缺能力保持原路径，声明能力后的403/404/异常响应明确显示，不拿Bootstrap旧历史冒充成功。
+初始加载保持选中行标题，目标/文件/动作/历史必须等严格校验；同key刷新保留有效内容并busy。
+
+详情页码不进入列表URL。A第2页→B→A、关闭重开均从第1页；跨桌面/手机容器重挂也回1，
+选择保留。旧响应丢弃，loading/error不被后台轮询取消/自动重试。现有AppDialog/close仍共用。
+键盘翻页恢复近处可用控件，用户已移到搜索框时不抢焦点；失败恢复Retry。
+
+初版真实键盘末页检查失败：只排除`:disabled`误把Astryx的aria-disabled Next认作可用。
+复核发布包后同时排除ARIA禁用，保留失败报告并在最终生产构建补测；不弱化焦点断言。
+943前端（39文件）/562Python/typecheck/build通过；最终详情40/实际API6/查询35/综合58项通过，
+77最终PNG，无pageerror。综合曾在reload异步查询未完成时数行失败，改为先等精确目标行再保持
+原count断言；保留失败并在全新fixture重跑。证据`frontend/evidence/task-detail-2026-11-17/README.md`。
+Bootstrap和全局投影尚未减量，主4180没有重启；不是新的Agent执行、连接器或多端能力。
+原本停止的5173已启动并核验200，因主backend不advertise新能力仍走legacy；临时验收服务已停。

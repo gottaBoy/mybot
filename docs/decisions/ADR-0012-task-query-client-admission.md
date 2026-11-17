@@ -119,3 +119,10 @@ backup checks.
 No real Provider call, credential read, production database write, execution permission,
 connector, team ACL, deployment or device handoff is added. The original ledger
 remains 119 total, 9 complete and 110 not fully complete.
+
+## Follow-Up
+
+ADR-0013 subsequently migrates the selected-task Inspector to an explicitly
+advertised detail capability and bounded history read. Bootstrap and the other
+full-data consumers listed above still remain migration work. Its independent
+acceptance does not alter this task-list contract or activate the running backend.

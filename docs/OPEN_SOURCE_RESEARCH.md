@@ -696,3 +696,18 @@ git -C /tmp/mybot-upstream-astryx rev-parse HEAD
   不复算Unicode排序作为准入。比较器只留在测试fixture，15个共用样例不构成全域证明。
 - 验证与限制见ADR-0012和`frontend/evidence/server-pagination-2026-11-17/README.md`；
   源码观察、隔离浏览器证据与主服务启用分列。没有引入任意Workflow、代码执行或多端能力。
+
+## 29. Astryx历史分页焦点与禁用语义复核（2026-11-17）
+
+- 身份：`meta/astryx`已安装Core0.7.13；沿用既有研究commit
+  `5770e5b197cf80d5a824667c23046887cc8fa0f5`，不声明npm与commit逐字节相同或这是最新版。
+  本轮未升级、clone/fetch、复制上游代码或添加依赖，MIT/NOTICE保持。
+- R：实际读取安装包`dist/Button/Button.js`的link/button渲染及`aria-disabled`传播，
+  同时通过浏览器采集运行历史末页按钮的焦点与ARIA状态。
+- E：Astryx按钮的禁用状态可表现为`aria-disabled=true`，不能只用原生`:disabled`判断。
+  初版分页焦点恢复将末页Next误判为可用，真实键盘断言失败；不是靠源码注释推断通过。
+- A：继续使用项目AppButton包装。详情分页只在焦点仍属于原触发器或因卸载回body时恢复；
+  候选同时排除原生disabled与ARIA禁用，末页移到Previous，失败移到Retry。
+  用户主动转移到搜索框时不抢回；不改Vendor DOM或禁用约定。
+- Task详情、单次SQLite快照、最小Run投影和严格DTO均为mybot本地实现，不是模板自带能力。
+  失败基线、修复后键盘/手机验收与主服务未启用边界见ADR-0013及本批证据记录。

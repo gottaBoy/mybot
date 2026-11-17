@@ -188,7 +188,7 @@ async function verifyContextConflict(sourceDetail, bootstrap) {
     if (url.pathname === '/api/bootstrap' && request.method() === 'GET')
       return route.fulfill({
         status: 200,
-        json: { ...bootstrap, capabilities: { ...bootstrap.capabilities, task_query: false }, projects: [project], tasks: [task], runs: [] },
+        json: { ...bootstrap, capabilities: { ...bootstrap.capabilities, task_query: false, task_detail: false }, projects: [project], tasks: [task], runs: [] },
       })
     if (url.pathname === `/api/tasks/${task.id}/preview` && request.method() === 'POST') {
       previewCount++
@@ -374,7 +374,7 @@ async function verifyRecoveryWorkflow(sourceDetail, bootstrap) {
     if (url.pathname === '/api/bootstrap' && request.method() === 'GET')
       return route.fulfill({
         status: 200,
-        json: { ...bootstrap, capabilities: { ...bootstrap.capabilities, task_query: false }, projects: [source.project], tasks: [source.task], runs: [source.run] },
+        json: { ...bootstrap, capabilities: { ...bootstrap.capabilities, task_query: false, task_detail: false }, projects: [source.project], tasks: [source.task], runs: [source.run] },
       })
     if (request.method() === 'GET') {
       for (const id of [sourceId, childId, pausedId, unknownId]) {
@@ -650,7 +650,7 @@ async function verifyFormsAndModelReceipts(bootstrap) {
     if (url.pathname === '/api/bootstrap' && request.method() === 'GET')
       return route.fulfill({
         status: 200,
-        json: { ...bootstrap, capabilities: { ...bootstrap.capabilities, task_query: false }, tasks: [], runs: [], models: [model], default_model_id: model.id },
+        json: { ...bootstrap, capabilities: { ...bootstrap.capabilities, task_query: false, task_detail: false }, tasks: [], runs: [], models: [model], default_model_id: model.id },
       })
     if (url.pathname === '/api/projects' && request.method() === 'POST') {
       projectPosts++
@@ -2632,6 +2632,7 @@ async function verifyFullWorkbench() {
   )
   await inspectTask(primaryTaskTitle)
   const desktopInspector = page.locator('.wf-inspector')
+  await desktopInspector.locator(`.wf-history-row[href="#run/${latestRun.id}"]`).waitFor()
   assert.equal(await desktopInspector.locator('.wf-history-row').count(), 2)
   assert.equal(
     await desktopInspector
@@ -2905,6 +2906,7 @@ async function verifyFullWorkbench() {
     name: '搜索',
     exact: true,
   }).inputValue(), '梳理')
+  await taskTable().getByRole('button', { name: primaryTaskTitle, exact: true }).waitFor()
   assert.equal(await taskTable().locator('tbody tr').count(), 1)
   await shot('work-matcha-dark')
   await page
@@ -3016,6 +3018,7 @@ async function verifyFullWorkbench() {
     })
     await inspectorDialog.waitFor()
     assert.equal(await page.locator('.wf-inspector').count(), 0)
+    await inspectorDialog.locator(`.wf-history-row[href="#run/${latestRun.id}"]`).waitFor()
     assert.equal(await inspectorDialog.locator('.wf-history-row').count(), 2)
     assert.equal(
       await inspectorDialog

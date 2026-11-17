@@ -29,6 +29,7 @@ from .schemas import (
     SavedViewCreate, SavedViewDelete, SavedViewUpdate,
 )
 from .saved_views import SavedViewError
+from .task_detail import TaskDetailError, parse_task_detail, read_task_detail
 from .task_query import EMPTY_QUERY, MAX_PAGE, TaskQueryError, parse_task_query, read_task_page
 from .store import Store
 
@@ -140,6 +141,10 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     async def task_query_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
 
+    @app.exception_handler(TaskDetailError)
+    async def task_detail_error(request, exc):
+        return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
+
     @app.get("/api/auth/state")
     async def auth_state(request: Request):
         return {"authenticated": authorized(request), "required": bool(settings.access_token),
@@ -202,6 +207,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "parallel_research": True, "max_parallel": 2,
                                  "agent_work": True,
                                  "task_query": True,
+                                 "task_detail": True,
                                  "harness": LocalSuperagentHarness.capabilities()}}
 
     @app.post("/api/projects", status_code=201)
@@ -312,6 +318,23 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                 "text": text, "evidence": evidence, "bytes": len(text.encode()),
                 "access": "read_only", "tools": [],
                 "context_hash": hashlib.sha256(json_bytes(task, project, text)).hexdigest()}
+
+    @app.get("/api/tasks/{identifier}/detail")
+    def task_detail(
+        identifier: str,
+        request: Request,
+        page: int = Query(1, ge=1, le=MAX_PAGE),
+        page_size: int = Query(20, ge=20, le=100),
+        scope_project_id: str | None = Query(None, min_length=1, max_length=100),
+    ):
+        allowed = {"page", "page_size", "scope_project_id"}
+        if any(
+            key not in allowed or len(request.query_params.getlist(key)) != 1
+            for key in request.query_params
+        ):
+            raise TaskDetailError("task_detail_parameters_invalid")
+        candidate = parse_task_detail(identifier, scope_project_id, page, page_size)
+        return read_task_detail(store.path, candidate)
 
     @app.post("/api/tasks/{identifier}/runs", status_code=201)
     async def run_create(identifier: str, body: RunCreate):

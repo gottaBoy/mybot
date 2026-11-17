@@ -71,6 +71,7 @@ import {
 } from './task-query'
 import { useListContinuity } from './list-continuity'
 import { SavedViewsMenu } from './SavedViewsMenu'
+import { TaskInspector } from './TaskInspector'
 import {
   captureSavedViewDefinition,
   savedViewLocationPatch,
@@ -895,11 +896,14 @@ export function FocusedWorkbench(props: Props) {
   )
   const inspector = active && (
     <TaskInspector
+      key={JSON.stringify([data.workspace, scope, active.id])}
       id={inspectorId}
       titleRef={inspectorTitle}
       showClose={wide}
       item={active}
       data={data}
+      refreshRevision={refreshRevision}
+      scopeProjectId={scope}
       t={t}
       when={when}
       onClose={close}
@@ -1700,123 +1704,5 @@ function TaskScopeNavigation({
         })}
       </section>
     </nav>
-  )
-}
-
-function TaskInspector({
-  id,
-  titleRef,
-  showClose,
-  item,
-  data,
-  t,
-  when,
-  onClose,
-  onPrepare,
-}: {
-  id: string
-  titleRef: React.Ref<HTMLHeadingElement>
-  showClose: boolean
-  item: WorkItem
-  data: Bootstrap
-  t: Copy
-  when: (value?: string) => string
-  onClose: () => void
-  onPrepare: (task: Task) => void
-}) {
-  const history = data.runs
-    .filter((run) => run.task_id === item.id)
-    .sort((a, b) => b.created_at.localeCompare(a.created_at))
-  return (
-    <div className="wf-task-inspector" id={id}>
-      <header>
-        <span>{t('任务详情', 'Task details')}</span>
-        {showClose && (
-          <AppButton
-            label={t('关闭任务详情', 'Close task details')}
-            icon={<X size={16} />}
-            iconOnly
-            tone="ghost"
-            tooltip={false}
-            size="sm"
-            onClick={onClose}
-          />
-        )}
-      </header>
-      <div className="wf-inspector-project">
-        <FolderGit2 size={14} />
-        <span>{item.projectName}</span>
-        <code title={item.id}>{item.id.slice(0, 7)}</code>
-      </div>
-      <h2 id={`${id}-title`} ref={titleRef} tabIndex={-1}>
-        {item.task.title}
-      </h2>
-      <div className="wf-inspector-action">
-        <AppBadge tone={item.run ? statusTone(item.run.status) : 'neutral'}>
-          {item.run
-            ? statusText(item.run.status, t)
-            : t('未运行', 'Not started')}
-        </AppBadge>
-        {item.run ? (
-          <AppButton
-            label={t('打开最近运行', 'Open latest run')}
-            tone="primary"
-            icon={<ArrowRight size={15} />}
-            href={`#run/${item.run.id}`}
-            data-list-focus-key={`latest-run:${item.id}`}
-          />
-        ) : (
-          <AppButton
-            label={t('检查并运行', 'Review & run')}
-            tone="primary"
-            icon={<FileSearch size={15} />}
-            onClick={() => onPrepare(item.task)}
-          />
-        )}
-      </div>
-      <section className="wf-inspector-goal">
-        <h3>{t('任务目标', 'Goal')}</h3>
-        <p>{item.task.goal}</p>
-      </section>
-      {item.task.acceptance && (
-        <section>
-          <h3>{t('验收要求', 'Acceptance')}</h3>
-          <p>{item.task.acceptance}</p>
-        </section>
-      )}
-      <section>
-        <h3>{t('明确选择的文件', 'Explicit files')}</h3>
-        {item.task.files.length ? (
-          item.task.files.map((file) => <code key={file}>{file}</code>)
-        ) : (
-          <p className="wb-hint">{t('未选择文件', 'No files selected')}</p>
-        )}
-      </section>
-      <section>
-        <h3>
-          {t('历史运行', 'Run history')} <span>{history.length}</span>
-        </h3>
-        {history.map((run) => (
-          <a
-            className="wf-history-row"
-            key={run.id}
-            href={`#run/${run.id}`}
-            data-list-focus-key={`history-run:${run.id}`}
-          >
-            <div>
-              <code>{run.id.slice(0, 7)}</code>
-              <small>{when(run.created_at)}</small>
-            </div>
-            <AppBadge tone={statusTone(run.status)}>
-              {statusText(run.status, t)}
-            </AppBadge>
-            <ChevronRight size={13} />
-          </a>
-        ))}
-        {!history.length && (
-          <p className="wb-hint">{t('尚未发起运行', 'No runs yet')}</p>
-        )}
-      </section>
-    </div>
   )
 }

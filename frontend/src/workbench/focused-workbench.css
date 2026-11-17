@@ -508,6 +508,32 @@
   margin-top: 3px;
   font-size: 12px;
 }
+.wf-history-pagination {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+  color: var(--wb-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.wf-history-pagination > span {
+  margin-right: auto;
+}
+.wf-history-pagination > output {
+  min-width: 40px;
+  text-align: center;
+}
+.wf-detail-error {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  padding: 12px;
+}
+.wf-detail-error > p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
 .wf-empty {
   display: grid;
   justify-items: center;

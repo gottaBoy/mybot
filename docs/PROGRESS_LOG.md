@@ -764,6 +764,39 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
   执行权限提升或部署。原119项仍9完成/110未完全完成，下一项IZ-07.3，07.4不关闭。
   已有大包/httpx警告、用户视觉接受/真机未验继续保留。
 
+### 工作项：IZ-07.3a 按需任务详情与分页历史本地验收完成
+
+- 核对现状：起始工作树干净，`f917608`已在main/origin/main，未重复补交旧批。
+  根Agent负责Inspector/证据/整合，后端Agent实现只读API及seed，客户端Agent实现严格合同，
+  验证Agent负责中英桌面/手机与键盘专项。无新依赖、第二业务树或主服务重启。
+- 新GET `/api/tasks/{id}/detail`和明确task_detail能力；只有选中后才读。
+  同一ro/query_only事务返回任务、最小项目、最新Run/次数和20/50/100历史页，
+  scope不匹配/任务或项目缺失统一404，不返回Run配置、上下文、错误详情或成果。
+  复用严格Task投影；校验历史页算术/身份/首项latest/次数与发送时请求快照。
+- TaskInspector由原内联实现抽出，保持Astryx与原分层。历史页独立于列表URL；
+  同key保留有效内容并busy，异步旧结果丢弃，poll不取消loading或重试error；
+  声明能力后不拿Bootstrap旧历史兜底，缺能力保留旧路径，401清私有投影。
+- 复核发现A页2→B→A恢复旧页，改为按workspace/scope/task身份挂载；换任务/关闭重开回1。
+  跨桌面/手机容器切换也回历史1页而保留任务选择，没有宣称跨断点历史页恢复。
+- 实际键盘首次失败：只排除`:disabled`把Astryx的aria-disabled Next误认作可用。
+  阅读发布包Button渲染后同时排除ARIA禁用；焦点只在body或原触发器时恢复，末页选可用邻项、
+  错误选Retry，主动移到搜索框不抢回。保留失败截图/报告与原断言，修复后完整40项通过。
+- 最终943项前端（39文件）、562项Python、typecheck/build通过；后端63新增、client73新增。
+  后端首轮2处测试工具使用不正确已修，没有改生产事务行为来迁就断言。
+  最终生产报告：详情40项/9PNG、真实API6项/2PNG、原查询35项/6PNG、综合58项/60PNG，
+  共77最终PNG、无pageerror。综合旧reload断言曾在服务端列表pending时数行失败；
+  保留失败，改为等精确任务后保持原count断言，用全新fixture重跑通过。
+- 真实详情fixture.PV7p9d：安全seed仅允许精确marker、无symlink、15表全空的临时目录，
+  原子植入2任务/45终态Run，不加模型；实际第1/2/3页及390手机与SQL一致，
+  前后tasks/runs不变，仅public测试登录写入。综合fixture.qFmVX9使用FakeProvider/MockTransport，
+  是隔离测试调用，不是实际模型/费用证据。新证据`frontend/evidence/task-detail-2026-11-17/`，
+  ADR-0013及REA第29节记录合同和Astryx行为。
+- 原4180保持PID2064113，未读取凭证或写正式DB；只读确认task_query/task_detail均未advertise。
+  发现5173已停，已启动开发入口且HTTP200，因旧backend仍走legacy。临时4187/5176已停。
+  既有大包与Starlette/httpx警告保留；Safari/真机、用户视觉接受未扩张。
+- IZ-07.3a所列本地合同关闭，整体IZ-07.3/04未关；下一项全局计数/查找/引用，再迁移其他视图、
+  Bootstrap协商减量及失效/传输测量。原119/9/110不变。按独立提交交付，commit/push以git记录为准。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。

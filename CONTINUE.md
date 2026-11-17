@@ -2,6 +2,26 @@
 
 更新日期：2026-11-17（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
 
+**最新完成切片（2026-11-17，IZ-07.3a本地验收完成）：**
+用户要求“看下现状，提交后，并继续”。已核实`f917608`在main/origin/main且工作区原本干净，
+不是重新补交旧改动。沿现有多Agent分工继续：后端详情/分页历史、严格client、浏览器专项；
+主Agent整合Inspector与记录。先读[ADR-0013](docs/decisions/ADR-0013-on-demand-task-detail.md)。
+新增明确task_detail能力准入与GET任务detail，同一只读SQLite快照返回Task/最小Project、
+latestRun/attempts和20/50/100历史页。客户端复用任务投影校验，不重算排序；
+Inspector只在选中后读取，历史页与列表页分开，错误不回退Bootstrap；旧能力缺失保持原路径。
+最终943前端（39文件）/562Python/typecheck/build通过；详情40、真实API6、查询35、综合58项，
+四份最终生产报告77PNG、无pageerror。证据`frontend/evidence/task-detail-2026-11-17/`。
+保留键盘末页ARIA禁用失败及综合异步reload断言失败；修复后均在最终构建重跑通过。
+后端新增63项，含snapshot/连接关闭/认证和仅空临时fixture可用的seed；正式4180未重启。
+发现并修复A页2→B→A恢复旧页的问题，Inspector身份key现绑定workspace/scope/task，切换从1页。
+跨桌面/手机容器切换仍会重挂Inspector并回历史第1页，选中任务保留，不宣称跨断点页码恢复。
+分页焦点同时识别native/aria-disabled，末页选可用邻项、失败选Retry；用户主动移焦时不抢回。
+Bootstrap、Quick find、侧栏、Board/Run history等全量投影未减；IZ-07.3整体/07.4和119计数不变。
+下一项IZ-07.3b全局计数/查找与引用目录，然后其他消费者迁移与精简Bootstrap，不跳过失效和测量。
+本批按独立提交交付，实际commit/push以git log及origin/main为准，无真实Provider/凭证/
+正式数据库写入或部署。临时4187/5176已停；原5173本轮发现已停止，已启动开发入口并核验200。
+4180仍原PID2064113，task_query/task_detail均未advertise，主入口继续legacy；保存视图原能力保持。
+
 **最新完成切片（2026-11-17，IZ-07.2本地验收完成）：**
 用户明确要求多Agent实现；根Agent负责页面/表格整合和全量回归，合同Agent复核严格client，
 浏览器Agent补异常/权限场景，文档Agent整理ADR与进度。已推送基线为`f9e5484`及查询API

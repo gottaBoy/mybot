@@ -255,12 +255,20 @@ product patterns, not replacing Astryx. Apply these rules to mybot:
   Render long view feedback below the page heading, not beside its title.
   Astryx busy required dialogs use `alertdialog`; adaptive touch actions use
   dialog/buttons. Browser tests must follow both actual presentations.
-  The new server task-query contract (ADR-0011) has a bounded response and explicit
-  `unicode-natural-v1` ordering. It is not currently consumed by the frontend or
-  identical to Intl.Collator. Do not silently enable server sorting or claim
-  scale improvements until client ordering, Bootstrap and history reads are
-  migrated and independently verified. A response snapshot is not a cross-page
-  cursor or an immutable result-set lease.
+  The server task-query contract (ADR-0011/0012) has a bounded response and explicit
+  `unicode-natural-v1` ordering. The frontend consumes it only when Bootstrap
+  explicitly advertises `task_query: true`; missing/false keeps the legacy path,
+  while an advertised endpoint failure must not silently fall back.
+  Server ordering is not Intl.Collator equivalence. The browser validates DTOs
+  and request identities, then preserves server rows without sorting or slicing
+  them again; it does not recompute Unicode text/order as response admission.
+  Selected-task detail/history (ADR-0013) likewise requires explicit `task_detail`
+  capability, uses one read-only snapshot and keeps history paging separate from
+  the list URL. Do not claim Bootstrap or global transfer has shrunk merely because
+  a consumer migrated. Keep all remaining consumers and measurements explicit.
+  A response snapshot is not a cross-page cursor or an immutable result-set lease.
+  Astryx disabled buttons may use `aria-disabled`; focus restoration must exclude
+  both native and ARIA-disabled controls and must not steal user-moved focus.
 - Route and query listeners must consult the shared navigation admission guard.
   Restoring a dirty form's URL in a capture listener alone does not preserve the
   form. One navigation event must share one decision across consumers; confirmed
