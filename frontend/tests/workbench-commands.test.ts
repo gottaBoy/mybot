@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import type { Bootstrap } from '../src/workbench/api'
 import {
   buildWorkbenchCommands,
+  buildWorkbenchNavigationCommands,
   canOpenWorkbenchCommands,
   commandOverlaySelectors,
   hasBlockingCommandOverlay,
@@ -57,6 +58,12 @@ const shortcut = {
 }
 
 describe('global command source', () => {
+  it('builds navigation without accessing Bootstrap domain arrays', () => {
+    const commands = buildWorkbenchNavigationCommands(english)
+    expect(commands).toHaveLength(10)
+    expect(commands.every((item) => item.id.startsWith('nav:'))).toBe(true)
+    expect(commands.map((item) => item.href)).toContain('#workbench')
+  })
   it('includes every real task, including never-run IDs beyond the Run cap', () => {
     const commands = buildWorkbenchCommands(fixture(), english)
     expect(commands.filter((item) => item.id.startsWith('task:'))).toHaveLength(

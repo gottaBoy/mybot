@@ -1,0 +1,22 @@
+{
+  "fixture": true,
+  "checks": [
+    "Actual counts classify recovered tasks separately from all 45 historical attempts",
+    "Real search reports 20 of 48 references and finds a Run older than the former 30-item limit",
+    "Shell Inbox and task-status rail render actual aggregate values",
+    "Astryx Quick find consumes actual bounded results and displays the old Run without client filtering",
+    "Selecting a real never-run task admits its exact query and project through managed navigation",
+    "390px search works and inspection leaves all tasks/Runs unchanged without Provider or control requests"
+  ],
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "old-run-desktop.png",
+    "old-run-mobile.png"
+  ]
+}

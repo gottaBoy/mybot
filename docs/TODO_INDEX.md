@@ -1,6 +1,6 @@
 # 全部待办索引
 
-更新：2026-11-17（Asia/Singapore）。本页是集中阅读入口，不替代
+更新：2026-11-18（Asia/Singapore）。本页是集中阅读入口，不替代
 [原工作项台账](WORK_ITEMS.md) 或 [产品 UI 审计](PRODUCT_UI_AUDIT.md)。
 
 **最新研究入口：** 用户提供新的 Issues 截图，要求深度学习后继续。
@@ -17,6 +17,25 @@ UI 的 WUI 编号是交叉整改视图，执行包是实施组织方式，均可
 **不得与 119/110 相加**。本页不因新增测试、截图、文件或执行包调整原台账计数。
 
 ## 当前执行包
+
+### 2026-11-18 全局计数与bounded快速查找
+
+前批`366ca3e`已push，本批IZ-07.3b1本地验收完成；不是整个07.3b或07.3完成。
+
+| 工作 | 状态 | 验收及边界 |
+| --- | --- | --- |
+| 只读workspace计数/搜索API | 本地完成 | 一次ro快照、Task最新态/Run历史分母、有限20/50与最小tagged refs |
+| 严格client与发送快照绑定 | 本地完成 | 104新增测试；Unicode/项目scope/数学/重复和引用冲突，错误不伪0 |
+| Shell/状态范围计数 | 本地完成 | 未知/busy/显式GET重试；未知活跃数保守轮询，不自动重放失败计数 |
+| Astryx远程Quick find | 本地完成 | 本地导航分离、旧项click/Enter拦截、同条件重试、截断提示与401 |
+| 07.3b2项目引用目录与逐项目计数 | 待办 | 不能用截断引用目录充当全部，项目目录徽标仍依赖Bootstrap |
+| 07.3c/d其他消费者/Bootstrap协商减量/失效与测量 | 待办 | 不把本批读取消费者迁移写成整体传输已减少 |
+
+1054前端/639Python/typecheck/build通过；生产搜索32/计数15/真实API6/综合58/详情40项，
+81PNG无pageerror。原4180不advertise新cap，5173恢复后继续legacy；临时4187/5176已停。
+[ADR-0014](decisions/ADR-0014-workspace-counts-search.md)，
+[验收记录](../frontend/evidence/workspace-reads-2026-11-18/README.md)。
+本批按独立提交交付，以Git回执为准；原119/9/110不变，无真实Provider/凭证/正式DB写入。
 
 ### 2026-11-17 详情按需读取与Bootstrap依赖拆分
 

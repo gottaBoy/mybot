@@ -348,3 +348,34 @@ Final results and reproduction:
 This does not remove Bootstrap task/Run arrays or migrate other global consumers.
 Main backend 4180 has not loaded the new capability, so the current 5173 development
 entry keeps the legacy Inspector there.
+
+## Workspace Counts And Quick Find
+
+Bootstrap explicitly advertises `workspace_counts` and `workspace_search`.
+Missing/false retains the original local consumer. An advertised read failing
+never substitutes Bootstrap domain results or zero counts.
+
+Shell badges and status-scope counts use task-latest and all-Run aggregates with
+separate denominators. Counts include the fixed route project or selected project
+union and are independent of current text/status filters. A failed count remains
+unknown; explicit retry is GET-only. Unknown active-Run count keeps conservative
+background state checks without automatically replaying a failed count request.
+Per-project directory badges and reference catalogs remain separate migration work.
+
+Quick find uses the existing Astryx palette with local navigation and bounded
+project/task/Run results. It can find an old Run by ID across all history, while
+displaying result count/total and a refinement prompt if truncated. Server matching
+and ordering are authoritative. Pending old options cannot navigate through click
+or keyboard; a structured error and same-query retry keep input intact.
+
+Use `MYBOT_BROWSER_SYNTHETIC=1` with the existing browser tooling to run
+`scripts/verify-workspace-search.mjs` and `scripts/verify-workspace-counts.mjs`.
+`scripts/verify-workspace-reads-live.mjs` instead requires
+`MYBOT_BROWSER_FIXTURE=1`, a fresh disposable browser_server directory seeded
+with `tests/seed_task_detail_fixture.py`, and its isolated production preview.
+Use another fresh empty fixture for the comprehensive mutation suite.
+
+Contract and acceptance:
+`../docs/decisions/ADR-0014-workspace-counts-search.md` and
+`evidence/workspace-reads-2026-11-18/README.md`.
+These consumers do not reduce Bootstrap or activate the running 4180 backend.

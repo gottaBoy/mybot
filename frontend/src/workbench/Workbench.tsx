@@ -73,10 +73,10 @@ import {
   type ListLocation,
 } from './list-location'
 import {
-  buildWorkbenchCommands,
   canOpenWorkbenchCommands,
   hasBlockingCommandOverlay,
 } from './commands-source'
+import { useWorkspaceCounts } from './useWorkspaceCounts'
 import { projectWorkspaceLocation } from './project-workspace'
 import { clearModelTests } from './model-test-state'
 import { clearListContinuityCache } from './list-continuity'
@@ -112,9 +112,9 @@ const FocusedWorkbench = lazy(() =>
     default: module.FocusedWorkbench,
   })),
 )
-const AppCommands = lazy(() =>
-  import('../components/ui/Commands').then((module) => ({
-    default: module.AppCommands,
+const WorkbenchCommands = lazy(() =>
+  import('./WorkbenchCommands').then((module) => ({
+    default: module.WorkbenchCommands,
   })),
 )
 export const legacyUrl = (
@@ -180,6 +180,10 @@ export function Workbench() {
   const [actionBusy, setActionBusy] = useState('')
   const request = useRef<AbortController | null>(null)
   const generation = useRef(0)
+  const workspaceCounts = useWorkspaceCounts({
+    data,
+    refreshRevision: queryRefreshRevision,
+  })
   const refresh = useCallback(
     async (cause: 'explicit' | 'poll' = 'explicit') => {
       const version = ++generation.current
@@ -291,13 +295,26 @@ export function Workbench() {
     }
   }, [refresh])
   useEffect(() => {
-    if (!data?.runs.some((run) => activeStatuses.has(run.status))) return
+    if (
+      !(workspaceCounts.remote
+        ? workspaceCounts.value?.run_counts.active !== 0
+        : data?.runs.some((run) => activeStatuses.has(run.status)))
+    )
+      return
     const timer = window.setInterval(() => {
       if (!document.hidden && !loading && !form && !commands)
         void refresh('poll')
     }, 6000)
     return () => clearInterval(timer)
-  }, [data, refresh, loading, form, commands])
+  }, [
+    data,
+    workspaceCounts.value,
+    workspaceCounts.remote,
+    refresh,
+    loading,
+    form,
+    commands,
+  ])
   useEffect(() => {
     savePreference('mybot.locale', locale)
     document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en'
@@ -397,13 +414,19 @@ export function Workbench() {
           : { kind: 'project' },
       )
   }
-  const active =
-    data?.runs.filter((run) => activeStatuses.has(run.status)).length ?? 0
-  const inboxCount = data
-    ? taskItems(data).filter(
-        (item) => item.column === 'pending' || item.column === 'attention',
-      ).length
-    : 0
+  const active = workspaceCounts.remote
+    ? workspaceCounts.value?.run_counts.active
+    : (data?.runs.filter((run) => activeStatuses.has(run.status)).length ?? 0)
+  const inboxCount = workspaceCounts.remote
+    ? workspaceCounts.value
+      ? workspaceCounts.value.task_counts.pending +
+        workspaceCounts.value.task_counts.attention
+      : undefined
+    : data
+      ? taskItems(data).filter(
+          (item) => item.column === 'pending' || item.column === 'attention',
+        ).length
+      : 0
   const project = data?.projects.find((item) => item.id === route.id)
   const pageTitle =
     route.page === 'overview'
@@ -496,12 +519,25 @@ export function Workbench() {
           >
             <Icon size={17} />
             <span>{label}</span>
-            {page === 'work' && active > 0 && (
-              <span className="wb-count">{active}</span>
+            {page === 'work' && (active === undefined || active > 0) && (
+              <span
+                className="wb-count"
+                aria-label={t('活跃运行数', 'Active run count')}
+                aria-busy={workspaceCounts.busy || undefined}
+              >
+                {active ?? '-'}
+              </span>
             )}
-            {page === 'inbox' && inboxCount > 0 && (
-              <span className="wb-count">{inboxCount}</span>
-            )}
+            {page === 'inbox' &&
+              (inboxCount === undefined || inboxCount > 0) && (
+                <span
+                  className="wb-count"
+                  aria-label={t('待处理任务数', 'Inbox task count')}
+                  aria-busy={workspaceCounts.busy || undefined}
+                >
+                  {inboxCount ?? '-'}
+                </span>
+              )}
           </a>
         ))}
       </nav>
@@ -711,6 +747,27 @@ export function Workbench() {
                   label={t('重试连接', 'Reconnect')}
                   size="sm"
                   onClick={() => void refresh()}
+                />
+              </div>
+            )}
+            {data && workspaceCounts.remote && workspaceCounts.error && (
+              <div className="wb-error wb-banner" role="alert">
+                <span>
+                  {workspaceCounts.error === 'forbidden'
+                    ? t(
+                        '没有读取工作区计数的权限。',
+                        'Workspace count access is forbidden.',
+                      )
+                    : t(
+                        '工作区计数不可用，未显示数值。',
+                        'Workspace counts are unavailable. Values were not shown.',
+                      )}
+                </span>
+                <AppButton
+                  label={t('重试计数', 'Retry counts')}
+                  icon={<RefreshCw size={15} />}
+                  size="sm"
+                  onClick={workspaceCounts.retry}
                 />
               </div>
             )}
@@ -1231,20 +1288,13 @@ export function Workbench() {
             <AppLoading label={t('正在打开快速查找', 'Opening quick find')} />
           }
         >
-          <AppCommands
-            label={t('快速查找', 'Quick find')}
-            placeholder={t(
-              '搜索页面、项目或任务',
-              'Search pages, projects or tasks',
-            )}
-            empty={t('没有匹配项', 'No matches')}
+          <WorkbenchCommands
+            data={data}
+            t={t}
             onClose={() => setCommands(false)}
-            items={buildWorkbenchCommands(data, t).map((command) => ({
-              ...command,
-              onSelect: () => {
-                pushWorkbenchNavigation(command.href)
-              },
-            }))}
+            onNavigate={(href) => {
+              pushWorkbenchNavigation(href)
+            }}
           />
         </Suspense>
       )}

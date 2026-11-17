@@ -1,6 +1,25 @@
 # 下次从这里继续
 
-更新日期：2026-11-17（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
+更新日期：2026-11-18（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
+
+**最新完成（2026-11-18，IZ-07.3b1本地验收完成，始于11月17日）：**
+用户继续，原366ca3e已推送且起始工作树干净。实施全局/范围计数和bounded Quick find。
+先读ADR-0014。workspace_counts/search明确能力准入，旧后端保持legacy；失败不回退旧域数据、
+计数不伪0。Task最新态与Run历史分母分开；搜索支持历史Run ID、有限20/50、total/has_more。
+T3重启取消原UIAgent、clientAgent先前并发错误，落盘代码保留；本轮已恢复3Agent完成backend/
+client/UI，root负责counts hook/整合/记录。最终1054前端（41文件）/639Python/typecheck/build通过；
+生产搜索32/计数15/实际API6/综合58/详情40项，81最终PNG、无pageerror，全部隔离fixture。
+证据`frontend/evidence/workspace-reads-2026-11-18/`，保留初轮client共享fixture变更错误、
+综合选中同名但未ready导航被正确阻止，以及计数脚本未等scope请求的失败记录。
+Astryx会乐观保留旧选项/catch错误/默认空态；项目wrapper用稳定source/generation、
+可观察busy、显式错误和捕获旧项click/Enter解决；IME不误拦截，同queryRetry只GET。
+未知活跃数不当0停止后台状态检查；实测403后6.5s存在Bootstrap poll但无自动计数重试。
+Task状态范围与Run历史分母切换、固定route scope、真实20/48搜索和旧RunID均已验证。
+Bootstrap、项目目录计数/引用及其他页面投影仍全量；本项只是07.3b1，不关闭b/整体/07.4。
+未重启原4180（PID2064113），只读核实两新cap均未advertise；恢复5173开发入口，继续legacy。
+临时4187/5176已停。不读凭证、不调用真实Provider或写正式DB；本批按独立提交交付，
+实际commit/push以git log及origin/main为准。下一项07.3b2项目引用目录/逐项目计数，然后其他视图迁移、
+Bootstrap协商减量和失效/传输测量。原119/9/110不变，已有大包/httpx警告保留。
 
 **最新完成切片（2026-11-17，IZ-07.3a本地验收完成）：**
 用户要求“看下现状，提交后，并继续”。已核实`f917608`在main/origin/main且工作区原本干净，

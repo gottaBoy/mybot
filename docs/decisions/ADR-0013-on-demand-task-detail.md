@@ -111,3 +111,10 @@ Bootstrap, Quick find, sidebar counts, Board, Run history and other full-data
 consumers remain migration work. IZ-07.3 is not complete until those dependencies
 are addressed and reduced loading is independently measured. IZ-07.4 and the
 original 119-item ledger are not closed by this sub-slice.
+
+## Follow-Up
+
+ADR-0014 subsequently migrates shell/status counts and bounded Quick find with
+explicit capabilities. Project directories and other full-data consumers still
+remain pending, and Bootstrap has not been reduced. This does not alter the
+Inspector contract or activate the running backend.

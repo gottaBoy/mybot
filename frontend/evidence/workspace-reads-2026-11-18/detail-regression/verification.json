@@ -1,0 +1,463 @@
+{
+  "synthetic": true,
+  "source": "Production frontend with all APIs locally intercepted",
+  "checks": [
+    "desktop: no task detail request before selecting a task",
+    "desktop: selected task uses exact bounded server history and authoritative detail, not Bootstrap",
+    "desktop: same-query refresh retains detail and exact history while explicitly busy",
+    "desktop: an eight-second detail read spans a real active-Run Bootstrap poll without interruption or replay",
+    "desktop: history page 2 has exact server IDs without reslicing",
+    "desktop: keyboard Next preserves focus on the enabled Next control after page 2 loads",
+    "desktop: keyboard Next on the last page restores focus to the enabled Previous control",
+    "desktop: last and previous history pages preserve the task denominator and exact rows",
+    "desktop: history pagination is reachable inside the Inspector and reports page 2 of 3",
+    "desktop: switching Alpha page 2 to Beta and back resets Alpha history to exact page 1",
+    "desktop: a completed history read does not steal focus moved to the query input while loading",
+    "desktop: a failed keyboard page read focuses Retry and its successful retry restores an enabled page control",
+    "desktop: a failed history read does not steal focus moved to the query input while loading",
+    "desktop: closing details restores focus to the selected visible task",
+    "desktop: reopening starts the selected task history at page 1",
+    "desktop: a canceled late Alpha response cannot replace the selected Beta detail",
+    "desktop: closing an in-flight read cannot reopen or refill private detail",
+    "desktop: a real zero-history task renders an explicit empty history",
+    "desktop: 403 is explicit failure without local fallback; one manual retry makes one GET",
+    "desktop: 403 remains locked through a real background poll until explicit GET retry",
+    "desktop: 404 is explicit failure without local fallback; one manual retry makes one GET",
+    "desktop: malformed is explicit failure without local fallback; one manual retry makes one GET",
+    "desktop: an old backend without the detail capability retains legacy history and makes no new request",
+    "desktop: fixed-project detail requests bind the route scope without document overflow",
+    "desktop: HTML 401 clears private task/detail content before showing sign-in and never auto-retries",
+    "mobile: no task detail request before selecting a task",
+    "mobile: selected task uses exact bounded server history and authoritative detail, not Bootstrap",
+    "mobile: history page 2 has exact server IDs without reslicing",
+    "mobile: last and previous history pages preserve the task denominator and exact rows",
+    "mobile: history pagination is reachable inside the Inspector and reports page 2 of 3",
+    "mobile: closing details restores focus to the selected visible task",
+    "mobile: reopening starts the selected task history at page 1",
+    "mobile: closing an in-flight read cannot reopen or refill private detail",
+    "mobile: a real zero-history task renders an explicit empty history",
+    "mobile: 403 is explicit failure without local fallback; one manual retry makes one GET",
+    "mobile: 404 is explicit failure without local fallback; one manual retry makes one GET",
+    "mobile: malformed is explicit failure without local fallback; one manual retry makes one GET",
+    "mobile: an old backend without the detail capability retains legacy history and makes no new request",
+    "mobile: fixed-project detail requests bind the route scope without document overflow",
+    "mobile: HTML 401 clears private task/detail content before showing sign-in and never auto-retries"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=2&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=3&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=2&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-beta/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=2&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=3&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=3&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=2&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=2&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-beta/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-beta/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-empty/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20&scope_project_id=detail-project"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20&scope_project_id=detail-project"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=2&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=3&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=2&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-beta/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-empty/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20&scope_project_id=detail-project"
+    },
+    {
+      "name": "mobile",
+      "method": "GET",
+      "path": "/api/tasks/detail-task-alpha/detail",
+      "search": "?page=1&page_size=20&scope_project_id=detail-project"
+    }
+  ],
+  "writes": [],
+  "errors": [],
+  "screenshots": [
+    "desktop-page-1.png",
+    "desktop-page-2.png",
+    "desktop-page-error.png",
+    "desktop-fixed-project.png",
+    "desktop-signed-out.png",
+    "mobile-page-1.png",
+    "mobile-page-2.png",
+    "mobile-fixed-project.png",
+    "mobile-signed-out.png"
+  ]
+}

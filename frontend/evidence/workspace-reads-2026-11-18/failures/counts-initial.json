@@ -1,0 +1,96 @@
+{
+  "synthetic": true,
+  "checks": [
+    "desktop: Shell counts use remote task/Run aggregates even when Bootstrap contains no tasks or Runs",
+    "desktop: Task-status counts are remote totals, independent of the current empty list",
+    "desktop: Same-scope explicit refresh retains validated counts while reads are pending"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    }
+  ],
+  "errors": [],
+  "writes": [],
+  "screenshots": [],
+  "failure": {
+    "message": "Expected values to be strictly equal:\n\n7 !== 6\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n7 !== 6\n\n    at file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-workspace-counts.mjs:255:12",
+    "tree": "- link \"Skip to content\":\n  - /url: \"#wb-main\"\n- complementary:\n  - link \"mybot WORKSPACE\":\n    - /url: \"#workbench\"\n    - strong: mybot\n    - text: WORKSPACE\n  - strong: R&D workspace\n  - text: Local · Single user\n  - button \"New task\":\n    - text: New task\n    - status\n  - navigation \"Main navigation\":\n    - link \"Overview\":\n      - /url: \"#overview\"\n    - link \"Workbench Active run count\":\n      - /url: \"#workbench\"\n      - text: Workbench 2\n    - link \"Inbox Inbox task count\":\n      - /url: \"#inbox\"\n      - text: Inbox 8\n    - link \"Projects\":\n      - /url: \"#projects\"\n    - link \"Documents\":\n      - /url: \"#documents\"\n    - link \"Models & resources\":\n      - /url: \"#models\"\n    - link \"Conversation backends\":\n      - /url: \"#backends\"\n  - text: PROJECTS\n  - button \"Create project\":\n    - status\n  - link \"Counts project\":\n    - /url: \"#project/counts-project\"\n  - button \"Preferences\":\n    - text: Preferences\n    - status\n  - link \"Component lab\":\n    - /url: \"#templates\"\n  - link \"Classic workbench\":\n    - /url: http://127.0.0.1:4180/\n  - text: Read-only research\n- banner:\n  - text: Workspace\n  - strong: Workbench\n  - button \"Quick find\":\n    - text: Quick find\n    - status\n  - status: Synced\n  - button \"切换为中文\":\n    - status\n  - button \"Dark mode\":\n    - status\n  - button \"Refresh\":\n    - status\n  - tooltip \"Refresh\"\n- main:\n  - region \"Task list workspace\":\n    - complementary:\n      - navigation \"Task scope\":\n        - heading \"Filters\" [level=2]\n        - button \"Collapse filters\" [expanded]:\n          - status\n        - heading \"Task status\" [level=3]\n        - button \"All tasks\" [pressed]:\n          - text: All tasks 16\n          - status\n        - button \"Active\":\n          - text: Active 2\n          - status\n        - button \"Needs attention\":\n          - text: Needs attention 3\n          - status\n        - button \"Completed\":\n          - text: Completed 4\n          - status\n        - heading \"Projects\" [level=3]\n        - button \"All projects\" [pressed]:\n          - text: All projects 0\n          - status\n        - button \"Counts project\":\n          - text: Counts project 0\n          - status\n    - heading \"Tasks\" [level=1]\n    - text: All projects\n    - status:\n      - strong: \"0\"\n      - text: tasks\n    - button \"Views\":\n      - text: Views\n      - status\n    - region \"List search\":\n      - text: Search\n      - searchbox \"Search\"\n      - text: Project\n      - button \"Project\"\n      - text: Status\n      - button \"Status\"\n      - radiogroup \"Query mode\":\n        - radio \"Basic\" [checked]\n        - radio \"JQL\"\n      - button \"Search\":\n        - status\n      - button \"Clear filters\" [disabled]:\n        - status\n    - region \"Workbench results\":\n      - toolbar \"Result views and table tools\":\n        - radiogroup \"Work view\":\n          - radio \"Tasks\" [checked]\n          - radio \"Board\"\n          - radio \"Runs\"\n        - button \"Columns\":\n          - text: Columns\n          - status\n      - heading \"No tasks yet\" [level=2]\n      - button \"Clear filters\":\n        - text: Clear filters\n        - status"
+  }
+}

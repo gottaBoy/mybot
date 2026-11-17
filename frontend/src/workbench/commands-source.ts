@@ -9,14 +9,7 @@ export type WorkbenchCommand = {
   href: string
 }
 
-export function buildWorkbenchCommands(
-  data: Bootstrap,
-  t: Copy,
-): WorkbenchCommand[] {
-  const projectNames = new Map(
-    data.projects.map((project) => [project.id, project.name]),
-  )
-  const tasks = new Map(data.tasks.map((task) => [task.id, task]))
+export function buildWorkbenchNavigationCommands(t: Copy): WorkbenchCommand[] {
   const navigation = [
     ['overview', t('总览', 'Overview')],
     ['workbench', t('工作台', 'Workbench')],
@@ -29,14 +22,25 @@ export function buildWorkbenchCommands(
     ['login', t('登录与会话', 'Sign-in & session')],
     ['templates', t('组件实验室', 'Component lab')],
   ]
+  return navigation.map(([id, label]) => ({
+    id: `nav:${id}`,
+    label,
+    group: t('导航', 'Navigation'),
+    keywords: [id],
+    href: `#${id}`,
+  }))
+}
+
+export function buildWorkbenchCommands(
+  data: Bootstrap,
+  t: Copy,
+): WorkbenchCommand[] {
+  const projectNames = new Map(
+    data.projects.map((project) => [project.id, project.name]),
+  )
+  const tasks = new Map(data.tasks.map((task) => [task.id, task]))
   return [
-    ...navigation.map(([id, label]) => ({
-      id: `nav:${id}`,
-      label,
-      group: t('导航', 'Navigation'),
-      keywords: [id],
-      href: `#${id}`,
-    })),
+    ...buildWorkbenchNavigationCommands(t),
     ...data.projects.map((project) => ({
       id: `project:${project.id}`,
       label: `${project.name} · ${project.id}`,

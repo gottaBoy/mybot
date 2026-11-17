@@ -1,6 +1,18 @@
 # 实现进度与平台范围
 
-更新日期：2026-11-17。
+更新日期：2026-11-18。
+
+最新切片IZ-07.3b1全局计数/快速查找本地验收完成。明确workspace_counts/workspace_search
+能力才采用新读；Task最新态与Run全历史计数分开，未知不伪0，失败显式GET重试。
+未知活跃数保守检查后台状态，已失败计数不自动重放。Quick find用同一Astryx树，
+本地导航与远程最小引用分离；旧乐观选项按generation阻止click/Enter，错误不回退Bootstrap，
+截断显示returned/total，旧RunID可从全历史搜索。
+1054前端（41文件）/639Python/typecheck/build通过，搜索32/计数15/真实API6/综合58/详情40，
+81PNG，无pageerror。[ADR-0014](decisions/ADR-0014-workspace-counts-search.md)及
+[验收](../frontend/evidence/workspace-reads-2026-11-18/README.md)保留失败与最后构建证据。
+项目引用目录/逐项目徽标、其他全量消费者与Bootstrap协商减量仍待，07.3/04及119计数不变。
+4180未更新、两新cap未advertise；5173开发入口已恢复，临时4187/5176已停。
+无真实模型/凭证/正式数据写入或部署；实际提交/push以git log及origin/main为准。
 
 最新完成IZ-07.3a本地验收：新增按需任务详情与分页历史合同，Inspector选中后读取，
 Task/最小Project/latestRun/attempts及历史页在同一只读SQLite快照内返回。

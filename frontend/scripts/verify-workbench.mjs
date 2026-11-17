@@ -2693,6 +2693,10 @@ async function verifyFullWorkbench() {
   await dialog.getByText('导航', { exact: true }).waitFor()
   await dialog.locator('input').fill('项目层级')
   await dialog.getByRole('option', { name: '项目层级', exact: true }).waitFor()
+  await assertPoll(
+    async () => await dialog.getAttribute('aria-busy') !== 'true',
+    'Quick find finishes the current search before keyboard selection',
+  )
   await page.keyboard.press('ArrowDown')
   await page.keyboard.press('Enter')
   await page.getByRole('heading', { name: '项目层级', exact: true }).waitFor()

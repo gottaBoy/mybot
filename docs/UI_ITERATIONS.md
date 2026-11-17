@@ -516,3 +516,21 @@ Inspector改为选中后读取Task和独立20条历史页，真实总数与lates
 原count断言；保留失败并在全新fixture重跑。证据`frontend/evidence/task-detail-2026-11-17/README.md`。
 Bootstrap和全局投影尚未减量，主4180没有重启；不是新的Agent执行、连接器或多端能力。
 原本停止的5173已启动并核验200，因主backend不advertise新能力仍走legacy；临时验收服务已停。
+
+## 28. 全局查找和计数的真实读取状态
+
+日期：2026-11-18（Asia/Singapore；始于11月17日）。继续既有排版，不是新的全站视觉改版。
+Quick find仍在顶栏，列表搜索仍一行，列/排序保持表格右上。新远程source不复制第二业务树。
+
+计数从窗口/任务页之外读取真实聚合；刷新保留带busy的值，失败显示未知和只读重试。
+Task最新态与Run历史口径分开，状态范围随项目scope切换。逐项目目录徽标仍待独立引用迁移。
+Quick find原Astryx弹层展示最小域引用和返回数/总数，截断提示缩小范围。
+失败不展示旧Bootstrap匹配或成功空态；旧选项在pending期间不可click/Enter执行。
+同条件重试保留输入，Escape恢复全局trigger焦点，401清掉私有投影。
+
+综合首轮仅等同名导航option就按Enter，旧选项被安全保护阻止；现在等待当前查询busy结束，
+保留原键盘/路由断言，并用专项直接复现pending不能执行/settled可以执行的两种结果。
+计数专项还验证未知活跃数不停止后台poll，同时失败count不自动重试。
+1054前端/639Python/typecheck/build通过，生产32/15/6/58/40项、81PNG无pageerror。
+证据`frontend/evidence/workspace-reads-2026-11-18/README.md`。主4180未更新，不宣称主入口
+已启用新cap；Bootstrap未减量、用户视觉/真机接受仍未扩大。

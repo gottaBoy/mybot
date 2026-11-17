@@ -797,6 +797,40 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
 - IZ-07.3a所列本地合同关闭，整体IZ-07.3/04未关；下一项全局计数/查找/引用，再迁移其他视图、
   Bootstrap协商减量及失效/传输测量。原119/9/110不变。按独立提交交付，commit/push以git记录为准。
 
+## 2026-11-18
+
+### 工作项：IZ-07.3b1全局计数与bounded Quick find本地验收完成
+
+- 始于11月17日，基线366ca3e已push且起始工作树干净。中途T3重启取消UIAgent、client遇并发错误，
+  保留落盘代码并恢复后端/client/UI三条分工，root整合计数/证据；未将中断的半成品当验收。
+- 两只读API：workspace/counts区分Task最新态与Run全历史，项目OR/固定scope；workspace/search
+  支持项目/任务/全历史RunID，有限20/50、total/has_more和最小tagged引用，不返回上下文/配置。
+  同响应单次mode=ro/query_only快照，连接关闭/并发snapshot/认证/参数边界实际测试。
+- strict client新增104项，按发送时快照绑定；Python空白/Unicode/codepoint canonical、
+  精确字段/算术/scope/重复/项目名/Task引用冲突。旧查询和详情合同保留，server为匹配/排序权威。
+- Shell Workbench活跃Run数、Inbox pending+attention任务数及状态范围计数接新聚合。
+  刷新保留已验数并busy；失败unknown/显式GET重试，未知active不当0停止后台检查。
+  15项专项实际等6.5s观察Bootstrap poll，已失败计数无自动重放；历史view切分母45而非任务16。
+- AppCommands沿Astryx SearchSource和Context接同条件重试；稳定source/ref避免重挂查询输入，
+  generation/cancel/capture防旧optimistic结果click/Enter关闭或导航。loading/error不显示默认
+  No results，域读取失败仍只提供本地导航+明确错误。32项中英手机/桌面专项覆盖20/35截断、
+  同名导航busy/settled、真实旧项click、错误重试1GET、关闭迟到、合成IME、legacy与HTML401。
+- 初轮前端1失败来自structuredClone仍保留fixture共享引用，改为只替换一个引用以真正构造冲突。
+  综合只等bootstrap同名option就Enter，安全guard正确阻断；脚本等待当前query aria-busy结束，
+  保留原键盘/目标路由断言。计数初脚本还未等scope请求就数GET，手机导航重复/闭合Filters/
+  固定项目标题亦按真实界面校正；未删除核心范围、数学、未知或重试断言。
+- 最终1054前端（41文件）、639Python、typecheck/build通过，保留Starlette/httpx及>500KB警告。
+  生产报告搜索32/4PNG、计数15/6PNG、实际API6/2PNG、综合58/60PNG、详情40/9PNG，
+  共81最终PNG、无pageerror。证据`frontend/evidence/workspace-reads-2026-11-18/`保留失败报告，
+  ADR-0014/REA第30节/模板采用映射同步，模拟与真实HTTP/SQLite分别记录。
+- 实际fixture.tDjiFK沿安全seed两任务45终态Run，无模型；验证Task2/Run45、真实20/48引用、
+  oldRun000可搜、exact任务导航和390px。检查后tasks/runs不变，只写public测试登录。
+  综合fresh fixture.QEwiAZ使用FakeProvider/MockTransport；没有真实Provider调用/费用或正式DB写。
+- 原4180保持PID2064113且两新cap仍未advertise；已恢复5173开发入口并核验200，
+  继续legacy。临时4187/5176已停；未读凭证、部署、升级依赖或扩执行权限。
+- 本切片本地合同完成但07.3b2项目引用目录/逐项目计数、07.3c/d其他消费者/Bootstrap协商减量/
+  失效和传输测量继续待办。原119/9/110不变。按独立提交交付，commit/push以git实际回执为准。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。

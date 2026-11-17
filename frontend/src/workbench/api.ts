@@ -63,6 +63,8 @@ export type Bootstrap = {
     backend_sync: boolean
     task_query?: boolean
     task_detail?: boolean
+    workspace_counts?: boolean
+    workspace_search?: boolean
   }
 }
 export type Snapshot = {

@@ -263,3 +263,20 @@ Bootstrap及Quick find/侧栏计数/Inspector历史尚未减量，不宣称全�
 Bootstrap、Quick find/计数/Board/Run历史等仍全量，不把模板接通写成IZ-07.3整体减量完成；
 没有真实模型、凭证或正式DB写入，原119项计数不变。主4180未启用新能力，
 已启动原本停止的5173并核验200；临时4187/5176已停。
+
+## 17. 远程Quick find与计数读取
+
+2026-11-18（始于11月17日），IZ-07.3b1沿shell-nav/CommandPalette与table-filter范围模式，
+继续React19/Astryx0.7.13和同一业务树，不生成模板副本或引入其他库。
+
+- AppCommands扩展发布包SearchSource、footer/input/renderItem插槽，保持分组、Escape和键盘；
+  本地导航与远程project/task/Run引用分离，不在browser重新筛server返回的Unicode结果。
+- source稳定，callback refs不丢输入；旧结果generation与捕获click/Enter防止pending旧命令执行。
+  显式busy/失败/真空/截断，samequeryRetry借支持的Context setSearch只GET，IME保持安全。
+- Shell徽标和状态范围用独立计数；Task最新态与Run历史分母不混用，错误unknown不归零。
+  同scope刷新保留已验数值并busy，未知活跃数保守轮询但不重放失败计数。
+- legacy缺能力保留完整原本地命令，声明能力后不回退Bootstrap域样例；HTML401清私有投影。
+
+1054前端/639Python/build与搜索32/计数15/真实API6/综合58/详情40通过，81最终PNG；
+见`frontend/evidence/workspace-reads-2026-11-18/README.md`、ADR-0014及REA第30节。
+不是项目引用目录/完整Bootstrap减量或新执行能力；原119/9/110不变，主4180未启用新cap。

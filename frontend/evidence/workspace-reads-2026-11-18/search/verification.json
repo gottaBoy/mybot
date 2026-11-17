@@ -1,0 +1,371 @@
+{
+  "synthetic": true,
+  "checks": [
+    "desktop: Open performs one bounded remote read without using Bootstrap task results",
+    "desktop: A matching local navigation row is blocked while the new query is pending",
+    "desktop: After the exact query settles, local navigation remains keyboard-selectable",
+    "desktop: A limited 20-row page reports total 35 and asks for refinement",
+    "desktop: Historic Run beyond local sources navigates through the managed route",
+    "desktop: A matching optimistic stale row cannot be clicked while pending",
+    "desktop: Pending stale results cannot navigate and a delayed old response cannot replace current results",
+    "desktop: Synthetic composing Enter is not captured as command selection",
+    "desktop: 403 has explicit failure, preserves query and retries one GET only",
+    "desktop: An advertised missing endpoint remains an error without fallback",
+    "desktop: Malformed 2xx is an error rather than a Bootstrap fallback",
+    "desktop: Closing cancels the active read and a late answer cannot reopen or seed the next query",
+    "desktop: True empty results remain distinct from failed search",
+    "desktop: Escape closes and restores the global trigger focus",
+    "desktop: Missing capability uses the original local command source without remote reads",
+    "desktop: HTML 401 clears the palette and private search results",
+    "mobile: Open performs one bounded remote read without using Bootstrap task results",
+    "mobile: A matching local navigation row is blocked while the new query is pending",
+    "mobile: After the exact query settles, local navigation remains keyboard-selectable",
+    "mobile: A limited 20-row page reports total 35 and asks for refinement",
+    "mobile: Historic Run beyond local sources navigates through the managed route",
+    "mobile: A matching optimistic stale row cannot be clicked while pending",
+    "mobile: Pending stale results cannot navigate and a delayed old response cannot replace current results",
+    "mobile: Synthetic composing Enter is not captured as command selection",
+    "mobile: 403 has explicit failure, preserves query and retries one GET only",
+    "mobile: An advertised missing endpoint remains an error without fallback",
+    "mobile: Malformed 2xx is an error rather than a Bootstrap fallback",
+    "mobile: Closing cancels the active read and a late answer cannot reopen or seed the next query",
+    "mobile: True empty results remain distinct from failed search",
+    "mobile: Escape closes and restores the global trigger focus",
+    "mobile: Missing capability uses the original local command source without remote reads",
+    "mobile: HTML 401 clears the palette and private search results"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "query": null
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "query": null
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "Project hierarchy"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "bounded"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "historic"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "Remote"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "second"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "Remote"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "forbidden"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "forbidden"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "missing-endpoint"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "missing-endpoint"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "malformed"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "malformed"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "closing"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "none"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "needle"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "query": null
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "query": null
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "query": null
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "query": null
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "expired"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "query": null
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "query": null
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "项目层级"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "bounded"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "historic"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "Remote"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "second"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "Remote"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "forbidden"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "forbidden"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "missing-endpoint"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "missing-endpoint"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "malformed"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "malformed"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "closing"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "none"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "needle"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "query": null
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "query": null
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "query": null
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "query": null
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/search",
+      "method": "GET",
+      "query": "expired"
+    }
+  ],
+  "writes": [],
+  "errors": [],
+  "screenshots": [
+    "desktop-bounded.png",
+    "desktop.png",
+    "mobile-bounded.png",
+    "mobile.png"
+  ]
+}

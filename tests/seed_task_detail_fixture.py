@@ -20,7 +20,7 @@ def seed(directory: str):
     root = Path(directory)
     if (
         not root.is_absolute() or root.parent != Path("/tmp") or
-        not re.fullmatch(r"mybot-astryx-workbench\.[A-Za-z0-9]+", root.name) or
+        not re.fullmatch(r"mybot-astryx-workbench\.[A-Za-z0-9_-]+", root.name) or
         root.is_symlink() or root.resolve(strict=True) != root
     ):
         raise ValueError("An explicit, nonsymlink /tmp/mybot-astryx-workbench.* fixture is required")

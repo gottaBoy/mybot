@@ -72,6 +72,7 @@ import {
 import { useListContinuity } from './list-continuity'
 import { SavedViewsMenu } from './SavedViewsMenu'
 import { TaskInspector } from './TaskInspector'
+import { useWorkspaceCounts } from './useWorkspaceCounts'
 import {
   captureSavedViewDefinition,
   savedViewLocationPatch,
@@ -668,6 +669,13 @@ export function FocusedWorkbench(props: Props) {
     jqlDraft !== location.jql ||
     Boolean(problem)
   const projectConditions = { ...committedConditions, states: [] }
+  const remoteCounts = useWorkspaceCounts({
+    data,
+    refreshRevision,
+    projects: committedConditions.projects,
+    scopeProjectId: scope,
+    enabled: !committedSelection.error,
+  })
   const scopeTasks = filterTaskItems(data, '', 'all', scope).filter((item) =>
     matchesTaskConditions(item, projectConditions, scope),
   )
@@ -691,12 +699,25 @@ export function FocusedWorkbench(props: Props) {
         ).length
       : scopeTasks.filter((item) => state === 'all' || item.column === state)
           .length
-  const scopeCounts = {
+  const localScopeCounts = {
     all: countScope('all'),
     active: countScope('active'),
     attention: countScope('attention'),
     completed: countScope('completed'),
   }
+  const aggregate = remoteCounts.value
+    ? view === 'table'
+      ? remoteCounts.value.run_counts
+      : remoteCounts.value.task_counts
+    : undefined
+  const scopeCounts: Record<Filter, number | undefined> = remoteCounts.remote
+    ? {
+        all: aggregate?.all,
+        active: aggregate?.active,
+        attention: aggregate?.attention,
+        completed: aggregate?.completed,
+      }
+    : localScopeCounts
   const scopeItems: Array<{ value: Filter; zh: string; en: string }> = [
     {
       value: 'all',
@@ -724,6 +745,9 @@ export function FocusedWorkbench(props: Props) {
       view={view}
       items={scopeItems}
       counts={scopeCounts}
+      countsBusy={remoteCounts.busy}
+      countsError={Boolean(remoteCounts.error)}
+      onRetryCounts={remoteCounts.retry}
       onFilterChange={onFilterChange}
       onProjectChange={onProjectFilterChange}
     />
@@ -1590,6 +1614,9 @@ function TaskScopeNavigation({
   view,
   items,
   counts,
+  countsBusy,
+  countsError,
+  onRetryCounts,
   onFilterChange,
   onProjectChange,
   contextProject,
@@ -1604,7 +1631,10 @@ function TaskScopeNavigation({
   projectFilter: string
   view: Props['view']
   items: Array<{ value: Filter; zh: string; en: string }>
-  counts: Record<Filter, number>
+  counts: Record<Filter, number | undefined>
+  countsBusy: boolean
+  countsError: boolean
+  onRetryCounts: () => void
   onFilterChange: (value: Filter) => void
   onProjectChange: (value: string) => void
   contextProject?: Project
@@ -1631,6 +1661,19 @@ function TaskScopeNavigation({
         </div>
       )}
       <section className="wf-scope-section">
+        {countsError && (
+          <div className="wf-count-error" role="alert">
+            <span>{t('范围计数不可用', 'Scope counts unavailable')}</span>
+            <AppButton
+              label={t('重试范围计数', 'Retry scope counts')}
+              icon={<RefreshCw size={14} />}
+              iconOnly
+              size="sm"
+              tone="ghost"
+              onClick={onRetryCounts}
+            />
+          </div>
+        )}
         <h3 className="wf-scope-label">
           {view === 'table'
             ? t('运行状态', 'Run status')
@@ -1658,7 +1701,12 @@ function TaskScopeNavigation({
           >
             <span className="wf-scope-content">
               <span>{t(item.zh, item.en)}</span>
-              <span className="wf-scope-count">{counts[item.value]}</span>
+              <span
+                className="wf-scope-count"
+                aria-busy={countsBusy || undefined}
+              >
+                {counts[item.value] ?? '-'}
+              </span>
             </span>
           </AppButton>
         ))}

@@ -711,3 +711,23 @@ git -C /tmp/mybot-upstream-astryx rev-parse HEAD
   用户主动转移到搜索框时不抢回；不改Vendor DOM或禁用约定。
 - Task详情、单次SQLite快照、最小Run投影和严格DTO均为mybot本地实现，不是模板自带能力。
   失败基线、修复后键盘/手机验收与主服务未启用边界见ADR-0013及本批证据记录。
+
+## 30. Astryx异步Quick find的REA复核（2026-11-18）
+
+- 身份：继续使用`meta/astryx`已安装Core0.7.13，既有研究commit
+  `5770e5b197cf80d5a824667c23046887cc8fa0f5`不变；不宣称npm与Git逐字节相同或最新版。
+  未升级、clone/fetch、复制源码或安装新包，原MIT/NOTICE保持。
+- R：读取`dist/Typeahead/types.d.ts`的SearchSource/search/bootstrap/cancel，
+  `dist/CommandPalette/CommandPalette.js`的runSearch、optimistic filtering、catch与setSearch，
+  以及CommandPaletteInput/Context类型和受支持的input/footer/renderItem插槽。
+- E：上游对异步旧结果有乐观保留，source错误被catch变空数组，empty文字用nullish默认；
+  因而仅提供API source不足以表达失败、禁止旧项执行或保证同名导航属于当前已完成查询。
+  Context的setSearch会直接runSearch，同字符串也能显式重试，不需要重挂输入。
+- A：项目AppCommands保留Astryx主体/分组/键盘行为，稳定source+callback refs避免无关render重置；
+  自有结构化loading/error/ready/截断反馈，generation与请求取消丢弃旧读；
+  捕获旧option点击与Enter，校验当前结果身份后才允许关闭/导航，IME合成事件不拦截。
+  loading/error显式空字符串抑制上游默认成功空态；Retry只重发当前GET。
+- WorkbenchCommands的导航命令本地处理，业务域只取严格API结果并保持服务器Unicode语义；
+  legacy缺能力继续原完整本地source。32项生产搜索专项验证真实旧项click/Enter、同名导航、
+  截断20/35、错误重试、关闭迟到、手机中英；不是“source接口存在”即业务集成。
+  详情见ADR-0014与`frontend/evidence/workspace-reads-2026-11-18/README.md`。

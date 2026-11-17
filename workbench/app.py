@@ -31,6 +31,10 @@ from .schemas import (
 from .saved_views import SavedViewError
 from .task_detail import TaskDetailError, parse_task_detail, read_task_detail
 from .task_query import EMPTY_QUERY, MAX_PAGE, TaskQueryError, parse_task_query, read_task_page
+from .workspace_reads import (
+    WorkspaceReadError, parse_workspace_counts, parse_workspace_search,
+    read_workspace_counts, read_workspace_search,
+)
 from .store import Store
 
 
@@ -145,6 +149,10 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     async def task_detail_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
 
+    @app.exception_handler(WorkspaceReadError)
+    async def workspace_read_error(request, exc):
+        return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
+
     @app.get("/api/auth/state")
     async def auth_state(request: Request):
         return {"authenticated": authorized(request), "required": bool(settings.access_token),
@@ -208,7 +216,40 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "agent_work": True,
                                  "task_query": True,
                                  "task_detail": True,
+                                 "workspace_counts": True,
+                                 "workspace_search": True,
                                  "harness": LocalSuperagentHarness.capabilities()}}
+
+    @app.get("/api/workspace/counts")
+    def workspace_counts(
+        request: Request,
+        projects: str = Query("[]", max_length=24000),
+        scope_project_id: str | None = Query(None, min_length=1, max_length=100),
+    ):
+        allowed = {"projects", "scope_project_id"}
+        if any(
+            key not in allowed or len(request.query_params.getlist(key)) != 1
+            for key in request.query_params
+        ):
+            raise WorkspaceReadError("workspace_counts_parameters_invalid")
+        candidate = parse_workspace_counts(projects, scope_project_id)
+        return read_workspace_counts(store.path, candidate)
+
+    @app.get("/api/workspace/search")
+    def workspace_search(
+        request: Request,
+        q: str = Query("", max_length=2000),
+        limit: int = Query(20, ge=20, le=50),
+        scope_project_id: str | None = Query(None, min_length=1, max_length=100),
+    ):
+        allowed = {"q", "limit", "scope_project_id"}
+        if any(
+            key not in allowed or len(request.query_params.getlist(key)) != 1
+            for key in request.query_params
+        ):
+            raise WorkspaceReadError("workspace_search_parameters_invalid")
+        candidate = parse_workspace_search(q, limit, scope_project_id)
+        return read_workspace_search(store.path, candidate)
 
     @app.post("/api/projects", status_code=201)
     async def project_create(body: ProjectCreate):
