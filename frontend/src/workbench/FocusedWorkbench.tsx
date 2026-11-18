@@ -73,6 +73,7 @@ import { useListContinuity } from './list-continuity'
 import { SavedViewsMenu } from './SavedViewsMenu'
 import { TaskInspector } from './TaskInspector'
 import { useWorkspaceCounts } from './useWorkspaceCounts'
+import { ProjectReferenceDirectory } from './ProjectReferenceDirectory'
 import {
   captureSavedViewDefinition,
   savedViewLocationPatch,
@@ -738,6 +739,10 @@ export function FocusedWorkbench(props: Props) {
         requestAnimationFrame(() => scopeExpandTrigger.current?.focus())
       }}
       data={data}
+      refreshRevision={refreshRevision}
+      selectedProjectIds={
+        contextProject ? [contextProject.id] : committedConditions.projects
+      }
       t={t}
       filter={scopedStateFilter}
       projectFilter={scopedProjectFilter}
@@ -1608,6 +1613,8 @@ function TaskScopeNavigation({
   collapseRef,
   onCollapse,
   data,
+  refreshRevision,
+  selectedProjectIds,
   t,
   filter,
   projectFilter,
@@ -1626,6 +1633,8 @@ function TaskScopeNavigation({
   collapseRef: React.Ref<HTMLButtonElement>
   onCollapse: () => void
   data: Bootstrap
+  refreshRevision: number
+  selectedProjectIds: string[]
   t: Copy
   filter: Filter | undefined
   projectFilter: string
@@ -1713,43 +1722,57 @@ function TaskScopeNavigation({
       </section>
       <section className="wf-scope-section">
         <h3 className="wf-scope-label">{t('项目', 'Projects')}</h3>
-        {(contextProject
-          ? [contextProject]
-          : [
-              { id: 'all', name: t('全部项目', 'All projects') },
-              ...data.projects,
-            ]
-        ).map((project) => {
-          const count =
-            view === 'table'
-              ? selectRuns(
-                  data,
-                  '',
-                  'all',
-                  project.id === 'all' ? undefined : project.id,
-                ).length
-              : data.tasks.filter(
-                  (task) =>
-                    project.id === 'all' || task.project_id === project.id,
-                ).length
-          return (
-            <AppButton
-              key={project.id}
-              label={project.name}
-              tone="ghost"
-              className={`wf-scope-item ${projectFilter === project.id ? 'is-active' : ''}`}
-              onClick={() => {
-                if (!contextProject) onProjectChange(project.id)
-              }}
-              aria-pressed={projectFilter === project.id}
-            >
-              <span className="wf-scope-content">
-                <span title={project.name}>{project.name}</span>
-                <span className="wf-scope-count">{count}</span>
-              </span>
-            </AppButton>
-          )
-        })}
+        {data.capabilities.project_references === true ? (
+          <ProjectReferenceDirectory
+            data={data}
+            refreshRevision={refreshRevision}
+            selectedIds={selectedProjectIds}
+            fixedProjectId={contextProject?.id}
+            t={t}
+            variant="scope"
+            countUnit={view === 'table' ? 'runs' : 'tasks'}
+            includeAll={!contextProject}
+            onSelect={onProjectChange}
+          />
+        ) : (
+          (contextProject
+            ? [contextProject]
+            : [
+                { id: 'all', name: t('全部项目', 'All projects') },
+                ...data.projects,
+              ]
+          ).map((project) => {
+            const count =
+              view === 'table'
+                ? selectRuns(
+                    data,
+                    '',
+                    'all',
+                    project.id === 'all' ? undefined : project.id,
+                  ).length
+                : data.tasks.filter(
+                    (task) =>
+                      project.id === 'all' || task.project_id === project.id,
+                  ).length
+            return (
+              <AppButton
+                key={project.id}
+                label={project.name}
+                tone="ghost"
+                className={`wf-scope-item ${projectFilter === project.id ? 'is-active' : ''}`}
+                onClick={() => {
+                  if (!contextProject) onProjectChange(project.id)
+                }}
+                aria-pressed={projectFilter === project.id}
+              >
+                <span className="wf-scope-content">
+                  <span title={project.name}>{project.name}</span>
+                  <span className="wf-scope-count">{count}</span>
+                </span>
+              </AppButton>
+            )
+          })
+        )}
       </section>
     </nav>
   )

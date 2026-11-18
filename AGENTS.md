@@ -276,6 +276,13 @@ product patterns, not replacing Astryx. Apply these rules to mybot:
   authoritative server matches. Astryx can retain optimistic old options, so
   cancel/discard obsolete searches and block stale click/keyboard selection before
   palette close. Provider calls and mutations never inherit this GET retry path.
+  Project references (ADR-0015) require their own explicit capability. A bounded
+  page is not the full Project catalog: hydrate selected IDs independently, keep
+  missing distinct from off-page and read failure, and use workspace totals rather
+  than page sums. Minimal references cannot stand in for full Project form data.
+  Directory drafts/pages are local panel state, separate from the task query.
+  Mount only the currently presented global navigation; hidden mobile/desktop
+  copies must not create duplicate directory read consumers.
 - Route and query listeners must consult the shared navigation admission guard.
   Restoring a dirty form's URL in a capture listener alone does not preserve the
   form. One navigation event must share one decision across consumers; confirmed

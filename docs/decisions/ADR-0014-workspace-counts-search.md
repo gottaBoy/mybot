@@ -87,6 +87,8 @@ No production restart or real Provider call occurred. Original 4180 still
 advertises neither new capability, and the restored 5173 entry uses the legacy
 path there. Disposable 4187/5176 acceptance services are stopped.
 
-Per-project references/directory counts, other global consumers and negotiated
-Bootstrap reduction remain open. This slice is not complete IZ-07.3b, IZ-07.3,
+The sidebar/scope project-reference directory and its counts were subsequently
+implemented in [ADR-0015](ADR-0015-project-reference-directory.md).
+Full Project consumers and negotiated Bootstrap reduction remain open.
+This slice is not complete IZ-07.3b, IZ-07.3,
 IZ-07.4, a global performance claim or a change to the 119/9/110 ledger.

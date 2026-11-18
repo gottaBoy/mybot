@@ -97,3 +97,18 @@ mybot 本地采用：
 
 列顺序、多字段排序、分组和大数据虚拟化仍未完成；本轮代码实现/定向测试不等于
 完整生产浏览器回归，更不代表用户已经接受视觉效果。最终验收见进度日志。
+
+## 项目目录范围与数据边界适配（2026-11-18）
+
+沿用此前固定Zira HEAD `1ce0d0510cb590f3a79ca498f7239ff0852ed0d7`及
+`IssueNavigatorPage.tsx`、`filter-sidebar.tsx`、`components/ui/toolbar.tsx`的观察：
+Filters目录搜索与结果查询分工、局部滚动、总数来源必须明确。本轮没有重新读取或运行
+Zira，不将用户截图、旧源码观察与mybot的新分页实现混为同一证据。
+
+mybot的本地适配是ADR-0015：全局项目侧栏/任务范围共用Astryx项目目录；独立Search与
+20项分页、selected跨页补齐、Task/历史Run计数、全工作区totals及错误重试。
+数字通过发布包Button.endContent对齐，不复制Zira组件/样式；901px仅挂当前可见导航。
+最终1199前端/710Python/build、生产37/8/58/15项及82PNG见
+`frontend/evidence/project-references-2026-11-18/README.md`。
+原4180未启用新cap；完整Project消费者和Bootstrap传输仍待迁移，面板重挂可重置本栏草稿，
+不把运行验收扩大成用户视觉接受、全部Zira功能或全局性能结论。

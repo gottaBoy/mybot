@@ -831,6 +831,35 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
 - 本切片本地合同完成但07.3b2项目引用目录/逐项目计数、07.3c/d其他消费者/Bootstrap协商减量/
   失效和传输测量继续待办。原119/9/110不变。按独立提交交付，commit/push以git实际回执为准。
 
+### 工作项：IZ-07.3b2项目引用目录本地验收完成
+
+- 起始b83e5d9已在origin/main且工作树干净；先立ADR-0015，不重复b1。
+  用户明确多Agent：后端/client/UI各负责不重叠文件，root整合/浏览器/证据。
+- 新GET project-references仅显式capability=true采用；20/50/100分页、文字搜索、selected独立
+  补齐与missing分区；逐项目Task和全历史Run数及workspace totals同一次SQLite ro快照。
+  不返回goal/notes/path/上下文，孤儿记录排除、关闭连接、认证及并发snapshot实测。
+- 严格client128新增，codepoint canonical IDs、精确DTO/分页/绑定/重叠一致性和去重总数校验；
+  不在browser重算文字匹配/排序，不把offpage当missing、不把单页相加当全局。
+- UI17新增，侧栏/范围共用ProjectReferenceDirectory，既有单行查询/顶栏查找/右上列工具保留；
+  目录搜索与任务query隔离，分页、offpage选中项、固定项目静态行、真实空/错误/重试明确。
+  请求key/15s abort/迟到丢弃/ready-only poll；same-key保留值并busy、禁止旧项激活。
+- 首轮浏览器发现手机CSS隐藏的desktop导航仍挂载第二份目录，现按901px边界只挂可见导航；
+  两处旧测试依赖关闭后的hidden badge/自动目录GET，改为先开当前呈现再保留原401/精确重试断言。
+  截图复核补用Astryx Button.endContent，使计数右对齐，不定位vendor内部DOM；实际边沿误差<=1px。
+- 最终1199前端（43文件）/710Python/typecheck/build通过；目录37/真实API8/综合58/计数15项，
+  82最终PNG、无pageerror。三style双mode、手机中英/IME/焦点/慢读跨真实poll/错误不重试、
+  malformed2xx/缺cap/401和迟到响应已验。证据`frontend/evidence/project-references-2026-11-18/`。
+  Python首轮3失败是Store.list(events)/canonical顺序测试假设，修后71专项及710全量通过。
+- 实际fixture.kDEXR5含45项目45任务88终态Run，项目000为2任务/45历史Run、001为0/0；
+  页面切Runs后总数88而非45，原项目/任务/Run/模型数组前后不变，只POST公开fixture登录。
+  综合使用全新fixture.2lUIpj及FakeProvider/MockTransport；失败及中间结果与最终证据分开。
+- 既有Starlette/httpx及大包警告保留；app147.13kB/gzip48.70、CSS37.86/gzip7.21，
+  lazy FocusedWorkbench67.74/gzip22.23、CSS12.12/gzip2.62；非初始整链传输结论。
+- 主4180仍PID2064113，未重启、未加载新cap；5173开发入口恢复后继续legacy。
+  临时4187/5176已停，无真实Provider、凭证、正式DB、兄弟项目修改、依赖升级或部署。
+- IZ-07.3b2所列消费者关闭，Bootstrap与Project选择器/路由/列表/表单仍全量，下一项07.3c1，
+  再其他视图/协商减量/失效测量；不关闭07.3/07.4或调整119/9/110。commit/push以Git回执为准。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。

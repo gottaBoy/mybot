@@ -731,3 +731,24 @@ git -C /tmp/mybot-upstream-astryx rev-parse HEAD
   legacy缺能力继续原完整本地source。32项生产搜索专项验证真实旧项click/Enter、同名导航、
   截断20/35、错误重试、关闭迟到、手机中英；不是“source接口存在”即业务集成。
   详情见ADR-0014与`frontend/evidence/workspace-reads-2026-11-18/README.md`。
+
+## 31. Astryx项目目录插槽与响应式挂载复核（2026-11-18）
+
+- 身份：继续已安装`meta/astryx`Core0.7.13，既有研究commit
+  `5770e5b197cf80d5a824667c23046887cc8fa0f5`；未重新拉取/升级，也不声称npm与Git逐字节相同。
+  既有MIT/NOTICE保留，本轮不复制上游组件源码。
+- R：读取安装包`dist/Button/Button.d.ts`及`src/Button/Button.tsx`的children、
+  endContent、contentWrapper继承布局和labelText收缩；使用既有`core/hooks`的useMediaQuery。
+  Astryx MultiSelector已装类型只有本地hasSearch，没有远程onSearchChange，因此本批没有把
+  bounded项目页塞进主查询MultiSelector来冒充全部项目选项。
+- E：自有children包住名字/数字时，Button内labelText不自动占满剩余行宽，短名计数不能对齐。
+  公开endContent槽与root className足以完成左右排列，无需定位StyleX内部class或复制Button。
+  CSS隐藏的desktop导航仍然挂载React hook；与手机Dialog并存会产生第二目录读取。
+- A：共享ProjectReferenceDirectory使用AppButton/AppInput/AppLoading和语义tokens，
+  endContent作计数列、project-owned label/ellipsis；901px媒体边界只挂当前呈现的导航。
+  最小引用/selected独立补齐/计数来自ADR-0015 API，不从模板样例或Bootstrap当前页推断。
+- 实测：17组件用例、总1199前端/710Python/build；最终生产目录37/实际API8/综合58/计数15，
+  82PNG无pageerror，三style双mode/手机中英、右边沿<=1px、错误/迟到/IME/ARIA焦点均覆盖。
+  源码观察、首次失败、修复与最终runtime记录见
+  `frontend/evidence/project-references-2026-11-18/README.md`。
+  不声称新上游能力、本地完整Project迁移、Bootstrap减量、主服务启用或用户视觉接受。

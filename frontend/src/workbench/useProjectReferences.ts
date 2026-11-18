@@ -1,0 +1,108 @@
+import { useEffect, useRef, useState } from 'react'
+import { ApiError, type Bootstrap } from './api'
+import {
+  fetchProjectReferences,
+  prepareProjectReferencesRequest,
+  type ProjectReferences,
+  type ProjectReferencesRequest,
+} from './project-references'
+
+type ProjectReferencesState = {
+  key: string
+  kind: 'loading' | 'ready' | 'error'
+  value?: ProjectReferences
+  error?: 'forbidden' | 'unavailable' | 'timeout' | 'invalid'
+}
+
+export function useProjectReferences({
+  data,
+  refreshRevision,
+  request,
+}: {
+  data: Bootstrap | null
+  refreshRevision: number
+  request: ProjectReferencesRequest
+}) {
+  const remote = data?.capabilities.project_references === true
+  let canonical = request
+  try {
+    const prepared = prepareProjectReferencesRequest(request)
+    canonical = {
+      query: prepared.query,
+      page: prepared.page,
+      pageSize: prepared.pageSize,
+      selectedIds: prepared.selectedIds,
+    }
+  } catch {
+    // The read path reports invalid input without exposing a render exception.
+  }
+  const key = JSON.stringify([data?.workspace, remote, canonical])
+  const [state, setState] = useState<ProjectReferencesState>()
+  const [revision, setRevision] = useState(0)
+  const observed = useRef({ data, refreshRevision })
+
+  useEffect(() => {
+    if (!remote) {
+      setState(undefined)
+      return
+    }
+    const controller = new AbortController()
+    let active = true
+    let timedOut = false
+    const timer = setTimeout(() => {
+      timedOut = true
+      controller.abort()
+    }, 15_000)
+    setState((previous) => ({
+      key,
+      kind: 'loading',
+      value: previous?.key === key ? previous.value : undefined,
+    }))
+    void fetchProjectReferences(request, controller.signal)
+      .then((value) => {
+        if (active && !controller.signal.aborted)
+          setState({ key, kind: 'ready', value })
+      })
+      .catch((error: unknown) => {
+        if (!active || (controller.signal.aborted && !timedOut)) return
+        setState({
+          key,
+          kind: 'error',
+          error: timedOut
+            ? 'timeout'
+            : error instanceof ApiError && error.status === 403
+              ? 'forbidden'
+              : error instanceof ApiError && error.status === 404
+                ? 'unavailable'
+                : 'invalid',
+        })
+      })
+      .finally(() => clearTimeout(timer))
+    return () => {
+      active = false
+      clearTimeout(timer)
+      controller.abort()
+    }
+  }, [key, refreshRevision, revision])
+
+  useEffect(() => {
+    const previous = observed.current
+    observed.current = { data, refreshRevision }
+    if (
+      previous.data !== data &&
+      previous.refreshRevision === refreshRevision &&
+      state?.key === key &&
+      state.kind === 'ready'
+    )
+      setRevision((value) => value + 1)
+  }, [data, refreshRevision, key, state])
+
+  const current = state?.key === key ? state : undefined
+  return {
+    remote,
+    value: remote ? current?.value : undefined,
+    busy: Boolean(remote && (!current || current.kind === 'loading')),
+    error: current?.kind === 'error' ? current.error : undefined,
+    retry: () => setRevision((value) => value + 1),
+  }
+}

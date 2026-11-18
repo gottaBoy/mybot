@@ -1,0 +1,24 @@
+{
+  "fixture": true,
+  "checks": [
+    "Actual SQLite snapshot returns20/45 refs, hydrated off-page project and distinct2-task/45-Run counts",
+    "Actual API clamps a requested page and returns verified empty-project zero without shrinking workspace totals",
+    "Real sidebar and scope consume bounded directory, selected hydration and workspace totals",
+    "Switching to Run history uses all88 attempts and selected project45 rather than task totals",
+    "Real paging/search retain off-page selection and expose actual zero for an empty project",
+    "Project activation commits the exact scope through managed task-query navigation",
+    "Actual endpoint works through the mobile Astryx filter dialog without document overflow",
+    "All original fixture records are unchanged; only public fixture login POST occurred"
+  ],
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "real-run-counts.png",
+    "real-mobile-scope.png"
+  ]
+}

@@ -1,0 +1,247 @@
+{
+  "synthetic": true,
+  "checks": [
+    "desktop: Sidebar uses a bounded server page rather than the Bootstrap first eight",
+    "desktop: Off-page selected reference is hydrated; task total comes from workspace totals",
+    "desktop: Same-key explicit refresh retains validated counts and disables activation while busy",
+    "desktop: Directory search commits separately and preserves server matches without browser filtering",
+    "desktop: Actual next page replaces rows while selected off-page project remains available",
+    "desktop: Keyboard pagination reaches last page and restores focus to an available control",
+    "desktop: Theme mode change preserves the directory draft and page",
+    "desktop: Changed query hides obsolete activations and background polling does not cancel slow reads",
+    "desktop: True empty search retains only the independently hydrated selected project",
+    "desktop: Advertised endpoint failure exposes no Bootstrap fallback or automatic GET retry",
+    "desktop: Explicit retry reads the same directory query once and preserves input",
+    "desktop: Malformed successful HTTP response remains an error",
+    "desktop: A late obsolete directory response cannot overwrite the newer search",
+    "desktop: Fixed project route displays one hydrated project without global scope switching",
+    "desktop: Missing capability keeps legacy directory and makes no reference GET",
+    "desktop: HTML 401 clears private directory projections and returns to sign-in"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=authority&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=2&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=3&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=slow&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=failed&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=failed&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=malformed&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=late&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=authority&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    }
+  ],
+  "errors": [],
+  "writes": [],
+  "screenshots": [
+    "desktop-sidebar.png",
+    "desktop-selected-search.png",
+    "desktop-page-two.png",
+    "desktop-fixed-project.png"
+  ],
+  "geometry": [],
+  "failure": {
+    "message": "locator.waitFor: Error: strict mode violation: getByTestId('project-directory-sidebar') resolved to 2 elements:\n    1) <div data-testid=\"project-directory-sidebar\" class=\"wb-project-directory wb-project-directory-sidebar\">…</div> aka locator('aside').getByTestId('project-directory-sidebar')\n    2) <div data-testid=\"project-directory-sidebar\" class=\"wb-project-directory wb-project-directory-sidebar\">…</div> aka getByRole('dialog', { name: '工作空间导航' }).getByTestId('project-directory-sidebar')\n\nCall log:\n\u001b[2m  - waiting for getByTestId('project-directory-sidebar') to be visible\u001b[22m\n",
+    "stack": "locator.waitFor: Error: strict mode violation: getByTestId('project-directory-sidebar') resolved to 2 elements:\n    1) <div data-testid=\"project-directory-sidebar\" class=\"wb-project-directory wb-project-directory-sidebar\">…</div> aka locator('aside').getByTestId('project-directory-sidebar')\n    2) <div data-testid=\"project-directory-sidebar\" class=\"wb-project-directory wb-project-directory-sidebar\">…</div> aka getByRole('dialog', { name: '工作空间导航' }).getByTestId('project-directory-sidebar')\n\nCall log:\n\u001b[2m  - waiting for getByTestId('project-directory-sidebar') to be visible\u001b[22m\n\n    at openSidebar (/home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-project-references.mjs:215:21)\n    at async file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-project-references.mjs:248:5",
+    "tree": "- link \"跳到主要内容\":\n  - /url: \"#wb-main\"\n- banner:\n  - button \"打开导航\":\n    - status\n  - strong: 工作台\n  - button \"快速查找\":\n    - status\n  - button \"Switch to English\":\n    - status\n  - button \"切换浅色\":\n    - status\n- main:\n  - region \"任务列表工作区\":\n    - heading \"任务\" [level=1]\n    - text: Bootstrap project 000\n    - status:\n      - strong: \"0\"\n      - text: 项任务\n    - button \"视图\":\n      - status\n    - button \"筛选条件\":\n      - status\n    - region \"列表搜索\":\n      - text: 搜索\n      - searchbox \"搜索\"\n      - text: 查询模式\n      - combobox \"查询模式\": 基本\n      - button \"搜索\":\n        - status\n      - button \"清除筛选\":\n        - status\n    - region \"工作台结果\":\n      - toolbar \"结果视图与表格工具\":\n        - radiogroup \"工作视图\":\n          - radio \"任务列表\" [checked]\n          - radio \"看板\"\n          - radio \"运行记录\"\n        - button \"列设置\":\n          - status\n      - heading \"没有匹配的任务\" [level=2]\n      - button \"新建任务\":\n        - text: 新建任务\n        - status\n- dialog \"工作空间导航\":\n  - heading \"工作空间导航\" [level=2]\n  - button \"关闭导航\":\n    - status\n  - link \"mybot\":\n    - /url: \"#workbench\"\n    - strong: mybot\n  - strong: 研发工作空间\n  - text: 本机 · 单用户\n  - button \"新建任务\":\n    - text: 新建任务\n    - status\n  - navigation \"主导航\":\n    - link \"总览\":\n      - /url: \"#overview\"\n    - link \"工作台 活跃运行数\":\n      - /url: \"#workbench\"\n      - text: 工作台 1\n    - link \"待处理\":\n      - /url: \"#inbox\"\n    - link \"项目\":\n      - /url: \"#projects\"\n    - link \"项目资料\":\n      - /url: \"#documents\"\n    - link \"模型与资源\":\n      - /url: \"#models\"\n    - link \"会话后端\":\n      - /url: \"#backends\"\n  - text: 项目\n  - button \"创建项目\":\n    - status\n  - text: 搜索项目\n  - textbox \"搜索项目\"\n  - button \"搜索项目目录\":\n    - status\n  - button \"Remote project 044\":\n    - text: Remote project 044 1\n    - status\n  - button \"Remote project 043\":\n    - text: Remote project 043 1\n    - status\n  - button \"Remote project 042\":\n    - text: Remote project 042 1\n    - status\n  - button \"Remote project 041\":\n    - text: Remote project 041 1\n    - status\n  - button \"Remote project 040\":\n    - text: Remote project 040 1\n    - status\n  - button \"Remote project 039\":\n    - text: Remote project 039 1\n    - status\n  - button \"Remote project 038\":\n    - text: Remote project 038 1\n    - status\n  - button \"Remote project 037\":\n    - text: Remote project 037 1\n    - status\n  - button \"Remote project 036\":\n    - text: Remote project 036 1\n    - status\n  - button \"Remote project 035\":\n    - text: Remote project 035 1\n    - status\n  - button \"Remote project 034\":\n    - text: Remote project 034 1\n    - status\n  - button \"Remote project 033\":\n    - text: Remote project 033 1\n    - status\n  - button \"Remote project 032\":\n    - text: Remote project 032 1\n    - status\n  - button \"Remote project 031\":\n    - text: Remote project 031 1\n    - status\n  - button \"Remote project 030\":\n    - text: Remote project 030 1\n    - status\n  - button \"Remote project 029\":\n    - text: Remote project 029 1\n    - status\n  - button \"Remote project 028\":\n    - text: Remote project 028 1\n    - status\n  - button \"Remote project 027\":\n    - text: Remote project 027 1\n    - status\n  - button \"Remote project 026\":\n    - text: Remote project 026 1\n    - status\n  - button \"Remote project 025\":\n    - text: Remote project 025 1\n    - status\n  - status: 1-20 / 45\n  - button \"上一页项目\" [disabled]:\n    - status\n  - button \"下一页项目\":\n    - status\n  - button \"偏好设置\":\n    - text: 偏好设置\n    - status\n  - link \"组件实验室\":\n    - /url: \"#templates\"\n  - link \"旧版工作台\":\n    - /url: http://127.0.0.1:4180/\n  - text: 只读研究"
+  }
+}

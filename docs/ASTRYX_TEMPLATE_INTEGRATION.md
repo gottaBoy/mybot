@@ -280,3 +280,21 @@ Bootstrap、Quick find/计数/Board/Run历史等仍全量，不把模板接通�
 1054前端/639Python/build与搜索32/计数15/真实API6/综合58/详情40通过，81最终PNG；
 见`frontend/evidence/workspace-reads-2026-11-18/README.md`、ADR-0014及REA第30节。
 不是项目引用目录/完整Bootstrap减量或新执行能力；原119/9/110不变，主4180未启用新cap。
+
+## 18. 有界项目引用目录
+
+2026-11-18，IZ-07.3b2沿shell-side-nav和table-filter的目录分区模式；保留React19、
+Astryx0.7.13及同一业务树，不重新生成模板、不增加第二组件库。
+
+| 采用模式 | 本地适配 | 未扩大为 |
+| --- | --- | --- |
+| shell-side-nav / Button | 侧栏和任务范围共用ProjectReferenceDirectory；endContent对齐真实计数 | 随机项目/假在线状态或完整Project对象 |
+| TextInput / search command | 本栏草稿/Search/非IME Enter与主任务查询分开；明确加载/空/失败 | 拿本地筛选一页当服务端完整搜索 |
+| Button / pagination | 服务端20项页、范围/总数、独立补齐选中项，末页焦点排除ARIA禁用 | 把截断目录当全部选项，固定范围伪装成可切换命令 |
+| Dialog / responsive navigation | 手机只挂当前可见导航，Filters沿既有Astryx弹层 | 跨重挂保留本栏草稿/页码或新增多端接力 |
+| semantic tokens / density | 三style双mode、实际计数边沿与长名截断检查 | 另写主题分支、导入Zira组件或整页视觉接受 |
+
+最终1199前端/710Python/build与生产37/8/58/15项通过，82PNG、无pageerror。
+见ADR-0015、REA第31节和`frontend/evidence/project-references-2026-11-18/README.md`。
+保留重复挂载/旧hidden-DOM测试失败。Bootstrap和完整Project消费者未减；
+原4180未启用新cap、5173继续legacy，无真实模型或正式数据写入，119/9/110不变。

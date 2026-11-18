@@ -315,6 +315,7 @@ try {
         exact: true,
       })
       .click()
+    if (width < 650) await revealMenu()
     await page.waitForFunction(
       (label) =>
         document
@@ -334,6 +335,7 @@ try {
         exact: true,
       })
       .waitFor()
+    if (width < 650) await revealMenu()
     assert.equal(await inbox.innerText(), '-')
     record('Malformed 2xx cannot become a success-shaped zero aggregate')
     malformed = false

@@ -22,6 +22,9 @@ from .engine import Engine
 from .harness import LocalSuperagentHarness
 from .model_test_service import ModelTestService
 from .provider import ProviderRouter, key_available
+from .project_references import (
+    MAX_PROJECT_PAGE, ProjectReferenceError, parse_project_references, read_project_references,
+)
 from .recovery import MODEL_FIELDS
 from .schemas import (
     ArtifactDecision, BackendCheck, BackendCreate, DefaultModel, Login, ModelCreate, ModelTest, ProjectCreate,
@@ -153,6 +156,10 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     async def workspace_read_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
 
+    @app.exception_handler(ProjectReferenceError)
+    async def project_reference_error(request, exc):
+        return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
+
     @app.get("/api/auth/state")
     async def auth_state(request: Request):
         return {"authenticated": authorized(request), "required": bool(settings.access_token),
@@ -218,7 +225,25 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "task_detail": True,
                                  "workspace_counts": True,
                                  "workspace_search": True,
+                                 "project_references": True,
                                  "harness": LocalSuperagentHarness.capabilities()}}
+
+    @app.get("/api/project-references")
+    def project_references(
+        request: Request,
+        q: str = Query("", max_length=2000),
+        page: int = Query(1, ge=1, le=MAX_PROJECT_PAGE),
+        page_size: int = Query(20, ge=20, le=100),
+        selected: str = Query("[]", max_length=24000),
+    ):
+        allowed = {"q", "page", "page_size", "selected"}
+        if any(
+            key not in allowed or len(request.query_params.getlist(key)) != 1
+            for key in request.query_params
+        ):
+            raise ProjectReferenceError("project_references_parameters_invalid")
+        candidate = parse_project_references(q, page, page_size, selected)
+        return read_project_references(store.path, candidate)
 
     @app.get("/api/workspace/counts")
     def workspace_counts(

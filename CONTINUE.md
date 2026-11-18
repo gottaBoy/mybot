@@ -2,6 +2,26 @@
 
 更新日期：2026-11-18（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
 
+**最新完成（2026-11-18，IZ-07.3b2项目引用目录本地验收）：**
+起始`b83e5d9`已在origin/main且工作树干净，没有重复开发b1。先读
+[ADR-0015](docs/decisions/ADR-0015-project-reference-directory.md)及
+`frontend/evidence/project-references-2026-11-18/README.md`。
+三Agent分别完成后端71新增、严格client128新增、共享目录17新增，root整合/浏览器/记录。
+新增明确project_references能力的只读分页接口：最小Project引用、逐项目Task/全历史Run数、
+全工作区总数和独立selected/missing补齐，同一次ro/query_only快照，无N+1 HTTP。
+全局项目侧栏和任务范围接同一Astryx目录，Search/IME/分页不改主查询；已选项跨页保留，
+固定项目只读展示；错误不回退Bootstrap或伪0，显式GET重试、取消/迟到/后台poll规则已验。
+浏览器发现手机隐藏桌面导航仍挂载，现只挂当前可见导航；endContent对齐计数列。
+最终1199前端（43文件）/710Python/typecheck/build通过；生产目录37/真实API8/综合58/
+计数15项，82最终PNG、无pageerror。保留重复挂载及两处旧脚本依赖隐藏DOM的失败记录，
+修复后最终构建重测通过；真实45项目45任务88Run夹具业务数据前后不变，无模型。
+Bootstrap仍全量，主查询项目选择器/SavedView校验/项目路由、列表、表单及其他视图待迁移；
+面板重挂可重置本栏搜索/页码，不声明跨断点恢复。先做IZ-07.3c1项目完整数据消费者，
+再迁移其他视图、协商Bootstrap减量及失效/传输测量，不提前关闭07.3整体/07.4。
+原4180保持PID2064113未重启，新cap未在主环境加载；5173开发入口已恢复并继续legacy。
+临时4187/5176已停；无真实Provider/凭证/正式DB写入/部署或依赖升级。原119/9/110不变。
+按独立提交push交付，以git log和origin/main实际回执为准。
+
 **最新完成（2026-11-18，IZ-07.3b1本地验收完成，始于11月17日）：**
 用户继续，原366ca3e已推送且起始工作树干净。实施全局/范围计数和bounded Quick find。
 先读ADR-0014。workspace_counts/search明确能力准入，旧后端保持legacy；失败不回退旧域数据、

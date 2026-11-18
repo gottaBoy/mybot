@@ -1,0 +1,436 @@
+{
+  "synthetic": true,
+  "checks": [
+    "desktop: Sidebar uses a bounded server page rather than the Bootstrap first eight",
+    "desktop: Off-page selected reference is hydrated; task total comes from workspace totals",
+    "desktop: Same-key explicit refresh retains validated counts and disables activation while busy",
+    "desktop: Directory search commits separately and preserves server matches without browser filtering",
+    "desktop: Actual next page replaces rows while selected off-page project remains available",
+    "desktop: Keyboard pagination reaches last page and restores focus to an available control",
+    "desktop: Theme mode change preserves the directory draft and page",
+    "desktop: Changed query hides obsolete activations and background polling does not cancel slow reads",
+    "desktop: True empty search retains only the independently hydrated selected project",
+    "desktop: Advertised endpoint failure exposes no Bootstrap fallback or automatic GET retry",
+    "desktop: Explicit retry reads the same directory query once and preserves input",
+    "desktop: Malformed successful HTTP response remains an error",
+    "desktop: A late obsolete directory response cannot overwrite the newer search",
+    "desktop: A server-confirmed missing selected project is distinct from off-page hydration",
+    "desktop: Fixed project route displays one hydrated project without global scope switching",
+    "desktop: Missing capability keeps legacy directory and makes no reference GET",
+    "desktop: HTML 401 clears private directory projections and returns to sign-in",
+    "mobile: Sidebar uses a bounded server page rather than the Bootstrap first eight",
+    "mobile: Off-page selected reference is hydrated; task total comes from workspace totals",
+    "mobile: Directory search commits separately and preserves server matches without browser filtering",
+    "mobile: Actual next page replaces rows while selected off-page project remains available",
+    "mobile: Changed query hides obsolete activations and background polling does not cancel slow reads",
+    "mobile: True empty search retains only the independently hydrated selected project",
+    "mobile: Advertised endpoint failure exposes no Bootstrap fallback or automatic GET retry",
+    "mobile: Explicit retry reads the same directory query once and preserves input",
+    "mobile: Malformed successful HTTP response remains an error",
+    "mobile: A late obsolete directory response cannot overwrite the newer search",
+    "mobile: A server-confirmed missing selected project is distinct from off-page hydration",
+    "mobile: Fixed project route displays one hydrated project without global scope switching",
+    "mobile: Missing capability keeps legacy directory and makes no reference GET",
+    "mobile: HTML 401 clears private directory projections and returns to sign-in",
+    "neutral/light: rendered project directory fits its region and document",
+    "neutral/dark: rendered project directory fits its region and document",
+    "zira/light: rendered project directory fits its region and document",
+    "zira/dark: rendered project directory fits its region and document",
+    "y2k/light: rendered project directory fits its region and document",
+    "y2k/dark: rendered project directory fits its region and document"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=authority&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=2&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=3&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=slow&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=failed&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=failed&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=malformed&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=late&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=authority&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=authority&page=1&page_size=20&selected=%5B%22missing-project%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=authority&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=2&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=slow&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=failed&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=failed&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=malformed&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=late&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=authority&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=authority&page=1&page_size=20&selected=%5B%22missing-project%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    }
+  ],
+  "errors": [],
+  "writes": [],
+  "screenshots": [
+    "desktop-sidebar.png",
+    "desktop-selected-search.png",
+    "desktop-page-two.png",
+    "desktop-fixed-project.png",
+    "mobile-sidebar.png",
+    "mobile-selected-search.png",
+    "mobile-page-two.png",
+    "mobile-fixed-project.png",
+    "neutral-light.png",
+    "neutral-dark.png",
+    "zira-light.png",
+    "zira-dark.png",
+    "y2k-light.png",
+    "y2k-dark.png"
+  ],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "width": 183,
+      "scrollWidth": 183,
+      "color": "rgb(0, 0, 0)",
+      "background": "rgba(0, 0, 0, 0)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "neutral",
+      "mode": "dark",
+      "width": 183,
+      "scrollWidth": 183,
+      "color": "rgb(255, 255, 255)",
+      "background": "rgba(0, 0, 0, 0)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "zira",
+      "mode": "light",
+      "width": 183,
+      "scrollWidth": 183,
+      "color": "rgb(23, 43, 77)",
+      "background": "rgba(0, 0, 0, 0)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+    },
+    {
+      "style": "zira",
+      "mode": "dark",
+      "width": 183,
+      "scrollWidth": 183,
+      "color": "rgb(230, 233, 239)",
+      "background": "rgba(0, 0, 0, 0)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+    },
+    {
+      "style": "y2k",
+      "mode": "light",
+      "width": 183,
+      "scrollWidth": 183,
+      "color": "rgb(45, 36, 27)",
+      "background": "rgba(0, 0, 0, 0)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "y2k",
+      "mode": "dark",
+      "width": 183,
+      "scrollWidth": 183,
+      "color": "rgb(237, 239, 252)",
+      "background": "rgba(0, 0, 0, 0)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    }
+  ]
+}

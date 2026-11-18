@@ -1,0 +1,308 @@
+{
+  "synthetic": true,
+  "checks": [
+    "desktop: Shell counts use remote task/Run aggregates even when Bootstrap contains no tasks or Runs",
+    "desktop: Task-status counts are remote totals, independent of the current empty list",
+    "desktop: Same-scope explicit refresh retains validated counts while reads are pending",
+    "desktop: Scope status switches from task totals to all-Run totals without conflating their denominators",
+    "desktop: Fixed project route binds the aggregate request despite a conflicting URL project",
+    "desktop: 403 keeps counts unknown without automatic count retries; explicit shell retry issues exactly one GET",
+    "desktop: Malformed 2xx cannot become a success-shaped zero aggregate",
+    "desktop: Backend without the capability keeps local count behavior and makes no aggregate request",
+    "desktop: HTML 401 clears private counts and returns to sign-in",
+    "mobile: Shell counts use remote task/Run aggregates even when Bootstrap contains no tasks or Runs",
+    "mobile: Task-status counts are remote totals, independent of the current empty list"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%22counts-project%22%5D&scope_project_id=counts-project"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    }
+  ],
+  "errors": [],
+  "writes": [],
+  "screenshots": [
+    "desktop-counts.png",
+    "desktop-unknown.png",
+    "desktop-signed-out.png",
+    "mobile-counts.png",
+    "mobile-unknown.png"
+  ],
+  "failure": {
+    "message": "page.waitForFunction: Timeout 30000ms exceeded.",
+    "stack": "page.waitForFunction: Timeout 30000ms exceeded.\n    at /home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-workspace-counts.mjs:318:16",
+    "tree": "- link \"跳到主要内容\":\n  - /url: \"#wb-main\"\n- banner:\n  - button \"打开导航\":\n    - status\n  - strong: 工作台\n  - button \"快速查找\":\n    - status\n  - button \"Switch to English\":\n    - status\n  - button \"切换浅色\":\n    - status\n- main:\n  - region \"任务列表工作区\":\n    - heading \"任务\" [level=1]\n    - text: 全部项目\n    - status:\n      - strong: \"0\"\n      - text: 项任务\n    - button \"视图\":\n      - status\n    - button \"筛选条件\":\n      - status\n    - region \"列表搜索\":\n      - text: 搜索\n      - searchbox \"搜索\"\n      - text: 查询模式\n      - combobox \"查询模式\": 基本\n      - button \"搜索\":\n        - status\n      - button \"清除筛选\" [disabled]:\n        - status\n    - region \"工作台结果\":\n      - toolbar \"结果视图与表格工具\":\n        - radiogroup \"工作视图\":\n          - radio \"任务列表\" [checked]\n          - radio \"看板\"\n          - radio \"运行记录\"\n        - button \"列设置\":\n          - status\n      - heading \"还没有任务\" [level=2]\n      - button \"新建任务\":\n        - text: 新建任务\n        - status"
+  }
+}

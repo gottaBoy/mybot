@@ -77,6 +77,8 @@ import {
   hasBlockingCommandOverlay,
 } from './commands-source'
 import { useWorkspaceCounts } from './useWorkspaceCounts'
+import { ProjectReferenceDirectory } from './ProjectReferenceDirectory'
+import { useDockedWorkbenchNavigation } from '../components/ui/useViewport'
 import { projectWorkspaceLocation } from './project-workspace'
 import { clearModelTests } from './model-test-state'
 import { clearListContinuityCache } from './list-continuity'
@@ -152,6 +154,7 @@ export function Workbench() {
   const [notice, setNotice] = useState('')
   const [loading, setLoading] = useState(true)
   const [menu, setMenu] = useState(false)
+  const dockedNavigation = useDockedWorkbenchNavigation()
   const [preferences, setPreferences] = useState(false)
   const [preferenceTab, setPreferenceTab] = useState('appearance')
   const [commands, setCommands] = useState(false)
@@ -178,6 +181,9 @@ export function Workbench() {
       ),
   )
   const [actionBusy, setActionBusy] = useState('')
+  useEffect(() => {
+    if (dockedNavigation) setMenu(false)
+  }, [dockedNavigation])
   const request = useRef<AbortController | null>(null)
   const generation = useRef(0)
   const workspaceCounts = useWorkspaceCounts({
@@ -557,19 +563,33 @@ export function Workbench() {
             }}
           />
         </div>
-        {data?.projects.slice(0, 8).map((item) => (
-          <a
-            href={`#project/${item.id}`}
-            key={item.id}
-            aria-current={route.id === item.id ? 'page' : undefined}
-          >
-            <span className="wb-project-dot" />
-            <span>{item.name}</span>
-          </a>
-        ))}
-        {!data?.projects.length && (
-          <p className="wb-hint">{t('尚无项目', 'No projects yet')}</p>
+        {data?.capabilities.project_references === true ? (
+          <ProjectReferenceDirectory
+            data={data}
+            refreshRevision={queryRefreshRevision}
+            selectedIds={route.page === 'project' && route.id ? [route.id] : []}
+            t={t}
+            variant="sidebar"
+            onSelect={(id) => {
+              if (pushWorkbenchNavigation(`#project/${id}`)) setMenu(false)
+            }}
+          />
+        ) : (
+          data?.projects.slice(0, 8).map((item) => (
+            <a
+              href={`#project/${item.id}`}
+              key={item.id}
+              aria-current={route.id === item.id ? 'page' : undefined}
+            >
+              <span className="wb-project-dot" />
+              <span>{item.name}</span>
+            </a>
+          ))
         )}
+        {data?.capabilities.project_references !== true &&
+          !data?.projects.length && (
+            <p className="wb-hint">{t('尚无项目', 'No projects yet')}</p>
+          )}
       </div>
       <div className="wb-sidebar-bottom">
         <AppButton
@@ -652,7 +672,7 @@ export function Workbench() {
         >
           {t('跳到主要内容', 'Skip to content')}
         </a>
-        <aside className="wb-sidebar">{nav()}</aside>
+        <aside className="wb-sidebar">{dockedNavigation ? nav() : null}</aside>
         <div className="wb-main-column">
           <header className="wb-topbar">
             <div className="wb-inline">
@@ -1164,7 +1184,7 @@ export function Workbench() {
           </main>
         </div>
       </div>
-      {menu && (
+      {menu && !dockedNavigation && (
         <AppDialog
           title={t('工作空间导航', 'Workspace navigation')}
           closeLabel={t('关闭导航', 'Close navigation')}

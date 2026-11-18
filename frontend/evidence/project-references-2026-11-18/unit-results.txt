@@ -1,0 +1,55 @@
+$ vitest run
+
+ RUN  v3.2.7 /home/my/workspace/ainfra/mywork/mybot/frontend
+
+ ✓ tests/workbench-navigation-history.test.ts (17 tests) 20ms
+ ✓ tests/workbench-navigation-guard.test.ts (19 tests) 56ms
+ ✓ tests/workbench-state.test.ts (23 tests) 8ms
+ ✓ tests/workbench-model-test-state.test.ts (20 tests) 7ms
+ ✓ tests/workbench-saved-views.test.ts (57 tests) 13ms
+ ✓ tests/workbench-list-location.test.ts (76 tests) 22ms
+ ✓ tests/workbench-task-detail.test.ts (73 tests) 16ms
+ ✓ tests/workbench-workspace-reads.test.ts (104 tests) 37ms
+ ✓ tests/workbench-project-workspace.test.ts (5 tests) 8ms
+ ✓ tests/workbench-task-list.test.ts (15 tests) 10ms
+ ✓ tests/workbench-project-references.test.ts (128 tests) 51ms
+ ✓ tests/workbench-appearance.test.ts (4 tests) 9ms
+ ✓ tests/workbench-saved-view-definition.test.ts (39 tests) 17ms
+ ✓ tests/workbench-commands.test.ts (27 tests) 26ms
+ ✓ tests/workbench-list-advanced.test.ts (55 tests) 33ms
+ ✓ tests/playground-property.test.ts (8 tests) 12ms
+ ✓ tests/workbench-project-reference-directory.test.ts (17 tests) 57ms
+ ✓ tests/workbench-projections.test.ts (10 tests) 220ms
+ ✓ tests/workbench-action-menu.test.ts (4 tests) 12ms
+ ✓ tests/workbench-task-query.test.ts (73 tests) 10ms
+ ✓ tests/workbench-query-conditions.test.ts (72 tests) 7ms
+ ✓ tests/workbench-basic-query.test.ts (18 tests) 9ms
+ ✓ tests/theme-helpers.test.ts (50 tests) 42ms
+ ✓ tests/workbench-task-columns.test.ts (18 tests) 10ms
+ ✓ tests/workbench-server-table.test.ts (3 tests) 5ms
+ ✓ tests/workbench-documents.test.ts (13 tests) 3ms
+ ✓ tests/workbench-run-context.test.ts (11 tests) 6ms
+ ✓ tests/workbench-api.test.ts (7 tests) 6ms
+ ✓ tests/workbench-recovery-intents.test.ts (35 tests) 22ms
+ ✓ tests/workbench-forms-state.test.ts (45 tests) 8ms
+ ✓ tests/workbench-recovery.test.ts (5 tests) 3ms
+ ✓ tests/workbench-list-continuity.test.ts (47 tests) 6ms
+ ✓ tests/workbench-inbox-selection.test.ts (3 tests) 4ms
+ ✓ tests/workbench-call-selection.test.ts (3 tests) 2ms
+ ✓ tests/workbench-multi-select.test.ts (9 tests) 7ms
+ ✓ tests/workbench-hierarchy-state.test.ts (5 tests) 6ms
+ ✓ tests/monaco-assets.test.ts (2 tests) 762ms
+   ✓ self-hosted Monaco assets > generates the installed Astryx and React declaration bundle  761ms
+ ✓ tests/preview-protocol.test.ts (16 tests) 2ms
+ ✓ tests/workbench-command-search.test.ts (6 tests) 1ms
+ ✓ tests/workbench-task-sort.test.ts (31 tests) 7ms
+ ✓ tests/workbench-table-density.test.ts (6 tests) 1ms
+ ✓ tests/workbench-saved-view-feedback.test.ts (11 tests) 2ms
+ ✓ tests/playground-runner.test.ts (9 tests) 3770ms
+   ✓ isolated TSX runner > compiles every generated Astryx page source in the same path as edits  1625ms
+   ✓ isolated TSX runner > renders every generated page component through React after compilation  2065ms
+
+ Test Files  43 passed (43)
+      Tests  1199 passed (1199)
+   Start at  23:32:18
+   Duration  5.87s (transform 7.45s, setup 0ms, collect 18.83s, tests 5.34s, environment 4ms, prepare 2.91s)

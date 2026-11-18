@@ -1,0 +1,415 @@
+{
+  "synthetic": true,
+  "checks": [
+    "desktop: Sidebar uses a bounded server page rather than the Bootstrap first eight",
+    "desktop: Off-page selected reference is hydrated; task total comes from workspace totals",
+    "desktop: Same-key explicit refresh retains validated counts and disables activation while busy",
+    "desktop: Directory search commits separately and preserves server matches without browser filtering",
+    "desktop: Actual next page replaces rows while selected off-page project remains available",
+    "desktop: Keyboard pagination reaches last page and restores focus to an available control",
+    "desktop: Theme mode change preserves the directory draft and page",
+    "desktop: Changed query hides obsolete activations and background polling does not cancel slow reads",
+    "desktop: True empty search retains only the independently hydrated selected project",
+    "desktop: Advertised endpoint failure exposes no Bootstrap fallback or automatic GET retry",
+    "desktop: Explicit retry reads the same directory query once and preserves input",
+    "desktop: Malformed successful HTTP response remains an error",
+    "desktop: A late obsolete directory response cannot overwrite the newer search",
+    "desktop: A server-confirmed missing selected project is distinct from off-page hydration",
+    "desktop: Fixed project route displays one hydrated project without global scope switching",
+    "desktop: Missing capability keeps legacy directory and makes no reference GET",
+    "desktop: HTML 401 clears private directory projections and returns to sign-in",
+    "mobile: Sidebar uses a bounded server page rather than the Bootstrap first eight",
+    "mobile: Off-page selected reference is hydrated; task total comes from workspace totals",
+    "mobile: Directory search commits separately and preserves server matches without browser filtering",
+    "mobile: Actual next page replaces rows while selected off-page project remains available",
+    "mobile: Changed query hides obsolete activations and background polling does not cancel slow reads",
+    "mobile: True empty search retains only the independently hydrated selected project",
+    "mobile: Advertised endpoint failure exposes no Bootstrap fallback or automatic GET retry",
+    "mobile: Explicit retry reads the same directory query once and preserves input",
+    "mobile: Malformed successful HTTP response remains an error",
+    "mobile: A late obsolete directory response cannot overwrite the newer search",
+    "mobile: A server-confirmed missing selected project is distinct from off-page hydration",
+    "mobile: Fixed project route displays one hydrated project without global scope switching",
+    "mobile: Missing capability keeps legacy directory and makes no reference GET"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=authority&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=2&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=3&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=slow&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=failed&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=failed&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=malformed&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=late&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=authority&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=authority&page=1&page_size=20&selected=%5B%22missing-project%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=authority&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=2&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=slow&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=failed&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=failed&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=malformed&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=late&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=authority&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=authority&page=1&page_size=20&selected=%5B%22missing-project%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22reference-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    }
+  ],
+  "errors": [],
+  "writes": [],
+  "screenshots": [
+    "desktop-sidebar.png",
+    "desktop-selected-search.png",
+    "desktop-page-two.png",
+    "desktop-fixed-project.png",
+    "mobile-sidebar.png",
+    "mobile-selected-search.png",
+    "mobile-page-two.png",
+    "mobile-fixed-project.png"
+  ],
+  "geometry": [],
+  "failure": {
+    "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('heading', { name: '登录工作空间', exact: true }) to be visible\u001b[22m\n",
+    "stack": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('heading', { name: '登录工作空间', exact: true }) to be visible\u001b[22m\n\n    at /home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-project-references.mjs:521:8",
+    "tree": "- link \"跳到主要内容\":\n  - /url: \"#wb-main\"\n- banner:\n  - button \"打开导航\":\n    - status\n  - strong: 工作台\n  - button \"快速查找\":\n    - status\n  - button \"Switch to English\":\n    - status\n  - button \"切换浅色\":\n    - status\n- main:\n  - region \"任务列表工作区\":\n    - heading \"任务\" [level=1]\n    - text: 全部项目\n    - status:\n      - strong: \"0\"\n      - text: 项任务\n    - button \"视图\":\n      - status\n    - button \"筛选条件\":\n      - status\n    - tooltip \"筛选条件\"\n    - region \"列表搜索\":\n      - text: 搜索\n      - searchbox \"搜索\"\n      - text: 查询模式\n      - combobox \"查询模式\": 基本\n      - button \"搜索\":\n        - status\n      - button \"清除筛选\" [disabled]:\n        - status\n    - region \"工作台结果\":\n      - toolbar \"结果视图与表格工具\":\n        - radiogroup \"工作视图\":\n          - radio \"任务列表\" [checked]\n          - radio \"看板\"\n          - radio \"运行记录\"\n        - button \"列设置\":\n          - status\n      - heading \"还没有任务\" [level=2]\n      - button \"新建任务\":\n        - text: 新建任务\n        - status"
+  }
+}

@@ -1,0 +1,290 @@
+{
+  "synthetic": true,
+  "checks": [
+    "desktop: Shell counts use remote task/Run aggregates even when Bootstrap contains no tasks or Runs",
+    "desktop: Task-status counts are remote totals, independent of the current empty list",
+    "desktop: Same-scope explicit refresh retains validated counts while reads are pending",
+    "desktop: Scope status switches from task totals to all-Run totals without conflating their denominators",
+    "desktop: Fixed project route binds the aggregate request despite a conflicting URL project",
+    "desktop: 403 keeps counts unknown without automatic count retries; explicit shell retry issues exactly one GET",
+    "desktop: Malformed 2xx cannot become a success-shaped zero aggregate",
+    "desktop: Backend without the capability keeps local count behavior and makes no aggregate request",
+    "desktop: HTML 401 clears private counts and returns to sign-in",
+    "mobile: Shell counts use remote task/Run aggregates even when Bootstrap contains no tasks or Runs",
+    "mobile: Task-status counts are remote totals, independent of the current empty list",
+    "mobile: 403 keeps counts unknown without automatic count retries; explicit shell retry issues exactly one GET",
+    "mobile: Malformed 2xx cannot become a success-shaped zero aggregate",
+    "mobile: Backend without the capability keeps local count behavior and makes no aggregate request",
+    "mobile: HTML 401 clears private counts and returns to sign-in"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%22counts-project%22%5D&scope_project_id=counts-project"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "method": "GET",
+      "search": ""
+    },
+    {
+      "name": "mobile",
+      "path": "/api/workspace/counts",
+      "method": "GET",
+      "search": "?projects=%5B%5D"
+    }
+  ],
+  "errors": [],
+  "writes": [],
+  "screenshots": [
+    "desktop-counts.png",
+    "desktop-unknown.png",
+    "desktop-signed-out.png",
+    "mobile-counts.png",
+    "mobile-unknown.png",
+    "mobile-signed-out.png"
+  ]
+}

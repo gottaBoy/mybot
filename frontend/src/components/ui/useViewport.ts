@@ -1,5 +1,9 @@
 import { useMediaQuery } from '@astryxdesign/core/hooks'
 
+export function useDockedWorkbenchNavigation() {
+  return useMediaQuery('(min-width: 901px)')
+}
+
 export function useWideInspector() {
   return useMediaQuery('(min-width: 1280px)')
 }

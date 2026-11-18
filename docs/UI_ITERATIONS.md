@@ -534,3 +534,23 @@ Quick find原Astryx弹层展示最小域引用和返回数/总数，截断提示
 1054前端/639Python/typecheck/build通过，生产32/15/6/58/40项、81PNG无pageerror。
 证据`frontend/evidence/workspace-reads-2026-11-18/README.md`。主4180未更新，不宣称主入口
 已启用新cap；Bootstrap未减量、用户视觉/真机接受仍未扩大。
+
+## 29. 项目目录分页、选中引用和计数列
+
+日期：2026-11-18。继续当前Astryx壳层和查询层次，本批让全局项目目录与范围目录读取
+有界服务端页；不是整页改版或新的UI最终接受。
+
+项目目录Search只改本栏页/查询，任务主查询不随键入变化；跨页选中项独立补齐显示。
+全部项目使用workspace totals，Task/Board与历史Run分母分开。固定项目为只读行；
+错误不显示Bootstrap旧目录/伪0，GET显式重试保留输入。慢读/迟到/403/2xx无效与401已验。
+
+真实截图发现数字紧随短项目名，改用Astryx公开endContent插槽建立右侧计数列，
+不写vendor后代选择器；数字边沿误差<=1px，长名省略，窄屏无文档横向溢出。
+首轮手机还暴露desktop隐藏导航重复挂载目录，现901px边界仅挂当前可见导航。
+面板关闭重开或跨断点重挂可重置本栏草稿/页码，主任务查询的URL/draft合同保持。
+
+最终1199前端/710Python/typecheck/build通过；目录37/真实API8/综合58/计数15，
+82最终PNG、无pageerror，三style双mode和手机中英。失败保留并在最终构建复测；
+证据`frontend/evidence/project-references-2026-11-18/README.md`及ADR-0015。
+原4180未更新，5173继续legacy；Bootstrap与完整Project消费者仍全量。
+不声明全局传输减少、真机认证、用户视觉接受或Agent执行能力提升。
