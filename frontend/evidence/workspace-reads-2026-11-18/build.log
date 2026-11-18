@@ -529,4 +529,4 @@ dist/assets/preview-typescript-Csosh-yO.js                  3,589.28 kB │ gzip
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 16.63s
+✓ built in 17.10s
