@@ -316,3 +316,19 @@ Astryx0.7.13和项目wrapper，不重新生成模板、增加库或导入Zira实
 ADR-0016、REA第32节及`frontend/evidence/project-query-selection-2026-11-19/README.md`。
 原4180未加载新cap；Bootstrap、完整Project路由/列表/表单仍待迁移，
 原119/9/110不变，无真实Provider/凭证/正式DB写入或部署。
+
+## 20. 完整项目页、摘要列表与任务项目单选
+
+2026-11-20，IZ-07.3c1b沿原table-filter、work-item-detail、form-wizard-dialog组织，
+保留React19/Astryx0.7.13和同一业务树；未重生模板/升级/引第二组件库。
+
+| 采用模式 | 本地适配 | 未扩大为 |
+| --- | --- | --- |
+| list / published Button | lazy Projects列表保留目标/目录，bounded摘要+真Task/历史Run数、URL页/查询 | notes全目录分发、逐项目HTTP或页面手写主题 |
+| work-item detail / Dialog | route先按需完整Project，原任务页复用，项目资料弹窗读真实5字段 | 最小ref补空字段当完整Project、读取即模型发送许可 |
+| form / RadioList | AppRadioList封装发布组件，显式分页单选、shared density、输入/dirty保护 | Checkbox伪单选、默认选Bootstrap首项或假项目 |
+| loading / stale / error | 初次/换ID隐藏旧内容，同ID暂时失败明确旧值，403/missing/401独立 | 失败空/零、自动任务POST或新写幂等 |
+
+1314前端/787Python/build；最终生产37/44/58/4项、81PNG、无pageerror。
+合同ADR-0017/REA第33节/`frontend/evidence/project-resources-2026-11-20/README.md`。
+主4180未加载cap、5173继续legacy；Bootstrap与其他消费者未减，不扩119统计或执行权限。

@@ -1,6 +1,6 @@
 # 全部待办索引
 
-更新：2026-11-19（Asia/Singapore）。本页是集中阅读入口，不替代
+更新：2026-11-20（Asia/Singapore）。本页是集中阅读入口，不替代
 [原工作项台账](WORK_ITEMS.md) 或 [产品 UI 审计](PRODUCT_UI_AUDIT.md)。
 
 **最新研究入口：** 用户提供新的 Issues 截图，要求深度学习后继续。
@@ -18,6 +18,26 @@ UI 的 WUI 编号是交叉整改视图，执行包是实施组织方式，均可
 
 ## 当前执行包
 
+### 2026-11-20 完整项目资源消费者
+
+IZ-07.3c1b所列route/list/taskform本地验收；原119/9/110计数不变。
+
+| 工作 / 分工 | 状态 | 验收及边界 |
+| --- | --- | --- |
+| 后端Agent：项目详情/摘要查询 | 本地完成 | 77新增；独立cap、单ro快照、全字段/摘要边界、计数与分页、编码ID及认证 |
+| client Agent：strict DTO/hook/列表 | 本地完成 | 59专项；URL q/page/pageSize、目标/目录保留、按需详情/明确失败/无Bootstrap回退 |
+| 表单Agent + root：分页项目单选 | 本地完成 | 7picker+3form新增；显式ID、fresh GET、15s/取消/基线/duplicate锁、无项目dirty保护 |
+| root：路由/共享radio/浏览器/证据 | 完成所列范围 | 1314前端/787Python/build；生产37/44/58/4、81PNG，无pageerror |
+| IZ-07.3c2a全历史Run读取 | 下一项 | 建有界Run查询/分页合同，保留历史分母、真实顺序、过滤及选中Run行为 |
+| IZ-07.3c2b其他视图 | 待办 | Board/Inbox/总览/层级/文档与剩余Project使用独立投影，不在browser拼假完整对象 |
+| IZ-07.3c3/d与07.4 | 待办 | Bootstrap协商减量/旧入口兼容、失效影响图、实际传输/响应/规模证据 |
+
+合同[ADR-0017](decisions/ADR-0017-project-resource-consumers.md)；
+[验收/失败记录](../frontend/evidence/project-resources-2026-11-20/README.md)。
+actual API只在fixture创建1任务/preview、原行不变/0新Run；无真实Provider或正式写入。
+原4180未加载新cap，5173恢复200继续legacy；临时4187/5176停止。完整Bootstrap仍保留，
+不把新页面接入当主环境启用或全局传输已减少。commit/push以Git回执为准。
+
 ### 2026-11-19 主查询项目多选与引用准入
 
 IZ-07.3c1a完成所列消费者；复用ADR-0015接口，不额外创建后端接口。
@@ -28,7 +48,7 @@ IZ-07.3c1a完成所列消费者；复用ADR-0015接口，不额外创建后端�
 | 准入Agent：引用helper/hook/SavedViews | 本地完成 | 25新增；enabled取消停读、fresh GET/复制IDs、缺失/失败分开及加载校验阶段锁 |
 | root：工作台准入/标题/最终应用 | 本地完成 | 无Bootstrap目录回退，首次未知隐藏结果，草稿baseline检查，URL获准才同步应用 |
 | 浏览器Agent + root：隔离验收 | 完成所列范围 | 1245前端/build；picker44/SavedViews32/综合58/实际API5，96PNG无pageerror |
-| IZ-07.3c1b完整Project消费者 | 待办 | 项目路由、项目列表、创建任务表单及默认项目选择；保持真实完整数据/失败边界 |
+| IZ-07.3c1b完整Project消费者 | 已由上方完成所列范围 | route/list/taskform已迁移，其他视图引用仍留c2 |
 | IZ-07.3c2其他视图 | 待办 | Board/Run历史/Inbox/总览/树/文档各立有界投影，不能只改项目引用就删Bootstrap |
 | IZ-07.3c3/d与07.4 | 待办 | Bootstrap协商减量、失效合同、实际传输/响应和规模验收 |
 

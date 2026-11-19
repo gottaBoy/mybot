@@ -2353,6 +2353,15 @@ async function verifyFullWorkbench() {
     .getByRole('button', { name: '新建任务', exact: true })
     .click()
   dialog = page.getByRole('dialog')
+  await dialog.getByTestId('project-task-picker-trigger').click()
+  const taskProjectPicker = page.getByTestId('project-task-picker-dialog')
+  await taskProjectPicker.getByRole('radio', {
+    name: 'mybot 研发协作 · 隔离验收', exact: true,
+  }).check()
+  await taskProjectPicker.getByRole('button', { name: '完成', exact: true }).click()
+  await dialog.getByTestId('project-task-picker-trigger').getByText(
+    'mybot 研发协作 · 隔离验收', { exact: true },
+  ).waitFor()
   await dialog.getByLabel(/任务名称/).fill(primaryTaskTitle)
   await dialog
     .getByLabel(/任务目标/)

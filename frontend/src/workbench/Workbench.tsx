@@ -78,6 +78,7 @@ import {
 } from './commands-source'
 import { useWorkspaceCounts } from './useWorkspaceCounts'
 import { ProjectReferenceDirectory } from './ProjectReferenceDirectory'
+import { useProjectDetail } from './useProjectDetail'
 import { useDockedWorkbenchNavigation } from '../components/ui/useViewport'
 import { projectWorkspaceLocation } from './project-workspace'
 import { clearModelTests } from './model-test-state'
@@ -112,6 +113,11 @@ const ProjectDocuments = lazy(() =>
 const FocusedWorkbench = lazy(() =>
   import('./FocusedWorkbench').then((module) => ({
     default: module.FocusedWorkbench,
+  })),
+)
+const ProjectResourceList = lazy(() =>
+  import('./ProjectResourceList').then((module) => ({
+    default: module.ProjectResourceList,
   })),
 )
 const WorkbenchCommands = lazy(() =>
@@ -189,6 +195,11 @@ export function Workbench() {
   const workspaceCounts = useWorkspaceCounts({
     data,
     refreshRevision: queryRefreshRevision,
+  })
+  const projectDetail = useProjectDetail({
+    data,
+    refreshRevision: queryRefreshRevision,
+    projectId: route.page === 'project' ? route.id : undefined,
   })
   const refresh = useCallback(
     async (cause: 'explicit' | 'poll' = 'explicit') => {
@@ -412,7 +423,7 @@ export function Workbench() {
   const newTask = () => {
     if (data)
       setForm(
-        data.projects.length
+        data.capabilities.project_references === true || data.projects.length
           ? {
               kind: 'task',
               projectId: route.page === 'project' ? route.id : undefined,
@@ -433,7 +444,10 @@ export function Workbench() {
           (item) => item.column === 'pending' || item.column === 'attention',
         ).length
       : 0
-  const project = data?.projects.find((item) => item.id === route.id)
+  const project =
+    route.page === 'project' && projectDetail.remote
+      ? projectDetail.value?.project
+      : data?.projects.find((item) => item.id === route.id)
   const pageTitle =
     route.page === 'overview'
       ? t('工作总览', 'Workspace overview')
@@ -803,6 +817,24 @@ export function Workbench() {
                 />
               </div>
             )}
+            {route.page === 'project' &&
+              projectDetail.remote &&
+              projectDetail.value &&
+              projectDetail.error && (
+                <div className="wb-error" role="alert">
+                  <span>
+                    {t(
+                      '项目刷新失败，当前显示上次确认的资料。',
+                      'Project refresh failed. Showing the last validated details.',
+                    )}
+                  </span>
+                  <AppButton
+                    label={t('重试项目', 'Retry project')}
+                    icon={<RefreshCw size={16} />}
+                    onClick={projectDetail.retry}
+                  />
+                </div>
+              )}
             {!data ? (
               loading ? (
                 <AppLoading
@@ -861,6 +893,52 @@ export function Workbench() {
                   legacyUrl={legacyUrl}
                 />
               </Suspense>
+            ) : route.page === 'project' && projectDetail.remote && !project ? (
+              <div
+                className="wb-project-resource-state"
+                data-testid="project-resource-state"
+              >
+                {projectDetail.error ? (
+                  <div className="wb-empty">
+                    <FolderGit2 size={30} />
+                    <h1>
+                      {projectDetail.error === 'missing'
+                        ? t('项目不存在', 'Project not found')
+                        : projectDetail.error === 'forbidden'
+                          ? t('无权读取项目', 'Project access forbidden')
+                          : t('项目读取失败', 'Project unavailable')}
+                    </h1>
+                    <p role="alert">
+                      {projectDetail.error === 'missing'
+                        ? t(
+                            '该项目已不存在或不可用。',
+                            'This project is missing or unavailable.',
+                          )
+                        : projectDetail.error === 'timeout'
+                          ? t(
+                              '读取项目超时。',
+                              'Reading the project timed out.',
+                            )
+                          : projectDetail.error === 'unavailable'
+                            ? t(
+                                '项目详情接口不可用。',
+                                'The project detail endpoint is unavailable.',
+                              )
+                            : t(
+                                '项目详情未通过读取或验证。',
+                                'Project details could not be read or validated.',
+                              )}
+                    </p>
+                    <AppButton
+                      label={t('重试项目', 'Retry project')}
+                      icon={<RefreshCw size={16} />}
+                      onClick={projectDetail.retry}
+                    />
+                  </div>
+                ) : (
+                  <AppLoading label={t('正在读取项目', 'Loading project')} />
+                )}
+              </div>
             ) : route.page === 'work' ||
               (route.page === 'project' && project) ? (
               <Suspense
@@ -875,6 +953,9 @@ export function Workbench() {
                   locale={locale}
                   contextProject={
                     route.page === 'project' ? project : undefined
+                  }
+                  contextProjectBusy={
+                    route.page === 'project' && projectDetail.busy
                   }
                   query={query}
                   filter={filter}
@@ -925,33 +1006,55 @@ export function Workbench() {
                     />
                   </div>
                 </div>
-                <div className="wb-project-list">
-                  {data.projects.map((item) => (
-                    <a href={`#project/${item.id}`} key={item.id}>
-                      <span className="wb-project-tile">
-                        <FolderGit2 size={21} />
-                      </span>
-                      <div>
-                        <h2>{item.name}</h2>
-                        <p>{item.goal || item.directory}</p>
-                        <small>
-                          {
-                            data.tasks.filter(
-                              (task) => task.project_id === item.id,
-                            ).length
-                          }{' '}
-                          {t('项任务', 'tasks')} · <code>{item.directory}</code>
-                        </small>
+                {data.capabilities.project_query === true ? (
+                  <Suspense
+                    fallback={
+                      <AppLoading
+                        label={t('正在读取项目', 'Loading projects')}
+                      />
+                    }
+                  >
+                    <ProjectResourceList
+                      data={data}
+                      refreshRevision={queryRefreshRevision}
+                      t={t}
+                      location={listLocation}
+                      resetKey={queryDraftResetKey}
+                      onLocationChange={updateListLocation}
+                    />
+                  </Suspense>
+                ) : (
+                  <>
+                    <div className="wb-project-list">
+                      {data.projects.map((item) => (
+                        <a href={`#project/${item.id}`} key={item.id}>
+                          <span className="wb-project-tile">
+                            <FolderGit2 size={21} />
+                          </span>
+                          <div>
+                            <h2>{item.name}</h2>
+                            <p>{item.goal || item.directory}</p>
+                            <small>
+                              {
+                                data.tasks.filter(
+                                  (task) => task.project_id === item.id,
+                                ).length
+                              }{' '}
+                              {t('项任务', 'tasks')} ·{' '}
+                              <code>{item.directory}</code>
+                            </small>
+                          </div>
+                          <ChevronRight size={18} />
+                        </a>
+                      ))}
+                    </div>
+                    {!data.projects.length && (
+                      <div className="wb-empty">
+                        <FolderGit2 size={30} />
+                        <h2>{t('尚未创建项目', 'No projects yet')}</h2>
                       </div>
-                      <ChevronRight size={18} />
-                    </a>
-                  ))}
-                </div>
-                {!data.projects.length && (
-                  <div className="wb-empty">
-                    <FolderGit2 size={30} />
-                    <h2>{t('尚未创建项目', 'No projects yet')}</h2>
-                  </div>
+                    )}
+                  </>
                 )}
               </>
             ) : route.page === 'models' ? (
@@ -1323,9 +1426,11 @@ export function Workbench() {
           key={`${form.kind}-${'task' in form ? form.task.id : 'model' in form ? form.model.id : 'backend' in form ? form.backend.id : ''}`}
           state={form}
           data={data}
+          refreshRevision={queryRefreshRevision}
           t={t}
           onClose={() => setForm(null)}
           onSaved={refresh}
+          onCreateProject={() => setForm({ kind: 'project' })}
           onTask={(task) => void prepare(task)}
           onRun={(id) => {
             pushWorkbenchNavigation(`#run/${id}`)

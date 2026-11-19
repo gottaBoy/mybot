@@ -126,3 +126,17 @@ SavedView加载先fresh项目校验，绑定draft/table baseline，异步阶段�
 手机nested Filters/Dialog与焦点已验；保留legacy scope导航取消、失败/401及未知写入合同。
 1245前端/build与生产44/32/58/5项、96PNG见本轮证据。
 完整Project消费者/Bootstrap减量与主服务启用仍待后续，不把该局部闭环当全站接受。
+
+## 完整项目对象与表单引用适配（2026-11-20）
+
+沿此前固定Zira HEAD `1ce0d0510cb590f3a79ca498f7239ff0852ed0d7`及已读
+项目/Issue列表、query-keys和创建表单的观察：摘要/详情/引用应有独立合同，dirty表单不得
+被refetch替换，分页总数不由当前页推断。本轮没有新读取/运行Zira；固定源码、截图、
+mybot实现及测试仍分别记录，不复制Zira品牌/组件/样式。
+
+mybot ADR-0017新增明确cap的完整项目detail与bounded摘要query；复用现有Astryx原项目页面/
+列表外观，Task form用封装RadioList做真实单选。项目依赖先验证、fresh GET不替代最终POST检查。
+sameID临时失败保留有stale反馈的已验对象和querydraft；missing/forbidden/401优先清理。
+真实APIfixture明确新增1Task及preview而非模型执行，原任务/Run/项目/模型均比对。
+1314前端/787Python/build及最终37/44/58/4项、81PNG见本轮证据；
+其他视图仍用Bootstrap、主4180未加载新cap，不把局部运行通过当整体减量或视觉接受。

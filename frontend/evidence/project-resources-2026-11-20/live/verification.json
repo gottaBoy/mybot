@@ -1,0 +1,30 @@
+{
+  "fixture": true,
+  "checks": [
+    "Actual API returns bounded20/45 summaries and full single-project details with distinct2-task/45-Run counts",
+    "Actual project list page/search survives reload and opens the same fixed-scope workbench",
+    "Explicit single-project selection creates exactly one fixture task and preview, with zero new Runs/models/Provider execution",
+    "Actual project summaries and full details also render in the390px mobile workbench without overflow"
+  ],
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/cc2953de2c1c498ab5aed487688f8b2d/preview",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "real-project-info.png",
+    "real-task-context.png",
+    "real-mobile-project.png"
+  ],
+  "createdTaskId": "cc2953de2c1c498ab5aed487688f8b2d"
+}

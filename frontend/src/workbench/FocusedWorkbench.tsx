@@ -132,6 +132,7 @@ type Props = {
   onNewTask: () => void
   onPrepare: (task: Task) => void
   contextProject?: Project
+  contextProjectBusy?: boolean
 }
 
 export function FocusedWorkbench(props: Props) {
@@ -155,6 +156,7 @@ export function FocusedWorkbench(props: Props) {
     onNewTask,
     onPrepare,
     contextProject,
+    contextProjectBusy,
   } = props
   const [selected, setSelected] = useState('')
   const [queryDraft, setQueryDraft] = useState(query)
@@ -1107,7 +1109,7 @@ export function FocusedWorkbench(props: Props) {
       <div className="wf-workspace">
         <header className="wf-heading">
           <div className="wf-heading-content">
-            <h1>
+            <h1 aria-busy={contextProjectBusy || undefined}>
               {contextProject?.name ??
                 (view === 'table'
                   ? t('运行记录', 'Run history')

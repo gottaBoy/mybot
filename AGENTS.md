@@ -290,6 +290,13 @@ product patterns, not replacing Astryx. Apply these rules to mybot:
   Only that validation stage locks navigation; legacy detail reads still cancel
   on scope change. Confirm final URL admission before changing local table/draft
   state or announcing a loaded snapshot.
+  Project resources (ADR-0017) have independent detail/query capabilities.
+  Full Project routes and summary pages must not synthesize missing fields from
+  references. Keep summary notes absent and detail fields exact. A transient
+  same-ID refresh may retain validated content only with explicit stale feedback;
+  missing/forbidden/401 must hide or clear it. Task creation requires an explicit
+  project candidate and a fresh exact-ID read before POST; no Bootstrap first-item
+  default when references are supported. That read is not a lease or write retry.
 - Route and query listeners must consult the shared navigation admission guard.
   Restoring a dirty form's URL in a capture listener alone does not preserve the
   form. One navigation event must share one decision across consumers; confirmed

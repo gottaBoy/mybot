@@ -1,0 +1,89 @@
+.wb-project-resource-list {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.wb-project-resource-query {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 8px;
+  max-width: 640px;
+}
+.wb-project-resource-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.wb-project-resource-error > span {
+  flex: 1;
+  min-width: 0;
+}
+.wb-project-resource-items {
+  display: grid;
+  min-width: 0;
+}
+.wb-project-resource-row {
+  justify-content: space-between;
+  height: auto;
+  padding: 20px 5px;
+  border-radius: 0;
+  border-bottom: 1px solid var(--wb-border);
+  white-space: normal;
+}
+.wb-project-resource-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  text-align: start;
+}
+.wb-project-resource-copy {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  color: var(--wb-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.wb-project-resource-name {
+  color: var(--wb-fg);
+  font-size: 16px;
+  font-weight: 600;
+}
+.wb-project-resource-copy small {
+  margin-top: 2px;
+}
+.wb-project-resource-pagination,
+.wb-project-resource-page-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.wb-project-resource-pagination {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  color: var(--wb-muted);
+  font-size: 12px;
+}
+.wb-project-resource-page-tools {
+  flex-wrap: wrap;
+}
+.wb-project-resource-capacity {
+  width: 148px;
+  flex: 0 0 148px;
+}
+@media (max-width: 650px) {
+  .wb-project-resource-content {
+    gap: 10px;
+  }
+  .wb-project-resource-row {
+    padding: 16px 2px;
+  }
+  .wb-project-resource-pagination {
+    align-items: flex-start;
+  }
+}

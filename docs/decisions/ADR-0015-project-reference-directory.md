@@ -71,9 +71,10 @@ Existing canonical navigation and query-draft admission rules remain in force.
 
 This slice migrates the global project sidebar and task-scope project directory.
 Task query selectors and SavedView validation subsequently migrated under
-[ADR-0016](ADR-0016-project-query-selection.md). Project routes/list/forms and other
-full Project consumers remain on Bootstrap until their own migration. In
-particular, the installed Astryx MultiSelector supports local option search but
+[ADR-0016](ADR-0016-project-query-selection.md). Project routes/list/task forms
+were addressed separately in
+[ADR-0017](ADR-0017-project-resource-consumers.md); other view consumers still
+require Bootstrap. In particular, the installed Astryx MultiSelector supports local option search but
 does not expose a remote-search callback; a truncated directory must not be
 passed to it as a complete option catalog.
 

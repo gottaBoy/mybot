@@ -118,6 +118,7 @@ export function validateFormDraft(
   data: Pick<Bootstrap, 'projects' | 'models'>,
   t: Copy,
   step = 2,
+  options: { projectAvailable?: boolean } = {},
 ): FormFieldErrors {
   const errors: FormFieldErrors = {}
   const text = (field: string, value: string, min: number, max: number) => {
@@ -141,7 +142,10 @@ export function validateFormDraft(
         'Use a relative directory inside the workspace',
       )
   } else if (kind === 'task') {
-    if (!data.projects.some((project) => project.id === draft.projectId))
+    const projectAvailable =
+      options.projectAvailable ??
+      data.projects.some((project) => project.id === draft.projectId)
+    if (!draft.projectId || !projectAvailable)
       errors.project_id = t('请选择有效项目', 'Select an available project')
     text('title', draft.name, 1, 160)
     text('goal', draft.goal, 8, 8000)

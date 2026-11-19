@@ -1,6 +1,29 @@
 # 下次从这里继续
 
-更新日期：2026-11-19（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
+更新日期：2026-11-20（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
+
+**最新完成（2026-11-20，IZ-07.3c1b完整项目资源消费者）：**
+用户继续（America/Los_Angeles11月19日），起始7bb2140已push/工作树干净。先读
+[ADR-0017](docs/decisions/ADR-0017-project-resource-consumers.md)和
+`frontend/evidence/project-resources-2026-11-20/README.md`。
+三个Agent分别完成backend/client与列表/taskform，root负责路由/共用radio/browser/记录。
+新增独立project_detail/project_query能力：单项目五字段完整资料及20/50/100分页四字段摘要，
+任务数/全历史Run数同ro/query_only快照；摘要不带notes，复用既有参数/CTE，无逐项HTTP。
+项目route不再用Bootstrap查找/伪造完整Project，按ID读取、区分missing/forbidden/接口失败；
+同ID暂时刷新失败保留已验内容+明确stale提示及任务查询草稿；missing/forbidden隐藏，401清私有。
+项目列表保留目标/目录，URL q/page/pageSize与Back/刷新、Search/IME、旧响应/显式重试已验。
+Task创建caprefs路径不默认Bootstrap首项，Astryx单选分页确认候选；POST前fresh GET精确ID，
+15s/取消/卸载/fingerprint/duplicate锁，失败保留输入；真无项目Create project经过dirty保护。
+最终1314前端（48文件）/787Python/typecheck/build通过；资源37/原项目条件44/综合58/实际API4，
+81最终PNG、无pageerror，三style双mode/手机中英/键盘radio/长名均验。保留定位误差及旧综合
+依赖隐式默认项目的失败；综合已改显式选择真实fixture项目，所有原模型/审查/恢复断言保留。
+实际fixture.9HjicZ由45项目45任务88终态Run/0模型起步；只新增1任务及preview，所有原任务/
+projects/runs/models比对不变，无新Run/模型/真实Provider。综合fresh fixture.sgdukI为FakeProvider。
+既有Starlette/httpx及大包警告保留，个别chunk已记录，不宣称总初始传输/整体提速。
+主4180仍PID2064113、未加载新cap；5173已恢复200继续legacy，临时4187/5176已停止。
+无凭证/正式DB写入/部署/兄弟项目修改/依赖升级，原119/9/110不变；独立提交push以Git回执为准。
+下一项IZ-07.3c2a全历史Run有界查询，然后Board/Inbox/总览/层级/文档等剩余投影与project消费者；
+再Bootstrap协商减量、失效图和实际传输/规模测量。不因c1a/b完成就关闭07.3整体/07.4。
 
 **最新完成（2026-11-19，IZ-07.3c1a项目条件与保存视图引用准入）：**
 起始2a3bbdc已push且工作树干净。先读

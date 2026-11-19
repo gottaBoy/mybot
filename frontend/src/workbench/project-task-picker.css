@@ -1,0 +1,63 @@
+.wb-task-project-picker,
+.wb-task-project-picker-panel {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+.wb-task-project-summary {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.wb-task-project-search {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 6px;
+}
+.wb-task-project-selected,
+.wb-task-project-feedback {
+  margin: 0;
+  color: var(--wb-muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.wb-task-project-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--wb-error);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.wb-task-project-options {
+  min-width: 0;
+  max-height: min(42dvh, 360px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  overscroll-behavior: contain;
+}
+.wb-task-project-pagination,
+.wb-task-project-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+.wb-task-project-pagination {
+  color: var(--wb-muted);
+  font-size: 12px;
+}
+.wb-task-project-page-actions {
+  display: flex;
+  gap: 3px;
+}
+.wb-task-project-actions {
+  justify-content: flex-end;
+  border-top: 1px solid var(--wb-border);
+  padding-top: 8px;
+}

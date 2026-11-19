@@ -1,0 +1,66 @@
+{
+  "fixture": true,
+  "scenario": "full",
+  "base": "http://127.0.0.1:5176/",
+  "checks": [
+    {
+      "name": "Token login through same-origin proxy; token not persisted",
+      "passed": true
+    },
+    {
+      "name": "Project creation persists through API, without model invocation",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "writes": [
+    "/api/auth",
+    "/api/projects"
+  ],
+  "screenshots": [
+    "login-desktop.png"
+  ],
+  "initialScriptResources": [
+    "http://127.0.0.1:5176/assets/app-BlreySvR.js",
+    "http://127.0.0.1:5176/assets/react-vendor-BJeFkKaq.js",
+    "http://127.0.0.1:5176/assets/playground-CnIKxR6_.js",
+    "http://127.0.0.1:5176/assets/FocusedWorkbench-Du4sG-AH.js",
+    "http://127.0.0.1:5176/assets/DataTable-DvUsOt0F.js",
+    "http://127.0.0.1:5176/assets/useTableTreeState-DXEr2D0n.js",
+    "http://127.0.0.1:5176/assets/Table-CxIV2fh_.js",
+    "http://127.0.0.1:5176/assets/useScrollableArea-DqO_Hoen.js",
+    "http://127.0.0.1:5176/assets/scrollKeyboardDelegation-CMK4cgUj.js",
+    "http://127.0.0.1:5176/assets/scrollGeometry-B7jAdN05.js",
+    "http://127.0.0.1:5176/assets/MenuBottomSheetActionList-Dv1_B4lR.js",
+    "http://127.0.0.1:5176/assets/List-tf2JAY9W.js",
+    "http://127.0.0.1:5176/assets/listLayoutUpdates-B_b30yuE.js",
+    "http://127.0.0.1:5176/assets/animatedLayout-BQIkHVow.js",
+    "http://127.0.0.1:5176/assets/LayoutChangeSnapshot-CWqOmSUx.js",
+    "http://127.0.0.1:5176/assets/ListItem-C1LjACdE.js",
+    "http://127.0.0.1:5176/assets/menuItemRoles-Dx6Khe-i.js",
+    "http://127.0.0.1:5176/assets/useMenuDrillIn-DiBtkjVP.js",
+    "http://127.0.0.1:5176/assets/useMenuHover-CHe6DVlX.js",
+    "http://127.0.0.1:5176/assets/clampInlineSize-C6G3hOHP.js",
+    "http://127.0.0.1:5176/assets/EmptyState-VveEnfeq.js",
+    "http://127.0.0.1:5176/assets/useTableSortableState-D2aSp0kN.js",
+    "http://127.0.0.1:5176/assets/useTableSortable-B08mF0zW.js",
+    "http://127.0.0.1:5176/assets/ComponentIcon-CGFm9uQe.js",
+    "http://127.0.0.1:5176/assets/useIcon-iTkJI_uh.js",
+    "http://127.0.0.1:5176/assets/DropdownMenu-DixLi6L2.js",
+    "http://127.0.0.1:5176/assets/menuTouchAction.stylex-Bjo3-Llu.js",
+    "http://127.0.0.1:5176/assets/accessibleName-C1nHDYs1.js",
+    "http://127.0.0.1:5176/assets/DropdownMenuRadioItem-n0xF8YeQ.js",
+    "http://127.0.0.1:5176/assets/DropdownMenuGroup-BZECSDuu.js",
+    "http://127.0.0.1:5176/assets/rotate-ccw-Cu2cEzQI.js",
+    "http://127.0.0.1:5176/assets/table-2-CfelRArC.js",
+    "http://127.0.0.1:5176/assets/MultiSelector-Ue_Fm4qM.js",
+    "http://127.0.0.1:5176/assets/copy-B1nGS5CO.js",
+    "http://127.0.0.1:5176/assets/download-X9cIfZex.js",
+    "http://127.0.0.1:5176/assets/file-search-CEMbh4ww.js",
+    "http://127.0.0.1:5176/assets/circle-check-agCQaS2r.js"
+  ],
+  "failure": {
+    "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('dialog', { name: '确认资料与运行资源', exact: true }) to be visible\u001b[22m\n",
+    "stack": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('dialog', { name: '确认资料与运行资源', exact: true }) to be visible\u001b[22m\n\n    at verifyFullWorkbench (/home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-workbench.mjs:2366:6)\n    at async file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-workbench.mjs:3178:5"
+  }
+}

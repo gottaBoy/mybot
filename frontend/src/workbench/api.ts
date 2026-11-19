@@ -66,6 +66,8 @@ export type Bootstrap = {
     workspace_counts?: boolean
     workspace_search?: boolean
     project_references?: boolean
+    project_detail?: boolean
+    project_query?: boolean
   }
 }
 export type Snapshot = {

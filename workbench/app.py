@@ -25,6 +25,10 @@ from .provider import ProviderRouter, key_available
 from .project_references import (
     MAX_PROJECT_PAGE, ProjectReferenceError, parse_project_references, read_project_references,
 )
+from .project_resources import (
+    ProjectResourceError, parse_project_detail, parse_project_query,
+    read_project_detail, read_project_query,
+)
 from .recovery import MODEL_FIELDS
 from .schemas import (
     ArtifactDecision, BackendCheck, BackendCreate, DefaultModel, Login, ModelCreate, ModelTest, ProjectCreate,
@@ -160,6 +164,10 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     async def project_reference_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
 
+    @app.exception_handler(ProjectResourceError)
+    async def project_resource_error(request, exc):
+        return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
+
     @app.get("/api/auth/state")
     async def auth_state(request: Request):
         return {"authenticated": authorized(request), "required": bool(settings.access_token),
@@ -226,7 +234,32 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "workspace_counts": True,
                                  "workspace_search": True,
                                  "project_references": True,
+                                 "project_detail": True,
+                                 "project_query": True,
                                  "harness": LocalSuperagentHarness.capabilities()}}
+
+    @app.get("/api/projects/query")
+    def project_query(
+        request: Request,
+        q: str = Query("", max_length=2000),
+        page: int = Query(1, ge=1, le=MAX_PROJECT_PAGE),
+        page_size: int = Query(20, ge=20, le=100),
+    ):
+        allowed = {"q", "page", "page_size"}
+        if any(
+            key not in allowed or len(request.query_params.getlist(key)) != 1
+            for key in request.query_params
+        ):
+            raise ProjectResourceError("project_query_parameters_invalid")
+        candidate = parse_project_query(q, page, page_size)
+        return read_project_query(store.path, candidate)
+
+    @app.get("/api/projects/{identifier:path}/detail")
+    def project_detail(identifier: str, request: Request):
+        if request.query_params:
+            raise ProjectResourceError("project_detail_parameters_invalid")
+        candidate = parse_project_detail(identifier)
+        return read_project_detail(store.path, candidate)
 
     @app.get("/api/project-references")
     def project_references(

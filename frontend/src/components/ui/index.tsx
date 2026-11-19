@@ -137,6 +137,40 @@ export function AppCheckbox(props: ComponentProps<typeof CheckboxInput>) {
   return <CheckboxInput {...props} />
 }
 
+export function AppRadioList({
+  label,
+  value,
+  options,
+  onChange,
+  disabled = false,
+}: {
+  label: string
+  value: string
+  options: ReadonlyArray<{ value: string; label: string }>
+  onChange: (value: string) => void
+  disabled?: boolean
+}) {
+  const size = useAppControlSize()
+  return (
+    <RadioList
+      label={label}
+      value={value}
+      onChange={onChange}
+      width="100%"
+      isDisabled={disabled}
+      size={size === 'sm' ? 'sm' : 'md'}
+    >
+      {options.map((option) => (
+        <RadioListItem
+          key={option.value}
+          value={option.value}
+          label={option.label}
+        />
+      ))}
+    </RadioList>
+  )
+}
+
 export function AppCard(props: ComponentProps<typeof Card>) {
   return <Card padding={4} {...props} />
 }

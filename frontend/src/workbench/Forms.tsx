@@ -61,6 +61,9 @@ import {
   unknownModelTest,
 } from './model-test-state'
 import { readModelTest, startModelTest } from './model-test-request'
+import { ProjectTaskPicker } from './ProjectTaskPicker'
+import { validateProjectSelection } from './project-selection'
+import { useProjectReferences } from './useProjectReferences'
 
 export type FormState =
   | { kind: 'project' }
@@ -79,6 +82,8 @@ type Props = {
   onSaved: () => Promise<void>
   onTask: (task: Task) => void
   onRun: (id: string) => void
+  refreshRevision?: number
+  onCreateProject?: () => void
 }
 
 export function WorkbenchForm({
@@ -89,6 +94,8 @@ export function WorkbenchForm({
   onSaved,
   onTask,
   onRun,
+  refreshRevision = 0,
+  onCreateProject,
 }: Props) {
   const [busy, setBusy] = useState(false)
   const operationBusy = useRef(false)
@@ -101,9 +108,26 @@ export function WorkbenchForm({
   const [acceptance, setAcceptance] = useState('')
   const [projectId, setProjectId] = useState(
     state.kind === 'task'
-      ? (state.projectId ?? data.projects[0]?.id ?? '')
+      ? (state.projectId ??
+          (data.capabilities.project_references === true
+            ? ''
+            : (data.projects[0]?.id ?? '')))
       : '',
   )
+  const taskProjectRefs = useProjectReferences({
+    data,
+    refreshRevision,
+    enabled: state.kind === 'task' && Boolean(projectId),
+    request: {
+      query: '',
+      page: 1,
+      pageSize: 20,
+      selectedIds: projectId ? [projectId] : [],
+    },
+  })
+  const projectReferenceError = state.kind === 'task' && taskProjectRefs.error
+  const projectReferenceBusy =
+    state.kind === 'task' && taskProjectRefs.busy && !taskProjectRefs.value
   const [endpoint, setEndpoint] = useState('')
   const [model, setModel] = useState('')
   const [keyEnv, setKeyEnv] = useState('')
@@ -143,6 +167,9 @@ export function WorkbenchForm({
   const [fieldErrors, setFieldErrors] = useState<FormFieldErrors>({})
   const [discardOpen, setDiscardOpen] = useState(false)
   const [unmanagedNavigation, setUnmanagedNavigation] = useState(false)
+  const taskValidationRequest = useRef<AbortController | null>(null)
+  const [checkingTaskProject, setCheckingTaskProject] = useState(false)
+  const mounted = useRef(true)
   const formRef = useRef<HTMLFormElement>(null)
   const pendingDiscard = useRef<(() => void) | null>(null)
   const saved = useRef(false)
@@ -163,6 +190,8 @@ export function WorkbenchForm({
     snapshotHash: runSnapshot?.context_hash ?? '',
   }
   const fingerprint = formDraftFingerprint(state.kind, draft)
+  const latestFingerprint = useRef(fingerprint)
+  latestFingerprint.current = fingerprint
   const initialFingerprint = useRef(fingerprint)
   const dirty =
     !saved.current &&
@@ -194,6 +223,7 @@ export function WorkbenchForm({
     requestDiscard(onClose)
   }
   useEffect(() => {
+    mounted.current = true
     const unload = (event: BeforeUnloadEvent) => {
       if (
         saved.current ||
@@ -223,6 +253,8 @@ export function WorkbenchForm({
     })
     window.addEventListener('beforeunload', unload)
     return () => {
+      mounted.current = false
+      taskValidationRequest.current?.abort()
       unregister()
       window.removeEventListener('beforeunload', unload)
     }
@@ -292,7 +324,37 @@ export function WorkbenchForm({
       data,
       t,
       state.kind === 'run' ? step : 2,
+      state.kind === 'task'
+        ? {
+            projectAvailable:
+              data.capabilities.project_references === true
+                ? Boolean(
+                    projectId &&
+                    taskProjectRefs.value?.selected.some(
+                      (item) => item.project.id === projectId,
+                    ) &&
+                    !taskProjectRefs.error,
+                  )
+                : undefined,
+          }
+        : undefined,
     )
+    if (
+      state.kind === 'task' &&
+      data.capabilities.project_references === true &&
+      projectId
+    ) {
+      if (projectReferenceBusy)
+        validation.project_id = t(
+          '项目引用仍在读取，请稍后确认。',
+          'Project references are still loading. Try again when verified.',
+        )
+      else if (projectReferenceError)
+        validation.project_id = t(
+          '项目引用尚未验证，请重试读取。',
+          'Project references could not be verified. Retry the project read.',
+        )
+    }
     setFieldErrors(validation)
     if (Object.keys(validation).length) {
       if (state.kind === 'run' && validation.context_hash) {
@@ -309,10 +371,44 @@ export function WorkbenchForm({
     }
     setFormBusy(true)
     setError('')
+    let taskValidationTimer: ReturnType<typeof setTimeout> | undefined
+    let projectValidationFailed = false
+    let projectValidationTimedOut = false
     try {
       if (state.kind === 'project') {
         await post<Project>('/projects', { name, directory, goal, notes })
       } else if (state.kind === 'task') {
+        taskValidationRequest.current?.abort()
+        const controller = new AbortController()
+        taskValidationRequest.current = controller
+        if (data.capabilities.project_references === true) {
+          if (!projectId) {
+            setFieldErrors((current) => ({
+              ...current,
+              project_id: t('请选择有效项目', 'Select an available project'),
+            }))
+            setError(t('请先确认项目', 'Confirm a project before saving'))
+            setFormBusy(false)
+            return
+          }
+          const baseline = latestFingerprint.current
+          projectValidationFailed = true
+          setCheckingTaskProject(true)
+          taskValidationTimer = setTimeout(() => {
+            projectValidationTimedOut = true
+            controller.abort()
+          }, 15_000)
+          await validateProjectSelection([projectId], controller.signal)
+          if (!mounted.current) return
+          controller.signal.throwIfAborted()
+          if (baseline !== latestFingerprint.current)
+            throw new Error('task_project_candidate_changed')
+          clearTimeout(taskValidationTimer)
+          taskValidationTimer = undefined
+          setCheckingTaskProject(false)
+          projectValidationFailed = false
+        }
+        if (!mounted.current || controller.signal.aborted) return
         const task = await post<Task>('/tasks', {
           project_id: projectId,
           title: name,
@@ -374,6 +470,21 @@ export function WorkbenchForm({
       confirmWorkbenchNavigation()
       onClose()
     } catch (reason) {
+      if (!mounted.current) return
+      if (projectValidationFailed) {
+        const message = projectValidationTimedOut
+          ? t(
+              '项目确认超时，任务尚未保存。请重试读取。',
+              'Project validation timed out. The task was not saved. Retry the read.',
+            )
+          : t(
+              '项目引用未通过确认，任务尚未保存，输入已保留。',
+              'Project references could not be confirmed. The task was not saved; your input is kept.',
+            )
+        setFieldErrors((current) => ({ ...current, project_id: message }))
+        setError(message)
+        return
+      }
       if (state.kind === 'test') {
         setModelTest((previous) => unknownModelTest(previous))
         setConsent(false)
@@ -389,7 +500,11 @@ export function WorkbenchForm({
       }
       setError(reason instanceof Error ? reason.message : String(reason))
     } finally {
-      setFormBusy(false)
+      if (taskValidationTimer) clearTimeout(taskValidationTimer)
+      if (mounted.current) {
+        setCheckingTaskProject(false)
+        setFormBusy(false)
+      }
     }
   }
   async function checkModelTestReceipt() {
@@ -531,18 +646,66 @@ export function WorkbenchForm({
       <>
         {fieldBlock(
           'project_id',
-          <AppSelect
-            label={t('项目', 'Project')}
-            value={projectId}
-            options={data.projects.map((item) => ({
-              value: item.id,
-              label: item.name,
-            }))}
-            onChange={(value) => {
-              clearFieldError('project_id')
-              setProjectId(value)
-            }}
-          />,
+          data.capabilities.project_references === true ? (
+            <ProjectTaskPicker
+              data={data}
+              refreshRevision={refreshRevision}
+              value={projectId}
+              selection={taskProjectRefs}
+              t={t}
+              onChange={(value) => {
+                clearFieldError('project_id')
+                setProjectId(value)
+              }}
+              onCreateProject={
+                onCreateProject
+                  ? () => requestDiscard(onCreateProject)
+                  : undefined
+              }
+              disabled={busy}
+            />
+          ) : (
+            <AppSelect
+              label={t('项目', 'Project')}
+              value={projectId}
+              options={data.projects.map((item) => ({
+                value: item.id,
+                label: item.name,
+              }))}
+              onChange={(value) => {
+                clearFieldError('project_id')
+                setProjectId(value)
+              }}
+            />
+          ),
+        )}
+        {data.capabilities.project_references === true && projectId && (
+          <>
+            {projectReferenceBusy && (
+              <p className="wb-hint" role="status">
+                {t('正在确认项目引用…', 'Verifying project references...')}
+              </p>
+            )}
+            {projectReferenceError && (
+              <p className="wb-error" role="alert">
+                {t(
+                  '项目引用尚未验证，请重试读取。',
+                  'Project references could not be verified. Retry the project read.',
+                )}
+              </p>
+            )}
+            {(projectReferenceError || fieldErrors.project_id) && (
+              <AppButton
+                label={t('重试项目引用', 'Retry project references')}
+                icon={<RefreshCw size={15} />}
+                onClick={() => {
+                  clearFieldError('project_id')
+                  taskProjectRefs.retry()
+                }}
+                disabled={busy}
+              />
+            )}
+          </>
         )}
         {field('title', t('任务名称', 'Task title'), name, setName, true, 160)}
         {fieldBlock(
@@ -1068,6 +1231,11 @@ export function WorkbenchForm({
           <fieldset disabled={busy} className="wb-form-fields">
             {content}
           </fieldset>
+          {checkingTaskProject && (
+            <p className="wb-hint" role="status">
+              {t('正在确认任务项目…', 'Confirming task project...')}
+            </p>
+          )}
           {error && (
             <p className="wb-error" role="alert">
               {error}

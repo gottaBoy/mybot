@@ -133,6 +133,67 @@ describe('form schema validation', () => {
       ),
     ).toHaveProperty('directory')
   })
+  it('uses explicit verified project availability without inventing Bootstrap membership', () => {
+    const values = { ...draft(), projectId: 'remote-project' }
+    const empty = { ...data, projects: [] }
+    expect(validateFormDraft('task', values, empty, english)).toHaveProperty(
+      'project_id',
+    )
+    expect(
+      validateFormDraft('task', values, empty, english, 2, {
+        projectAvailable: true,
+      }),
+    ).toEqual({})
+    expect(
+      validateFormDraft('task', values, data, english, 2, {
+        projectAvailable: false,
+      }),
+    ).toHaveProperty('project_id')
+    expect(values.projectId).toBe('remote-project')
+  })
+  it('never treats an empty project candidate as available even with verified policy', () => {
+    expect(
+      validateFormDraft(
+        'task',
+        { ...draft(), projectId: '' },
+        data,
+        english,
+        2,
+        {
+          projectAvailable: true,
+        },
+      ),
+    ).toHaveProperty('project_id')
+  })
+  it('does not let task project availability bypass unrelated validation', () => {
+    expect(
+      validateFormDraft(
+        'task',
+        { ...draft(), name: '', goal: 'short', files: '../outside' },
+        data,
+        english,
+        2,
+        { projectAvailable: true },
+      ),
+    ).toMatchObject({
+      title: expect.any(String),
+      goal: expect.any(String),
+      files: expect.any(String),
+    })
+    expect(
+      validateFormDraft(
+        'run',
+        {
+          ...draft(),
+          routing: { ...draft().routing, coordinator_model: 'missing' },
+        },
+        data,
+        english,
+        2,
+        { projectAvailable: true },
+      ),
+    ).toHaveProperty('coordinator_model')
+  })
   it('validates configuration names, model identifiers and environment variable names', () => {
     expect(
       validateFormDraft(

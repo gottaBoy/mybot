@@ -574,3 +574,20 @@ Quick find原Astryx弹层展示最小域引用和返回数/总数，截断提示
 三style双mode与390中文弹层已验，证据`frontend/evidence/project-query-selection-2026-11-19/`。
 原4180未启用新cap/5173继续legacy，其他完整Project消费者和Bootstrap仍全量；
 不是整页改版、用户体验最终接受或新的Agent执行能力。
+
+## 31. 项目列表与任务表单数据迁移
+
+日期：2026-11-20，Asia/Singapore。IZ-07.3c1b保持当前壳层与任务页，项目route先取完整
+Project再复用FocusedWorkbench；Projects页增加单行目录搜索和唯一分页，仍显示目标/目录。
+列表lazy加载，20/50/100容量实际接服务端，容量宽度受控、长目标可换行，不整页套卡片。
+
+初次/换项目读取不展示旧数据；同ID暂时刷新失败明确标旧值并保留未提交query，missing/
+forbidden清除对象、401清私有。新Task不默认Bootstrap首项，Astryx嵌套Dialog/RadioList
+实际单选、分页、Space键与中文手机已验；真空目录Create需要保护dirty任务输入。
+任务保存前fresh GET确认，失败保留输入/不POST，server422保留字段；不发真实模型。
+
+最终1314前端/787Python/typecheck/build、生产资源37/项目条件44/综合58/actual4，
+81PNG/无pageerror。三style双mode/长名/手机/页Back有证据。脚本原隐式默认项目不再成立，
+现显式选fixture项目，未删原运行、预算及恢复检查。失败另存。
+见ADR-0017与`frontend/evidence/project-resources-2026-11-20/README.md`。
+原4180未启用cap，5173仍legacy；不声称Bootstrap已减量、全站视觉接受或设备/Workflow执行完成。

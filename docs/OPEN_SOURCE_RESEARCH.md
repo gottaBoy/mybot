@@ -773,3 +773,24 @@ git -C /tmp/mybot-upstream-astryx rev-parse HEAD
   三style双mode、长名、IME及手机nested Dialog/Escape焦点实际通过；失败另存。
   合同ADR-0016，证据`frontend/evidence/project-query-selection-2026-11-19/README.md`。
   不证明远程MultiSelector上游能力、完整Project/Bootstrap迁移、主环境启用或真机认证。
+
+## 33. Astryx完整项目消费者与RadioList复核（2026-11-20）
+
+- 身份：继续已安装`meta/astryx`Core0.7.13；研究commit
+  `5770e5b197cf80d5a824667c23046887cc8fa0f5`沿用，不重新声称npm/Git一致或latest。
+  本轮未clone/fetch/升级/复制组件源码，原MIT/NOTICE保持。
+- R：读取`dist/RadioList/{RadioList,RadioListItem}.d.ts`的value/onChange/isDisabled/size、
+  label/accessibility与支持的width；本地AppButton/AppDialog/AppSelect及UI density wrapper。
+  RadioList具有单值上下文，不需要Checkbox本地模拟互斥，也不复制通用focus/overlay。
+- E：RadioList默认md，产品需在wrapper统一compact sm/其他md，而非业务CSS强改内部尺寸。
+  AppSelect的100%宽在分页flex工具区会挤走邻近按钮；项目自有容量容器收宽即可，不碰vendorDOM。
+  Form busy会使用Astryx required/alertdialog，script必须按真实呈现检查；同名close/Keep按钮
+  需要在动作区定位，不能取任意同名项。
+- A：AppRadioList为产品owned简单封装，ProjectTaskPicker负责分页/身份/取消/真空/dirty等领域
+  状态；Task form fresh引用校验后才POST，UI不把读成功冒充任务成功。Projects列表lazy，
+  route按需完整Project，与最小refs/无notes摘要分别用strict DTO。
+- T：1314前端/787Python/build；最终生产资源37/原query44/综合58/实际4，81PNG无pageerror。
+  三style双mode、长目标、Space单选、mobile nested Dialog、unknown/失败/原scope保护均验，
+  只在fixture创建1Task及preview，未执行真实Provider。代码/源码观察/初轮失败/最终runtime分开，
+  见ADR-0017和`frontend/evidence/project-resources-2026-11-20/README.md`。
+  不外推Bootstrap总量、全部Zira能力、主环境启用、团队权限、真机或用户视觉接受。

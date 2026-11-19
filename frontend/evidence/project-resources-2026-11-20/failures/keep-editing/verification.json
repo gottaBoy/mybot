@@ -1,0 +1,287 @@
+{
+  "synthetic": true,
+  "checks": [
+    "desktop: Projects page uses20 bounded summaries and real task/Run counts without notes or Bootstrap rows",
+    "desktop: Page navigation uses URL state and Back restores the previous server page",
+    "desktop: List search is draft-only and IME-safe; committed results preserve authoritative server matching",
+    "desktop: Advertised list failure has no fallback/false empty; explicit retry preserves the exact query",
+    "desktop: Malformed summaries remain errors and an obsolete delayed page cannot replace the newer query",
+    "desktop: Project absent from Bootstrap loads by route ID and late previous-project detail is discarded",
+    "desktop: Same-project transient refresh failure preserves validated content and the unsent task query draft",
+    "desktop: Full project info comes only from detail;403 and confirmed404 are distinct with explicit retry",
+    "desktop: An invalid empty project ID becomes an explicit failure rather than an endless loading state",
+    "desktop: Global task creation ignores empty Bootstrap and requires explicit single-project selection across pages",
+    "desktop: Fresh project validation precedes task POST;403 preserves all task fields without creating a task",
+    "desktop: Only explicit resubmit performs one task POST to the confirmed project;server422 retains the draft"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=authority&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=failed&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=failed&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=malformed&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=late&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=authority&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-000/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-044%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-044/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-044%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-044%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-044%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-044/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-044/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-002%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-002/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-002/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-002%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22missing-project%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/missing-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=2&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=2&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    }
+  ],
+  "writes": [
+    {
+      "name": "desktop",
+      "path": "/api/tasks",
+      "body": {
+        "project_id": "resource-project-024",
+        "title": "Preserved task candidate",
+        "goal": "Synthetic task objective without model calls",
+        "acceptance": "",
+        "files": []
+      }
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "desktop-list.png",
+    "desktop-detail-info.png",
+    "desktop-task-form.png"
+  ],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "color": "rgb(0, 0, 0)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "width": 1160,
+      "scrollWidth": 1160
+    }
+  ],
+  "failure": {
+    "message": "locator.click: Error: strict mode violation: getByRole('dialog', { name: 'Discard unsaved changes?', exact: true }).getByRole('button', { name: 'Keep editing', exact: true }) resolved to 2 elements:\n    1) <button type=\"button\" data-size=\"md\" data-variant=\"ghost\" data-elevation=\"none\" data-astryx-pressable=\"\" data-astryx-edge-comp=\"\" aria-label=\"Keep editing\" class=\"astryx-button x1k57tk5 x1vidyx5 x1t137rt x1jhp3zv xx47ajj x16bblx1 x1wfwxd8 x13aywxo x1n2onr6 x3nfvp2 x6s0dn4 xl56j7k x1txdalj xc342km xng3xce x1jxw6zd xjb2p0i xcr08ib x1kq96og x1e4wzip xuxw1ft xeuugli x1ypdohk x16khyan xrafxwg xuedmi6 x12w9bfk xlr8y92 x1ueg155 x1v15ycx xioom0i xnjsko4 xt970qd x2lah0s x1x1rfll x11z29ks xli5ek3 xem8lmn xogcwk…>…</button> aka getByLabel('Keep editing')\n    2) <button type=\"button\" data-size=\"md\" data-elevation=\"none\" data-variant=\"secondary\" data-astryx-pressable=\"\" class=\"astryx-button x1k57tk5 x1vidyx5 x1t137rt x1jhp3zv xx47ajj x16bblx1 x1wfwxd8 x13aywxo x1n2onr6 x3nfvp2 x6s0dn4 xl56j7k x1txdalj xce4md1 xrrkdod xc342km xng3xce x1jxw6zd xjb2p0i xcr08ib x1kq96og x1e4wzip xuxw1ft xeuugli x193iq5w x1ypdohk x16khyan xrafxwg xuedmi6 x12w9bfk xlr8y92 x11l75t8 x11z29ks xli5ek3 xem8lmn xogcwkh x1t1ddl7 xziyay6 xz2mauf x1l7afqf x14e4jsf x6su2wr xif6eam x1ocadqd x1…>…</button> aka locator('button').filter({ hasText: 'Keep editing' })\n\nCall log:\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Discard unsaved changes?', exact: true }).getByRole('button', { name: 'Keep editing', exact: true })\u001b[22m\n",
+    "stack": "locator.click: Error: strict mode violation: getByRole('dialog', { name: 'Discard unsaved changes?', exact: true }).getByRole('button', { name: 'Keep editing', exact: true }) resolved to 2 elements:\n    1) <button type=\"button\" data-size=\"md\" data-variant=\"ghost\" data-elevation=\"none\" data-astryx-pressable=\"\" data-astryx-edge-comp=\"\" aria-label=\"Keep editing\" class=\"astryx-button x1k57tk5 x1vidyx5 x1t137rt x1jhp3zv xx47ajj x16bblx1 x1wfwxd8 x13aywxo x1n2onr6 x3nfvp2 x6s0dn4 xl56j7k x1txdalj xc342km xng3xce x1jxw6zd xjb2p0i xcr08ib x1kq96og x1e4wzip xuxw1ft xeuugli x1ypdohk x16khyan xrafxwg xuedmi6 x12w9bfk xlr8y92 x1ueg155 x1v15ycx xioom0i xnjsko4 xt970qd x2lah0s x1x1rfll x11z29ks xli5ek3 xem8lmn xogcwk…>…</button> aka getByLabel('Keep editing')\n    2) <button type=\"button\" data-size=\"md\" data-elevation=\"none\" data-variant=\"secondary\" data-astryx-pressable=\"\" class=\"astryx-button x1k57tk5 x1vidyx5 x1t137rt x1jhp3zv xx47ajj x16bblx1 x1wfwxd8 x13aywxo x1n2onr6 x3nfvp2 x6s0dn4 xl56j7k x1txdalj xce4md1 xrrkdod xc342km xng3xce x1jxw6zd xjb2p0i xcr08ib x1kq96og x1e4wzip xuxw1ft xeuugli x193iq5w x1ypdohk x16khyan xrafxwg xuedmi6 x12w9bfk xlr8y92 x11l75t8 x11z29ks xli5ek3 xem8lmn xogcwkh x1t1ddl7 xziyay6 xz2mauf x1l7afqf x14e4jsf x6su2wr xif6eam x1ocadqd x1…>…</button> aka locator('button').filter({ hasText: 'Keep editing' })\n\nCall log:\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Discard unsaved changes?', exact: true }).getByRole('button', { name: 'Keep editing', exact: true })\u001b[22m\n\n    at /home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-project-resources.mjs:719:8",
+    "tree": "- link \"Skip to content\":\n  - /url: \"#wb-main\"\n- complementary:\n  - link \"mybot WORKSPACE\":\n    - /url: \"#workbench\"\n    - strong: mybot\n    - text: WORKSPACE\n  - strong: R&D workspace\n  - text: Local · Single user\n  - button \"New task\":\n    - text: New task\n    - status\n  - navigation \"Main navigation\":\n    - link \"Overview\":\n      - /url: \"#overview\"\n    - link \"Workbench\":\n      - /url: \"#workbench\"\n    - link \"Inbox\":\n      - /url: \"#inbox\"\n    - link \"Projects\":\n      - /url: \"#projects\"\n    - link \"Documents\":\n      - /url: \"#documents\"\n    - link \"Models & resources\":\n      - /url: \"#models\"\n    - link \"Conversation backends\":\n      - /url: \"#backends\"\n  - text: PROJECTS\n  - button \"Create project\":\n    - status\n  - text: Search projects\n  - textbox \"Search projects\"\n  - button \"Search project directory\":\n    - status\n  - button \"Resource project 044\":\n    - text: Resource project 044 1\n    - status\n  - button \"Resource project 043\":\n    - text: Resource project 043 1\n    - status\n  - button \"Resource project 042\":\n    - text: Resource project 042 1\n    - status\n  - button \"Resource project 041\":\n    - text: Resource project 041 1\n    - status\n  - button \"Resource project 040\":\n    - text: Resource project 040 1\n    - status\n  - button \"Resource project 039\":\n    - text: Resource project 039 1\n    - status\n  - button \"Resource project 038\":\n    - text: Resource project 038 1\n    - status\n  - button \"Resource project 037\":\n    - text: Resource project 037 1\n    - status\n  - button \"Resource project 036\":\n    - text: Resource project 036 1\n    - status\n  - button \"Resource project 035\":\n    - text: Resource project 035 1\n    - status\n  - button \"Resource project 034\":\n    - text: Resource project 034 1\n    - status\n  - button \"Resource project 033\":\n    - text: Resource project 033 1\n    - status\n  - button \"Resource project 032\":\n    - text: Resource project 032 1\n    - status\n  - button \"Resource project 031\":\n    - text: Resource project 031 1\n    - status\n  - button \"Resource project 030\":\n    - text: Resource project 030 1\n    - status\n  - button \"Resource project 029\":\n    - text: Resource project 029 1\n    - status\n  - button \"Resource project 028\":\n    - text: Resource project 028 1\n    - status\n  - button \"Resource project 027\":\n    - text: Resource project 027 1\n    - status\n  - button \"Resource project 026\":\n    - text: Resource project 026 1\n    - status\n  - button \"Resource project 025\":\n    - text: Resource project 025 1\n    - status\n  - status: 1-20 / 45\n  - button \"Previous project page\" [disabled]:\n    - status\n  - button \"Next project page\":\n    - status\n  - button \"Preferences\":\n    - text: Preferences\n    - status\n  - link \"Component lab\":\n    - /url: \"#templates\"\n  - link \"Classic workbench\":\n    - /url: http://127.0.0.1:4180/\n  - text: Read-only research\n- banner:\n  - text: Workspace\n  - strong: Workbench\n  - button \"Quick find\":\n    - text: Quick find\n    - status\n  - status: Synced\n  - button \"切换为中文\":\n    - status\n  - button \"Dark mode\":\n    - status\n  - button \"Refresh\":\n    - status\n- main:\n  - region \"Task list workspace\":\n    - complementary:\n      - navigation \"Task scope\":\n        - heading \"Filters\" [level=2]\n        - button \"Collapse filters\" [expanded]:\n          - status\n        - heading \"Task status\" [level=3]\n        - button \"All tasks\" [pressed]:\n          - text: All tasks 0\n          - status\n        - button \"Active\":\n          - text: Active 0\n          - status\n        - button \"Needs attention\":\n          - text: Needs attention 0\n          - status\n        - button \"Completed\":\n          - text: Completed 0\n          - status\n        - heading \"Projects\" [level=3]\n        - text: Search projects\n        - textbox \"Search projects\"\n        - button \"Search project directory\":\n          - status\n        - button \"All projects\" [pressed]:\n          - text: All projects 46\n          - status\n        - button \"Resource project 044\":\n          - text: Resource project 044 1\n          - status\n        - button \"Resource project 043\":\n          - text: Resource project 043 1\n          - status\n        - button \"Resource project 042\":\n          - text: Resource project 042 1\n          - status\n        - button \"Resource project 041\":\n          - text: Resource project 041 1\n          - status\n        - button \"Resource project 040\":\n          - text: Resource project 040 1\n          - status\n        - button \"Resource project 039\":\n          - text: Resource project 039 1\n          - status\n        - button \"Resource project 038\":\n          - text: Resource project 038 1\n          - status\n        - button \"Resource project 037\":\n          - text: Resource project 037 1\n          - status\n        - button \"Resource project 036\":\n          - text: Resource project 036 1\n          - status\n        - button \"Resource project 035\":\n          - text: Resource project 035 1\n          - status\n        - button \"Resource project 034\":\n          - text: Resource project 034 1\n          - status\n        - button \"Resource project 033\":\n          - text: Resource project 033 1\n          - status\n        - button \"Resource project 032\":\n          - text: Resource project 032 1\n          - status\n        - button \"Resource project 031\":\n          - text: Resource project 031 1\n          - status\n        - button \"Resource project 030\":\n          - text: Resource project 030 1\n          - status\n        - button \"Resource project 029\":\n          - text: Resource project 029 1\n          - status\n        - button \"Resource project 028\":\n          - text: Resource project 028 1\n          - status\n        - button \"Resource project 027\":\n          - text: Resource project 027 1\n          - status\n        - button \"Resource project 026\":\n          - text: Resource project 026 1\n          - status\n        - button \"Resource project 025\":\n          - text: Resource project 025 1\n          - status\n        - status: 1-20 / 45\n        - button \"Previous project page\" [disabled]:\n          - status\n        - button \"Next project page\":\n          - status\n    - heading \"Tasks\" [level=1]\n    - text: All projects\n    - status:\n      - strong: \"0\"\n      - text: tasks\n    - button \"Views\":\n      - text: Views\n      - status\n    - region \"List search\":\n      - text: Search\n      - searchbox \"Search\"\n      - button \"Project\":\n        - text: Project\n        - status\n      - text: Status\n      - button \"Status\"\n      - radiogroup \"Query mode\":\n        - radio \"Basic\" [checked]\n        - radio \"JQL\"\n      - button \"Search\":\n        - status\n      - button \"Clear filters\" [disabled]:\n        - status\n    - region \"Workbench results\":\n      - toolbar \"Result views and table tools\":\n        - radiogroup \"Work view\":\n          - radio \"Tasks\" [checked]\n          - radio \"Board\"\n          - radio \"Runs\"\n        - button \"Columns\":\n          - text: Columns\n          - status\n      - heading \"No tasks yet\" [level=2]\n      - button \"New task\":\n        - text: New task\n        - status\n- alertdialog \"New task\":\n  - heading \"New task\" [level=2]\n  - button \"Close\" [disabled]:\n    - status\n  - group:\n    - group:\n      - button \"Project\":\n        - text: Select a project\n        - status\n    - group:\n      - text: Task title Required\n      - textbox \"Task title Required\": Protect before creating project\n    - group:\n      - text: Objective Required At least 8 characters\n      - textbox \"Objective Required\"\n      - text: 0/8,000\n    - group:\n      - text: Acceptance criteria\n      - textbox \"Acceptance criteria\"\n      - text: 0/4,000\n    - group:\n      - text: Explicit file selection Relative to project directory, one per line, up to 10. No automatic scanning.\n      - textbox \"Explicit file selection\":\n        - /placeholder: \"README.md\\ndocs/IMPLEMENTATION_PLAN.md\"\n  - button \"Close\":\n    - text: Close\n    - status\n  - button \"Save task & review context\":\n    - text: Save task & review context\n    - status\n- dialog \"Discard unsaved changes?\":\n  - heading \"Discard unsaved changes?\" [level=2]\n  - button \"Keep editing\":\n    - status\n  - paragraph: This draft has not been saved. Discarding it removes these inputs.\n  - button \"Keep editing\":\n    - text: Keep editing\n    - status\n  - button \"Discard changes\":\n    - text: Discard changes\n    - status"
+  }
+}

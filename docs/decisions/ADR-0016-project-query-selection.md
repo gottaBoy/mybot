@@ -67,8 +67,9 @@ This read path must never become a mutation or Provider replay policy.
 
 ## Scope And Evidence
 
-Full Project routes/list/forms, other view projections, negotiated Bootstrap
-reduction and transfer measurements remain IZ-07.3c1b/c2/c3/d. The original
+Full Project routes/list/task forms subsequently migrated under
+[ADR-0017](ADR-0017-project-resource-consumers.md). Other view projections,
+negotiated Bootstrap reduction and transfer measurements remain IZ-07.3c2/c3/d. The original
 119/9/110 ledger is unchanged. This slice does not add execution permissions,
 SSO, devices, workflow execution, production activation or global performance
 claims. Unit, production browser and isolated actual-API evidence follow below.

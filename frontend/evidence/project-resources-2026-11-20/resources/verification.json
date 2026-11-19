@@ -1,0 +1,683 @@
+{
+  "synthetic": true,
+  "checks": [
+    "desktop: Projects page uses20 bounded summaries and real task/Run counts without notes or Bootstrap rows",
+    "desktop: Page navigation uses URL state and Back restores the previous server page",
+    "desktop: List search is draft-only and IME-safe; committed results preserve authoritative server matching",
+    "desktop: Advertised list failure has no fallback/false empty; explicit retry preserves the exact query",
+    "desktop: Malformed summaries remain errors and an obsolete delayed page cannot replace the newer query",
+    "desktop: Project absent from Bootstrap loads by route ID and late previous-project detail is discarded",
+    "desktop: Same-project transient refresh failure preserves validated content and the unsent task query draft",
+    "desktop: Full project info comes only from detail;403 and confirmed404 are distinct with explicit retry",
+    "desktop: An invalid empty project ID becomes an explicit failure rather than an endless loading state",
+    "desktop: Global task creation ignores empty Bootstrap and requires explicit single-project selection across pages",
+    "desktop: Fresh project validation precedes task POST;403 preserves all task fields without creating a task",
+    "desktop: Only explicit resubmit performs one task POST to the confirmed project;server422 retains the draft",
+    "desktop: Verified no-project state offers Create project while dirty task input requires an explicit discard decision",
+    "desktop: Missing resource capabilities retain legacy project list without new reads",
+    "desktop: HTML401 clears full-project and task-form private projections",
+    "mobile: Projects page uses20 bounded summaries and real task/Run counts without notes or Bootstrap rows",
+    "mobile: Page navigation uses URL state and Back restores the previous server page",
+    "mobile: List search is draft-only and IME-safe; committed results preserve authoritative server matching",
+    "mobile: Advertised list failure has no fallback/false empty; explicit retry preserves the exact query",
+    "mobile: Malformed summaries remain errors and an obsolete delayed page cannot replace the newer query",
+    "mobile: Project absent from Bootstrap loads by route ID and late previous-project detail is discarded",
+    "mobile: Full project info comes only from detail;403 and confirmed404 are distinct with explicit retry",
+    "mobile: An invalid empty project ID becomes an explicit failure rather than an endless loading state",
+    "mobile: Global task creation ignores empty Bootstrap and requires explicit single-project selection across pages",
+    "mobile: Fresh project validation precedes task POST;403 preserves all task fields without creating a task",
+    "mobile: Only explicit resubmit performs one task POST to the confirmed project;server422 retains the draft",
+    "mobile: Verified no-project state offers Create project while dirty task input requires an explicit discard decision",
+    "mobile: Missing resource capabilities retain legacy project list without new reads",
+    "mobile: HTML401 clears full-project and task-form private projections",
+    "neutral-dark: Projects page uses20 bounded summaries and real task/Run counts without notes or Bootstrap rows",
+    "neutral-dark: Theme mode switches preserve list search draft and bounded geometry",
+    "zira-light: Projects page uses20 bounded summaries and real task/Run counts without notes or Bootstrap rows",
+    "zira-light: Theme mode switches preserve list search draft and bounded geometry",
+    "y2k-light: Projects page uses20 bounded summaries and real task/Run counts without notes or Bootstrap rows",
+    "y2k-light: Theme mode switches preserve list search draft and bounded geometry",
+    "y2k-dark: Projects page uses20 bounded summaries and real task/Run counts without notes or Bootstrap rows",
+    "y2k-dark: Theme mode switches preserve list search draft and bounded geometry"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=authority&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=failed&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=failed&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=malformed&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=late&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=authority&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-000/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-044%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-044/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-044%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-044%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-044%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-044/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-044/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-002%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-002/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-002/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-002%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22missing-project%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/missing-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=2&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=2&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-000/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/query",
+      "search": "?q=&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/query",
+      "search": "?q=&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/query",
+      "search": "?q=&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/query",
+      "search": "?q=authority&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/query",
+      "search": "?q=failed&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/query",
+      "search": "?q=failed&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/query",
+      "search": "?q=malformed&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/query",
+      "search": "?q=late&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/query",
+      "search": "?q=authority&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/resource-project-000/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/resource-project-044/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/resource-project-002/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/resource-project-002/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/missing-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=2&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=2&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/resource-project-000/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark",
+      "path": "/api/projects/query",
+      "search": "?q=&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light",
+      "path": "/api/projects/query",
+      "search": "?q=&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light",
+      "path": "/api/projects/query",
+      "search": "?q=&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark",
+      "path": "/api/projects/query",
+      "search": "?q=&page=1&page_size=20",
+      "method": "GET"
+    }
+  ],
+  "writes": [
+    {
+      "name": "desktop",
+      "path": "/api/tasks",
+      "body": {
+        "project_id": "resource-project-024",
+        "title": "Preserved task candidate",
+        "goal": "Synthetic task objective without model calls",
+        "acceptance": "",
+        "files": []
+      }
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks",
+      "body": {
+        "project_id": "resource-project-024",
+        "title": "Preserved task candidate",
+        "goal": "Synthetic task objective without model calls",
+        "acceptance": "",
+        "files": []
+      }
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "desktop-list.png",
+    "desktop-detail-info.png",
+    "desktop-task-form.png",
+    "mobile-list.png",
+    "mobile-detail-info.png",
+    "mobile-task-form.png",
+    "neutral-dark-list.png",
+    "zira-light-list.png",
+    "y2k-light-list.png",
+    "y2k-dark-list.png"
+  ],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "color": "rgb(0, 0, 0)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "width": 1160,
+      "scrollWidth": 1160
+    },
+    {
+      "style": "zira",
+      "mode": "dark",
+      "color": "rgb(230, 233, 239)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif",
+      "width": 354,
+      "scrollWidth": 354
+    },
+    {
+      "style": "neutral",
+      "mode": "dark",
+      "color": "rgb(255, 255, 255)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "width": 1160,
+      "scrollWidth": 1160
+    },
+    {
+      "style": "zira",
+      "mode": "light",
+      "color": "rgb(23, 43, 77)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif",
+      "width": 1160,
+      "scrollWidth": 1160
+    },
+    {
+      "style": "y2k",
+      "mode": "light",
+      "color": "rgb(45, 36, 27)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "width": 1160,
+      "scrollWidth": 1160
+    },
+    {
+      "style": "y2k",
+      "mode": "dark",
+      "color": "rgb(237, 239, 252)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "width": 1160,
+      "scrollWidth": 1160
+    }
+  ]
+}

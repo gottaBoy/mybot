@@ -1,0 +1,362 @@
+{
+  "synthetic": true,
+  "checks": [
+    "desktop: Projects page uses20 bounded summaries and real task/Run counts without notes or Bootstrap rows",
+    "desktop: Page navigation uses URL state and Back restores the previous server page",
+    "desktop: List search is draft-only and IME-safe; committed results preserve authoritative server matching",
+    "desktop: Advertised list failure has no fallback/false empty; explicit retry preserves the exact query",
+    "desktop: Project absent from Bootstrap loads by route ID and late previous-project detail is discarded",
+    "desktop: Full project info comes only from detail;403 and confirmed404 are distinct with explicit retry",
+    "desktop: Global task creation ignores empty Bootstrap and requires explicit single-project selection across pages",
+    "desktop: Fresh project validation precedes task POST;403 preserves all task fields without creating a task",
+    "desktop: Only explicit resubmit performs one task POST to the confirmed project;server422 retains the draft",
+    "desktop: Missing resource capabilities retain legacy project list without new reads",
+    "desktop: HTML401 clears full-project and task-form private projections",
+    "mobile: Projects page uses20 bounded summaries and real task/Run counts without notes or Bootstrap rows",
+    "mobile: Page navigation uses URL state and Back restores the previous server page",
+    "mobile: List search is draft-only and IME-safe; committed results preserve authoritative server matching",
+    "mobile: Advertised list failure has no fallback/false empty; explicit retry preserves the exact query",
+    "mobile: Project absent from Bootstrap loads by route ID and late previous-project detail is discarded",
+    "mobile: Full project info comes only from detail;403 and confirmed404 are distinct with explicit retry"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=authority&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=failed&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=failed&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-000/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-044%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-044/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-044%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-002%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-002/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-002/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-002%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22missing-project%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/missing-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=2&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=2&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-000/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/query",
+      "search": "?q=&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/query",
+      "search": "?q=&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/query",
+      "search": "?q=&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/query",
+      "search": "?q=authority&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/query",
+      "search": "?q=failed&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/query",
+      "search": "?q=failed&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/resource-project-000/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/resource-project-044/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/resource-project-002/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/resource-project-002/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/missing-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    }
+  ],
+  "writes": [
+    {
+      "name": "desktop",
+      "path": "/api/tasks",
+      "body": {
+        "project_id": "resource-project-024",
+        "title": "Preserved task candidate",
+        "goal": "Synthetic task objective without model calls",
+        "acceptance": "",
+        "files": []
+      }
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "desktop-list.png",
+    "desktop-detail-info.png",
+    "desktop-task-form.png",
+    "mobile-list.png",
+    "mobile-detail-info.png"
+  ],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "color": "rgb(0, 0, 0)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "width": 1160,
+      "scrollWidth": 1160
+    },
+    {
+      "style": "zira",
+      "mode": "dark",
+      "color": "rgb(230, 233, 239)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif",
+      "width": 354,
+      "scrollWidth": 354
+    }
+  ],
+  "failure": {
+    "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '新建任务', exact: true }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" data-size=\"md\" data-elevation=\"none\" data-variant=\"secondary\" data-astryx-pressable=\"\" class=\"astryx-button x1k57tk5 x1vidyx5 x1t137rt x1jhp3zv xx47ajj x16bblx1 x1wfwxd8 x13aywxo x1n2onr6 x3nfvp2 x6s0dn4 xl56j7k x1txdalj xce4md1 xrrkdod xc342km xng3xce x1jxw6zd xjb2p0i xcr08ib x1kq96og x1e4wzip xuxw1ft xeuugli x193iq5w x1ypdohk x16khyan xrafxwg xuedmi6 x12w9bfk xlr8y92 x11l75t8 x11z29ks xli5ek3 xem8lmn xogcwkh x1t1ddl7 xziyay6 xz2mauf x1l7afqf x14e4jsf x6su2wr xif6eam x1ocadqd x1…>…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <input value=\"\" id=\"_r_gi_\" type=\"text\" placeholder=\"搜索项目\" class=\"x1lliihq x98rzlu xeuugli xc342km xng3xce x1717udv x9ynric xjm74w1 xf9zqsd xw6l6zx x1tgivj0 xjbqb8w x1a2a7pz xeyghm5\"/> from <dialog open=\"\" aria-modal=\"true\" aria-label=\"工作空间导航\" data-variant=\"standard\" data-astryx-layer-root=\"\" class=\"astryx-dialog x1k57tk5 x1vidyx5 x1t137rt x1jhp3zv xx47ajj x1wfwxd8 x1vwwbsn x9ynric xjm74w1 xxovm9e xw6l6zx x1j61x8r x1yc453h x7ssn7h xzugeeo x6mezaz x1i21sxh xp3md9m x19pm5ym xeaf4i8 x1lldw8n x1h4wwuj xxydokm x1qkaldv x1c9qq8g xixxii4 x1bpp3o7 x1717udv xc342km x13rsnn2 xng3xce xx61lck x1w1tqly x10xzikg xvuvksw xuacgfc x1kcpxr7 xdt5ytf xg7h5cd xish69e xqgcaz x1jq6yc9 x128ha8g xr5m3f0 xskzprw …>…</dialog> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <input value=\"\" id=\"_r_gi_\" type=\"text\" placeholder=\"搜索项目\" class=\"x1lliihq x98rzlu xeuugli xc342km xng3xce x1717udv x9ynric xjm74w1 xf9zqsd xw6l6zx x1tgivj0 xjbqb8w x1a2a7pz xeyghm5\"/> from <dialog open=\"\" aria-modal=\"true\" aria-label=\"工作空间导航\" data-variant=\"standard\" data-astryx-layer-root=\"\" class=\"astryx-dialog x1k57tk5 x1vidyx5 x1t137rt x1jhp3zv xx47ajj x1wfwxd8 x1vwwbsn x9ynric xjm74w1 xxovm9e xw6l6zx x1j61x8r x1yc453h x7ssn7h xzugeeo x6mezaz x1i21sxh xp3md9m x19pm5ym xeaf4i8 x1lldw8n x1h4wwuj xxydokm x1qkaldv x1c9qq8g xixxii4 x1bpp3o7 x1717udv xc342km x13rsnn2 xng3xce xx61lck x1w1tqly x10xzikg xvuvksw xuacgfc x1kcpxr7 xdt5ytf xg7h5cd xish69e xqgcaz x1jq6yc9 x128ha8g xr5m3f0 xskzprw …>…</dialog> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    58 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <input value=\"\" id=\"_r_gi_\" type=\"text\" placeholder=\"搜索项目\" class=\"x1lliihq x98rzlu xeuugli xc342km xng3xce x1717udv x9ynric xjm74w1 xf9zqsd xw6l6zx x1tgivj0 xjbqb8w x1a2a7pz xeyghm5\"/> from <dialog open=\"\" aria-modal=\"true\" aria-label=\"工作空间导航\" data-variant=\"standard\" data-astryx-layer-root=\"\" class=\"astryx-dialog x1k57tk5 x1vidyx5 x1t137rt x1jhp3zv xx47ajj x1wfwxd8 x1vwwbsn x9ynric xjm74w1 xxovm9e xw6l6zx x1j61x8r x1yc453h x7ssn7h xzugeeo x6mezaz x1i21sxh xp3md9m x19pm5ym xeaf4i8 x1lldw8n x1h4wwuj xxydokm x1qkaldv x1c9qq8g xixxii4 x1bpp3o7 x1717udv xc342km x13rsnn2 xng3xce xx61lck x1w1tqly x10xzikg xvuvksw xuacgfc x1kcpxr7 xdt5ytf xg7h5cd xish69e xqgcaz x1jq6yc9 x128ha8g xr5m3f0 xskzprw …>…</dialog> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+    "stack": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '新建任务', exact: true }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" data-size=\"md\" data-elevation=\"none\" data-variant=\"secondary\" data-astryx-pressable=\"\" class=\"astryx-button x1k57tk5 x1vidyx5 x1t137rt x1jhp3zv xx47ajj x16bblx1 x1wfwxd8 x13aywxo x1n2onr6 x3nfvp2 x6s0dn4 xl56j7k x1txdalj xce4md1 xrrkdod xc342km xng3xce x1jxw6zd xjb2p0i xcr08ib x1kq96og x1e4wzip xuxw1ft xeuugli x193iq5w x1ypdohk x16khyan xrafxwg xuedmi6 x12w9bfk xlr8y92 x11l75t8 x11z29ks xli5ek3 xem8lmn xogcwkh x1t1ddl7 xziyay6 xz2mauf x1l7afqf x14e4jsf x6su2wr xif6eam x1ocadqd x1…>…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <input value=\"\" id=\"_r_gi_\" type=\"text\" placeholder=\"搜索项目\" class=\"x1lliihq x98rzlu xeuugli xc342km xng3xce x1717udv x9ynric xjm74w1 xf9zqsd xw6l6zx x1tgivj0 xjbqb8w x1a2a7pz xeyghm5\"/> from <dialog open=\"\" aria-modal=\"true\" aria-label=\"工作空间导航\" data-variant=\"standard\" data-astryx-layer-root=\"\" class=\"astryx-dialog x1k57tk5 x1vidyx5 x1t137rt x1jhp3zv xx47ajj x1wfwxd8 x1vwwbsn x9ynric xjm74w1 xxovm9e xw6l6zx x1j61x8r x1yc453h x7ssn7h xzugeeo x6mezaz x1i21sxh xp3md9m x19pm5ym xeaf4i8 x1lldw8n x1h4wwuj xxydokm x1qkaldv x1c9qq8g xixxii4 x1bpp3o7 x1717udv xc342km x13rsnn2 xng3xce xx61lck x1w1tqly x10xzikg xvuvksw xuacgfc x1kcpxr7 xdt5ytf xg7h5cd xish69e xqgcaz x1jq6yc9 x128ha8g xr5m3f0 xskzprw …>…</dialog> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <input value=\"\" id=\"_r_gi_\" type=\"text\" placeholder=\"搜索项目\" class=\"x1lliihq x98rzlu xeuugli xc342km xng3xce x1717udv x9ynric xjm74w1 xf9zqsd xw6l6zx x1tgivj0 xjbqb8w x1a2a7pz xeyghm5\"/> from <dialog open=\"\" aria-modal=\"true\" aria-label=\"工作空间导航\" data-variant=\"standard\" data-astryx-layer-root=\"\" class=\"astryx-dialog x1k57tk5 x1vidyx5 x1t137rt x1jhp3zv xx47ajj x1wfwxd8 x1vwwbsn x9ynric xjm74w1 xxovm9e xw6l6zx x1j61x8r x1yc453h x7ssn7h xzugeeo x6mezaz x1i21sxh xp3md9m x19pm5ym xeaf4i8 x1lldw8n x1h4wwuj xxydokm x1qkaldv x1c9qq8g xixxii4 x1bpp3o7 x1717udv xc342km x13rsnn2 xng3xce xx61lck x1w1tqly x10xzikg xvuvksw xuacgfc x1kcpxr7 xdt5ytf xg7h5cd xish69e xqgcaz x1jq6yc9 x128ha8g xr5m3f0 xskzprw …>…</dialog> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    58 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <input value=\"\" id=\"_r_gi_\" type=\"text\" placeholder=\"搜索项目\" class=\"x1lliihq x98rzlu xeuugli xc342km xng3xce x1717udv x9ynric xjm74w1 xf9zqsd xw6l6zx x1tgivj0 xjbqb8w x1a2a7pz xeyghm5\"/> from <dialog open=\"\" aria-modal=\"true\" aria-label=\"工作空间导航\" data-variant=\"standard\" data-astryx-layer-root=\"\" class=\"astryx-dialog x1k57tk5 x1vidyx5 x1t137rt x1jhp3zv xx47ajj x1wfwxd8 x1vwwbsn x9ynric xjm74w1 xxovm9e xw6l6zx x1j61x8r x1yc453h x7ssn7h xzugeeo x6mezaz x1i21sxh xp3md9m x19pm5ym xeaf4i8 x1lldw8n x1h4wwuj xxydokm x1qkaldv x1c9qq8g xixxii4 x1bpp3o7 x1717udv xc342km x13rsnn2 xng3xce xx61lck x1w1tqly x10xzikg xvuvksw xuacgfc x1kcpxr7 xdt5ytf xg7h5cd xish69e xqgcaz x1jq6yc9 x128ha8g xr5m3f0 xskzprw …>…</dialog> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at /home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-project-resources.mjs:488:8",
+    "tree": "- link \"跳到主要内容\":\n  - /url: \"#wb-main\"\n- banner:\n  - button \"打开导航\":\n    - status\n  - strong: 工作台\n  - button \"快速查找\":\n    - status\n  - button \"Switch to English\":\n    - status\n  - button \"切换浅色\":\n    - status\n- main:\n  - region \"任务列表工作区\":\n    - heading \"任务\" [level=1]\n    - text: 全部项目\n    - status:\n      - strong: \"0\"\n      - text: 项任务\n    - button \"视图\":\n      - status\n    - button \"筛选条件\":\n      - status\n    - region \"列表搜索\":\n      - text: 搜索\n      - searchbox \"搜索\"\n      - text: 查询模式\n      - combobox \"查询模式\": 基本\n      - button \"搜索\":\n        - status\n      - button \"清除筛选\" [disabled]:\n        - status\n    - region \"工作台结果\":\n      - toolbar \"结果视图与表格工具\":\n        - radiogroup \"工作视图\":\n          - radio \"任务列表\" [checked]\n          - radio \"看板\"\n          - radio \"运行记录\"\n        - button \"列设置\":\n          - status\n      - heading \"还没有任务\" [level=2]\n      - button \"新建任务\":\n        - text: 新建任务\n        - status\n- dialog \"工作空间导航\":\n  - heading \"工作空间导航\" [level=2]\n  - button \"关闭导航\":\n    - status\n  - link \"mybot\":\n    - /url: \"#workbench\"\n    - strong: mybot\n  - strong: 研发工作空间\n  - text: 本机 · 单用户\n  - button \"新建任务\":\n    - text: 新建任务\n    - status\n  - navigation \"主导航\":\n    - link \"总览\":\n      - /url: \"#overview\"\n    - link \"工作台\":\n      - /url: \"#workbench\"\n    - link \"待处理\":\n      - /url: \"#inbox\"\n    - link \"项目\":\n      - /url: \"#projects\"\n    - link \"项目资料\":\n      - /url: \"#documents\"\n    - link \"模型与资源\":\n      - /url: \"#models\"\n    - link \"会话后端\":\n      - /url: \"#backends\"\n  - text: 项目\n  - button \"创建项目\":\n    - status\n  - text: 搜索项目\n  - textbox \"搜索项目\"\n  - button \"搜索项目目录\":\n    - status\n  - button \"Resource project 044\":\n    - text: Resource project 044 1\n    - status\n  - button \"Resource project 043\":\n    - text: Resource project 043 1\n    - status\n  - button \"Resource project 042\":\n    - text: Resource project 042 1\n    - status\n  - button \"Resource project 041\":\n    - text: Resource project 041 1\n    - status\n  - button \"Resource project 040\":\n    - text: Resource project 040 1\n    - status\n  - button \"Resource project 039\":\n    - text: Resource project 039 1\n    - status\n  - button \"Resource project 038\":\n    - text: Resource project 038 1\n    - status\n  - button \"Resource project 037\":\n    - text: Resource project 037 1\n    - status\n  - button \"Resource project 036\":\n    - text: Resource project 036 1\n    - status\n  - button \"Resource project 035\":\n    - text: Resource project 035 1\n    - status\n  - button \"Resource project 034\":\n    - text: Resource project 034 1\n    - status\n  - button \"Resource project 033\":\n    - text: Resource project 033 1\n    - status\n  - button \"Resource project 032\":\n    - text: Resource project 032 1\n    - status\n  - button \"Resource project 031\":\n    - text: Resource project 031 1\n    - status\n  - button \"Resource project 030\":\n    - text: Resource project 030 1\n    - status\n  - button \"Resource project 029\":\n    - text: Resource project 029 1\n    - status\n  - button \"Resource project 028\":\n    - text: Resource project 028 1\n    - status\n  - button \"Resource project 027\":\n    - text: Resource project 027 1\n    - status\n  - button \"Resource project 026\":\n    - text: Resource project 026 1\n    - status\n  - button \"Resource project 025\":\n    - text: Resource project 025 1\n    - status\n  - status: 1-20 / 45\n  - button \"上一页项目\" [disabled]:\n    - status\n  - button \"下一页项目\":\n    - status\n  - button \"偏好设置\":\n    - text: 偏好设置\n    - status\n  - link \"组件实验室\":\n    - /url: \"#templates\"\n  - link \"旧版工作台\":\n    - /url: http://127.0.0.1:4180/\n  - text: 只读研究"
+  }
+}

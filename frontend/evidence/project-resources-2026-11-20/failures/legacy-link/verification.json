@@ -1,0 +1,236 @@
+{
+  "synthetic": true,
+  "checks": [
+    "desktop: Projects page uses20 bounded summaries and real task/Run counts without notes or Bootstrap rows",
+    "desktop: Page navigation uses URL state and Back restores the previous server page",
+    "desktop: List search is draft-only and IME-safe; committed results preserve authoritative server matching",
+    "desktop: Advertised list failure has no fallback/false empty; explicit retry preserves the exact query",
+    "desktop: Project absent from Bootstrap loads by route ID and late previous-project detail is discarded",
+    "desktop: Full project info comes only from detail;403 and confirmed404 are distinct with explicit retry",
+    "desktop: Global task creation ignores empty Bootstrap and requires explicit single-project selection across pages",
+    "desktop: Fresh project validation precedes task POST;403 preserves all task fields without creating a task",
+    "desktop: Only explicit resubmit performs one task POST to the confirmed project;server422 retains the draft"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=authority&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=failed&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/query",
+      "search": "?q=failed&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-000%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-000/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-044%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-044/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-044%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-002%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-002/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/resource-project-002/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-002%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22missing-project%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/missing-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=2&page_size=20&selected=%5B%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=2&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22resource-project-024%22%5D",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    }
+  ],
+  "writes": [
+    {
+      "name": "desktop",
+      "path": "/api/tasks",
+      "body": {
+        "project_id": "resource-project-024",
+        "title": "Preserved task candidate",
+        "goal": "Synthetic task objective without model calls",
+        "acceptance": "",
+        "files": []
+      }
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "desktop-list.png",
+    "desktop-detail-info.png",
+    "desktop-task-form.png"
+  ],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "color": "rgb(0, 0, 0)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "width": 1160,
+      "scrollWidth": 1160
+    }
+  ],
+  "failure": {
+    "message": "locator.waitFor: Error: strict mode violation: getByRole('link', { name: /Legacy project/ }) resolved to 2 elements:\n    1) <a href=\"#project/resource-project-044\">…</a> aka getByRole('link', { name: 'Legacy project', exact: true })\n    2) <a href=\"#project/resource-project-044\">…</a> aka getByRole('link', { name: 'Legacy project Actual project' })\n\nCall log:\n\u001b[2m  - waiting for getByRole('link', { name: /Legacy project/ }) to be visible\u001b[22m\n",
+    "stack": "locator.waitFor: Error: strict mode violation: getByRole('link', { name: /Legacy project/ }) resolved to 2 elements:\n    1) <a href=\"#project/resource-project-044\">…</a> aka getByRole('link', { name: 'Legacy project', exact: true })\n    2) <a href=\"#project/resource-project-044\">…</a> aka getByRole('link', { name: 'Legacy project Actual project' })\n\nCall log:\n\u001b[2m  - waiting for getByRole('link', { name: /Legacy project/ }) to be visible\u001b[22m\n\n    at /home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-project-resources.mjs:602:62",
+    "tree": "- link \"Skip to content\":\n  - /url: \"#wb-main\"\n- complementary:\n  - link \"mybot WORKSPACE\":\n    - /url: \"#workbench\"\n    - strong: mybot\n    - text: WORKSPACE\n  - strong: R&D workspace\n  - text: Local · Single user\n  - button \"New task\":\n    - text: New task\n    - status\n  - navigation \"Main navigation\":\n    - link \"Overview\":\n      - /url: \"#overview\"\n    - link \"Workbench\":\n      - /url: \"#workbench\"\n    - link \"Inbox\":\n      - /url: \"#inbox\"\n    - link \"Projects\":\n      - /url: \"#projects\"\n    - link \"Documents\":\n      - /url: \"#documents\"\n    - link \"Models & resources\":\n      - /url: \"#models\"\n    - link \"Conversation backends\":\n      - /url: \"#backends\"\n  - text: PROJECTS\n  - button \"Create project\":\n    - status\n  - link \"Legacy project\":\n    - /url: \"#project/resource-project-044\"\n  - button \"Preferences\":\n    - text: Preferences\n    - status\n  - link \"Component lab\":\n    - /url: \"#templates\"\n  - link \"Classic workbench\":\n    - /url: http://127.0.0.1:4180/\n  - text: Read-only research\n- banner:\n  - text: Workspace\n  - strong: Projects\n  - button \"Quick find\":\n    - text: Quick find\n    - status\n  - status: Synced\n  - button \"切换为中文\":\n    - status\n  - button \"Dark mode\":\n    - status\n  - button \"Refresh\":\n    - status\n- main:\n  - heading \"Projects\" [level=1]\n  - link \"Hierarchy\":\n    - /url: \"#hierarchy\"\n    - text: Hierarchy\n    - status\n  - button \"Create project\":\n    - text: Create project\n    - status\n  - link \"Legacy project Actual project objective 44 0 tasks · .\":\n    - /url: \"#project/resource-project-044\"\n    - heading \"Legacy project\" [level=2]\n    - paragraph: Actual project objective 44\n    - text: 0 tasks ·\n    - code: ."
+  }
+}

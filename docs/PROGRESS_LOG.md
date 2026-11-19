@@ -892,6 +892,42 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
   无凭证、部署、兄弟项目修改或依赖升级；原119/9/110不变。下一项c1b完整Project路由/列表/
   表单，再c2其他投影及c3/d协商减量/失效/测量，不关闭07.3/07.4。commit/push以Git回执为准。
 
+## 2026-11-20
+
+### 工作项：IZ-07.3c1b完整项目资源与创建任务选择
+
+- 用户继续，起始7bb2140已push且工作树干净。ADR-0017先记录，三Agent分别后端/client与列表/
+  表单；root负责Workbench route/共用AppRadioList、浏览器/最终记录，不碰兄弟项目或账号。
+- 新只读project_detail/query能力，各自显式准入；详情5字段+Task/历史Run数，列表4字段摘要/
+  20/50/100真页/目标/目录/no notes；复用reference parser/order/CTE，一次SQLite ro/query_only快照。
+  77新增含snapshot/关闭连接/认证/未知参数/Unicode编码ID/orphan/noProvider/无行事件写入。
+- strict client及列表59专项；detail按workspace/id取消/晚到丢弃，初错不回退Bootstrap；
+  transient同ID错误保留已验内容+stale notice/原querydraft，missing/forbidden隐藏、401清。
+  空routeID由strict client失败而非永久loading。ProjectResourceList lazy、URL query/page/capacity，
+  Search/IME/Back/刷新、真实总数和错误重试；容量控件独立收宽以保持桌面分页同列。
+- Task form refs能力路径移除Bootstrap首项默认，固定routeID仅为待确认候选；ProjectTaskPicker
+  用AppRadioList/Astryx单选，分页/refhydrate/unknown/missing/empty不同；确认无项目才提供Create，
+  dirty任务通过Discard guard。POST前fresh GET+15s abort+mounted/fingerprint验证+duplicate锁，
+  读失败0POST保留字段，显式重试读不自动POST；原taskmutation仍不声称新增幂等或租约。
+- 新7picker+3form测试，AppRadioList沿UI密度映射sm/md；真实Space选择、只有1checked、双层
+  Dialog、中文390px和server422输入保留已验。共1314前端（48文件）/787Python/typecheck/build通过。
+- 最终生产资源37/10PNG、原projectquery44/8PNG、综合58/60PNG、actual4/3PNG，
+  共81最终PNG/无pageerror；三style双mode/reducedmotion/长文/超时边界的实际覆盖见
+  `frontend/evidence/project-resources-2026-11-20/README.md`，不把unit超时配置当15s浏览器故障实测。
+- 早期script legacy同名link、手机背景Newtask、Keepediting头部/操作重名三个失败归档后改定位；
+  综合隐式默认项目已被新合同取消，脚本显式选真实fixture项目，模型/预算/审查/恢复原断言保留。
+  concurrent typecheckuseRef未初始化及SSR期望resolvedeffects的测试假设均修正，最终完整复跑。
+- actual fixture.9HjicZ从45项目45任务88终态Run/0model开始，新增1属于044任务+context preview；
+  全部原tasks/projects/runs/models逐条比对不变，只POST公开fixture登录/tasks/该preview，没有Run/
+  model测试/真实Provider。早期jhH0B0已过但在加原tasks比对前，最终report只用新空fixture。
+  综合使用fresh fixture.sgdukI及FakeProvider/MockTransport，不写正式DB、不产生模型费用。
+- 现有Starlette/httpx和chunk>500kB警告保留：app163.10/gzip53.89kB、CSS38.91/7.35，
+  lazy ProjectResourceList5.87/2.53、CSS1.38/0.49；Focused78.08/25.01、CSS14.03/2.91。
+  这是individualchunks，非实际总初始transfer或整体提速。
+- 原4180保持PID2064113未加载新cap，5173恢复200/legacy，临时4187/5176停止。
+  无凭证/正式DB/部署/依赖升级/兄弟修改；原119/9/110不变。下一项c2a全Run查询，再其他投影、
+  协商Bootstrap减量/失效/测量，不关闭07.3/07.4。独立commit/push以Git回执为准。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。
