@@ -283,6 +283,13 @@ product patterns, not replacing Astryx. Apply these rules to mybot:
   Directory drafts/pages are local panel state, separate from the task query.
   Mount only the currently presented global navigation; hidden mobile/desktop
   copies must not create duplicate directory read consumers.
+  Project query selection (ADR-0016) keeps picker candidates and committed-ID
+  hydration separate. A picker change never commits the task query. Validate
+  SavedView project references freshly before applying, bind that read to the
+  current query/draft/table baseline, and clear obsolete navigation on failure.
+  Only that validation stage locks navigation; legacy detail reads still cancel
+  on scope change. Confirm final URL admission before changing local table/draft
+  state or announcing a loaded snapshot.
 - Route and query listeners must consult the shared navigation admission guard.
   Restoring a dirty form's URL in a capture listener alone does not preserve the
   form. One navigation event must share one decision across consumers; confirmed

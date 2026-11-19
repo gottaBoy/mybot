@@ -14,6 +14,10 @@ import { AppActionMenu, type AppMenuEntry } from '../components/ui/ActionMenu'
 import { AppDraftGuard } from '../components/ui/DraftGuard'
 import { ApiError } from './api'
 import {
+  ProjectSelectionChangedError,
+  ProjectSelectionUnavailableError,
+} from './project-selection'
+import {
   cancelWorkbenchNavigation,
   confirmWorkbenchNavigation,
   refreshWorkbenchNavigationBlocker,
@@ -45,6 +49,7 @@ export type SavedViewsMenuProps = {
   hasPendingQuery: boolean
   t: Translate
   onApply: (record: SavedView) => void
+  onValidateApply?: (record: SavedView, signal: AbortSignal) => Promise<void>
   iconOnly?: boolean
   feedbackContainer?: HTMLElement | null
 }
@@ -126,6 +131,34 @@ export function savedViewProblemMessage(error: unknown, t: Translate) {
     'The saved view could not be read or validated.',
   )
 }
+export function savedViewValidationMessage(error: unknown, t: Translate) {
+  if (error instanceof ProjectSelectionUnavailableError)
+    return t(
+      '视图引用的项目不可用；当前查询和草稿已保留。',
+      'A project referenced by the view is unavailable. Your query and drafts are kept.',
+    )
+  if (error instanceof ProjectSelectionChangedError)
+    return t(
+      '校验期间查询或草稿已变更，请重新加载视图。',
+      'The query or draft changed during validation. Load the view again.',
+    )
+  if (error instanceof ApiError && error.status === 401)
+    return t('会话已失效。', 'Your session expired.')
+  if (error instanceof ApiError && error.status === 403)
+    return t(
+      '没有读取项目引用的权限；未加载视图。',
+      'Project reference access is forbidden. The view was not loaded.',
+    )
+  if (error instanceof ApiError && error.status === 404)
+    return t(
+      '项目引用接口不可用；未加载视图。',
+      'Project references are unavailable. The view was not loaded.',
+    )
+  return t(
+    '项目引用校验失败；当前查询和草稿已保留。',
+    'Project references could not be validated. Your query and drafts are kept.',
+  )
+}
 function editorFor(
   kind: Editor['kind'],
   definition: SavedViewDefinition,
@@ -153,6 +186,7 @@ export function SavedViewsMenu({
   hasPendingQuery,
   t,
   onApply,
+  onValidateApply,
   iconOnly = false,
   feedbackContainer,
 }: SavedViewsMenuProps) {
@@ -162,6 +196,7 @@ export function SavedViewsMenu({
   const [listBusy, setListBusy] = useState(false)
   const [listError, setListError] = useState('')
   const [detailBusy, setDetailBusy] = useState(false)
+  const [validationBusy, setValidationBusy] = useState(false)
   const [selected, setSelected] = useState<SavedView | null>(null)
   const [editor, setEditor] = useState<Editor | null>(null)
   const [editorOpen, setEditorOpen] = useState(false)
@@ -174,6 +209,7 @@ export function SavedViewsMenu({
   const epoch = useRef(0)
   const mounted = useRef(true)
   const operationBusy = useRef(false)
+  const loadBusy = useRef(false)
   const pendingQuery = useRef(hasPendingQuery)
   pendingQuery.current = hasPendingQuery
   const listRequest = useRef<AbortController | null>(null)
@@ -188,7 +224,7 @@ export function SavedViewsMenu({
       (editor.kind !== 'delete' &&
         signature(editor.name, editor.definition) !== editor.baseline)),
   )
-  guardState.current = { dirty, busy }
+  guardState.current = { dirty, busy: busy || validationBusy }
   const valid = (generation: number) =>
     mounted.current && epoch.current === generation
   function focusTrigger() {
@@ -211,12 +247,14 @@ export function SavedViewsMenu({
     detailRequest.current?.abort()
     mutationRequest.current?.abort()
     operationBusy.current = false
+    loadBusy.current = false
     guardState.current = { dirty: false, busy: false }
     setMenuOpen(false)
     setDirectory(null)
     setListBusy(false)
     setListError('')
     setDetailBusy(false)
+    setValidationBusy(false)
     setSelected(null)
     setEditor(null)
     setEditorOpen(false)
@@ -243,7 +281,7 @@ export function SavedViewsMenu({
     return () => window.removeEventListener('mybot:unauthorized', clearPrivate)
   }, [])
   useEffect(() => {
-    if (!editor) return
+    if (!editor && !validationBusy) return
     const release = registerWorkbenchNavigationBlocker({
       getState: () => guardState.current,
       onBlocked: () => setPrompt({ kind: 'navigation' }),
@@ -260,8 +298,11 @@ export function SavedViewsMenu({
       release()
       window.removeEventListener('beforeunload', beforeUnload)
     }
-  }, [Boolean(editor)])
-  useEffect(() => refreshWorkbenchNavigationBlocker(), [busy, dirty])
+  }, [Boolean(editor), validationBusy])
+  useEffect(
+    () => refreshWorkbenchNavigationBlocker(),
+    [busy, dirty, validationBusy],
+  )
 
   async function loadDirectory(more = false, force = false) {
     if ((listBusy && !force) || (more && !directory?.has_more)) return
@@ -309,30 +350,71 @@ export function SavedViewsMenu({
       setError(t('视图应用尚未确认。', 'View application was not confirmed.'))
     }
   }
-  async function chooseRecord(id: string) {
-    if (operationBusy.current || editor?.unknown) return
+  async function chooseRecord(
+    source: string | SavedView,
+    replaceDraft = false,
+  ) {
+    if (operationBusy.current || loadBusy.current || editor?.unknown) return
     detailRequest.current?.abort()
     const request = new AbortController()
     detailRequest.current = request
     const generation = epoch.current
+    loadBusy.current = true
+    guardState.current = { dirty, busy }
     setDetailBusy(true)
+    setValidationBusy(false)
     setError('')
     setFeedback('')
+    let validation = false
+    let timedOut = false
+    const timer = setTimeout(() => {
+      timedOut = true
+      request.abort()
+    }, 15_000)
     try {
-      const record = await readSavedView(id, scope, request.signal)
+      const record =
+        typeof source === 'string'
+          ? await readSavedView(source, scope, request.signal)
+          : source
       if (!valid(generation) || request.signal.aborted) return
-      if (pendingQuery.current) setPrompt({ kind: 'apply', record })
-      else apply(record)
+      if (!replaceDraft && pendingQuery.current)
+        setPrompt({ kind: 'apply', record })
+      else {
+        if (onValidateApply) {
+          validation = true
+          guardState.current = { dirty, busy: true }
+          setValidationBusy(true)
+          setPrompt(null)
+          await onValidateApply(record, request.signal)
+          if (!valid(generation) || request.signal.aborted) return
+        }
+        apply(record)
+      }
     } catch (caught) {
-      if (valid(generation) && !aborted(caught))
-        setError(savedViewProblemMessage(caught, t))
+      if (valid(generation) && (timedOut || !aborted(caught)))
+        setError(
+          timedOut
+            ? t(
+                '读取或校验视图超时；当前查询和草稿已保留。',
+                'Loading or validating the view timed out. Your query and drafts are kept.',
+              )
+            : validation
+              ? savedViewValidationMessage(caught, t)
+              : savedViewProblemMessage(caught, t),
+        )
     } finally {
-      if (valid(generation) && detailRequest.current === request)
+      clearTimeout(timer)
+      if (valid(generation) && detailRequest.current === request) {
+        if (validation) cancelWorkbenchNavigation()
+        loadBusy.current = false
+        guardState.current = { ...guardState.current, busy: false }
         setDetailBusy(false)
+        setValidationBusy(false)
+      }
     }
   }
   function openEditor(kind: Editor['kind']) {
-    if (operationBusy.current || editor?.unknown) return
+    if (operationBusy.current || loadBusy.current || editor?.unknown) return
     if (
       (kind !== 'delete' && (!current || hasPendingQuery)) ||
       (kind !== 'create' && !selected)
@@ -553,7 +635,7 @@ export function SavedViewsMenu({
           ) : (
             <Bookmark size={16} />
           ),
-        disabled: busy || Boolean(editor?.unknown),
+        disabled: busy || detailBusy || Boolean(editor?.unknown),
         onSelect: () => {
           void chooseRecord(record.id)
         },
@@ -590,7 +672,9 @@ export function SavedViewsMenu({
       )}
       {!menuOpen && detailBusy && (
         <span className="sv-feedback" role="status">
-          {t('正在读取视图快照…', 'Loading view snapshot...')}
+          {validationBusy
+            ? t('正在校验视图引用…', 'Validating view references...')
+            : t('正在读取视图快照…', 'Loading view snapshot...')}
         </span>
       )}
       {feedback && (
@@ -622,7 +706,9 @@ export function SavedViewsMenu({
             )}
             {detailBusy && (
               <span role="status">
-                {t('正在读取视图快照…', 'Loading view snapshot...')}
+                {validationBusy
+                  ? t('正在校验视图引用…', 'Validating view references...')
+                  : t('正在读取视图快照…', 'Loading view snapshot...')}
               </span>
             )}
             {listError && <span role="alert">{listError}</span>}
@@ -874,7 +960,7 @@ export function SavedViewsMenu({
             setPrompt(null)
           }}
           onDiscard={() => {
-            if (prompt.kind === 'apply') apply(prompt.record)
+            if (prompt.kind === 'apply') void chooseRecord(prompt.record, true)
             else if (prompt.kind === 'reload' && editor) {
               const next = editorFor(
                 editor.kind,

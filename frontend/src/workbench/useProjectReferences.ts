@@ -18,12 +18,15 @@ export function useProjectReferences({
   data,
   refreshRevision,
   request,
+  enabled = true,
 }: {
   data: Bootstrap | null
   refreshRevision: number
   request: ProjectReferencesRequest
+  enabled?: boolean
 }) {
   const remote = data?.capabilities.project_references === true
+  const active = remote && enabled
   let canonical = request
   try {
     const prepared = prepareProjectReferencesRequest(request)
@@ -36,18 +39,18 @@ export function useProjectReferences({
   } catch {
     // The read path reports invalid input without exposing a render exception.
   }
-  const key = JSON.stringify([data?.workspace, remote, canonical])
+  const key = JSON.stringify([data?.workspace, active, canonical])
   const [state, setState] = useState<ProjectReferencesState>()
   const [revision, setRevision] = useState(0)
   const observed = useRef({ data, refreshRevision })
 
   useEffect(() => {
-    if (!remote) {
+    if (!active) {
       setState(undefined)
       return
     }
     const controller = new AbortController()
-    let active = true
+    let live = true
     let timedOut = false
     const timer = setTimeout(() => {
       timedOut = true
@@ -60,11 +63,11 @@ export function useProjectReferences({
     }))
     void fetchProjectReferences(request, controller.signal)
       .then((value) => {
-        if (active && !controller.signal.aborted)
+        if (live && !controller.signal.aborted)
           setState({ key, kind: 'ready', value })
       })
       .catch((error: unknown) => {
-        if (!active || (controller.signal.aborted && !timedOut)) return
+        if (!live || (controller.signal.aborted && !timedOut)) return
         setState({
           key,
           kind: 'error',
@@ -79,7 +82,7 @@ export function useProjectReferences({
       })
       .finally(() => clearTimeout(timer))
     return () => {
-      active = false
+      live = false
       clearTimeout(timer)
       controller.abort()
     }
@@ -91,18 +94,19 @@ export function useProjectReferences({
     if (
       previous.data !== data &&
       previous.refreshRevision === refreshRevision &&
+      active &&
       state?.key === key &&
       state.kind === 'ready'
     )
       setRevision((value) => value + 1)
-  }, [data, refreshRevision, key, state])
+  }, [data, refreshRevision, key, state, active])
 
   const current = state?.key === key ? state : undefined
   return {
     remote,
-    value: remote ? current?.value : undefined,
-    busy: Boolean(remote && (!current || current.kind === 'loading')),
-    error: current?.kind === 'error' ? current.error : undefined,
+    value: active ? current?.value : undefined,
+    busy: Boolean(active && (!current || current.kind === 'loading')),
+    error: active && current?.kind === 'error' ? current.error : undefined,
     retry: () => setRevision((value) => value + 1),
   }
 }

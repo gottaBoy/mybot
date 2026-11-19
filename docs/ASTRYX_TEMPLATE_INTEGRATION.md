@@ -298,3 +298,21 @@ Astryx0.7.13及同一业务树，不重新生成模板、不增加第二组件�
 见ADR-0015、REA第31节和`frontend/evidence/project-references-2026-11-18/README.md`。
 保留重复挂载/旧hidden-DOM测试失败。Bootstrap和完整Project消费者未减；
 原4180未启用新cap、5173继续legacy，无真实模型或正式数据写入，119/9/110不变。
+
+## 19. 查询项目分页多选与视图引用校验
+
+2026-11-19，IZ-07.3c1a沿table-filter、form-wizard-dialog和work-item查询模式；仍为React19/
+Astryx0.7.13和项目wrapper，不重新生成模板、增加库或导入Zira实现。
+
+| 采用模式 | 本地适配 | 未扩大为 |
+| --- | --- | --- |
+| table-filter / Button | 原项目条件位置换ProjectQueryPicker，单行主查询保持 | 新造第二查询页、点击选项就提交Run/任务查询 |
+| Dialog / TextInput / Checkbox | 有界分页/独立Search/跨页候选，手机Filters内复用嵌套Dialog及focus | 把MultiSelector的本地hasSearch当远程目录API |
+| form / read states | 读取失败、确认missing和unknown分开；空选择不读selected，100上限 | 截断refs伪装全目录、假完整Project数据 |
+| saved-view action | 加载先fresh GET+baseline校验；校验阶段锁/最终导航准入 | 新写幂等、模型重试或旧detail不许离开 |
+| theme / density | 三style双mode、mode切换保留候选、中文手机长文本 | 另建主题组件树、用户最终视觉接受 |
+
+1245前端/build与生产44/32/58/5项、96PNG通过，无pageerror；
+ADR-0016、REA第32节及`frontend/evidence/project-query-selection-2026-11-19/README.md`。
+原4180未加载新cap；Bootstrap、完整Project路由/列表/表单仍待迁移，
+原119/9/110不变，无真实Provider/凭证/正式DB写入或部署。

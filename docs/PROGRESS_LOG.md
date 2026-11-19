@@ -860,6 +860,38 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
 - IZ-07.3b2所列消费者关闭，Bootstrap与Project选择器/路由/列表/表单仍全量，下一项07.3c1，
   再其他视图/协商减量/失效测量；不关闭07.3/07.4或调整119/9/110。commit/push以Git回执为准。
 
+## 2026-11-19
+
+### 工作项：IZ-07.3c1a项目条件多选与引用准入
+
+- 起始2a3bbdc已push/工作区干净；ADR-0016先记录，用户多Agent分为picker、准入/视图加载、
+  浏览器三条，root整合/证据。复用project_references合同，没有另加相同用途的后端。
+- ProjectQueryPicker使用Astryx项目wrapper，open目录20项页/独立Search；selected独立hydration，
+  勾选不刷新目录，不提交主查询；跨页候选、trueempty、确认missing移除、100上限和IME/焦点齐备。
+  enabled停读时取消/清投影，能力标识独立；手机不挂隐藏的inline picker。
+- 工作台committed项目先取引用，首次未知时隐藏结果、不发task query；失败只GET retry、
+  不读Bootstrap名/可用性；samekey保留值+busy，未把每次poll当成取消/重放在途query的理由。
+- SavedView先fresh GET确认项目，等待期间无URL/列/草稿变化，baseline变更使校验失效；
+  新校验阶段锁防重复/导航，失败清queued intent；sync apply先取URL导航准入再改变本地状态。
+  不把引用读取锁扩大为写幂等/真实模型策略，legacy detail继续可离开并取消旧scope读。
+- 发现修复初版busy锁覆盖legacy detail造成项目切换失败；保留失败后32项视图回归通过。
+  请求事件早于路由日志的29/28测试改为exact selected005只1GET；字段消息与Astryx live-region
+  重复改验aria-describedby；实际UI双呈现8/4、2/1改验可见4/1，核心断言保留。
+  早期typecheck的active影子变量改为live，最终typecheck/build通过。
+- 最终1245前端（45文件）/build通过；生产picker44/8PNG、SavedViews32/26PNG、综合58/60PNG、
+  真实API5/2PNG，合计96最终PNG/无pageerror。三style双mode、mode变更保留候选、长名、
+  390中文nested Dialog/Escape焦点/403/2xx/late/401/缺cap均验。
+  `frontend/evidence/project-query-selection-2026-11-19/README.md`区分中间结果/失败/最终报告。
+- 实际fixture.3eAI8M含45项目45任务88终态Run/无模型；三项目候选返回4可见任务、手机单选1，
+  原projects/tasks/runs/models数组前后不变，只有公开fixture登录POST。
+  综合fresh fixture.TnytgE使用FakeProvider/MockTransport，无真实Provider/费用或正式数据写入。
+- 未改Python，710是11月18日前批证据未本轮复跑；现有Starlette/httpx/大包警告保留。
+  app147.20kB/gzip48.71，CSS37.86/gzip7.21；lazy FocusedWorkbench78.53/gzip25.16，
+  CSS14.03/gzip2.91，非全初始传输或整体性能证明。
+- 原4180保持PID2064113/未加载新cap；5173恢复200继续legacy，临时4187/5176已停止。
+  无凭证、部署、兄弟项目修改或依赖升级；原119/9/110不变。下一项c1b完整Project路由/列表/
+  表单，再c2其他投影及c3/d协商减量/失效/测量，不关闭07.3/07.4。commit/push以Git回执为准。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。

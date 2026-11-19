@@ -707,9 +707,25 @@ try {
         const dialog = await startCreate(page)
         await saveName(page, '   ')
         assert.equal(writes(server).length, 0)
-        await page
-          .getByText('Use 1-100 characters for the name.', { exact: true })
-          .waitFor()
+        const nameField = dialog.getByRole('textbox', {
+          name: /^View name(?: Required)?$/,
+        })
+        await poll(
+          () =>
+            nameField.evaluate((node) =>
+              (node.getAttribute('aria-describedby') ?? '')
+                .split(/\s+/)
+                .some((id) =>
+                  document
+                    .getElementById(id)
+                    ?.textContent?.includes(
+                      'Use 1-100 characters for the name.',
+                    ),
+                ),
+            ),
+          true,
+          'Name validation is attached to the actual field',
+        )
         await dialog
           .getByRole('textbox', { name: /^View name(?: Required)?$/ })
           .fill('Keep this name')

@@ -1,0 +1,267 @@
+{
+  "synthetic": true,
+  "checks": [
+    "desktop: Committed project absent from Bootstrap waits for reference admission before querying tasks",
+    "desktop: Authoritative selected hydration admits an off-page project and heading without Bootstrap fallback",
+    "desktop: Selecting projects on different directory pages changes only the unsent Basic draft",
+    "desktop: IME does not submit; independent directory search preserves off-page selections and server matching",
+    "desktop: Main Search commits the complete project candidate once and server results reflect all three projects",
+    "desktop: Clearing project selection remains draft-only until the existing main query commit",
+    "desktop: Picker reference failure is an explicit error, not missing IDs, Bootstrap options or a success empty state",
+    "desktop: Explicit picker GET retry keeps its search input and occurs exactly once",
+    "desktop: Malformed 2xx stays an error and a late obsolete read cannot replace a newer directory query",
+    "desktop: Escape restores picker trigger focus and leaves the mobile outer Filters dialog intact",
+    "desktop: Committed-reference failure blocks all result views and explicit retry restores the exact selected scope",
+    "desktop: Only server-confirmed missing IDs are labelled unavailable and can be removed from the draft"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22picker-project-000%22%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22picker-project-000%22%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22picker-project-000%22%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%22picker-project-000%22%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22picker-project-000%22%2C%22picker-project-044%22%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=2&page_size=20&selected=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22picker-project-000%22%2C%22picker-project-024%22%2C%22picker-project-044%22%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=authority&page=1&page_size=20&selected=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22picker-project-000%22%2C%22picker-project-024%22%2C%22picker-project-044%22%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22picker-project-000%22%2C%22picker-project-024%22%2C%22picker-project-044%22%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%22picker-project-000%22%2C%22picker-project-024%22%2C%22picker-project-044%22%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=failed&page=1&page_size=20&selected=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=failed&page=1&page_size=20&selected=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=malformed&page=1&page_size=20&selected=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=late&page=1&page_size=20&selected=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=authority&page=1&page_size=20&selected=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22picker-project-002%22%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22picker-project-002%22%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22picker-project-002%22%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22picker-project-002%22%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%22picker-project-002%22%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22missing-project%22%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22missing-project%22%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22missing-project%22%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%5D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/saved-views/11111111-1111-4111-8111-111111111116",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/project-references",
+      "search": "?q=&page=1&page_size=20&selected=%5B%22picker-project-005%22%5D"
+    }
+  ],
+  "writes": [],
+  "errors": [],
+  "screenshots": [
+    "desktop-picker-selected.png"
+  ],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "color": "rgb(0, 0, 0)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "width": 592,
+      "scrollWidth": 592
+    }
+  ],
+  "failure": {
+    "message": "Expected values to be strictly equal:\n\n29 !== 28\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n29 !== 28\n\n    at file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-project-query-selection.mjs:760:14",
+    "tree": "- link \"Skip to content\":\n  - /url: \"#wb-main\"\n- complementary:\n  - link \"mybot WORKSPACE\":\n    - /url: \"#workbench\"\n    - strong: mybot\n    - text: WORKSPACE\n  - strong: R&D workspace\n  - text: Local · Single user\n  - button \"New task\":\n    - text: New task\n    - status\n  - navigation \"Main navigation\":\n    - link \"Overview\":\n      - /url: \"#overview\"\n    - link \"Workbench\":\n      - /url: \"#workbench\"\n    - link \"Inbox\":\n      - /url: \"#inbox\"\n    - link \"Projects\":\n      - /url: \"#projects\"\n    - link \"Documents\":\n      - /url: \"#documents\"\n    - link \"Models & resources\":\n      - /url: \"#models\"\n    - link \"Conversation backends\":\n      - /url: \"#backends\"\n  - text: PROJECTS\n  - button \"Create project\":\n    - status\n  - text: Search projects\n  - textbox \"Search projects\"\n  - button \"Search project directory\":\n    - status\n  - button \"Remote project 044\":\n    - text: Remote project 044 1\n    - status\n  - button \"Remote project 043 · Long localized project name 项目研发协作与多端任务交接验证\":\n    - text: Remote project 043 · Long localized project name 项目研发协作与多端任务交接验证 1\n    - status\n  - button \"Remote project 042\":\n    - text: Remote project 042 1\n    - status\n  - button \"Remote project 041\":\n    - text: Remote project 041 1\n    - status\n  - button \"Remote project 040\":\n    - text: Remote project 040 1\n    - status\n  - button \"Remote project 039\":\n    - text: Remote project 039 1\n    - status\n  - button \"Remote project 038\":\n    - text: Remote project 038 1\n    - status\n  - button \"Remote project 037\":\n    - text: Remote project 037 1\n    - status\n  - button \"Remote project 036\":\n    - text: Remote project 036 1\n    - status\n  - button \"Remote project 035\":\n    - text: Remote project 035 1\n    - status\n  - button \"Remote project 034\":\n    - text: Remote project 034 1\n    - status\n  - button \"Remote project 033\":\n    - text: Remote project 033 1\n    - status\n  - button \"Remote project 032\":\n    - text: Remote project 032 1\n    - status\n  - button \"Remote project 031\":\n    - text: Remote project 031 1\n    - status\n  - button \"Remote project 030\":\n    - text: Remote project 030 1\n    - status\n  - button \"Remote project 029\":\n    - text: Remote project 029 1\n    - status\n  - button \"Remote project 028\":\n    - text: Remote project 028 1\n    - status\n  - button \"Remote project 027\":\n    - text: Remote project 027 1\n    - status\n  - button \"Remote project 026\":\n    - text: Remote project 026 1\n    - status\n  - button \"Remote project 025\":\n    - text: Remote project 025 1\n    - status\n  - status: 1-20 / 45\n  - button \"Previous project page\" [disabled]:\n    - status\n  - button \"Next project page\":\n    - status\n  - button \"Preferences\":\n    - text: Preferences\n    - status\n  - link \"Component lab\":\n    - /url: \"#templates\"\n  - link \"Classic workbench\":\n    - /url: http://127.0.0.1:4180/\n  - text: Read-only research\n- banner:\n  - text: Workspace\n  - strong: Workbench\n  - button \"Quick find\":\n    - text: Quick find\n    - status\n  - status: Synced\n  - button \"切换为中文\":\n    - status\n  - button \"Dark mode\":\n    - status\n  - button \"Refresh\":\n    - status\n- main:\n  - region \"Task list workspace\":\n    - complementary:\n      - navigation \"Task scope\":\n        - heading \"Filters\" [level=2]\n        - button \"Collapse filters\" [expanded]:\n          - status\n        - heading \"Task status\" [level=3]\n        - button \"All tasks\" [pressed]:\n          - text: All tasks 0\n          - status\n        - button \"Active\":\n          - text: Active 0\n          - status\n        - button \"Needs attention\":\n          - text: Needs attention 0\n          - status\n        - button \"Completed\":\n          - text: Completed 0\n          - status\n        - heading \"Projects\" [level=3]\n        - text: Search projects\n        - textbox \"Search projects\"\n        - button \"Search project directory\":\n          - status\n        - button \"All projects\" [pressed]:\n          - text: All projects 45\n          - status\n        - button \"Remote project 044\":\n          - text: Remote project 044 1\n          - status\n        - button \"Remote project 043 · Long localized project name 项目研发协作与多端任务交接验证\":\n          - text: Remote project 043 · Long localized project name 项目研发协作与多端任务交接验证 1\n          - status\n        - button \"Remote project 042\":\n          - text: Remote project 042 1\n          - status\n        - button \"Remote project 041\":\n          - text: Remote project 041 1\n          - status\n        - button \"Remote project 040\":\n          - text: Remote project 040 1\n          - status\n        - button \"Remote project 039\":\n          - text: Remote project 039 1\n          - status\n        - button \"Remote project 038\":\n          - text: Remote project 038 1\n          - status\n        - button \"Remote project 037\":\n          - text: Remote project 037 1\n          - status\n        - button \"Remote project 036\":\n          - text: Remote project 036 1\n          - status\n        - button \"Remote project 035\":\n          - text: Remote project 035 1\n          - status\n        - button \"Remote project 034\":\n          - text: Remote project 034 1\n          - status\n        - button \"Remote project 033\":\n          - text: Remote project 033 1\n          - status\n        - button \"Remote project 032\":\n          - text: Remote project 032 1\n          - status\n        - button \"Remote project 031\":\n          - text: Remote project 031 1\n          - status\n        - button \"Remote project 030\":\n          - text: Remote project 030 1\n          - status\n        - button \"Remote project 029\":\n          - text: Remote project 029 1\n          - status\n        - button \"Remote project 028\":\n          - text: Remote project 028 1\n          - status\n        - button \"Remote project 027\":\n          - text: Remote project 027 1\n          - status\n        - button \"Remote project 026\":\n          - text: Remote project 026 1\n          - status\n        - button \"Remote project 025\":\n          - text: Remote project 025 1\n          - status\n        - status: 1-20 / 45\n        - button \"Previous project page\" [disabled]:\n          - status\n        - button \"Next project page\":\n          - status\n    - heading \"Tasks\" [level=1]\n    - text: All projects\n    - status:\n      - strong: \"45\"\n      - text: tasks\n    - button \"Views\" [expanded]:\n      - text: Views\n      - status\n    - dialog \"Views\":\n      - status: Validating view references...\n      - text: Showing 1 / 1\n      - menu \"Views\":\n        - menuitem \"Save current view\" [disabled]\n        - menuitem \"Update selected view Load a saved view first.\" [disabled]\n        - menuitem \"Save as new view\" [disabled]\n        - menuitem \"Delete selected view Load a saved view first.\" [disabled]\n        - separator\n        - group \"Saved views\":\n          - menuitem \"Remote project snapshot\" [disabled]\n        - separator\n        - menuitem \"Refresh views\"\n    - region \"List search\":\n      - text: Search\n      - searchbox \"Search\"\n      - button \"Project\":\n        - text: Project\n        - status\n      - text: Status\n      - button \"Status\"\n      - radiogroup \"Query mode\":\n        - radio \"Basic\" [checked]\n        - radio \"JQL\"\n      - button \"Search\":\n        - status\n      - button \"Clear filters\" [disabled]:\n        - status\n    - region \"Workbench results\":\n      - toolbar \"Result views and table tools\":\n        - radiogroup \"Work view\":\n          - radio \"Tasks\" [checked]\n          - radio \"Board\"\n          - radio \"Runs\"\n        - button \"Columns\":\n          - text: Columns\n          - status\n      - group \"Tasks\":\n        - table \"Tasks\":\n          - rowgroup:\n            - row \"ID Task Project Execution Latest run History\":\n              - columnheader \"ID\":\n                - button \"ID\"\n              - columnheader \"Task\":\n                - button \"Task\"\n              - columnheader \"Project\"\n              - columnheader \"Execution\":\n                - button \"Execution\"\n              - columnheader \"Latest run\":\n                - button \"Latest run\"\n              - columnheader \"History\":\n                - button \"History\"\n          - rowgroup:\n            - row \"task-pi Remote task 044 Remote project 044 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 044\":\n                - button \"Remote task 044\":\n                  - text: Remote task 044\n                  - status\n              - cell \"Remote project 044\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 043 Remote project 043 · Long localized project name 项目研发协作与多端任务交接验证 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 043\":\n                - button \"Remote task 043\":\n                  - text: Remote task 043\n                  - status\n              - cell \"Remote project 043 · Long localized project name 项目研发协作与多端任务交接验证\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 042 Remote project 042 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 042\":\n                - button \"Remote task 042\":\n                  - text: Remote task 042\n                  - status\n              - cell \"Remote project 042\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 041 Remote project 041 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 041\":\n                - button \"Remote task 041\":\n                  - text: Remote task 041\n                  - status\n              - cell \"Remote project 041\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 040 Remote project 040 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 040\":\n                - button \"Remote task 040\":\n                  - text: Remote task 040\n                  - status\n              - cell \"Remote project 040\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 039 Remote project 039 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 039\":\n                - button \"Remote task 039\":\n                  - text: Remote task 039\n                  - status\n              - cell \"Remote project 039\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 038 Remote project 038 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 038\":\n                - button \"Remote task 038\":\n                  - text: Remote task 038\n                  - status\n              - cell \"Remote project 038\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 037 Remote project 037 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 037\":\n                - button \"Remote task 037\":\n                  - text: Remote task 037\n                  - status\n              - cell \"Remote project 037\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 036 Remote project 036 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 036\":\n                - button \"Remote task 036\":\n                  - text: Remote task 036\n                  - status\n              - cell \"Remote project 036\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 035 Remote project 035 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 035\":\n                - button \"Remote task 035\":\n                  - text: Remote task 035\n                  - status\n              - cell \"Remote project 035\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 034 Remote project 034 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 034\":\n                - button \"Remote task 034\":\n                  - text: Remote task 034\n                  - status\n              - cell \"Remote project 034\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 033 Remote project 033 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 033\":\n                - button \"Remote task 033\":\n                  - text: Remote task 033\n                  - status\n              - cell \"Remote project 033\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 032 Remote project 032 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 032\":\n                - button \"Remote task 032\":\n                  - text: Remote task 032\n                  - status\n              - cell \"Remote project 032\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 031 Remote project 031 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 031\":\n                - button \"Remote task 031\":\n                  - text: Remote task 031\n                  - status\n              - cell \"Remote project 031\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 030 Remote project 030 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 030\":\n                - button \"Remote task 030\":\n                  - text: Remote task 030\n                  - status\n              - cell \"Remote project 030\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 029 Remote project 029 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 029\":\n                - button \"Remote task 029\":\n                  - text: Remote task 029\n                  - status\n              - cell \"Remote project 029\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 028 Remote project 028 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 028\":\n                - button \"Remote task 028\":\n                  - text: Remote task 028\n                  - status\n              - cell \"Remote project 028\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 027 Remote project 027 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 027\":\n                - button \"Remote task 027\":\n                  - text: Remote task 027\n                  - status\n              - cell \"Remote project 027\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 026 Remote project 026 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 026\":\n                - button \"Remote task 026\":\n                  - text: Remote task 026\n                  - status\n              - cell \"Remote project 026\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n            - row \"task-pi Remote task 025 Remote project 025 Not started - 0 runs\":\n              - cell \"task-pi\":\n                - code: task-pi\n              - cell \"Remote task 025\":\n                - button \"Remote task 025\":\n                  - text: Remote task 025\n                  - status\n              - cell \"Remote project 025\"\n              - cell \"Not started\"\n              - cell \"-\"\n              - cell \"0 runs\":\n                - button \"0 runs\":\n                  - text: \"0\"\n                  - status\n      - text: 1-20 / 45 Tasks per page\n      - combobox \"Tasks per page\": 20 / page\n      - button \"Previous page\" [disabled]:\n        - status\n      - status: 1 / 3\n      - button \"Next page\":\n        - status"
+  }
+}

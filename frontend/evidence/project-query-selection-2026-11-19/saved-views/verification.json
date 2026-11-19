@@ -1,0 +1,1422 @@
+{
+  "date": "2026-11-16",
+  "base": "http://127.0.0.1:5176/",
+  "synthetic": true,
+  "backendMutation": false,
+  "scope": "Saved-view client contract and UI with every API fulfilled locally. CRUD writes modify only this script memory.",
+  "contracts": {
+    "reads": "Directory is on demand; scoped pagination is not a full-result claim.",
+    "save": "Only committed query and applied table state; fixed editor snapshots, stable create ID, CAS revisions and no automatic write retries.",
+    "load": "A confirmed resource snapshot is copied into literal URL/table state, not dynamically bound by saved-view ID.",
+    "unknown": "GET reads current resource state, not an exact receipt for the original mutation. No durable unknown-operation journal is claimed.",
+    "browser": "Chrome desktop/mobile viewports, synthetic composition and local fixtures are not real-provider, physical-device, Safari or final visual acceptance."
+  },
+  "checks": [
+    {
+      "scenario": "startup-navigation",
+      "name": "A URL change before the first React navigation subscription initializes the actual project and query",
+      "passed": true
+    },
+    {
+      "scenario": "directory",
+      "name": "Mount does not read the saved-view directory and opening it reads one scoped page",
+      "passed": true
+    },
+    {
+      "scenario": "directory",
+      "name": "Load more keeps the denominator and does not claim the first window is the whole result set",
+      "passed": true
+    },
+    {
+      "scenario": "committed-save-load",
+      "name": "Dirty Basic candidates disable saving with a reason and do not issue writes",
+      "passed": true
+    },
+    {
+      "scenario": "committed-save-load",
+      "name": "Create saves only committed query and applied table state without changing the URL",
+      "passed": true
+    },
+    {
+      "scenario": "committed-save-load",
+      "name": "Loading a view copies its snapshot to query and table state with one canonical transition",
+      "passed": true
+    },
+    {
+      "scenario": "committed-save-load",
+      "name": "Refreshing keeps literal query state without silently binding to a newer resource revision",
+      "passed": true
+    },
+    {
+      "scenario": "replace-drafts",
+      "name": "Loading against a dirty query requires an explicit Keep or Load decision",
+      "passed": true
+    },
+    {
+      "scenario": "replace-drafts",
+      "name": "Dirty JQL is not saved or silently replaced",
+      "passed": true
+    },
+    {
+      "scenario": "stable-create-and-guard",
+      "name": "Local validation and dirty-close protection preserve name and do not submit empty names",
+      "passed": true
+    },
+    {
+      "scenario": "stable-create-and-guard",
+      "name": "A pending create blocks duplicate submissions and retains its original client ID",
+      "passed": true
+    },
+    {
+      "scenario": "cas-conflict",
+      "name": "CAS conflict keeps the draft and original revision without automatic overwrite or reads",
+      "passed": true
+    },
+    {
+      "scenario": "cas-conflict",
+      "name": "Reading latest does not change the draft until explicit replacement is confirmed",
+      "passed": true
+    },
+    {
+      "scenario": "dirty-navigation",
+      "name": "Native Back preserves a dirty saved-view editor until an explicit discard decision",
+      "passed": true
+    },
+    {
+      "scenario": "conflict-save-as",
+      "name": "Save as after a rejected CAS is an explicit new resource and preserves the original",
+      "passed": true
+    },
+    {
+      "scenario": "unknown-create",
+      "name": "A lost create response locks the original ID without retry or replacement-ID writes",
+      "passed": true
+    },
+    {
+      "scenario": "unknown-create",
+      "name": "Closing an unresolved change keeps its stable ID and exposes reconciliation rather than another write",
+      "passed": true
+    },
+    {
+      "scenario": "unknown-create",
+      "name": "Reading the same ID is labeled current state, not an exact mutation receipt",
+      "passed": true
+    },
+    {
+      "scenario": "delete-and-missing",
+      "name": "Deletion uses the selected revision and confirms the server receipt before removing the record",
+      "passed": true
+    },
+    {
+      "scenario": "delete-and-missing",
+      "name": "A missing detail is reported and never substituted with another saved view",
+      "passed": true
+    },
+    {
+      "scenario": "directory-errors",
+      "name": "An unavailable backend is an explicit error rather than a success-shaped empty directory",
+      "passed": true
+    },
+    {
+      "scenario": "directory-errors",
+      "name": "Explicit refresh can recover to a true scoped empty state without fake records",
+      "passed": true
+    },
+    {
+      "scenario": "project-unavailable",
+      "name": "An unavailable project has specific feedback instead of a generic validation or empty result",
+      "passed": true
+    },
+    {
+      "scenario": "invalid-directory",
+      "name": "A malformed 2xx directory is an error and cannot enable writes",
+      "passed": true
+    },
+    {
+      "scenario": "forbidden-detail",
+      "name": "Forbidden detail cannot apply a cached directory snapshot or change query state",
+      "passed": true
+    },
+    {
+      "scenario": "detail-race-draft",
+      "name": "A draft created while detail is loading still requires replacement confirmation",
+      "passed": true
+    },
+    {
+      "scenario": "detail-race-scope",
+      "name": "A pending detail from the previous scope cannot apply after project navigation",
+      "passed": true
+    },
+    {
+      "scenario": "authorization-priority",
+      "name": "A 401 clears cached private saved-view names and pending editor state",
+      "passed": true
+    },
+    {
+      "scenario": "non-json-unauthorized",
+      "name": "A non-JSON proxy 401 still clears private views and does not replay any mutation",
+      "passed": true
+    },
+    {
+      "scenario": "mobile-dark",
+      "name": "Mobile dark mode exposes the same real menu and save form without document overflow",
+      "passed": true
+    },
+    {
+      "scenario": "mobile-unknown",
+      "name": "Mobile unknown creation preserves its stable ID and fits both error and acknowledged-state feedback",
+      "passed": true
+    },
+    {
+      "scenario": "mobile-chinese",
+      "name": "Chinese mobile uses localized save controls and persists the submitted name without overflow",
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    "startup-navigation-final.png",
+    "saved-view-directory-window.png",
+    "directory-final.png",
+    "committed-save-load-final.png",
+    "replace-drafts-final.png",
+    "stable-create-and-guard-final.png",
+    "cas-conflict-final.png",
+    "dirty-navigation-final.png",
+    "conflict-save-as-final.png",
+    "unknown-create-final.png",
+    "delete-and-missing-final.png",
+    "directory-errors-final.png",
+    "project-unavailable-final.png",
+    "invalid-directory-final.png",
+    "forbidden-detail-final.png",
+    "detail-race-draft-final.png",
+    "detail-race-scope-final.png",
+    "authorization-priority-final.png",
+    "non-json-unauthorized-final.png",
+    "saved-views-mobile-dark-menu.png",
+    "saved-views-mobile-dark-form.png",
+    "mobile-dark-final.png",
+    "saved-views-mobile-unknown-acknowledged.png",
+    "mobile-unknown-final.png",
+    "saved-views-mobile-chinese-form.png",
+    "mobile-chinese-final.png"
+  ],
+  "requests": [
+    {
+      "scenario": "startup-navigation",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "startup-navigation",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "directory",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "directory",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "directory",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "directory",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=20&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "committed-save-load",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "committed-save-load",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "committed-save-load",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "committed-save-load",
+      "method": "POST",
+      "path": "/api/saved-views",
+      "search": "",
+      "body": {
+        "id": "fba0b021-84ef-4177-a1c8-c4cd704b79e7",
+        "name": "My committed view",
+        "definition": {
+          "schema_version": 1,
+          "query": {
+            "text": "",
+            "projects": [],
+            "states": [],
+            "jql": "",
+            "mode": "basic"
+          },
+          "table": {
+            "page_size": 20,
+            "sorts": [],
+            "columns": [
+              "id",
+              "title",
+              "projectName",
+              "status",
+              "updated",
+              "attempts"
+            ],
+            "column_order": [
+              "id",
+              "title",
+              "projectName",
+              "status",
+              "updated",
+              "attempts",
+              "created_at"
+            ]
+          }
+        },
+        "scope_type": "workspace",
+        "project_id": null
+      }
+    },
+    {
+      "scenario": "committed-save-load",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "committed-save-load",
+      "method": "GET",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000001",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "committed-save-load",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "committed-save-load",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "committed-save-load",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "replace-drafts",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "replace-drafts",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "replace-drafts",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "replace-drafts",
+      "method": "GET",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000001",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "replace-drafts",
+      "method": "GET",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000001",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "replace-drafts",
+      "method": "GET",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000002",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "stable-create-and-guard",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "stable-create-and-guard",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "stable-create-and-guard",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "stable-create-and-guard",
+      "method": "POST",
+      "path": "/api/saved-views",
+      "search": "",
+      "body": {
+        "id": "6f8d61c9-6f96-43e5-98ee-4501e6a389de",
+        "name": "Keep this name",
+        "definition": {
+          "schema_version": 1,
+          "query": {
+            "text": "",
+            "projects": [],
+            "states": [],
+            "jql": "",
+            "mode": "basic"
+          },
+          "table": {
+            "page_size": 20,
+            "sorts": [],
+            "columns": [
+              "id",
+              "title",
+              "projectName",
+              "status",
+              "updated",
+              "attempts"
+            ],
+            "column_order": [
+              "id",
+              "title",
+              "projectName",
+              "status",
+              "updated",
+              "attempts",
+              "created_at"
+            ]
+          }
+        },
+        "scope_type": "workspace",
+        "project_id": null
+      }
+    },
+    {
+      "scenario": "stable-create-and-guard",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "cas-conflict",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "cas-conflict",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "cas-conflict",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "cas-conflict",
+      "method": "GET",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000001",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "cas-conflict",
+      "method": "PUT",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000001",
+      "search": "",
+      "body": {
+        "name": "My conflicted name",
+        "definition": {
+          "schema_version": 1,
+          "query": {
+            "text": "local committed update",
+            "projects": [
+              "saved-alpha"
+            ],
+            "states": [
+              "active"
+            ],
+            "jql": "",
+            "mode": "basic"
+          },
+          "table": {
+            "page_size": 50,
+            "sorts": [
+              {
+                "sortKey": "title",
+                "direction": "descending"
+              }
+            ],
+            "columns": [
+              "title",
+              "projectName",
+              "status"
+            ],
+            "column_order": [
+              "title",
+              "projectName",
+              "status",
+              "id",
+              "updated",
+              "attempts",
+              "created_at"
+            ]
+          }
+        },
+        "expected_revision": 1
+      }
+    },
+    {
+      "scenario": "cas-conflict",
+      "method": "GET",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000001",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "cas-conflict",
+      "method": "PUT",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000001",
+      "search": "",
+      "body": {
+        "name": "Explicit revision four update",
+        "definition": {
+          "schema_version": 1,
+          "query": {
+            "text": "Alpha",
+            "projects": [
+              "saved-alpha"
+            ],
+            "states": [
+              "active"
+            ],
+            "jql": "",
+            "mode": "basic"
+          },
+          "table": {
+            "page_size": 50,
+            "sorts": [
+              {
+                "sortKey": "title",
+                "direction": "descending"
+              }
+            ],
+            "columns": [
+              "title",
+              "projectName",
+              "status"
+            ],
+            "column_order": [
+              "title",
+              "projectName",
+              "status",
+              "id",
+              "updated",
+              "attempts",
+              "created_at"
+            ]
+          }
+        },
+        "expected_revision": 4
+      }
+    },
+    {
+      "scenario": "cas-conflict",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "dirty-navigation",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "dirty-navigation",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "dirty-navigation",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "conflict-save-as",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "conflict-save-as",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "conflict-save-as",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "conflict-save-as",
+      "method": "GET",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000001",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "conflict-save-as",
+      "method": "PUT",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000001",
+      "search": "",
+      "body": {
+        "name": "My copy",
+        "definition": {
+          "schema_version": 1,
+          "query": {
+            "text": "Alpha",
+            "projects": [
+              "saved-alpha"
+            ],
+            "states": [
+              "active"
+            ],
+            "jql": "",
+            "mode": "basic"
+          },
+          "table": {
+            "page_size": 50,
+            "sorts": [
+              {
+                "sortKey": "title",
+                "direction": "descending"
+              }
+            ],
+            "columns": [
+              "title",
+              "projectName",
+              "status"
+            ],
+            "column_order": [
+              "title",
+              "projectName",
+              "status",
+              "id",
+              "updated",
+              "attempts",
+              "created_at"
+            ]
+          }
+        },
+        "expected_revision": 1
+      }
+    },
+    {
+      "scenario": "conflict-save-as",
+      "method": "POST",
+      "path": "/api/saved-views",
+      "search": "",
+      "body": {
+        "id": "45d29e13-35f5-4c21-b07a-69fee14a5dd9",
+        "name": "Separate copy",
+        "definition": {
+          "schema_version": 1,
+          "query": {
+            "text": "Alpha",
+            "projects": [
+              "saved-alpha"
+            ],
+            "states": [
+              "active"
+            ],
+            "jql": "",
+            "mode": "basic"
+          },
+          "table": {
+            "page_size": 50,
+            "sorts": [
+              {
+                "sortKey": "title",
+                "direction": "descending"
+              }
+            ],
+            "columns": [
+              "title",
+              "projectName",
+              "status"
+            ],
+            "column_order": [
+              "title",
+              "projectName",
+              "status",
+              "id",
+              "updated",
+              "attempts",
+              "created_at"
+            ]
+          }
+        },
+        "scope_type": "workspace",
+        "project_id": null
+      }
+    },
+    {
+      "scenario": "conflict-save-as",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "unknown-create",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "unknown-create",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "unknown-create",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "unknown-create",
+      "method": "POST",
+      "path": "/api/saved-views",
+      "search": "",
+      "body": {
+        "id": "21dc9714-a2f9-4e7d-b363-7818fe72e717",
+        "name": "Uncertain create",
+        "definition": {
+          "schema_version": 1,
+          "query": {
+            "text": "",
+            "projects": [],
+            "states": [],
+            "jql": "",
+            "mode": "basic"
+          },
+          "table": {
+            "page_size": 20,
+            "sorts": [],
+            "columns": [
+              "id",
+              "title",
+              "projectName",
+              "status",
+              "updated",
+              "attempts"
+            ],
+            "column_order": [
+              "id",
+              "title",
+              "projectName",
+              "status",
+              "updated",
+              "attempts",
+              "created_at"
+            ]
+          }
+        },
+        "scope_type": "workspace",
+        "project_id": null
+      }
+    },
+    {
+      "scenario": "unknown-create",
+      "method": "GET",
+      "path": "/api/saved-views/21dc9714-a2f9-4e7d-b363-7818fe72e717",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "unknown-create",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "delete-and-missing",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "delete-and-missing",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "delete-and-missing",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "delete-and-missing",
+      "method": "GET",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000001",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "delete-and-missing",
+      "method": "POST",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000001/delete",
+      "search": "",
+      "body": {
+        "expected_revision": 1
+      }
+    },
+    {
+      "scenario": "delete-and-missing",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "delete-and-missing",
+      "method": "GET",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000002",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "directory-errors",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "directory-errors",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "directory-errors",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "directory-errors",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "project-unavailable",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "project-unavailable",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "project-unavailable",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=project&offset=0&limit=20&project_id=saved-alpha",
+      "body": null
+    },
+    {
+      "scenario": "invalid-directory",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "invalid-directory",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "invalid-directory",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "forbidden-detail",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "forbidden-detail",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "forbidden-detail",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "forbidden-detail",
+      "method": "GET",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000001",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "detail-race-draft",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "detail-race-draft",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "detail-race-draft",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "detail-race-draft",
+      "method": "GET",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000001",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "detail-race-scope",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "detail-race-scope",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "detail-race-scope",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "detail-race-scope",
+      "method": "GET",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000001",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "authorization-priority",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "authorization-priority",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "authorization-priority",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "authorization-priority",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "non-json-unauthorized",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "non-json-unauthorized",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "non-json-unauthorized",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "non-json-unauthorized",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "mobile-dark",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "mobile-dark",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "mobile-dark",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "mobile-dark",
+      "method": "POST",
+      "path": "/api/saved-views",
+      "search": "",
+      "body": {
+        "id": "a0808584-c6ff-40e9-b705-2ce2daa608e9",
+        "name": "移动端研发视图",
+        "definition": {
+          "schema_version": 1,
+          "query": {
+            "text": "",
+            "projects": [],
+            "states": [],
+            "jql": "",
+            "mode": "basic"
+          },
+          "table": {
+            "page_size": 20,
+            "sorts": [],
+            "columns": [
+              "id",
+              "title",
+              "projectName",
+              "status",
+              "updated",
+              "attempts"
+            ],
+            "column_order": [
+              "id",
+              "title",
+              "projectName",
+              "status",
+              "updated",
+              "attempts",
+              "created_at"
+            ]
+          }
+        },
+        "scope_type": "workspace",
+        "project_id": null
+      }
+    },
+    {
+      "scenario": "mobile-dark",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "mobile-unknown",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "mobile-unknown",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "mobile-unknown",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "mobile-unknown",
+      "method": "POST",
+      "path": "/api/saved-views",
+      "search": "",
+      "body": {
+        "id": "4fe5b023-bfaa-4a3a-8f24-c45d055ecdf6",
+        "name": "Mobile unresolved view",
+        "definition": {
+          "schema_version": 1,
+          "query": {
+            "text": "",
+            "projects": [],
+            "states": [],
+            "jql": "",
+            "mode": "basic"
+          },
+          "table": {
+            "page_size": 20,
+            "sorts": [],
+            "columns": [
+              "id",
+              "title",
+              "projectName",
+              "status",
+              "updated",
+              "attempts"
+            ],
+            "column_order": [
+              "id",
+              "title",
+              "projectName",
+              "status",
+              "updated",
+              "attempts",
+              "created_at"
+            ]
+          }
+        },
+        "scope_type": "workspace",
+        "project_id": null
+      }
+    },
+    {
+      "scenario": "mobile-unknown",
+      "method": "GET",
+      "path": "/api/saved-views/4fe5b023-bfaa-4a3a-8f24-c45d055ecdf6",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "mobile-unknown",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "mobile-chinese",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "mobile-chinese",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": "",
+      "body": null
+    },
+    {
+      "scenario": "mobile-chinese",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    },
+    {
+      "scenario": "mobile-chinese",
+      "method": "POST",
+      "path": "/api/saved-views",
+      "search": "",
+      "body": {
+        "id": "09f4d676-6879-4a4e-8bd5-bb0411755ea6",
+        "name": "多端协作研究视图",
+        "definition": {
+          "schema_version": 1,
+          "query": {
+            "text": "",
+            "projects": [],
+            "states": [],
+            "jql": "",
+            "mode": "basic"
+          },
+          "table": {
+            "page_size": 20,
+            "sorts": [],
+            "columns": [
+              "id",
+              "title",
+              "projectName",
+              "status",
+              "updated",
+              "attempts"
+            ],
+            "column_order": [
+              "id",
+              "title",
+              "projectName",
+              "status",
+              "updated",
+              "attempts",
+              "created_at"
+            ]
+          }
+        },
+        "scope_type": "workspace",
+        "project_id": null
+      }
+    },
+    {
+      "scenario": "mobile-chinese",
+      "method": "GET",
+      "path": "/api/saved-views",
+      "search": "?scope_type=workspace&offset=0&limit=20",
+      "body": null
+    }
+  ],
+  "errors": [],
+  "failures": [],
+  "unexpectedApi": [],
+  "blockedExternal": [],
+  "observations": [
+    {
+      "scenario": "stable-create-and-guard",
+      "type": "gate-released",
+      "elapsedMs": 62,
+      "held": true
+    },
+    {
+      "scenario": "unknown-create",
+      "type": "request-failed",
+      "path": "/api/saved-views",
+      "failure": {
+        "errorText": "net::ERR_FAILED"
+      }
+    },
+    {
+      "scenario": "detail-race-scope",
+      "type": "request-failed",
+      "path": "/api/saved-views/00000000-0000-4000-8000-000000000001",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "scenario": "authorization-priority",
+      "type": "request-failed",
+      "path": "/api/saved-views",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "scenario": "non-json-unauthorized",
+      "type": "request-failed",
+      "path": "/api/saved-views",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "scenario": "mobile-dark",
+      "geometry": {
+        "width": 320,
+        "scroll": 320
+      }
+    },
+    {
+      "scenario": "mobile-dark",
+      "geometry": {
+        "width": 320,
+        "scroll": 320
+      }
+    },
+    {
+      "scenario": "mobile-dark",
+      "geometry": {
+        "width": 320,
+        "scroll": 320
+      }
+    },
+    {
+      "scenario": "mobile-unknown",
+      "type": "request-failed",
+      "path": "/api/saved-views",
+      "failure": {
+        "errorText": "net::ERR_FAILED"
+      }
+    },
+    {
+      "scenario": "mobile-unknown",
+      "geometry": {
+        "width": 320,
+        "scroll": 320
+      }
+    },
+    {
+      "scenario": "mobile-unknown",
+      "geometry": {
+        "width": 320,
+        "scroll": 320
+      }
+    },
+    {
+      "scenario": "mobile-unknown",
+      "type": "mobile-feedback-layout",
+      "titleHeight": 30.796875,
+      "feedbackTop": 136,
+      "headerBottom": 136,
+      "pageSizeWidth": 136,
+      "pageSizeBottom": 698,
+      "nextTop": 702
+    },
+    {
+      "scenario": "mobile-chinese",
+      "geometry": {
+        "width": 390,
+        "scroll": 390
+      }
+    },
+    {
+      "scenario": "mobile-chinese",
+      "geometry": {
+        "width": 390,
+        "scroll": 390
+      }
+    }
+  ],
+  "browser": {
+    "executable": "/usr/bin/google-chrome",
+    "version": "154.0.8037.57"
+  }
+}

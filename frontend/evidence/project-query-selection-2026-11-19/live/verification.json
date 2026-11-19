@@ -1,0 +1,21 @@
+{
+  "fixture": true,
+  "checks": [
+    "Actual selected-project hydration admits project000 and two server task rows",
+    "Actual20-item pages preserve off-page selection while changing only the Basic draft",
+    "Actual directory search keeps all candidate projects and main Search queries four matching tasks",
+    "Actual mobile nested Astryx picker restores focus and commits only through outer Filters Search",
+    "Project/task/Run/model fixture rows remain unchanged; only public fixture login POST occurred"
+  ],
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "real-desktop-candidate.png",
+    "real-mobile-committed.png"
+  ]
+}

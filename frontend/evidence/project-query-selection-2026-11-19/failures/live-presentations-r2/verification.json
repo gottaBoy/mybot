@@ -1,0 +1,23 @@
+{
+  "fixture": true,
+  "checks": [
+    "Actual selected-project hydration admits project000 and two server task rows",
+    "Actual20-item pages preserve off-page selection while changing only the Basic draft",
+    "Actual directory search keeps all candidate projects and main Search queries four matching tasks"
+  ],
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "real-desktop-candidate.png"
+  ],
+  "failure": {
+    "message": "Expected values to be strictly equal:\n\n2 !== 1\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n2 !== 1\n\n    at file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-project-query-selection-live.mjs:239:10",
+    "tree": "- link \"Skip to content\":\n  - /url: \"#wb-main\"\n- banner:\n  - button \"Open navigation\":\n    - status\n  - strong: Workbench\n  - button \"Quick find\":\n    - status\n  - button \"切换为中文\":\n    - status\n  - button \"Dark mode\":\n    - status\n  - button \"Sign out\":\n    - status\n- main:\n  - region \"Task list workspace\":\n    - heading \"Tasks\" [level=1]\n    - text: Reference project 044\n    - status:\n      - strong: \"1\"\n      - text: tasks\n    - button \"Views\":\n      - status\n    - button \"Filters\":\n      - status\n    - region \"List search\":\n      - text: Search\n      - searchbox \"Search\"\n      - text: Query mode\n      - combobox \"Query mode\": Basic\n      - button \"Search\":\n        - status\n      - button \"Clear filters\":\n        - status\n    - region \"Workbench results\":\n      - toolbar \"Result views and table tools\":\n        - radiogroup \"Work view\":\n          - radio \"Tasks\" [checked]\n          - radio \"Board\"\n          - radio \"Runs\"\n        - button \"Columns\":\n          - status\n      - article:\n        - button \"Reference task 044-0\":\n          - text: Reference task 044-0\n          - status\n        - text: Failed Reference project 044\n        - code: referen\n        - button \"Inspect task\":\n          - status\n      - text: 1-1 / 1 Tasks per page\n      - combobox \"Tasks per page\": 20 / page\n      - button \"Previous page\" [disabled]:\n        - status\n      - status: 1 / 1\n      - button \"Next page\" [disabled]:\n        - status"
+  }
+}

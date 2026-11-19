@@ -1,6 +1,6 @@
 # 全部待办索引
 
-更新：2026-11-18（Asia/Singapore）。本页是集中阅读入口，不替代
+更新：2026-11-19（Asia/Singapore）。本页是集中阅读入口，不替代
 [原工作项台账](WORK_ITEMS.md) 或 [产品 UI 审计](PRODUCT_UI_AUDIT.md)。
 
 **最新研究入口：** 用户提供新的 Issues 截图，要求深度学习后继续。
@@ -18,6 +18,27 @@ UI 的 WUI 编号是交叉整改视图，执行包是实施组织方式，均可
 
 ## 当前执行包
 
+### 2026-11-19 主查询项目多选与引用准入
+
+IZ-07.3c1a完成所列消费者；复用ADR-0015接口，不额外创建后端接口。
+
+| 工作 / 分工 | 状态 | 验收及边界 |
+| --- | --- | --- |
+| picker Agent：Astryx分页项目多选 | 本地完成 | 21组件用例；20项真页、独立Search、跨页候选、缺失项移除及100上限 |
+| 准入Agent：引用helper/hook/SavedViews | 本地完成 | 25新增；enabled取消停读、fresh GET/复制IDs、缺失/失败分开及加载校验阶段锁 |
+| root：工作台准入/标题/最终应用 | 本地完成 | 无Bootstrap目录回退，首次未知隐藏结果，草稿baseline检查，URL获准才同步应用 |
+| 浏览器Agent + root：隔离验收 | 完成所列范围 | 1245前端/build；picker44/SavedViews32/综合58/实际API5，96PNG无pageerror |
+| IZ-07.3c1b完整Project消费者 | 待办 | 项目路由、项目列表、创建任务表单及默认项目选择；保持真实完整数据/失败边界 |
+| IZ-07.3c2其他视图 | 待办 | Board/Run历史/Inbox/总览/树/文档各立有界投影，不能只改项目引用就删Bootstrap |
+| IZ-07.3c3/d与07.4 | 待办 | Bootstrap协商减量、失效合同、实际传输/响应和规模验收 |
+
+合同[ADR-0016](decisions/ADR-0016-project-query-selection.md)；
+[最终证据与失败记录](../frontend/evidence/project-query-selection-2026-11-19/README.md)。
+保留原119/9/110；未改后端，710Python属于11月18日证据，未本轮复跑。
+原4180未加载新能力、5173已恢复继续legacy；无真实Provider/凭证/正式DB写入/部署。
+本轮不关闭整个07.3c1；目录页/搜索可随面板重挂重置，Basic候选按既有查询生命周期保存。
+提交/push以Git回执为准，临时4187/5176验收服务已停止。
+
 ### 2026-11-18 项目引用目录与逐项目计数
 
 IZ-07.3b2所列消费者已本地验收；不关闭整体IZ-07.3或原119项台账。
@@ -28,7 +49,7 @@ IZ-07.3b2所列消费者已本地验收；不关闭整体IZ-07.3或原119项台�
 | client Agent：严格请求/响应 | 本地完成 | 128新增；分页算术、请求快照绑定、canonical IDs、missing分区及重叠一致性 |
 | UI Agent + root：共享项目目录 | 本地完成 | 17新增；侧栏/范围栏复用Astryx；独立搜索/真实分页/跨页选中项/固定项目/显式错误重试 |
 | root：整合与隔离浏览器 | 完成所列范围 | 最终1199前端/710Python/build；目录37/真实API8/综合58/计数15，82PNG、无pageerror |
-| IZ-07.3c1项目完整数据消费者 | 待办 | 主查询项目选择器、SavedView引用校验、项目路由/列表/表单；不能把截断refs当完整Project |
+| IZ-07.3c1项目完整数据消费者 | 部分 | 上方c1a已完成主查询/SavedView引用；c1b路由/列表/表单仍待办，不把refs当完整Project |
 | IZ-07.3c2其他视图投影 | 待办 | Board/Run history/Inbox/总览/树/文档等逐一立有界合同，保留各自分母/详情/错误边界 |
 | IZ-07.3c3/d精简Bootstrap与测量 | 待办 | 明确协商capability、旧入口兼容、失效图及传输/响应测量；不靠删除字段宣称提速 |
 

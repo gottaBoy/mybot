@@ -1,6 +1,29 @@
 # 下次从这里继续
 
-更新日期：2026-11-18（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
+更新日期：2026-11-19（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
+
+**最新完成（2026-11-19，IZ-07.3c1a项目条件与保存视图引用准入）：**
+起始2a3bbdc已push且工作树干净。先读
+[ADR-0016](docs/decisions/ADR-0016-project-query-selection.md)和
+`frontend/evidence/project-query-selection-2026-11-19/README.md`。
+沿用户多Agent授权：picker/准入及SavedViews/浏览器三条分工，root整合、回归和记录。
+复用project_references接口，无新后端；主查询项目选择器用Astryx Button/Dialog/Checkbox
+组成真正20项分页多选，独立目录搜索，跨页保留候选、100上限、缺失项可移除。
+候选/目录/committed引用分别读取；主Search才提交完整条件，cap缺失保留原路径，
+声明后失败不回退Bootstrap。committed引用首次未确认隐藏结果，missing和读取失败分开；
+标题也用远程引用，same-key刷新保留已验值，不因poll打断任务查询。
+SavedViews可选onValidateApply先fresh GET确认项目，再检查草稿/URL/列baseline；
+期间busy锁阻止重复加载和导航，失败不重放待导航；最终先确认URL获准才改列/草稿并报成功。
+初版锁误覆盖legacy detail，已限到新增引用校验阶段；旧项目切换取消/迟到保护32项回归通过。
+最终1245前端（45文件）/typecheck/build通过；生产picker44/SavedViews32/综合58/实际API5，
+96最终PNG、无pageerror。保留导航回归、请求日志时序、字段播报重复和双呈现计数失败。
+实际fixture.3eAI8M中45项目45任务88终态Run/无模型，原业务数组前后不变，仅公开fixture登录POST。
+综合使用全新fixture.TnytgE及FakeProvider/MockTransport；本轮无真实Provider或费用。
+未改Python，710是11月18日前批证据、此轮未复跑；现有Starlette/httpx/大包警告保留。
+原4180仍PID2064113，新cap未启用；已恢复5173入口并核验200，继续legacy。临时4187/5176已停。
+下一项IZ-07.3c1b完整Project路由/列表/创建表单，再其他视图/Bootstrap协商减量和失效/传输测量。
+不拿最小refs补空字段冒充完整Project，不关闭07.3/07.4或更改119/9/110；无凭证、
+正式DB写入、部署、兄弟项目修改或依赖升级。独立commit/push以Git回执为准。
 
 **最新完成（2026-11-18，IZ-07.3b2项目引用目录本地验收）：**
 起始`b83e5d9`已在origin/main且工作树干净，没有重复开发b1。先读

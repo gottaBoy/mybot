@@ -752,3 +752,24 @@ git -C /tmp/mybot-upstream-astryx rev-parse HEAD
   源码观察、首次失败、修复与最终runtime记录见
   `frontend/evidence/project-references-2026-11-18/README.md`。
   不声称新上游能力、本地完整Project迁移、Bootstrap减量、主服务启用或用户视觉接受。
+
+## 32. Astryx分页项目条件与嵌套弹层适配（2026-11-19）
+
+- 身份：已安装`meta/astryx`Core0.7.13，沿既有研究commit
+  `5770e5b197cf80d5a824667c23046887cc8fa0f5`；未fetch/升级，npm与Git一致性不重新外推。
+  原MIT/NOTICE保持，不复制组件源码或下载新依赖。
+- R：复核安装包`dist/MultiSelector/MultiSelector.d.ts`的options/hasSearch/presentation/
+  renderTrigger和onOpenChange，无远程onSearch回调；读取
+  `dist/CheckboxInput/CheckboxInput.d.ts`的label/value/onChange/isDisabled/width；
+  本地`components/ui/index.tsx`的AppDialog保留Astryx form/required目的、close、最大高度。
+- E：给本地MultiSelector一页选项会把目录截断和已选不存在混淆，不能只把API结果替换options。
+  公开Dialog/TextInput/Checkbox足以组成有界领域picker，无需重建通用弹层或换Radix组件库。
+  Astryx modal会播报字段错误，测试全局text可能同时命中field status和live-region。
+- A：ProjectQueryPicker沿项目wrapper组合，open目录读取与selected hydration分开；
+  父Basic候选不随目录请求变更，Search才commit；Scope/name和SavedView引用用严格refs，
+  validator必须绑定当前draft/table baseline，保留legacy detail的可取消导航。
+  旧字段测试改验input aria-describedby，保留原错误内容和无写入断言。
+- T：1245前端/build；生产picker44/SavedViews32/综合58/真实API5，96最终PNG无pageerror。
+  三style双mode、长名、IME及手机nested Dialog/Escape焦点实际通过；失败另存。
+  合同ADR-0016，证据`frontend/evidence/project-query-selection-2026-11-19/README.md`。
+  不证明远程MultiSelector上游能力、完整Project/Bootstrap迁移、主环境启用或真机认证。

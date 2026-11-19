@@ -74,6 +74,12 @@ import { SavedViewsMenu } from './SavedViewsMenu'
 import { TaskInspector } from './TaskInspector'
 import { useWorkspaceCounts } from './useWorkspaceCounts'
 import { ProjectReferenceDirectory } from './ProjectReferenceDirectory'
+import { ProjectQueryPicker } from './ProjectQueryPicker'
+import { useProjectReferences } from './useProjectReferences'
+import {
+  ProjectSelectionChangedError,
+  validateProjectSelection,
+} from './project-selection'
 import {
   captureSavedViewDefinition,
   savedViewLocationPatch,
@@ -119,7 +125,7 @@ type Props = {
   view: 'list' | 'table' | 'board'
   onViewChange: (value: 'list' | 'table' | 'board') => void
   location: ListLocation
-  onLocationChange: (patch: Partial<ListLocation>) => void
+  onLocationChange: (patch: Partial<ListLocation>) => boolean | void
   queryDraftResetKey: number
   jqlDraft: string
   onJqlDraftChange: (value: string) => void
@@ -221,15 +227,41 @@ export function FocusedWorkbench(props: Props) {
   const localTasks = filterTaskItems(data, query, 'all', scope).filter((item) =>
     matchesTaskConditions(item, committedConditions, scope),
   )
+  const projectReferences = useProjectReferences({
+    data,
+    refreshRevision,
+    request: {
+      query: '',
+      page: 1,
+      pageSize: 20,
+      selectedIds: committedConditions.projects,
+    },
+    enabled:
+      !contextProject &&
+      !committedSelection.error &&
+      committedConditions.projects.length > 0,
+  })
+  const needsProjectReferences =
+    projectReferences.remote &&
+    !contextProject &&
+    !committedSelection.error &&
+    committedConditions.projects.length > 0
+  const projectReferencesBusy =
+    needsProjectReferences && projectReferences.busy && !projectReferences.value
+  const projectReferencesError =
+    needsProjectReferences && Boolean(projectReferences.error)
   const unavailableProject =
     !contextProject &&
-    committedConditions.projects.some(
-      (id) => !data.projects.some((project) => project.id === id),
-    )
+    (projectReferences.remote
+      ? Boolean(projectReferences.value?.missing_ids.length)
+      : committedConditions.projects.some(
+          (id) => !data.projects.some((project) => project.id === id),
+        ))
   const queryPolicy = supportedListQuery(location)
   const localProblem =
     queryPolicy.error ??
     committedSelection.error ??
+    (projectReferencesError ? 'project_reference_error' : undefined) ??
     (unavailableProject ? 'condition_value_unavailable' : undefined) ??
     (view === 'board' && location.jql ? 'jql_unavailable' : undefined)
   const [serverPage, setServerPage] = useState<{
@@ -259,9 +291,15 @@ export function FocusedWorkbench(props: Props) {
     page,
     pageSize,
     localProblem,
+    projectReferencesBusy,
   ])
   useEffect(() => {
-    if (!taskQueryEnabled || view !== 'list' || localProblem) {
+    if (
+      !taskQueryEnabled ||
+      view !== 'list' ||
+      localProblem ||
+      projectReferencesBusy
+    ) {
       setServerPage({ kind: 'idle' })
       return
     }
@@ -347,13 +385,21 @@ export function FocusedWorkbench(props: Props) {
             '服务端查询未通过验证，未显示结果。',
             'The server query could not be validated. No results were shown.',
           )
-  const remoteReady = view === 'list' && Boolean(currentServerPage?.value)
-  const remoteActive = taskQueryEnabled && view === 'list' && !localProblem
+  const remoteReady =
+    view === 'list' &&
+    !projectReferencesBusy &&
+    Boolean(currentServerPage?.value)
+  const remoteActive =
+    taskQueryEnabled &&
+    view === 'list' &&
+    !localProblem &&
+    !projectReferencesBusy
   const remoteBusy =
-    remoteActive &&
-    (!currentServerPage ||
-      currentServerPage.kind === 'loading' ||
-      currentServerPage.kind === 'idle')
+    projectReferencesBusy ||
+    (remoteActive &&
+      (!currentServerPage ||
+        currentServerPage.kind === 'loading' ||
+        currentServerPage.kind === 'idle'))
   const tasks =
     remoteReady || !remoteActive
       ? remoteReady
@@ -374,7 +420,10 @@ export function FocusedWorkbench(props: Props) {
       scope,
     ),
   )
-  const active = tasks.find((item) => item.id === selected)
+  const active =
+    !problem && !projectReferencesBusy
+      ? tasks.find((item) => item.id === selected)
+      : undefined
   const scopeVisible =
     scopeRailOpen && dockedScope && (!active || !wide || simultaneousPanels)
   const collapsedScopeVisible = dockedScope && !scopeVisible && !active
@@ -387,7 +436,11 @@ export function FocusedWorkbench(props: Props) {
     selected,
     onSelectedChange: setSelected,
     resultIds: tasks.map((item) => item.id),
-    ready: view === 'list' && !problem && (!remoteActive || remoteReady),
+    ready:
+      view === 'list' &&
+      !problem &&
+      !projectReferencesBusy &&
+      (!remoteActive || remoteReady),
     scopeKey: JSON.stringify([data.workspace, contextProject?.id ?? 'work']),
   })
   useEffect(() => {
@@ -835,36 +888,52 @@ export function FocusedWorkbench(props: Props) {
       />
     </div>
   )
-  const fieldDirectory = buildQueryFieldDirectory(data, t)
+  const fieldDirectory = buildQueryFieldDirectory(
+    data.capabilities.project_references === true ? { projects: [] } : data,
+    t,
+  )
   const projectField = fieldDirectory.find((field) => field.id === 'projects')!
   const stateField = fieldDirectory.find((field) => field.id === 'states')!
   const conditionControls = (inline: boolean) => (
     <>
       {!contextProject && (
         <div className={inline ? 'wf-inline-filter' : undefined}>
-          <AppMultiSelect
-            label={t('项目', 'Project')}
-            hiddenLabel={inline}
-            size={controlSize}
-            value={conditionDraft.projects}
-            onChange={(projects) =>
-              setConditionDraft((current) => ({ ...current, projects }))
-            }
-            options={[
-              ...projectField.options,
-              ...conditionDraft.projects
-                .filter(
-                  (id) =>
-                    !projectField.options.some((item) => item.value === id),
-                )
-                .map((id) => ({
-                  value: id,
-                  label: `${t('不可用项目', 'Unavailable project')} · ${id}`,
-                })),
-            ]}
-            hasSearch
-            searchPlaceholder={t('查找项目', 'Find projects')}
-          />
+          {data.capabilities.project_references === true ? (
+            <ProjectQueryPicker
+              data={data}
+              refreshRevision={refreshRevision}
+              t={t}
+              hiddenLabel={inline}
+              value={conditionDraft.projects}
+              onChange={(projects) =>
+                setConditionDraft((current) => ({ ...current, projects }))
+              }
+            />
+          ) : (
+            <AppMultiSelect
+              label={t('项目', 'Project')}
+              hiddenLabel={inline}
+              size={controlSize}
+              value={conditionDraft.projects}
+              onChange={(projects) =>
+                setConditionDraft((current) => ({ ...current, projects }))
+              }
+              options={[
+                ...projectField.options,
+                ...conditionDraft.projects
+                  .filter(
+                    (id) =>
+                      !projectField.options.some((item) => item.value === id),
+                  )
+                  .map((id) => ({
+                    value: id,
+                    label: `${t('不可用项目', 'Unavailable project')} · ${id}`,
+                  })),
+              ]}
+              hasSearch
+              searchPlaceholder={t('查找项目', 'Find projects')}
+            />
+          )}
         </div>
       )}
       <div className={inline ? 'wf-inline-filter' : undefined}>
@@ -942,13 +1011,27 @@ export function FocusedWorkbench(props: Props) {
   const savedViewScope: SavedViewScope = contextProject
     ? { scope_type: 'project', project_id: contextProject.id }
     : { scope_type: 'workspace', project_id: null }
-  const currentSavedDefinition = problem
-    ? null
-    : captureSavedViewDefinition(
-        location,
-        { view, columns: visibleColumns, column_order: columnOrder },
-        contextProject?.id,
-      )
+  const currentSavedDefinition =
+    problem || projectReferencesBusy
+      ? null
+      : captureSavedViewDefinition(
+          location,
+          { view, columns: visibleColumns, column_order: columnOrder },
+          contextProject?.id,
+        )
+  const savedApplyBaseline = JSON.stringify([
+    data.workspace,
+    contextProject?.id,
+    location,
+    queryDraft,
+    conditionDraft,
+    jqlDraft,
+    visibleColumns,
+    columnOrder,
+    data.capabilities.project_references,
+  ])
+  const savedApplyBaselineRef = useRef(savedApplyBaseline)
+  savedApplyBaselineRef.current = savedApplyBaseline
   const savedViewsControl = (
     <SavedViewsMenu
       scope={savedViewScope}
@@ -957,19 +1040,35 @@ export function FocusedWorkbench(props: Props) {
       t={t}
       iconOnly={compactList}
       feedbackContainer={viewFeedbackContainer}
+      onValidateApply={
+        data.capabilities.project_references === true
+          ? async (record, signal) => {
+              const baseline = savedApplyBaselineRef.current
+              await validateProjectSelection(
+                record.definition.query.projects,
+                signal,
+              )
+              if (signal.aborted || baseline !== savedApplyBaselineRef.current)
+                throw new ProjectSelectionChangedError()
+            }
+          : undefined
+      }
       onApply={(record) => {
         if (
           record.scope_type !== savedViewScope.scope_type ||
           record.project_id !== savedViewScope.project_id ||
-          record.definition.query.projects.some(
-            (id) => !data.projects.some((project) => project.id === id),
-          )
+          (data.capabilities.project_references !== true &&
+            record.definition.query.projects.some(
+              (id) => !data.projects.some((project) => project.id === id),
+            ))
         )
           throw new Error('saved_view_scope_unavailable')
         const patch = savedViewLocationPatch(
           record.definition,
           contextProject?.id,
         )
+        if (onLocationChange(patch) === false)
+          throw new Error('saved_view_navigation_blocked')
         setVisibleColumns([...record.definition.table.columns])
         setColumnOrder([...record.definition.table.column_order])
         setQueryDraft(patch.query ?? '')
@@ -978,7 +1077,6 @@ export function FocusedWorkbench(props: Props) {
           states: [...record.definition.query.states],
         })
         onJqlDraftChange(record.definition.query.jql)
-        onLocationChange(patch)
       }}
     />
   )
@@ -1016,7 +1114,13 @@ export function FocusedWorkbench(props: Props) {
                   : t('任务', 'Tasks'))}
             </h1>
             <div className="wf-heading-meta">
-              <span className="wf-heading-scope">
+              <span
+                className="wf-heading-scope"
+                aria-busy={
+                  (needsProjectReferences && projectReferences.busy) ||
+                  undefined
+                }
+              >
                 {contextProject
                   ? view === 'table'
                     ? t('运行记录', 'Run history')
@@ -1025,10 +1129,17 @@ export function FocusedWorkbench(props: Props) {
                     ? t('全部项目', 'All projects')
                     : committedConditions.projects.length > 1
                       ? `${committedConditions.projects.length} ${t('个项目', 'projects')}`
-                      : data.projects.find(
-                          (project) =>
-                            project.id === committedConditions.projects[0],
-                        )?.name}
+                      : projectReferences.remote
+                        ? (projectReferences.value?.selected.find(
+                            (item) =>
+                              item.project.id ===
+                              committedConditions.projects[0],
+                          )?.project.name ??
+                          t('项目引用待确认', 'Project reference unconfirmed'))
+                        : data.projects.find(
+                            (project) =>
+                              project.id === committedConditions.projects[0],
+                          )?.name}
               </span>
               <span className="wf-result-count" role="status">
                 <strong>
@@ -1125,7 +1236,9 @@ export function FocusedWorkbench(props: Props) {
                 hasClear
               />
             </div>
-            {location.mode === 'basic' && conditionControls(true)}
+            {!compactList &&
+              location.mode === 'basic' &&
+              conditionControls(true)}
             <div className="wf-query-mode">
               {compactList ? (
                 <AppSelect
@@ -1249,25 +1362,38 @@ export function FocusedWorkbench(props: Props) {
                             '排序定义无效，未执行查询。',
                             'Invalid sort definition. No query was applied.',
                           )
-                        : problem === 'task_query_error'
-                          ? serverQueryErrorText
-                          : t(
-                              '仅支持 created/summary ORDER BY 排序，其他 JQL 条件尚未实现。',
-                              'Only created/summary ordering is supported.',
-                            )}
+                        : problem === 'project_reference_error'
+                          ? t(
+                              '项目引用读取失败，未显示结果。请重试。',
+                              'Project references could not be read. No results were shown. Retry to continue.',
+                            )
+                          : problem === 'task_query_error'
+                            ? serverQueryErrorText
+                            : t(
+                                '仅支持 created/summary ORDER BY 排序，其他 JQL 条件尚未实现。',
+                                'Only created/summary ordering is supported.',
+                              )}
             </span>
             <AppButton
               label={
-                serverQueryProblem
-                  ? t('重试查询', 'Retry query')
-                  : t('清除查询', 'Clear query')
+                projectReferencesError
+                  ? t('重试项目引用', 'Retry project references')
+                  : serverQueryProblem
+                    ? t('重试查询', 'Retry query')
+                    : t('清除查询', 'Clear query')
               }
-              icon={serverQueryProblem ? <RefreshCw size={15} /> : undefined}
+              icon={
+                serverQueryProblem || projectReferencesError ? (
+                  <RefreshCw size={15} />
+                ) : undefined
+              }
               size="sm"
               onClick={
-                serverQueryProblem
-                  ? () => setQueryRefresh((value) => value + 1)
-                  : clear
+                projectReferencesError
+                  ? projectReferences.retry
+                  : serverQueryProblem
+                    ? () => setQueryRefresh((value) => value + 1)
+                    : clear
               }
             />
           </div>
@@ -1285,7 +1411,13 @@ export function FocusedWorkbench(props: Props) {
               {resultTools}
               {remoteBusy && !remoteReady ? (
                 <div className="wf-empty">
-                  <AppLoading label={t('正在读取任务', 'Loading tasks')} />
+                  <AppLoading
+                    label={
+                      projectReferencesBusy
+                        ? t('正在确认项目引用', 'Validating project references')
+                        : t('正在读取任务', 'Loading tasks')
+                    }
+                  />
                 </div>
               ) : view === 'list' ? (
                 tasks.length ? (

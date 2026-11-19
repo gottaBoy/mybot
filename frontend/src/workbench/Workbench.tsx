@@ -260,7 +260,7 @@ export function Workbench() {
       patch,
       route.page === 'project' ? route.id : undefined,
     )
-    pushWorkbenchNavigation(listLocationHref(location.href, scopedPatch))
+    return pushWorkbenchNavigation(listLocationHref(location.href, scopedPatch))
   }
   useEffect(() => {
     void refresh()

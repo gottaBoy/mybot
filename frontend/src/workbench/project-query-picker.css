@@ -1,0 +1,117 @@
+.wb-project-picker-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.wb-project-picker-field-label {
+  color: var(--wb-fg);
+  font-size: 13px;
+}
+.wb-project-picker-trigger {
+  justify-content: space-between;
+  min-width: 0;
+}
+.wb-project-picker-summary {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.wb-project-picker {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.wb-project-picker-search {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 6px;
+}
+.wb-project-picker-selected {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--wb-border);
+}
+.wb-project-picker-section-label,
+.wb-project-picker-pagination,
+.wb-project-picker-feedback {
+  color: var(--wb-muted);
+  font-size: 12px;
+}
+.wb-project-picker-feedback,
+.wb-project-picker-error {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.wb-project-picker-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--wb-error);
+  font-size: 13px;
+}
+.wb-project-picker-error > span {
+  flex: 1;
+  min-width: 0;
+}
+.wb-project-picker-selected-items,
+.wb-project-picker-options {
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  overscroll-behavior: contain;
+}
+.wb-project-picker-selected-items {
+  max-height: 124px;
+}
+.wb-project-picker-options {
+  max-height: min(42dvh, 360px);
+}
+.wb-project-picker-selected-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 2px 0;
+}
+.wb-project-picker-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+.wb-project-picker-option {
+  min-width: 0;
+  padding: 4px 0;
+  overflow-wrap: anywhere;
+}
+.wb-project-picker-pagination,
+.wb-project-picker-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+.wb-project-picker-page-actions {
+  display: flex;
+  gap: 3px;
+}
+.wb-project-picker-loading {
+  max-height: 180px;
+  overflow: hidden;
+}
+.wb-project-picker-loading .wb-loading {
+  min-height: 150px;
+  padding: 4px 0;
+}
+.wb-project-picker-actions {
+  flex-wrap: wrap;
+  padding-top: 8px;
+  border-top: 1px solid var(--wb-border);
+}

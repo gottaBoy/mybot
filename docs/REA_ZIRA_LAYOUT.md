@@ -112,3 +112,17 @@ mybot的本地适配是ADR-0015：全局项目侧栏/任务范围共用Astryx项
 `frontend/evidence/project-references-2026-11-18/README.md`。
 原4180未启用新cap；完整Project消费者和Bootstrap传输仍待迁移，面板重挂可重置本栏草稿，
 不把运行验收扩大成用户视觉接受、全部Zira功能或全局性能结论。
+
+## 主查询候选与项目目录分工适配（2026-11-19）
+
+沿此前Zira HEAD `1ce0d0510cb590f3a79ca498f7239ff0852ed0d7`及
+IssueNavigatorPage、filter-sidebar、query-keys和数据/交互专题的固定源码观察：
+目录搜索和结果查询分工、草稿独立、引用错误不等同missing。本轮只复用已有研究，
+未重新读取或运行Zira，用户截图仍不是该源码版本的功能证明。
+
+mybot ADR-0016本地实现主查询项目分页多选和committed引用确认；Search提交Basic候选，
+目录Search/翻页/Done不改任务URL。用项目自有Astryx领域组件，不复制Zira源码/样式。
+SavedView加载先fresh项目校验，绑定draft/table baseline，异步阶段不偷改已应用内容。
+手机nested Filters/Dialog与焦点已验；保留legacy scope导航取消、失败/401及未知写入合同。
+1245前端/build与生产44/32/58/5项、96PNG见本轮证据。
+完整Project消费者/Bootstrap减量与主服务启用仍待后续，不把该局部闭环当全站接受。

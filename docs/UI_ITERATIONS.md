@@ -554,3 +554,23 @@ Quick find原Astryx弹层展示最小域引用和返回数/总数，截断提示
 证据`frontend/evidence/project-references-2026-11-18/README.md`及ADR-0015。
 原4180未更新，5173继续legacy；Bootstrap与完整Project消费者仍全量。
 不声明全局传输减少、真机认证、用户视觉接受或Agent执行能力提升。
+
+## 30. 主查询项目选择与加载前校验
+
+日期：2026-11-19。IZ-07.3c1a保持原单行查询/顶栏查找/结果工具位置，项目条件改用
+有界项目多选弹窗；既有MultiSelector无远程搜索回调，因此保留状态MultiSelector，
+项目由Astryx Button/Dialog/TextInput/Checkbox组成领域组件，不换设计系统。
+
+弹窗20项真页、独立目录Search、跨页候选；Done仅关弹窗保留Basic草稿，主Search才提交。
+确认missing项可以移除，未知/读取失败不当missing；首次committed引用未确认时隐藏结果，
+错误提供显式重试，标题也用严格服务端refs。手机Filters中的嵌套Dialog与Escape焦点已验。
+目录页/搜索可重挂重置，不能据此丢掉父Basic候选；mode切换保留候选。
+
+保存视图先read校验项目，读期间不改已应用内容；baseline变更、403或导航未获准不得报成功。
+初版busy锁误伤legacy scope切换，已限到新引用校验阶段，旧detail仍可导航取消/丢弃迟到。
+原文本断言偶发匹配字段与modal live-region两份，现验输入框aria-describedby，非删校验。
+
+1245前端/typecheck/build，生产picker44/SavedViews32/综合58/真实API5，96PNG无pageerror；
+三style双mode与390中文弹层已验，证据`frontend/evidence/project-query-selection-2026-11-19/`。
+原4180未启用新cap/5173继续legacy，其他完整Project消费者和Bootstrap仍全量；
+不是整页改版、用户体验最终接受或新的Agent执行能力。
