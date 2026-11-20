@@ -304,6 +304,13 @@ product patterns, not replacing Astryx. Apply these rules to mybot:
   `order/sorts` and SavedViews. Invalid Run order blocks remote Run results only.
   Preserve column/density preferences across page remounts; restore pager focus
   only when the user has not moved it, excluding native and ARIA-disabled actions.
+- Task board (ADR-0019) requires explicit `task_board`: one read-only snapshot
+  returns five column totals and independent fixed20 pages, at most100 full Task
+  cards. It classifies Task-latest, not historical Run failures. Preserve server
+  order, exact Task/Run actions and explicit query failures. `boardPages` is
+  independent of table sort/page size; query edits reset it, presentation changes
+  retain it. Preserve original command intent before fixed-project scope injection.
+  Board reads/paging never write Run status or execute a model.
 - Route and query listeners must consult the shared navigation admission guard.
   Restoring a dirty form's URL in a capture listener alone does not preserve the
   form. One navigation event must share one decision across consumers; confirmed

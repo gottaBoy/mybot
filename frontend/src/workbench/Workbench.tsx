@@ -270,6 +270,7 @@ export function Workbench() {
     const scopedPatch = projectWorkspaceLocation(
       patch,
       route.page === 'project' ? route.id : undefined,
+      listLocation.boardPages,
     )
     return pushWorkbenchNavigation(listLocationHref(location.href, scopedPatch))
   }

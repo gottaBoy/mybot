@@ -4,9 +4,90 @@ import {
   readListLocation,
   supportedListQuery,
 } from '../src/workbench/list-location'
+import { defaultBoardPages } from '../src/workbench/board-pages'
 
 const example =
   'jql=assignee+%3D+currentUser%28%29+ORDER+BY+created+DESC&mode=basic&view=list&groupBy=&group=none'
+describe('independent board page URL state', () => {
+  const pages = { ...defaultBoardPages(), active: 2, completed: 4 }
+  const href = `http://localhost/#workbench?view=board&boardPages=${encodeURIComponent(JSON.stringify(pages))}&order=attempts:descending&runOrder=id:ascending&page=7&pageSize=100`
+  it('round trips exact board pages without adopting table pagination or sorting', () => {
+    expect(readListLocation(href)).toMatchObject({
+      boardPages: JSON.stringify(pages),
+      page: 7,
+      pageSize: 100,
+      order: 'attempts:descending',
+      runOrder: 'id:ascending',
+    })
+    const next = listLocationHref(href, {
+      boardPages: JSON.stringify({ ...pages, active: 3 }),
+    })
+    expect(readListLocation(`http://localhost${next}`)).toMatchObject({
+      boardPages: JSON.stringify({ ...pages, active: 3 }),
+      page: 7,
+      pageSize: 100,
+    })
+  })
+  it('preserves an invalid raw candidate on presentation changes, then clears explicitly', () => {
+    const invalid = 'http://localhost/#workbench?boardPages={broken'
+    const next = listLocationHref(invalid, { view: 'list', pageSize: 50 })
+    const state = readListLocation(`http://localhost${next}`)
+    expect(state.boardPages).toBe('{broken')
+    expect(state.boardPagesInvalid).toBe(true)
+    expect(supportedListQuery(state)).toEqual({ sort: undefined })
+    const cleared = readListLocation(
+      `http://localhost${listLocationHref(next, { boardPages: undefined })}`,
+    )
+    expect(cleared).not.toHaveProperty('boardPages')
+    expect(cleared).not.toHaveProperty('boardPagesInvalid')
+  })
+  it.each([
+    { query: 'new text' },
+    { query: undefined },
+    { project: 'p' },
+    { projects: ['p'] },
+    { filter: 'attention' as const },
+    { states: ['active' as const] },
+    { jql: 'ORDER BY CREATED ASC' },
+  ])('resets board pages in the same committed query patch %j', (patch) => {
+    const next = listLocationHref(href, patch)
+    expect(readListLocation(`http://localhost${next}`)).not.toHaveProperty(
+      'boardPages',
+    )
+  })
+  it.each([
+    { view: 'list' as const },
+    { mode: 'jql' as const },
+    { page: 2 },
+    { pageSize: 50 },
+    { order: 'title:ascending' },
+    { runOrder: 'id:descending' },
+  ])('preserves board pages for unrelated presentation changes %j', (patch) => {
+    const next = listLocationHref(href, patch)
+    expect(readListLocation(`http://localhost${next}`).boardPages).toBe(
+      JSON.stringify(pages),
+    )
+  })
+  it('allows an explicit full-snapshot board page patch to win over automatic reset', () => {
+    const next = listLocationHref(href, {
+      query: 'new text',
+      boardPages: JSON.stringify(pages),
+    })
+    expect(readListLocation(`http://localhost${next}`)).toMatchObject({
+      query: 'new text',
+      boardPages: JSON.stringify(pages),
+    })
+  })
+  it('rejects duplicate JSON keys and uses hash scope before an outer page candidate', () => {
+    const raw =
+      '{"pending":1,"pending":2,"active":1,"attention":1,"completed":1,"other":1}'
+    const candidate = `http://localhost/?boardPages=${encodeURIComponent(JSON.stringify(pages))}#workbench?boardPages=${encodeURIComponent(raw)}`
+    expect(readListLocation(candidate)).toMatchObject({
+      boardPages: raw,
+      boardPagesInvalid: true,
+    })
+  })
+})
 describe('Run history order URL state', () => {
   it('round trips runOrder independently from Task order/sorts', () => {
     const href = listLocationHref(

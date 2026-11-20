@@ -814,3 +814,21 @@ git -C /tmp/mybot-upstream-astryx rev-parse HEAD
   源码既有观察、local实现、失败和最终运行见
   `frontend/evidence/run-query-2026-11-20/README.md`。Bootstrap与其他消费者未减，
   原4180未加载cap，不外推完整Zira、主服务启用或整体性能。
+
+## 35. 复用Astryx卡片实现按列分页（2026-11-20）
+
+- 身份：继续`meta/astryx`已安装Core0.7.13及既有研究commit
+  `5770e5b197cf80d5a824667c23046887cc8fa0f5`。本轮未clone/fetch/升级/复制上游源码，
+  不声明npm与Git逐字节相同，保留原MIT/NOTICE。
+- R：复用本地`components/ui/index.tsx`的AppCard/AppButton/AppBadge及TaskBoard、
+  原kanban模板采用记录；只引用既有公开组件行为，没有新增上游源码能力结论。
+  Zira固定来源见`REA_ZIRA_LAYOUT.md`和交互专题第5节，不重新背书其200项截断/乐观写法。
+- E：通用卡片和Button不足以证明全部列计数、server paging、Task/Run状态分母或执行权限。
+  每页加载会卸载领域视图；分页focus/横向位置必须由仍挂载的父视图持有。
+- A：既有TaskBoard同一业务树按明确cap消费strict DTO，最多100完整Task卡，列总数来自
+  同一次ro快照；每列真实footer/局部滚动，busy阻断精确Run/Task动作，父层恢复合法focus。
+  原任务Review仍走既有context preview/consent，不以分页授权执行或拖动改状态。
+- T：1540前端/996Python/build，生产50/实际8/综合58、76最终PNG无pageerror。
+  三style双mode/390中英、末页/失败/移焦、跨poll慢GET及fixedscope原始意图回归已验，
+  见ADR-0019及`frontend/evidence/task-board-2026-11-20/README.md`。
+  不是新Astryx能力、Bootstrap减量、主服务启用、真机认证或用户视觉接受。

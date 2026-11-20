@@ -140,4 +140,63 @@ describe('fixed project workspace scope', () => {
     expect(data.tasks).toHaveLength(1)
     expect(data.runs).toHaveLength(1)
   })
+
+  it('preserves board pages for original presentation commands before injecting fixed scope', () => {
+    const boardPages = JSON.stringify({
+      pending: 2,
+      active: 1,
+      attention: 3,
+      completed: 1,
+      other: 1,
+    })
+    const href = `http://localhost/#project/project-a?view=board&boardPages=${encodeURIComponent(boardPages)}`
+    for (const patch of [
+      { view: 'list' as const, page: 1 },
+      { mode: 'jql' as const },
+      { order: 'title:ascending', pageSize: 100 },
+    ]) {
+      const next = listLocationHref(
+        href,
+        projectWorkspaceLocation(patch, project.id, boardPages),
+      )
+      expect(readListLocation(`http://localhost${next}`).boardPages).toBe(
+        boardPages,
+      )
+    }
+    const malformed = '{invalid}'
+    expect(
+      projectWorkspaceLocation({ mode: 'basic' }, project.id, malformed)
+        .boardPages,
+    ).toBe(malformed)
+  })
+
+  it('still resets board pages for original query changes and honors explicit page candidates', () => {
+    const boardPages = JSON.stringify({
+      pending: 2,
+      active: 1,
+      attention: 3,
+      completed: 1,
+      other: 1,
+    })
+    const href = `http://localhost/#project/project-a?boardPages=${encodeURIComponent(boardPages)}`
+    for (const patch of [
+      { query: 'new' },
+      { states: ['attention' as const] },
+      { projects: ['project-b'] },
+      { jql: '' },
+      { filter: 'all' as const },
+    ]) {
+      const next = listLocationHref(
+        href,
+        projectWorkspaceLocation(patch, project.id, boardPages),
+      )
+      expect(
+        readListLocation(`http://localhost${next}`).boardPages,
+      ).toBeUndefined()
+    }
+    expect(
+      projectWorkspaceLocation({ boardPages }, project.id, '{invalid}')
+        .boardPages,
+    ).toBe(boardPages)
+  })
 })

@@ -1,0 +1,390 @@
+{
+  "synthetic": true,
+  "source": "Intercepted strict bounded Task-board DTOs through the production frontend",
+  "limits": [
+    "Synthetic endpoint behavior does not prove SQLite snapshot or real Provider behavior.",
+    "Chrome viewports and synthetic composing Enter are not physical-device or IME certification.",
+    "Poisoned legacy Bootstrap counters are deliberately different from authoritative board totals."
+  ],
+  "checks": [
+    "desktop: 94 latest-state Tasks use bounded columns and exact totals; poisoned Bootstrap is absent",
+    "desktop: Basic drafts and composing Enter issue no GET; ordinary Enter commits",
+    "desktop: per-column20 pagination preserves the other columns, URL/reload/Back/Forward and last-page focus",
+    "desktop: paging another column retains its independent page and board horizontal position",
+    "desktop: server-clamped page99 remains requested in the URL and does not change another column page",
+    "desktop: Search resets every board page atomically and displays authoritative text matches without re-filtering",
+    "desktop: Task sorts, Run order and Task page size never reorder or resize board columns",
+    "desktop: invalid boardPages blocks only the remote board and remains recoverable by explicit Clear",
+    "desktop: nonempty JQL fails explicitly without issuing a board read",
+    "desktop: project/state filters count Tasks by latest Run, preserving recovered-task attempts and exact links",
+    "desktop: immediate state/project scope commits reset board pages in the same URL patch",
+    "desktop: failed column paging restores focus to read Retry without showing stale cards",
+    "desktop: settling delayed paging does not steal user-moved search focus",
+    "desktop: 404 hides stale cards without fallback; explicit retry makes one GET",
+    "desktop: 503 hides stale cards without fallback; explicit retry makes one GET",
+    "desktop: invalid-2xx hides stale cards without fallback; explicit retry makes one GET",
+    "desktop: a delayed obsolete response cannot replace a newer committed board",
+    "desktop: false and absent task_board capability retain the original local board",
+    "desktop: same-key busy cards block Run links and Review; an8s GET survives real6s polling without replay"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22release+4%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A2%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A2%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A3%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A2%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A3%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A3%2C%22active%22%3A1%2C%22attention%22%3A2%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A99%2C%22active%22%3A1%2C%22attention%22%3A2%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22authority%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22completed%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%22board-alpha%22%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D&scope_project_id=board-alpha"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%22board-beta%22%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A2%2C%22active%22%3A1%2C%22attention%22%3A2%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A2%2C%22active%22%3A1%2C%22attention%22%3A2%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%22board-beta%22%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A2%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A2%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A2%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22release+2%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22release+2%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22release+5%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22release+5%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22release+4%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22release+2%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/tasks/board",
+      "search": "?query=%7B%22text%22%3A%22release+3%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&pages=%7B%22pending%22%3A1%2C%22active%22%3A1%2C%22attention%22%3A1%2C%22completed%22%3A1%2C%22other%22%3A1%7D"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    }
+  ],
+  "writes": [],
+  "unexpected": [],
+  "externalRequests": [],
+  "errors": [],
+  "screenshots": [
+    "desktop-initial.png",
+    "desktop-clamped.png"
+  ],
+  "geometry": [
+    {
+      "name": "desktop",
+      "style": "neutral",
+      "mode": "light",
+      "width": 1440,
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(0, 0, 0)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "accent": "rgb(0, 0, 0)",
+      "cardRadius": "8px",
+      "boardWidth": 1024
+    }
+  ],
+  "failure": {
+    "name": "desktop",
+    "message": "page.waitForTimeout: Target page, context or browser has been closed",
+    "stack": "page.waitForTimeout: Target page, context or browser has been closed\n    at /home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-task-board.mjs:851:18",
+    "tree": ""
+  }
+}

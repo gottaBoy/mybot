@@ -127,10 +127,8 @@ def natural_compare(left, right):
     return (a > b) - (a < b)
 
 
-def read_task_page(database: Path, request: TaskQueryRequest):
-    request = TaskQueryRequest.model_validate(request.model_dump())
-    query = request.effective_query()
-    sorts = request.effective_sorts()
+def task_query_sql(query):
+    """Shared latest-Run projection and filtering for bounded Task consumers."""
     projects = query["projects"]
     arguments = list(projects)
     project_where = (
@@ -176,6 +174,30 @@ def read_task_page(database: Path, request: TaskQueryRequest):
             LEFT JOIN ranked_runs r ON r.task_id=t.id AND r.latest_rank=1
         ), filtered AS (SELECT * FROM task_states {where})
     """
+    return cte, arguments
+
+
+def task_query_items(rows):
+    return [{
+        "task": {
+            key: json.loads(row[key]) if key == "files" else row[key]
+            for key in ("id", "project_id", "title", "goal", "acceptance", "files", "created_at")
+        },
+        "project": {"id": row["project_id"], "name": row["project_name"]},
+        "latest_run": ({
+            "id": row["run_id"], "task_id": row["id"],
+            "status": row["run_status"], "created_at": row["run_created_at"],
+        } if row["run_id"] is not None else None),
+        "state_category": row["state_category"], "attempts": row["attempts"],
+    } for row in rows]
+
+
+def read_task_page(database: Path, request: TaskQueryRequest):
+    request = TaskQueryRequest.model_validate(request.model_dump())
+    query = request.effective_query()
+    sorts = request.effective_sorts()
+    projects = query["projects"]
+    cte, arguments = task_query_sql(query)
     order = []
     for rule in sorts:
         column = SORT_COLUMNS[rule["sortKey"]]
@@ -206,18 +228,7 @@ def read_task_page(database: Path, request: TaskQueryRequest):
             cte + f"SELECT * FROM filtered ORDER BY {','.join(order)} LIMIT ? OFFSET ?",
             [*arguments, request.page_size, (page - 1) * request.page_size],
         ).fetchall()
-        items = [{
-            "task": {
-                key: json.loads(row[key]) if key == "files" else row[key]
-                for key in ("id", "project_id", "title", "goal", "acceptance", "files", "created_at")
-            },
-            "project": {"id": row["project_id"], "name": row["project_name"]},
-            "latest_run": ({
-                "id": row["run_id"], "task_id": row["id"],
-                "status": row["run_status"], "created_at": row["run_created_at"],
-            } if row["run_id"] is not None else None),
-            "state_category": row["state_category"], "attempts": row["attempts"],
-        } for row in rows]
+        items = task_query_items(rows)
     return {
         "schema_version": 1, "unit": "tasks", "items": items, "total": total,
         "requested_page": request.page, "page": page, "page_size": request.page_size,

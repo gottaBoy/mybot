@@ -49,7 +49,7 @@ import type { Bootstrap, Project, Task } from './api'
 import { ApiError } from './api'
 import type { ListLocation } from './list-location'
 import { supportedListQuery } from './list-location'
-import { filterTaskItems, type WorkItem } from './projections'
+import { filterTaskItems, type BoardColumn, type WorkItem } from './projections'
 import {
   committedQueryConditions,
   querySelectionPatch,
@@ -79,6 +79,8 @@ import { useProjectReferences } from './useProjectReferences'
 import { useRunQuery } from './useRunQuery'
 import { runOrderSort } from './run-sort'
 import type { RunTablePreferences } from './RunViews'
+import { useTaskBoard } from './useTaskBoard'
+import { boardPagesFromRaw, defaultBoardPages } from './board-pages'
 import {
   ProjectSelectionChangedError,
   validateProjectSelection,
@@ -268,12 +270,14 @@ export function FocusedWorkbench(props: Props) {
           (id) => !data.projects.some((project) => project.id === id),
         ))
   const runQueryEnabled = data.capabilities.run_query === true
+  const boardEnabled = data.capabilities.task_board === true
   const queryPolicy = supportedListQuery(
-    view === 'table' && runQueryEnabled
+    (view === 'table' && runQueryEnabled) || (view === 'board' && boardEnabled)
       ? { ...location, sortsInvalid: undefined }
       : location,
   )
   const runSort = runOrderSort(location.runOrder)
+  const boardPages = boardPagesFromRaw(location.boardPages)
   const localProblem =
     queryPolicy.error ??
     committedSelection.error ??
@@ -282,7 +286,10 @@ export function FocusedWorkbench(props: Props) {
     (view === 'table' && runQueryEnabled && !runSort
       ? 'run_sort_invalid'
       : undefined) ??
-    (view === 'board' && location.jql ? 'jql_unavailable' : undefined)
+    (view === 'board' && boardEnabled && !boardPages
+      ? 'board_pages_invalid'
+      : undefined) ??
+    (view === 'board' && location.jql ? 'board_jql_unavailable' : undefined)
   const [serverPage, setServerPage] = useState<{
     key?: string
     kind: 'idle' | 'loading' | 'ready' | 'unavailable' | 'error'
@@ -311,6 +318,29 @@ export function FocusedWorkbench(props: Props) {
       pageSize,
     },
   })
+  const boardQuery = useTaskBoard({
+    data,
+    refreshRevision,
+    enabled: view === 'board' && !localProblem && !projectReferencesBusy,
+    request: {
+      query: remoteQuery,
+      pages: boardPages ?? defaultBoardPages(),
+      scopeProjectId: scope,
+    },
+  })
+  const boardFocusKey = JSON.stringify([
+    data.workspace,
+    remoteQuery,
+    scope,
+    boardPages,
+  ])
+  const boardPageFocus = useRef<{
+    key: string
+    state: BoardColumn
+    direction: 'previous' | 'next'
+    origin: Element | null
+    scrollLeft: number
+  }>(undefined)
   const runFocusKey = JSON.stringify([
     data.workspace,
     remoteQuery,
@@ -421,8 +451,40 @@ export function FocusedWorkbench(props: Props) {
       ? 'task_query_error'
       : view === 'table' && runQuery.remote && runQuery.error
         ? 'run_query_error'
-        : undefined
+        : view === 'board' && boardQuery.remote && boardQuery.error
+          ? 'board_query_error'
+          : undefined
   const problem = localProblem ?? serverQueryProblem
+  useEffect(() => {
+    const pending = boardPageFocus.current
+    if (!pending) return
+    if (pending.key !== boardFocusKey || view !== 'board') {
+      boardPageFocus.current = undefined
+      return
+    }
+    if (boardQuery.busy || (!boardQuery.value && !problem)) return
+    boardPageFocus.current = undefined
+    const board = pageRoot.current?.querySelector<HTMLElement>(
+      '[data-testid="task-board"]',
+    )
+    if (board) board.scrollLeft = pending.scrollLeft
+    if (
+      document.activeElement !== document.body &&
+      document.activeElement !== pending.origin
+    )
+      return
+    const available = ':not(:disabled):not([aria-disabled="true"])'
+    const column = `[data-board-state="${pending.state}"]`
+    const preferred = pageRoot.current?.querySelector<HTMLButtonElement>(
+      problem
+        ? `.wf-query-error button${available}`
+        : `${column} [data-board-page="${pending.direction}"]${available}`,
+    )
+    const fallback = pageRoot.current?.querySelector<HTMLButtonElement>(
+      `${column} [data-board-page]${available}`,
+    )
+    ;(preferred ?? fallback)?.focus({ preventScroll: true })
+  }, [boardFocusKey, view, boardQuery.busy, boardQuery.value, problem])
   useEffect(() => {
     const pending = runPageFocus.current
     if (!pending) return
@@ -466,7 +528,12 @@ export function FocusedWorkbench(props: Props) {
     runQuery.remote &&
     !projectReferencesBusy &&
     Boolean(runQuery.value)
-  const hasRemoteResult = remoteReady || runReady
+  const boardReady =
+    view === 'board' &&
+    boardQuery.remote &&
+    !projectReferencesBusy &&
+    Boolean(boardQuery.value)
+  const hasRemoteResult = remoteReady || runReady || boardReady
   const remoteActive =
     taskQueryEnabled &&
     view === 'list' &&
@@ -475,6 +542,7 @@ export function FocusedWorkbench(props: Props) {
   const remoteBusy =
     projectReferencesBusy ||
     (view === 'table' && runQuery.remote && runQuery.busy) ||
+    (view === 'board' && boardQuery.remote && boardQuery.busy) ||
     (remoteActive &&
       (!currentServerPage ||
         currentServerPage.kind === 'loading' ||
@@ -775,6 +843,7 @@ export function FocusedWorkbench(props: Props) {
       states: undefined,
       ...(location.sortsInvalid ? { sorts: undefined } : {}),
       ...(location.runOrderInvalid ? { runOrder: undefined } : {}),
+      ...(location.boardPagesInvalid ? { boardPages: undefined } : {}),
       jql: '',
       mode: 'basic',
       groupBy: '',
@@ -1229,7 +1298,9 @@ export function FocusedWorkbench(props: Props) {
                       ? runReady
                         ? runQuery.value!.total
                         : runs.length
-                      : resultTotal}
+                      : boardReady
+                        ? boardQuery.value!.total
+                        : resultTotal}
                 </strong>{' '}
                 {view === 'table' ? t('次运行', 'runs') : t('项任务', 'tasks')}
               </span>
@@ -1434,38 +1505,58 @@ export function FocusedWorkbench(props: Props) {
                         '条件格式无效，未执行查询。',
                         'Invalid query conditions. No query was applied.',
                       )
-                    : problem === 'condition_value_unavailable'
+                    : problem === 'board_pages_invalid'
                       ? t(
-                          '所选项目不可用，请重新选择条件。',
-                          'A selected project is unavailable. Review the conditions.',
+                          '看板页码无效，未执行查询。',
+                          'Invalid board pages. No query was applied.',
                         )
-                      : problem === 'sort_invalid' ||
-                          problem === 'run_sort_invalid'
+                      : problem === 'board_jql_unavailable'
                         ? t(
-                            '排序定义无效，未执行查询。',
-                            'Invalid sort definition. No query was applied.',
+                            '看板不支持 JQL，请清除查询后继续。',
+                            'JQL is not supported in the board. Clear the query to continue.',
                           )
-                        : problem === 'project_reference_error'
+                        : problem === 'condition_value_unavailable'
                           ? t(
-                              '项目引用读取失败，未显示结果。请重试。',
-                              'Project references could not be read. No results were shown. Retry to continue.',
+                              '所选项目不可用，请重新选择条件。',
+                              'A selected project is unavailable. Review the conditions.',
                             )
-                          : problem === 'run_query_error'
-                            ? runQuery.error === 'forbidden'
+                          : problem === 'sort_invalid' ||
+                              problem === 'run_sort_invalid'
+                            ? t(
+                                '排序定义无效，未执行查询。',
+                                'Invalid sort definition. No query was applied.',
+                              )
+                            : problem === 'project_reference_error'
                               ? t(
-                                  '没有读取运行记录的权限。',
-                                  'Run history access is forbidden.',
+                                  '项目引用读取失败，未显示结果。请重试。',
+                                  'Project references could not be read. No results were shown. Retry to continue.',
                                 )
-                              : t(
-                                  '运行记录查询失败，未显示结果。请重试。',
-                                  'Run history could not be read. No results were shown. Retry to continue.',
-                                )
-                            : problem === 'task_query_error'
-                              ? serverQueryErrorText
-                              : t(
-                                  '仅支持 created/summary ORDER BY 排序，其他 JQL 条件尚未实现。',
-                                  'Only created/summary ordering is supported.',
-                                )}
+                              : problem === 'run_query_error'
+                                ? runQuery.error === 'forbidden'
+                                  ? t(
+                                      '没有读取运行记录的权限。',
+                                      'Run history access is forbidden.',
+                                    )
+                                  : t(
+                                      '运行记录查询失败，未显示结果。请重试。',
+                                      'Run history could not be read. No results were shown. Retry to continue.',
+                                    )
+                                : problem === 'board_query_error'
+                                  ? boardQuery.error === 'forbidden'
+                                    ? t(
+                                        '没有读取看板的权限。',
+                                        'Task board access is forbidden.',
+                                      )
+                                    : t(
+                                        '看板读取失败，未显示卡片。请重试。',
+                                        'The task board could not be read. No cards were shown. Retry to continue.',
+                                      )
+                                  : problem === 'task_query_error'
+                                    ? serverQueryErrorText
+                                    : t(
+                                        '仅支持 created/summary ORDER BY 排序，其他 JQL 条件尚未实现。',
+                                        'Only created/summary ordering is supported.',
+                                      )}
             </span>
             <AppButton
               label={
@@ -1487,7 +1578,9 @@ export function FocusedWorkbench(props: Props) {
                   : serverQueryProblem
                     ? serverQueryProblem === 'run_query_error'
                       ? runQuery.retry
-                      : () => setQueryRefresh((value) => value + 1)
+                      : serverQueryProblem === 'board_query_error'
+                        ? boardQuery.retry
+                        : () => setQueryRefresh((value) => value + 1)
                     : clear
               }
             />
@@ -1512,7 +1605,9 @@ export function FocusedWorkbench(props: Props) {
                         ? t('正在确认项目引用', 'Validating project references')
                         : view === 'table'
                           ? t('正在读取运行记录', 'Loading run history')
-                          : t('正在读取任务', 'Loading tasks')
+                          : view === 'board'
+                            ? t('正在读取看板', 'Loading task board')
+                            : t('正在读取任务', 'Loading tasks')
                     }
                   />
                 </div>
@@ -1744,6 +1839,47 @@ export function FocusedWorkbench(props: Props) {
                       items={tasks}
                       stateCategories={committedConditions.states}
                       onPrepare={onPrepare}
+                      remote={
+                        boardQuery.remote && boardQuery.value
+                          ? {
+                              page: boardQuery.value,
+                              busy: boardQuery.busy,
+                              onPageChange: (state, candidate) => {
+                                const pages = {
+                                  ...(boardPages ?? defaultBoardPages()),
+                                  [state]: candidate,
+                                }
+                                const current = boardQuery.value!.columns.find(
+                                  (column) => column.state_category === state,
+                                )!
+                                boardPageFocus.current = {
+                                  key: JSON.stringify([
+                                    data.workspace,
+                                    remoteQuery,
+                                    scope,
+                                    pages,
+                                  ]),
+                                  state,
+                                  direction:
+                                    candidate > current.page
+                                      ? 'next'
+                                      : 'previous',
+                                  origin: document.activeElement,
+                                  scrollLeft:
+                                    pageRoot.current?.querySelector<HTMLElement>(
+                                      '[data-testid="task-board"]',
+                                    )?.scrollLeft ?? 0,
+                                }
+                                const admitted = onLocationChange({
+                                  boardPages: JSON.stringify(pages),
+                                })
+                                if (admitted === false)
+                                  boardPageFocus.current = undefined
+                                return admitted
+                              },
+                            }
+                          : undefined
+                      }
                     />
                   )}
                 </Suspense>

@@ -349,3 +349,20 @@ ADR-0016、REA第32节及`frontend/evidence/project-query-selection-2026-11-19/R
 三style双mode/390中英/迟到/真实poll/ARIA focus有证据。见ADR-0018及
 `frontend/evidence/run-query-2026-11-20/README.md`，源码观察与运行证据分开。
 原4180未加载cap、Bootstrap及其他视图仍全量，不外推整体传输或用户最终视觉接受。
+
+## 22. 看板按列有界读取
+
+2026-11-20，IZ-07.3c2b1沿既有kanban-board卡片/分列组织，继续React19/Astryx0.7.13、
+同一TaskBoard树，不生成新模板或复制Zira实现。
+
+| 采用模式 | 本地适配 | 未扩大为 |
+| --- | --- | --- |
+| kanban / AppCard | 服务端Task最新态五列、每列20项/真实总数，复用完整Task DTO展示目标 | 当前卡片数冒充全量、历史失败当Task失败 |
+| Button / local footer | 独立列页码/范围/Previous/Next，busy阻断，URL与Back/刷新 | 假容量选择、拖动Run状态或模型自动执行 |
+| shared query | boardPages独立；Search重置，呈现保持，固定Project按原始操作意图适配 | Task/Run排序容量控制Board、完整JQL或保存Board视图 |
+| semantic CSS / focus | 列内纵滚/画布横滚，父层横向位置及可用focus恢复 | vendor内部DOM样式、第二主题树、全局传输减少 |
+
+1540前端/996Python/build，生产专项50/实际8/综合58，76最终PNG无pageerror；
+三style双mode/390中英/真实poll及fixedscope回归见ADR-0019与
+`frontend/evidence/task-board-2026-11-20/README.md`。主4180未加载cap，其余消费者仍待迁移，
+无真实Provider/新权限，不改变119台账或声称用户已接受整体视觉。

@@ -37,6 +37,7 @@ from .schemas import (
 )
 from .saved_views import SavedViewError
 from .run_query import RunQueryError, parse_run_query, read_run_page
+from .task_board import EMPTY_PAGES, TaskBoardError, parse_task_board, read_task_board
 from .task_detail import TaskDetailError, parse_task_detail, read_task_detail
 from .task_query import EMPTY_QUERY, MAX_PAGE, TaskQueryError, parse_task_query, read_task_page
 from .workspace_reads import (
@@ -157,6 +158,10 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     async def run_query_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
 
+    @app.exception_handler(TaskBoardError)
+    async def task_board_error(request, exc):
+        return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
+
     @app.exception_handler(TaskDetailError)
     async def task_detail_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
@@ -235,6 +240,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "parallel_research": True, "max_parallel": 2,
                                  "agent_work": True,
                                  "task_query": True,
+                                 "task_board": True,
                                  "run_query": True,
                                  "task_detail": True,
                                  "workspace_counts": True,
@@ -319,6 +325,22 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     async def project_create(body: ProjectCreate):
         validate_directory(settings.workspace, body.directory)
         return store.add("projects", body.model_dump(), "project.created")
+
+    @app.get("/api/tasks/board")
+    def task_board(
+        request: Request,
+        query: str = Query(EMPTY_QUERY, max_length=24000),
+        pages: str = Query(EMPTY_PAGES, max_length=1024),
+        scope_project_id: str | None = Query(None, min_length=1, max_length=100),
+    ):
+        allowed = {"query", "pages", "scope_project_id"}
+        if any(
+            key not in allowed or len(request.query_params.getlist(key)) != 1
+            for key in request.query_params
+        ):
+            raise TaskBoardError("task_board_parameters_invalid")
+        candidate = parse_task_board(query, pages, scope_project_id)
+        return read_task_board(store.path, candidate)
 
     @app.get("/api/tasks/query")
     def task_query(

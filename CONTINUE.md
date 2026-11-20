@@ -2,6 +2,32 @@
 
 更新日期：2026-11-20（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
 
+**最新完成（2026-11-20，IZ-07.3c2b1看板按列有界读取）：**
+起始3ab8c69已push且工作树干净。先读
+[ADR-0019](docs/decisions/ADR-0019-bounded-task-board.md)和
+`frontend/evidence/task-board-2026-11-20/README.md`。延续用户多Agent授权，
+backend/client/TaskBoard三分工，root整合/固定项目意图/焦点/真实API/综合/记录。
+新明确task_board能力，GET /api/tasks/board一次ro/query_only快照返回五列总数及各20项页，
+最多100Task卡；复用Task查询SQL/序列化、最新Run分类/固定顺序，无JQL/新排序或拖动写状态。
+保留完整Task DTO供目标展示和原Review流程，不用Bootstrap补acceptance/files。
+strict客户端/独立boardPages URL、query原子重置/呈现保留/非法仅阻断remote board；
+取消/迟到/15s/ready-only poll/显式GET重试/401清私有。Task/Run表格排序容量不控制看板。
+既有Astryx同一卡片树、每列真实范围/页脚，列内纵滚/画布横滚，busy阻断卡片；
+父层按请求key保留横向位置/恢复可用分页或Retry焦点、不抢用户移焦。
+复核修复projectWorkspaceLocation给呈现patch注入项目字段误清boardPages：按原始命令意图保留，
+2新增unit及桌面/手机真实跨Tasks/Board、mode、排序/容量回归通过。
+最终1540前端（54文件）/996Python/typecheck/build；生产专项50/实际8/综合58，
+76最终PNG无pageerror，三style双mode/390中英/reducedmotion/慢GET跨真实poll已验。
+保留中文文案断言、fixture登录后未刷新、测试服务SIGTERM中断及早期locale初始化覆盖证据，
+最终actual显式验证中文heading，不把早期英文截图当中文。既有大包/httpx警告保留。
+最终actual fixture.gKDKl0从45项目45任务88终态Run/0model起，原数组前后不变，仅fixture登录；
+43attention/1pending/1completed，项目000历史15失败但latest成功，板中attention0。
+综合fresh rEJTRT使用FakeProvider/MockTransport，无真实Provider/费用/正式写入。
+主4180仍PID2064113未启用新cap；5173恢复200继续legacy，临时4187/5176停止。
+原119/9/110不变，无凭证/兄弟修改/升级/部署，独立commit/push以Git回执为准。
+下一项IZ-07.3c2b2 Inbox，再总览/层级/文档及其余Project消费者，随后Bootstrap协商减量、
+失效影响图及实际传输/规模测量；不因看板完成关闭07.3/07.4。
+
 **最新完成（2026-11-20，IZ-07.3c2a全历史Run服务端分页）：**
 起始5710f3d已push且工作树干净。先读
 [ADR-0018](docs/decisions/ADR-0018-bounded-run-history.md)和

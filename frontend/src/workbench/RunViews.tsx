@@ -24,6 +24,7 @@ import {
 } from '../components/ui/DataTable'
 import { useAppDensity } from '../components/ui/DensityContext'
 import type { Bootstrap, Run, Task } from './api'
+import type { TaskBoardPage } from './board-query'
 import type { RunQueryPage } from './run-query'
 import { parseRunSort, type RunSortRule } from './run-sort'
 import { filteredItems, type BoardColumn } from './projections'
@@ -35,6 +36,7 @@ import {
   type Locale,
 } from './state'
 import './run-history.css'
+import './task-board.css'
 
 export type RunHistoryRemote = {
   page: RunQueryPage
@@ -344,6 +346,12 @@ export function RunsTable({
   )
 }
 
+export type TaskBoardRemote = {
+  page: TaskBoardPage
+  busy: boolean
+  onPageChange: (state: BoardColumn, page: number) => boolean | void
+}
+
 export function TaskBoard({
   data,
   t,
@@ -353,6 +361,7 @@ export function TaskBoard({
   items: providedItems,
   stateCategories,
   onPrepare,
+  remote,
 }: {
   data: Bootstrap
   t: Copy
@@ -362,8 +371,14 @@ export function TaskBoard({
   items?: ReturnType<typeof filteredItems>
   stateCategories?: BoardColumn[]
   onPrepare: (task: Task) => void
+  remote?: TaskBoardRemote
 }) {
-  const items = providedItems ?? filteredItems(data, query, projectId)
+  const items = remote
+    ? []
+    : (providedItems ?? filteredItems(data, query, projectId))
+  const busy = Boolean(remote?.busy)
+  const admission = useRef(!busy)
+  admission.current = !busy
   const definitions: Array<{
     id: BoardColumn
     label: string
@@ -379,40 +394,93 @@ export function TaskBoard({
       tone: 'neutral',
     },
   ]
-  const columns = definitions
-    .filter(
-      (column) =>
-        column.id !== 'other' || items.some((item) => item.column === 'other'),
+  const columns = remote
+    ? definitions.filter((column) =>
+        remote.page.query.states.length
+          ? remote.page.query.states.includes(column.id)
+          : column.id !== 'other' ||
+            remote.page.columns.some(
+              (page) => page.state_category === 'other' && page.total > 0,
+            ),
+      )
+    : definitions
+        .filter(
+          (column) =>
+            column.id !== 'other' ||
+            items.some((item) => item.column === 'other'),
+        )
+        .filter((column) =>
+          stateCategories
+            ? stateCategories.length === 0 ||
+              stateCategories.includes(column.id)
+            : filter === 'all' ||
+              column.id === (filter === 'completed' ? 'completed' : filter),
+        )
+  const changePage = (state: BoardColumn, candidate: number) => {
+    if (!remote || !admission.current) return
+    const page = remote.page.columns.find(
+      (column) => column.state_category === state,
     )
-    .filter((column) =>
-      stateCategories
-        ? stateCategories.length === 0 || stateCategories.includes(column.id)
-        : filter === 'all' ||
-          column.id === (filter === 'completed' ? 'completed' : filter),
+    if (
+      !page ||
+      candidate < 1 ||
+      candidate > page.total_pages ||
+      candidate === page.page
     )
+      return
+    remote.onPageChange(state, candidate)
+  }
   return (
     <div
-      className="wb-board-scroll"
+      className={`wb-board-scroll${remote ? ' wb-task-board' : ''}`}
+      data-testid="task-board"
       tabIndex={0}
       role="region"
       aria-label={t('任务看板', 'Task board')}
+      aria-busy={busy || undefined}
+      onClickCapture={(event) => {
+        if (!admission.current) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+      }}
+      onKeyDownCapture={(event) => {
+        if (
+          !admission.current &&
+          (event.key === 'Enter' || event.key === ' ') &&
+          event.target instanceof Element &&
+          event.target.closest('a,button')
+        ) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+      }}
     >
       <div className="wb-board">
         {columns.map((column) => {
-          const members = items.filter((item) => item.column === column.id)
+          const page = remote?.page.columns.find(
+            (candidate) => candidate.state_category === column.id,
+          )
+          const members =
+            page?.items ?? items.filter((item) => item.column === column.id)
           return (
             <section
               className="wb-board-column"
               key={column.id}
+              data-board-state={column.id}
               aria-label={column.label}
             >
               <header>
                 <AppBadge tone={column.tone}>{column.label}</AppBadge>
-                <span>{members.length}</span>
+                <span>{page ? page.total : members.length}</span>
               </header>
               <div className="wb-board-cards">
                 {members.map((item) => (
-                  <AppCard key={item.id} className="wb-work-card">
+                  <AppCard
+                    key={item.id}
+                    className="wb-work-card"
+                    data-board-task={item.id}
+                  >
                     <div className="wb-card-meta">
                       <FolderGit2 size={13} />
                       <span>{item.projectName}</span>
@@ -422,7 +490,25 @@ export function TaskBoard({
                     </div>
                     <h2>
                       {item.run ? (
-                        <a href={`#run/${item.run.id}`}>{item.task.title}</a>
+                        <a
+                          href={`#run/${item.run.id}`}
+                          aria-disabled={busy || undefined}
+                          tabIndex={busy ? -1 : undefined}
+                          onClick={(event) => {
+                            if (!admission.current) {
+                              event.preventDefault()
+                              event.stopPropagation()
+                            }
+                          }}
+                          onKeyDown={(event) => {
+                            if (!admission.current && event.key === 'Enter') {
+                              event.preventDefault()
+                              event.stopPropagation()
+                            }
+                          }}
+                        >
+                          {item.task.title}
+                        </a>
                       ) : (
                         item.task.title
                       )}
@@ -441,13 +527,23 @@ export function TaskBoard({
                           size="sm"
                           tone="ghost"
                           href={`#run/${item.run.id}`}
+                          disabled={busy}
+                          onClick={(event) => {
+                            if (!admission.current) {
+                              event.preventDefault()
+                              event.stopPropagation()
+                            }
+                          }}
                         />
                       ) : (
                         <AppButton
                           label={t('检查并运行', 'Review & run')}
                           size="sm"
                           icon={<Clock3 size={14} />}
-                          onClick={() => onPrepare(item.task)}
+                          disabled={busy}
+                          onClick={() => {
+                            if (admission.current) onPrepare(item.task)
+                          }}
                         />
                       )}
                     </div>
@@ -460,6 +556,52 @@ export function TaskBoard({
                   </div>
                 )}
               </div>
+              {page && (
+                <footer className="wb-task-board-pagination">
+                  <span
+                    data-testid="task-board-range"
+                    role="status"
+                    aria-label={t(
+                      `${column.label}任务范围`,
+                      `${column.label} task range`,
+                    )}
+                  >
+                    {page.total
+                      ? `${(page.page - 1) * remote!.page.column_size + 1}-${Math.min(page.page * remote!.page.column_size, page.total)}`
+                      : '0-0'}{' '}
+                    / {page.total}
+                  </span>
+                  <div className="wb-task-board-page-tools">
+                    <AppButton
+                      label={t(
+                        `${column.label}上一页任务`,
+                        `${column.label}: Previous task page`,
+                      )}
+                      icon={<ChevronLeft size={16} />}
+                      iconOnly
+                      tone="ghost"
+                      data-board-page="previous"
+                      disabled={busy || page.page <= 1}
+                      onClick={() => changePage(column.id, page.page - 1)}
+                    />
+                    <span className="wb-task-board-page-position" role="status">
+                      {page.page} / {page.total_pages}
+                    </span>
+                    <AppButton
+                      label={t(
+                        `${column.label}下一页任务`,
+                        `${column.label}: Next task page`,
+                      )}
+                      icon={<ChevronRight size={16} />}
+                      iconOnly
+                      tone="ghost"
+                      data-board-page="next"
+                      disabled={busy || !page.has_more}
+                      onClick={() => changePage(column.id, page.page + 1)}
+                    />
+                  </div>
+                </footer>
+              )}
             </section>
           )
         })}

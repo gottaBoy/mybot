@@ -610,3 +610,21 @@ rowheight/列隐藏跨页断言；分页focus遇ARIA禁用选邻项，失败选R
 390中英和reducedmotion已验。JQL wire/header及旧同步测试假设失败保留，详见
 `frontend/evidence/run-query-2026-11-20/README.md`和ADR-0018。
 原4180未加载cap、5173继续legacy；Bootstrap/其他视图未减，不声明全站视觉接受或整体提速。
+
+## 33. 每列真实分页的Task看板
+
+日期：2026-11-20，Asia/Singapore。IZ-07.3c2b1保留原查询带/Filters/结果视图工具，
+同一TaskBoard由明确cap选择bounded API；列标题数字使用全部匹配Task数，卡片固定20项页，
+每列有真实范围和Previous/Next。目标与原Review动作保留，未加假拖拽或排序开关。
+
+列卡片区纵向滚动、局部footer持续可见；看板横向滚动，文档不横滚。分页不同key隐藏旧卡，
+同key刷新保留busy并拦截卡片/按钮；父层保留横向位置，末页focus选可用邻项、失败选Retry，
+用户已移焦时不抢回。固定项目呈现命令注入scope误清页码的问题在代码复核后修复，
+unit和desktop/mobile跨Tasks/Board、mode及表格设置保持均已验。
+
+最终1540前端/996Python/build，生产50/8/58项、76最终PNG，无pageerror；
+三style双mode/390中英/reducedmotion、慢GET跨poll与错误不重放均有证据。
+实际手机脚本早期initScript强制en，已修正并断言中文heading后在新fixture重跑，
+不拿旧英文截图当中文证据。详见ADR-0019及
+`frontend/evidence/task-board-2026-11-20/README.md`。主4180未加载cap，Bootstrap仍全量，
+不是全站性能或用户视觉接受，也未扩执行权限。

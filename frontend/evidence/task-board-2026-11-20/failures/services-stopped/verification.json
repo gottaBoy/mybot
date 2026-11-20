@@ -1,0 +1,16 @@
+{
+  "fixture": true,
+  "source": "Actual disposable HTTP/API/SQLite through production UI",
+  "checks": [],
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    }
+  ],
+  "blocked": [],
+  "external": [],
+  "screenshots": [],
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n500 !== 200\n\n    at file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-task-board-actual.mjs:155:10"
+}

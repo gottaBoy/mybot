@@ -1,0 +1,18 @@
+{
+  "fixture": true,
+  "source": "Actual disposable HTTP/API/SQLite through production UI",
+  "checks": [
+    "Actual snapshot returns45 Task-latest records,43 attention/1 pending/1 completed, not88 historical Runs"
+  ],
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    }
+  ],
+  "blocked": [],
+  "external": [],
+  "screenshots": [],
+  "failure": "page.waitForFunction: Timeout 30000ms exceeded.\n    at matches (/home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-task-board-actual.mjs:111:14)\n    at /home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-task-board-actual.mjs:190:9"
+}

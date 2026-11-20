@@ -960,6 +960,40 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
   无凭证/正式DB/部署/兄弟修改/升级，原119/9/110不变。下一项c2b剩余投影，再
   c3/d协商Bootstrap/失效/传输规模测量，不关闭07.3/07.4。commit/push以Git回执为准。
 
+### 工作项：IZ-07.3c2b1看板按列有界查询
+
+- 起始3ab8c69已push/工作树干净；先记录ADR-0019。backend/client/TaskBoard三Agent，
+  root整合、固定项目意图与分页focus、实际API/综合和证据，继续用户多Agent授权。
+- 明确task_board能力与GET /api/tasks/board；五列各固定20项/最多100卡、总数同一次ro/
+  query_only快照。复用Task查询CTE与序列化，保留最新Run的rowid tie、文本/项目/状态合同；
+  空JQL/固定Task创建顺序，未扩JQL/排序/拖动。Task DTO完整保留目标和原Review所需字段，
+  不用最小对象或Bootstrap补acceptance/files。90新增含快照并发/关闭连接/认证/严格页码。
+- 客户端113新增：exact DTO/五列/算术/total和/跨列身份/请求绑定、boardPages独立URL；
+  query一次提交重置，presentation保留，非法仅阻断remote board；不重排/再filter/slice。
+  15s/cancel/迟到/ready-only poll，声明cap后错误不回退旧卡片，401清私有，重试只GET。
+- TaskBoard10新增沿同一Astryx业务树，列总数和唯一局部footer、列内滚动/画布横滚，
+  exactTask/Run动作、busy当前与保留handler都阻断。root父层捕获origin/请求key/scrollLeft，
+  末页排除native及ARIA禁用、失败选Retry、用户移焦不抢回。
+- 只读复核发现固定Project路由会给view/mode等patch注入项目字段，writer误清boardPages；
+  root按原始命令意图先保留raw页码再加scope，2新增unit及desktop/mobile跨Tasks/Board、
+  emptyJQL/Basic、排序/容量的页码/卡片保持均验，不靠URL差异猜导航理由。
+- 最终1540前端（54文件）/996Python/typecheck/build；生产专项50/12PNG、真实API8/4PNG、
+  综合58/60PNG，共76最终PNG无pageerror。三style双mode/390中英/reducedmotion/焦点、
+  8sGET跨6spoll、403不自动重试、迟到/404/invalid2xx/401均见独立报告。
+- 失败保留：script中文403文案不符、直接fetch fixture登录后UI仍未重新读取session；
+  初期测试服务/浏览器SIGTERM中断（原因未确认，未归因产品），已重新启动隔离服务。
+  actual initScript强制en使早期mobile仍英文，现仅初始化缺省locale并断言中文heading，
+  最终新fixture重跑，早期英文图不当中文证据。无新增依赖/真实Provider。
+- 最终actual fixture.gKDKl0为45Projects/45Tasks/88终态Run/0model，43attention/1pending/
+  1completed；项目000历史15失败而最新成功、看板attention0。原projects/tasks/runs/models
+  数组前后不变，只有公开fixture登录POST。综合fresh rEJTRT用FakeProvider/MockTransport。
+- 既有Starlette/httpx和>500kB警告保留；app165.20/gzip54.45kB、CSS38.91/7.35，
+  lazyFocused91.94/28.45、CSS14.03/2.91，RunViews9.45/3.72、CSS2.17/0.66。
+  单快照仍重复执行共享CTE六次，不宣称服务器CPU提速/整体Bootstrap或初始传输已减。
+- 主4180仍PID2064113未加载新cap；5173恢复200/legacy、临时4187/5176停止。
+  无凭证/正式DB/兄弟修改/升级/部署，原119/9/110不变。下一项Inbox，继而总览/层级/
+  文档等，Bootstrap协商/失效/测量仍开放。独立commit/push以Git回执为准。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。

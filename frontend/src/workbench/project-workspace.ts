@@ -13,12 +13,25 @@ export function workbenchProjectScope(
 export function projectWorkspaceLocation(
   patch: Partial<ListLocation>,
   projectId?: string,
+  boardPages?: string,
 ): Partial<ListLocation> {
+  const preserveBoardPages =
+    boardPages !== undefined &&
+    ![
+      'query',
+      'filter',
+      'project',
+      'projects',
+      'states',
+      'jql',
+      'boardPages',
+    ].some((key) => Object.prototype.hasOwnProperty.call(patch, key))
   return projectId
     ? {
         ...patch,
         project: projectId,
         projects: undefined,
+        ...(preserveBoardPages ? { boardPages } : {}),
       }
     : patch
 }

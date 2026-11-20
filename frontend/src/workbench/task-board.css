@@ -1,0 +1,69 @@
+.wf-results .wb-board-scroll.wb-task-board {
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+}
+.wb-task-board .wb-board {
+  height: 100%;
+  min-height: 0;
+}
+.wb-task-board .wb-board-column {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 270px;
+  max-width: 360px;
+  flex-basis: 270px;
+}
+.wb-task-board .wb-board-column > header {
+  flex-shrink: 0;
+  gap: 8px;
+}
+.wb-task-board .wb-board-cards {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding-right: 4px;
+  padding-bottom: 12px;
+}
+.wb-task-board .wb-work-card {
+  width: 100%;
+  min-width: 0;
+}
+.wb-task-board .wb-card-bottom {
+  flex-wrap: wrap;
+}
+.wb-task-board a[aria-disabled='true'] {
+  color: var(--wb-muted);
+  cursor: progress;
+}
+.wb-task-board-pagination,
+.wb-task-board-page-tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.wb-task-board-pagination {
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  min-height: 40px;
+  border-top: 1px solid var(--wb-border);
+  padding-top: 8px;
+  color: var(--wb-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.wb-task-board-page-position {
+  min-width: 36px;
+  text-align: center;
+}
+@media (max-width: 650px) {
+  .wb-task-board .wb-board-column {
+    min-width: 260px;
+    flex-basis: 260px;
+  }
+}

@@ -18,6 +18,25 @@ UI 的 WUI 编号是交叉整改视图，执行包是实施组织方式，均可
 
 ## 当前执行包
 
+### 2026-11-20 看板按列分页
+
+IZ-07.3c2b1本地验收完成；原119/9/110不变，其他视图和Bootstrap仍待迁移。
+
+| 工作 / 分工 | 状态 | 验收及边界 |
+| --- | --- | --- |
+| backend Agent：单快照看板API | 本地完成 | 90新增；五列真实总数/各20页、Task最新态、复用SQL/序列化、ro/关闭连接/认证 |
+| client Agent：DTO/URL/hook | 本地完成 | 113新增；总数/分页/跨列身份/发送绑定、boardPages独立、失败不回退 |
+| UI Agent + root：Astryx卡片/连续性 | 本地完成 | 10卡片及2固定项目新增；per-column footer、busy/精确动作、focus/横向位置 |
+| root + browser Agent：隔离验收 | 完成所列范围 | 1540前端/996Python/build；生产50/实际8/综合58、76PNG无pageerror |
+| IZ-07.3c2b2 Inbox | 下一项 | 待处理Task-latest有界查询与按需内容，明确筛选/顺序/选择及动作 |
+| IZ-07.3c2b3其余投影 | 待办 | 总览/层级/文档及剩余Project消费者，保留各自分母和错误边界 |
+| IZ-07.3c3/d与07.4 | 待办 | Bootstrap协商减量/兼容、失效影响图、实际传输/响应/规模测量 |
+
+合同[ADR-0019](decisions/ADR-0019-bounded-task-board.md)；
+[最终证据与失败](../frontend/evidence/task-board-2026-11-20/README.md)。
+真实fixture45Task/88Run原数组不变、仅登录；综合使用FakeProvider/MockTransport。
+原4180未加载cap，5173继续legacy；无真实模型/正式DB/部署，不关闭07.3整体。
+
 ### 2026-11-20 全历史Run服务端查询
 
 IZ-07.3c2a本地验收完成；不关闭整体07.3/07.4，原119/9/110不变。
@@ -28,7 +47,7 @@ IZ-07.3c2a本地验收完成；不关闭整体07.3/07.4，原119/9/110不变。
 | client Agent：strict DTO/URL/hook | 本地完成 | 91新增；runOrder独立、minimal身份/分页/绑定、取消/ready-only poll、无本地重排 |
 | table Agent + root：Astryx表格 | 本地完成 | 10新增；真实总数/20/50/100/ARIA、busy阻断、偏好跨页/父层焦点恢复 |
 | root + browser Agent：最终验收 | 完成所列范围 | 1415前端/906Python/build；生产48/实际9/综合58、80PNG无pageerror |
-| IZ-07.3c2b其他视图 | 下一项 | Board/Inbox/总览/层级/文档及剩余Project消费者独立投影，不拼假完整对象 |
+| IZ-07.3c2b其他视图 | 部分，Board由上方完成 | Inbox/总览/层级/文档及剩余Project消费者仍待独立投影 |
 | IZ-07.3c3/d与07.4 | 待办 | Bootstrap协商减量/旧入口兼容、失效影响图、实际传输/响应/规模测量 |
 
 合同[ADR-0018](decisions/ADR-0018-bounded-run-history.md)；

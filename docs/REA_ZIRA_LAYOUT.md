@@ -156,3 +156,19 @@ Run-specific URL单排序不借用Task多排序或SavedViews。UI保留单行候
 最终1415前端/906Python/build，生产48/实际9/综合58、80PNG无pageerror，见
 `frontend/evidence/run-query-2026-11-20/README.md`。真实fixture历史失败在Task恢复后仍保留，
 不是Zira运行验收、整体Bootstrap减量、主环境启用或用户视觉接受。
+
+## 看板完整计数与按列页适配（2026-11-20）
+
+继续固定Zira HEAD `1ce0d0510cb590f3a79ca498f7239ff0852ed0d7`及已记录
+`features/boards/hooks/use-board.ts`、BoardPage、board-canvas/card、query-keys观察。
+本轮只复用`ZIRA_STUDY_INTERACTIONS.md`第5节和数据专题，未重新读取/运行Zira。
+旧源码只取前200项并本地筛卡，不能据此声称全部计数/完整查询；乐观拖动也不是Run状态许可。
+
+mybot ADR-0019用一次只读快照返回五列真实Task-latest计数及每列20卡，独立boardPages，
+不在browser按Bootstrap聚合或对页再筛选；每列滚动/局部页脚与画布横滚保持清楚职责。
+继续Astryx/同一领域卡片，未导入Zira组件/样式。固定Project呈现命令的scope注入与query意图
+分开，不为保留页码借URL差异猜导航原因，Search仍原子提交全部条件。
+
+1540前端/996Python/build与生产50/实际8/综合58、76PNG见本轮证据。
+源码观察、代码复核发现、首次失败和最终runtime分别记录，未改变主4180或Bootstrap，
+不扩大成Zira全站/真机/用户视觉接受或执行能力。

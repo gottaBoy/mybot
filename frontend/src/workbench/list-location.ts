@@ -2,6 +2,7 @@ import { parseQueryConditions } from './query-conditions'
 import type { QueryStateCategory } from './query-conditions'
 import { parseTaskSort, type TaskSortRule } from './task-sort'
 import { runOrderSort } from './run-sort'
+import { boardPagesFromRaw } from './board-pages'
 
 export const listKeys = [
   'q',
@@ -16,6 +17,7 @@ export const listKeys = [
   'order',
   'sorts',
   'runOrder',
+  'boardPages',
   'groupBy',
   'group',
   'page',
@@ -36,6 +38,8 @@ export type ListLocation = {
   sortsInvalid?: true
   runOrder?: string
   runOrderInvalid?: true
+  boardPages?: string
+  boardPagesInvalid?: true
   groupBy: string
   group: string
   page?: number
@@ -71,6 +75,10 @@ function normalizedParameter(key: string, value: string | null) {
   if (key === 'filter') return filterValue(value)
   if (key === 'order') return orderValue(value)
   if (key === 'runOrder') return value
+  if (key === 'boardPages') {
+    const pages = boardPagesFromRaw(value)
+    return pages === undefined ? value : JSON.stringify(pages)
+  }
   if (key === 'projects' || key === 'states') {
     const result = parseQueryConditions(
       key === 'projects' ? value : null,
@@ -125,6 +133,7 @@ export function readListLocation(href: string): ListLocation {
   const project = normalizedParameter('project', params.get('project'))
   const order = orderValue(params.get('order'))
   const runOrder = params.get('runOrder')
+  const boardPages = params.get('boardPages')
   const conditions = parseQueryConditions(
     params.get('projects'),
     params.get('states'),
@@ -172,6 +181,14 @@ export function readListLocation(href: string): ListLocation {
             ? { runOrderInvalid: true as const }
             : {}),
         }),
+    ...(boardPages === null
+      ? {}
+      : {
+          boardPages,
+          ...(boardPagesFromRaw(boardPages) === undefined
+            ? { boardPagesInvalid: true as const }
+            : {}),
+        }),
     ...(params.has('sorts')
       ? sorts === undefined
         ? { sortsInvalid: true as const }
@@ -201,6 +218,13 @@ export function listLocationHref(href: string, patch: Partial<ListLocation>) {
     const value = normalizedParameter(key, all.get(key))
     if (value !== undefined) inner.set(key, value)
   }
+  if (
+    !Object.prototype.hasOwnProperty.call(patch, 'boardPages') &&
+    ['query', 'filter', 'project', 'projects', 'states', 'jql'].some((key) =>
+      Object.prototype.hasOwnProperty.call(patch, key),
+    )
+  )
+    inner.delete('boardPages')
   for (const [key, value] of Object.entries(patch)) {
     const parameter = key === 'query' ? 'q' : key
     if (!listKeys.includes(parameter as (typeof listKeys)[number])) continue

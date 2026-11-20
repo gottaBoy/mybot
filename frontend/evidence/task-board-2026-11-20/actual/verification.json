@@ -1,0 +1,29 @@
+{
+  "fixture": true,
+  "source": "Actual disposable HTTP/API/SQLite through production UI",
+  "checks": [
+    "Actual snapshot returns45 Task-latest records,43 attention/1 pending/1 completed, not88 historical Runs",
+    "Production cards preserve exact API identities, full Task goal and recovered latest-success classification",
+    "Independent attention page2 holds20 globally ordered cards; URL/reload retain other column pages",
+    "Last column page contains3 cards, restores available Previous focus, and Back restores page2",
+    "Fixed project000 contains2 Tasks with0 attention despite15 historic failed Runs; board keeps Task denominator",
+    "Search draft leaves committed cards unchanged; Enter resets all board pages and reload keeps exact Task search",
+    "390px Chinese board uses the same exact pages with local horizontal/card scrolling and visible footer, no document overflow",
+    "All original business arrays remain unchanged; only public fixture login POST, no execution or model calls"
+  ],
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    }
+  ],
+  "blocked": [],
+  "external": [],
+  "screenshots": [
+    "actual-board-first.png",
+    "actual-board-second.png",
+    "actual-board-project.png",
+    "actual-board-mobile-zh.png"
+  ]
+}
