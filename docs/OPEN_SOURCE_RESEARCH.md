@@ -832,3 +832,20 @@ git -C /tmp/mybot-upstream-astryx rev-parse HEAD
   三style双mode/390中英、末页/失败/移焦、跨poll慢GET及fixedscope原始意图回归已验，
   见ADR-0019及`frontend/evidence/task-board-2026-11-20/README.md`。
   不是新Astryx能力、Bootstrap减量、主服务启用、真机认证或用户视觉接受。
+
+## 36. 复用Astryx Inbox组合与既有读取合同（2026-11-20–21）
+
+- 身份：继续安装的`meta/astryx`Core0.7.13及既有研究commit
+  `5770e5b197cf80d5a824667c23046887cc8fa0f5`，未fetch/升级/复制上游源码，
+  不新声称npm/Git逐字节一致，原MIT/NOTICE保持。
+- R：复用本地WorkInbox、AppInput/AppSegments/AppButton/AppDialog和既有table-inbox/
+  work-item-detail采用记录，未做新增上游源码审计或导入Zira组件。
+- E：通用控件和模板不提供Task-latest查询、按需详情、身份去重或执行授权；
+  UI必须明确其请求和当前选中对象，不能用本地一页或错误补0当完整结果。
+- A：同一Inbox树连接既有query/detail strict clients；scope与textdraft分工、
+  独立inboxType/20/50/100 footer、呈现单一detail消费者、失败不回退、
+  busy/晚到处理及原Review流程保护。cap缺失保持原路径，不改Python或执行边界。
+- T：生产59/实际8/综合58、78最终PNG无pageerror，三style双mode/中英/移动焦点及真实
+  poll已验，详见ADR-0020和`frontend/evidence/inbox-2026-11-21/README.md`。
+  用户的核心目标反馈另记`PRODUCT_GOALS_CURRENT.md`；该局部完成不等于Cindy能力、
+  可执行Workflow、Bootstrap减量、主环境启用或整体视觉接受。

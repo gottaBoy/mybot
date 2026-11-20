@@ -1,0 +1,1924 @@
+{
+  "synthetic": true,
+  "source": "Intercepted existing Task query/detail DTOs through production Inbox",
+  "limits": [
+    "Synthetic reads do not prove actual SQLite snapshot or Provider behavior.",
+    "Chrome viewports and composing events are not real-device or IME certification.",
+    "Poisoned Bootstrap counters intentionally differ from authoritative Inbox results."
+  ],
+  "checks": [
+    "desktop: 90 eligible Task-latest records use exact20-row pages and true total; poisoned Bootstrap is absent",
+    "desktop: one presented detail consumer reads fresh goal/acceptance/files, exact Run link and mobile Escape focus",
+    "desktop: scope navigation preserves a draft; composing Enter makes no GET and ordinary Enter commits search/page1",
+    "desktop: pagination preserves global server order and URL across reload/Back/Forward; page99 clamps without URL rewrite",
+    "desktop: 20/50/100 capacities use a single real footer; final Next focus moves to available Previous",
+    "desktop: Task/Run/Board presentation state is inert; server-authoritative Unicode/text matches are not browser-filtered",
+    "desktop: invalid Inbox type is retained and fails closed until explicit Clear",
+    "desktop: unsupported Inbox JQL fails explicitly rather than returning an unfiltered success",
+    "desktop: detail 403 exposes read error without list/Bootstrap fallback; Retry reads exactly once",
+    "desktop: detail 404 exposes read error without list/Bootstrap fallback; Retry reads exactly once",
+    "desktop: detail invalid-2xx exposes read error without list/Bootstrap fallback; Retry reads exactly once",
+    "desktop: a fresh completed detail is not actionable in Inbox; its explicit refresh revalidates the eligible list",
+    "desktop: missing detail capability uses the admitted full list Task snapshot without Bootstrap supplementation or GET",
+    "desktop: same-key removal keeps an explicit selection unavailable instead of silently selecting another Task",
+    "desktop: a canceled late detail cannot replace a newer selected Task",
+    "desktop: a late obsolete page cannot replace the latest committed query",
+    "desktop: failed paging restores read Retry focus and retains the requested page for explicit retry",
+    "desktop: delayed paging does not steal user-moved search focus",
+    "desktop: list 404 clears old rows and exposes one explicit GET retry without fallback",
+    "desktop: list 503 clears old rows and exposes one explicit GET retry without fallback",
+    "desktop: list invalid-2xx clears old rows and exposes one explicit GET retry without fallback",
+    "desktop: false and absent task_query capability retain the original local Inbox without calling the endpoint",
+    "desktop: same-key busy rows/actions are blocked; an8s page GET survives real6s polling without replay",
+    "desktop: same-key refreshing details retain content but block their domain actions",
+    "desktop: busy pending Task details cannot start the Review context flow",
+    "desktop: 403 keeps its query and remains failed across Bootstrap polling until explicit read retry",
+    "desktop: non-JSON401 clears private list/detail/search state without replay",
+    "mobile: 90 eligible Task-latest records use exact20-row pages and true total; poisoned Bootstrap is absent",
+    "mobile: one presented detail consumer reads fresh goal/acceptance/files, exact Run link and mobile Escape focus",
+    "mobile: scope navigation preserves a draft; composing Enter makes no GET and ordinary Enter commits search/page1",
+    "mobile: pagination preserves global server order and URL across reload/Back/Forward; page99 clamps without URL rewrite",
+    "mobile: 20/50/100 capacities use a single real footer; final Next focus moves to available Previous",
+    "mobile: Task/Run/Board presentation state is inert; server-authoritative Unicode/text matches are not browser-filtered",
+    "mobile: invalid Inbox type is retained and fails closed until explicit Clear",
+    "mobile: unsupported Inbox JQL fails explicitly rather than returning an unfiltered success",
+    "mobile: detail 403 exposes read error without list/Bootstrap fallback; Retry reads exactly once",
+    "mobile: detail 404 exposes read error without list/Bootstrap fallback; Retry reads exactly once",
+    "mobile: detail invalid-2xx exposes read error without list/Bootstrap fallback; Retry reads exactly once",
+    "mobile: a fresh completed detail is not actionable in Inbox; its explicit refresh revalidates the eligible list",
+    "mobile: missing detail capability uses the admitted full list Task snapshot without Bootstrap supplementation or GET",
+    "mobile: same-key removal keeps an explicit selection unavailable instead of silently selecting another Task",
+    "mobile: a canceled late detail cannot replace a newer selected Task",
+    "mobile: a late obsolete page cannot replace the latest committed query",
+    "mobile: failed paging restores read Retry focus and retains the requested page for explicit retry",
+    "mobile: delayed paging does not steal user-moved search focus",
+    "mobile: list 404 clears old rows and exposes one explicit GET retry without fallback",
+    "mobile: list 503 clears old rows and exposes one explicit GET retry without fallback",
+    "mobile: list invalid-2xx clears old rows and exposes one explicit GET retry without fallback",
+    "mobile: false and absent task_query capability retain the original local Inbox without calling the endpoint",
+    "mobile: 403 keeps its query and remains failed across Bootstrap polling until explicit read retry",
+    "mobile: non-JSON401 clears private list/detail/search state without replay",
+    "neutral-dark: 90 eligible Task-latest records use exact20-row pages and true total; poisoned Bootstrap is absent",
+    "neutral-dark: appearance changes retain pending search and admitted pages without API reads or mutations",
+    "zira-light: 90 eligible Task-latest records use exact20-row pages and true total; poisoned Bootstrap is absent",
+    "zira-light: appearance changes retain pending search and admitted pages without API reads or mutations",
+    "y2k-light: 90 eligible Task-latest records use exact20-row pages and true total; poisoned Bootstrap is absent",
+    "y2k-light: appearance changes retain pending search and admitted pages without API reads or mutations",
+    "y2k-dark: 90 eligible Task-latest records use exact20-row pages and true total; poisoned Bootstrap is absent",
+    "y2k-dark: appearance changes retain pending search and admitted pages without API reads or mutations"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-pending-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+4%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-pending-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+4%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-pending-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-034/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-034/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-034/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=99&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=99&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-pending-017/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=50",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=50",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-pending-002/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=100",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22authority%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-002/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-000/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-000/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-043/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-043/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-001/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-001/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-000/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-000/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-043/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+4%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+2%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-002/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-034/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-034/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-001/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+2%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+2%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-002/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+3%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+3%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-003/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-pending-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-pending-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-pending-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+3%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+3%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/inbox-attention-003/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+4%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+4%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=99&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=99&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=50",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=50",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=100",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22authority%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/inbox-attention-000/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/inbox-attention-000/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/inbox-attention-043/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/inbox-attention-043/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/inbox-attention-001/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/inbox-attention-001/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/inbox-attention-000/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/inbox-attention-000/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/inbox-attention-043/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+4%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+2%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+2%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+2%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+3%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+3%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+3%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+3%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22release+1%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark",
+      "path": "/api/tasks/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%22pending%22%2C%22attention%22%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark",
+      "path": "/api/tasks/inbox-attention-044/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    }
+  ],
+  "writes": [],
+  "unexpected": [],
+  "externalRequests": [],
+  "errors": [],
+  "screenshots": [
+    "desktop-initial.png",
+    "desktop-selected.png",
+    "desktop-clamped.png",
+    "desktop-forbidden.png",
+    "desktop-signed-out.png",
+    "mobile-initial.png",
+    "mobile-selected.png",
+    "mobile-clamped.png",
+    "mobile-forbidden.png",
+    "mobile-signed-out.png",
+    "neutral-dark-initial.png",
+    "zira-light-initial.png",
+    "y2k-light-initial.png",
+    "y2k-dark-initial.png"
+  ],
+  "geometry": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "style": "neutral",
+      "mode": "light",
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(0, 0, 0)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "rowRadius": "6px"
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "style": "zira",
+      "mode": "dark",
+      "background": "rgb(22, 26, 34)",
+      "color": "rgb(230, 233, 239)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif",
+      "rowRadius": "6px"
+    },
+    {
+      "name": "neutral-dark",
+      "width": 1440,
+      "style": "neutral",
+      "mode": "dark",
+      "background": "rgb(28, 31, 34)",
+      "color": "rgb(255, 255, 255)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "rowRadius": "6px"
+    },
+    {
+      "name": "zira-light",
+      "width": 1440,
+      "style": "zira",
+      "mode": "light",
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(23, 43, 77)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif",
+      "rowRadius": "6px"
+    },
+    {
+      "name": "y2k-light",
+      "width": 1440,
+      "style": "y2k",
+      "mode": "light",
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(45, 36, 27)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "rowRadius": "0px"
+    },
+    {
+      "name": "y2k-dark",
+      "width": 1440,
+      "style": "y2k",
+      "mode": "dark",
+      "background": "rgb(22, 24, 43)",
+      "color": "rgb(237, 239, 252)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "rowRadius": "0px"
+    }
+  ]
+}

@@ -366,3 +366,20 @@ ADR-0016、REA第32节及`frontend/evidence/project-query-selection-2026-11-19/R
 三style双mode/390中英/真实poll及fixedscope回归见ADR-0019与
 `frontend/evidence/task-board-2026-11-20/README.md`。主4180未加载cap，其余消费者仍待迁移，
 无真实Provider/新权限，不改变119台账或声称用户已接受整体视觉。
+
+## 23. Inbox列表与按需详情
+
+2026-11-20–21，IZ-07.3c2b2沿table-inbox的列表/选中正文与work-item-detail组织，
+继续React19/Astryx0.7.13及同一WorkInbox业务树；未生成新模板或增加组件库。
+
+| 采用模式 | 本地适配 | 未扩大为 |
+| --- | --- | --- |
+| table-inbox / Button | Task最新pending/attention有界页、真实总数/范围，明确选中ID | 历史Run失败重复计数、客户端筛一页当全量 |
+| scope / TextInput | 单行scope/Search/Clear；scope即时且保留text draft，Search才commit | 任意JQL/项目/状态表达式、模型自动请求 |
+| detail / Dialog | 仅当前呈现读取，移动一份正文，fresh Task/Run操作；cap缺失用完整list快照 | advertised失败回退Bootstrap、假error/上下文或读成功即执行许可 |
+| pagination / semantic layout | 唯一20/50/100 footer、局部列表/正文滚动，busy与focus保护 | 重新生成页面、第二主题、只改文案的容量控件 |
+
+生产59专项/8实际API/58综合、78最终PNG无pageerror；三style双mode、390中英、
+慢GET跨poll/迟到/明确失败与移动焦点见ADR-0020和本轮evidence。
+这是Inbox局部闭环，后续优先按`PRODUCT_GOALS_CURRENT.md`整合目标/任务/Agent/成果，
+不自动继续下一投影；主4180未加载cap、Bootstrap仍全量。

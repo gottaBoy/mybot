@@ -3,6 +3,7 @@ import type { QueryStateCategory } from './query-conditions'
 import { parseTaskSort, type TaskSortRule } from './task-sort'
 import { runOrderSort } from './run-sort'
 import { boardPagesFromRaw } from './board-pages'
+import { parseInboxType } from './inbox-query'
 
 export const listKeys = [
   'q',
@@ -18,6 +19,7 @@ export const listKeys = [
   'sorts',
   'runOrder',
   'boardPages',
+  'inboxType',
   'groupBy',
   'group',
   'page',
@@ -40,6 +42,8 @@ export type ListLocation = {
   runOrderInvalid?: true
   boardPages?: string
   boardPagesInvalid?: true
+  inboxType?: string
+  inboxTypeInvalid?: true
   groupBy: string
   group: string
   page?: number
@@ -75,6 +79,7 @@ function normalizedParameter(key: string, value: string | null) {
   if (key === 'filter') return filterValue(value)
   if (key === 'order') return orderValue(value)
   if (key === 'runOrder') return value
+  if (key === 'inboxType') return value
   if (key === 'boardPages') {
     const pages = boardPagesFromRaw(value)
     return pages === undefined ? value : JSON.stringify(pages)
@@ -134,6 +139,7 @@ export function readListLocation(href: string): ListLocation {
   const order = orderValue(params.get('order'))
   const runOrder = params.get('runOrder')
   const boardPages = params.get('boardPages')
+  const inboxType = params.get('inboxType')
   const conditions = parseQueryConditions(
     params.get('projects'),
     params.get('states'),
@@ -187,6 +193,14 @@ export function readListLocation(href: string): ListLocation {
           boardPages,
           ...(boardPagesFromRaw(boardPages) === undefined
             ? { boardPagesInvalid: true as const }
+            : {}),
+        }),
+    ...(inboxType === null
+      ? {}
+      : {
+          inboxType,
+          ...(parseInboxType(inboxType) === undefined
+            ? { inboxTypeInvalid: true as const }
             : {}),
         }),
     ...(params.has('sorts')

@@ -1,6 +1,6 @@
 # 全部待办索引
 
-更新：2026-11-20（Asia/Singapore）。本页是集中阅读入口，不替代
+更新：2026-11-21（Asia/Singapore）。本页是集中阅读入口，不替代
 [原工作项台账](WORK_ITEMS.md) 或 [产品 UI 审计](PRODUCT_UI_AUDIT.md)。
 
 **最新研究入口：** 用户提供新的 Issues 截图，要求深度学习后继续。
@@ -18,6 +18,29 @@ UI 的 WUI 编号是交叉整改视图，执行包是实施组织方式，均可
 
 ## 当前执行包
 
+### 产品交付优先级调整
+
+2026-11-20，用户反馈“看着没什么变化，目标呢，任务呢”。
+以[当前产品目标与交付任务](PRODUCT_GOALS_CURRENT.md)为下一批排序：
+先收尾Inbox，再目标与任务工作区、持续会话、固定Workflow版本、多端接续、工具接入。
+剩余投影迁移按实际阻塞/正确性/规模推进，不再自动排在产品核心闭环之前。
+这些是原工作项的交付组织，不改变119/9/110，也不宣布新能力已实现。
+
+### 2026-11-21 Inbox收尾
+
+| 工作 / 分工 | 状态 | 验收及边界 |
+| --- | --- | --- |
+| client Agent：既有读取适配/URL/hooks | 本地完成 | 44新增；固定pending/attention、独立inboxType、strict DTO复用、取消/显式重试 |
+| UI Agent：Astryx列表/选中详情 | 本地完成 | 21新增；真实分页、呈现单一详情、freshTask动作、未知/失败不回退 |
+| root + browser Agent：验收/优先级 | 完成所列范围 | 1605前端/156既有Python合同/build；生产59/实际8/综合58，78最终PNG |
+| 目标与任务工作区 | 下一批 | 先T0本机版本对齐，再T1–T6入口/目标验收/执行安排/Agent跟进/成果审查/可见验收 |
+| 其余投影/Bootstrap减量 | 待办，按阻塞推进 | 总览/层级/文档/剩余Project、失效/传输/规模仍开放，不自动作为下一批 |
+
+[ADR-0020](decisions/ADR-0020-bounded-inbox.md)；
+[证据与失败](../frontend/evidence/inbox-2026-11-21/README.md)。
+无Python改动/新接口，完整996Python未本轮复跑；原4180未加载能力、5173仍legacy。
+产品新工作区尚未实现，不能把Inbox完成或测试数量当总目标交付；原119台账不变。
+
 ### 2026-11-20 看板按列分页
 
 IZ-07.3c2b1本地验收完成；原119/9/110不变，其他视图和Bootstrap仍待迁移。
@@ -28,7 +51,7 @@ IZ-07.3c2b1本地验收完成；原119/9/110不变，其他视图和Bootstrap仍
 | client Agent：DTO/URL/hook | 本地完成 | 113新增；总数/分页/跨列身份/发送绑定、boardPages独立、失败不回退 |
 | UI Agent + root：Astryx卡片/连续性 | 本地完成 | 10卡片及2固定项目新增；per-column footer、busy/精确动作、focus/横向位置 |
 | root + browser Agent：隔离验收 | 完成所列范围 | 1540前端/996Python/build；生产50/实际8/综合58、76PNG无pageerror |
-| IZ-07.3c2b2 Inbox | 下一项 | 待处理Task-latest有界查询与按需内容，明确筛选/顺序/选择及动作 |
+| IZ-07.3c2b2 Inbox | 已由上方完成所列范围 | 有界Task-latest查询/详情本地验收；后续优先产品目标工作区 |
 | IZ-07.3c2b3其余投影 | 待办 | 总览/层级/文档及剩余Project消费者，保留各自分母和错误边界 |
 | IZ-07.3c3/d与07.4 | 待办 | Bootstrap协商减量/兼容、失效影响图、实际传输/响应/规模测量 |
 

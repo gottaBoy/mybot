@@ -1,6 +1,37 @@
 # 下次从这里继续
 
-更新日期：2026-11-20（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
+更新日期：2026-11-21（Asia/Singapore；用户日期11月20日America/New_York，历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
+
+**优先级调整（2026-11-20，用户反馈“看着没什么变化，目标呢，任务呢”）：**
+先读[当前产品目标与交付任务](docs/PRODUCT_GOALS_CURRENT.md)。
+收尾进行中的Inbox/ADR-0020后，下一批优先做“目标与任务工作区”的可见闭环：
+真实目标/任务→资源安排→Agent过程→成果/审查；然后持续会话和固定Workflow版本。
+总览/层级/文档等剩余投影和Bootstrap减量不再自动成为下一批，只按阻塞/正确性/规模推进。
+当前Inbox已按下方完成本地验收，不把路线调整写成上述新目标工作区已完成或主4180已启用。
+
+**最新完成（2026-11-20–21，IZ-07.3c2b2 Inbox收尾）：**
+起始dd6b34c已push/工作树干净。先读
+[ADR-0020](docs/decisions/ADR-0020-bounded-inbox.md)及
+`frontend/evidence/inbox-2026-11-21/README.md`。client/UI/browser三Agent分工，
+root接入口、实际API/综合、产品目标重排和记录。client因用户steering中断后原Agent恢复，
+保留落盘成果，没有重复实现。新产品文件无Python/依赖/执行权限变化。
+复用明确task_query与独立task_detail，不加重复后端；Inbox固定Task-latest pending/attention，
+完整list DTO/独立inboxType/20/50/100/真实总数；文本草稿Search/非IME Enter提交、类型scope
+即时且保留草稿，非法type与不支持的JQL/项目/状态/group条件明确阻断。
+仅呈现的选中项按需读详情，手机只一份Dialog；advertised失败不回退，缺detailcap用已验list
+快照，不补Bootstrap error。fresh detail不再符合Inbox时不开放动作；原Review仍需资料确认。
+busy/迟到/15s/ready-only poll/401、稳定显式ID移除不换任务、分页与Dialog焦点都已验。
+最终1605前端（56文件）/156既有Python接口合同/typecheck/build；生产59/实际8/综合58，
+78最终PNG无pageerror。后续client仅格式化与补44测试，final build执行JS/CSS指纹同已测构建；
+不把source map差异当功能变动。完整996Python属前批，此轮未重跑，无新Python。
+实际fixture.OTbdY6含45项目45Task88终态Run/0model，Inbox44=43attention+1pending；
+恢复成功Task排除，原业务数组前后不变，仅公开fixture登录POST。综合fresh MkX2k7使用
+FakeProvider/MockTransport，无真实Provider/费用/正式写入。保留cap更新时序和手机隐藏Refresh
+的脚本失败，最终用真实poll验移除；Starlette/httpx与大包警告保留。
+主4180仍PID2064113，无task_query/task_detail，5173保持200/legacy；临时4187/5176停止。
+无凭证/正式DB/兄弟修改/升级/部署，原119/9/110不变；commit/push以Git回执为准。
+**下一批以PRODUCT_GOALS_CURRENT为准：T0本机版本对齐、T1–T6目标/任务工作区。**
+总览/层级/文档与Bootstrap减量仍留待办，按实际阻塞推进，不自动作为下一轮主线。
 
 **最新完成（2026-11-20，IZ-07.3c2b1看板按列有界读取）：**
 起始3ab8c69已push且工作树干净。先读

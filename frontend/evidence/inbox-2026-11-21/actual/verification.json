@@ -1,0 +1,43 @@
+{
+  "fixture": true,
+  "source": "Actual disposable HTTP/API/SQLite through production UI",
+  "checks": [
+    "Existing Task query API gives44 Inbox Tasks (43 attention+1 pending), excluding recovered latest-success Task and88 Run denominator",
+    "Production list preserves exact server page; desktop reads only selected task details and links exact fresh latestRun",
+    "Page2 uses globally ordered20 items and survives reload",
+    "Last page contains4 items and restores available Previous focus; Back restores page2",
+    "Real50/100 capacities reset page and return all44 matched Tasks, not a sliced20-row cache",
+    "Immediate type scope preserves search draft; Enter commits exact TaskID and fresh pending detail retains full acceptance",
+    "390px Chinese Inbox reads details only after selection, shares one dialog body and restores visible trigger focus without document overflow",
+    "Original business arrays unchanged; only public fixture login POST, no model, review preview or execution request"
+  ],
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    }
+  ],
+  "blocked": [],
+  "external": [],
+  "details": [
+    "/api/tasks/reference-task-044-0/detail",
+    "/api/tasks/reference-task-044-0/detail",
+    "/api/tasks/reference-task-024-0/detail",
+    "/api/tasks/reference-task-024-0/detail",
+    "/api/tasks/reference-task-004-0/detail",
+    "/api/tasks/reference-task-024-0/detail",
+    "/api/tasks/reference-task-044-0/detail",
+    "/api/tasks/reference-task-044-0/detail",
+    "/api/tasks/reference-task-000-1/detail",
+    "/api/tasks/reference-task-000-1/detail",
+    "/api/tasks/reference-task-000-1/detail",
+    "/api/tasks/reference-task-024-0/detail"
+  ],
+  "screenshots": [
+    "actual-inbox-first.png",
+    "actual-inbox-second.png",
+    "actual-inbox-mobile-details.png",
+    "actual-inbox-mobile.png"
+  ]
+}

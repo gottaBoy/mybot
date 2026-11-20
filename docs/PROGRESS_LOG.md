@@ -994,6 +994,41 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
   无凭证/正式DB/兄弟修改/升级/部署，原119/9/110不变。下一项Inbox，继而总览/层级/
   文档等，Bootstrap协商/失效/测量仍开放。独立commit/push以Git回执为准。
 
+## 2026-11-21
+
+### 工作项：Inbox收尾与产品目标重排
+
+- 起始dd6b34c已push/工作树干净；始于11月20日，验收完成于21日Asia/Singapore，
+  用户日期仍11月20日America/New_York。先记录ADR-0020，再client/UI/browser分工；
+  root负责入口、真实API/综合和产品目标记录。client中断后原Agent恢复，无重复实现。
+- 无新增Python/接口/依赖；复用明确task_query和独立task_detail。Inbox只取最新态
+  pending/attention，完整Task DTO及20/50/100有界页；query草稿Search/IME与即时类型
+  scope分开，inboxType独立URL。不支持JQL/项目/状态/group条件明确失败，不静默取全部。
+- 仅当前呈现选中项读detail，手机一份Dialog；缺detailcap用已验list快照，声明后失败
+  不回退。远程summary用goal/status，不补Bootstrap error；fresh detail不符合当前Inbox
+  不开放动作，Review仍为原资料/资源确认。21UI/44client新增覆盖精确Task/Run与busy旧handler。
+- 请求key/15s取消/迟到丢弃、ready-only poll不取消loading或重试error、401清私有；
+  显式选中ID移出结果保持unavailable，不自动选另一任务，分页和Dialogfocus均验。
+- 最终1605前端（56文件）/typecheck/build通过；156既有Python query/detail合同回归，
+  无Python变化，完整996属前批未本轮复跑。生产专项59/14PNG、实际API8/4PNG、综合58/60PNG，
+  共78最终PNG无pageerror，三style双mode/390中英/reducedmotion/8s跨6spoll等见独立报告。
+  稳定生产构建后仅client格式化/补44测试，final build执行JS/CSS指纹相同，source map大小
+  变化；不宣称对source-map差异重跑浏览器。证据`frontend/evidence/inbox-2026-11-21/`。
+- 首轮mockcap变更未reload就导航，旧cap请求被脚本误算；手机无可见global Refresh，
+  改用真实poll验移除。失败保留，最终59通过。既有综合脚本未改、原模型/预算/恢复检查保留。
+- 实际fixture.OTbdY6为45项目45Task88终态Run/0model；Inbox44=43attention+1pending，
+  恢复成功Task排除，20/20/4分页及full acceptance/精确Run链接已验。原业务数组前后不变，
+  仅公开fixture登录POST，无preview/Run/模型调用。综合fresh MkX2k7用FakeProvider/MockTransport。
+- 用户反馈“看着没什么变化，目标呢，任务呢”。已承认近期数据工程切片与可见产品目标
+  的偏差，新增PRODUCT_GOALS_CURRENT并回链CONTINUE/TODO/IMPLEMENTATION_PLAN/AGENTS。
+  下一批先T0本机版本对齐及T1–T6目标/任务/执行安排/Agent/成果路径；再持续会话、
+  固定Workflow版本、多端和连接器。其余投影按实际阻塞推进，不自动接着迁移下一列表。
+  新目标工作区仍待实现，不把本轮Inbox/文档或测试数当产品完成率，119/9/110不变。
+- Starlette/httpx和大包警告保留；app166.28/gzip54.74kB、CSS38.91/7.35，
+  lazyWorkspacePages21.12/7.38、CSS1.53/0.57；不是实际总初始transfer/整体提速。
+  主4180仍PID2064113未advertise task_query/task_detail，5173为200/legacy；
+  临时4187/5176停止，无凭证/正式DB写入/兄弟修改/升级/部署。提交push以Git回执为准。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。

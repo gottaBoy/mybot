@@ -3,6 +3,10 @@
 ## Resume
 
 Read `CONTINUE.md` before making assumptions about the project. Then read the latest ADR referenced there and the document relevant to the requested work.
+Use `docs/PRODUCT_GOALS_CURRENT.md` for product delivery priorities. A completed
+query/pagination slice is not completion of the goal/task/Agent/outcome workflow.
+After the current Inbox slice, prioritize that visible workflow rather than
+automatically choosing the next remaining data projection.
 For frontend work, also read `docs/ASTRYX_TEMPLATE_INTEGRATION.md` and
 `docs/UI_ITERATIONS.md`. For Zira-derived work, read `docs/ZIRA_FRONTEND_STUDY.md`
 and `docs/REA_ZIRA_LAYOUT.md`; the 625-file structural index is not runtime evidence.
@@ -311,6 +315,13 @@ product patterns, not replacing Astryx. Apply these rules to mybot:
   independent of table sort/page size; query edits reset it, presentation changes
   retain it. Preserve original command intent before fixed-project scope injection.
   Board reads/paging never write Run status or execute a model.
+- Inbox (ADR-0020) reuses explicit `task_query` and independently `task_detail`.
+  Its fixed pending/attention adapter, `inboxType` and20/50/100 pagination are
+  distinct from general Task/Run/Board presentation state. Unsupported query
+  conditions fail closed. Detail reads occur only for a presented selection;
+  advertised failures cannot fall back to Bootstrap/list details. Fresh details
+  outside the current Inbox are not actionable. Retain explicit stable-ID
+  selection on same-key refresh and never substitute another task after removal.
 - Route and query listeners must consult the shared navigation admission guard.
   Restoring a dirty form's URL in a capture listener alone does not preserve the
   form. One navigation event must share one decision across consumers; confirmed

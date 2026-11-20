@@ -1,0 +1,97 @@
+.wb-theme .wb-main-inbox {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - 56px);
+  min-height: 0;
+  overflow: hidden;
+  padding-bottom: 16px;
+}
+.wb-main-inbox > .wb-banner {
+  flex-shrink: 0;
+}
+.wb-inbox-remote {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+.wb-inbox-remote > .wb-page-heading,
+.wb-inbox-remote > .wb-inbox-query {
+  flex-shrink: 0;
+}
+.wb-inbox-query {
+  align-items: center;
+}
+.wb-inbox-remote .wb-inbox-query .wb-search {
+  flex: 1;
+  min-width: 140px;
+}
+.wb-inbox-remote > .wb-inbox-layout {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.wb-inbox-remote .wb-inbox-list,
+.wb-inbox-remote .wb-inbox-detail {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.wb-inbox-remote .wb-inbox-detail {
+  padding: 20px;
+}
+.wb-inbox-remote .wb-inbox-item-title {
+  margin-top: 8px;
+}
+.wb-inbox-remote .wb-inbox-item-meta {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.wb-inbox-remote .wb-inbox-item-meta small {
+  overflow-wrap: anywhere;
+}
+.wb-inbox-pagination,
+.wb-inbox-page-tools {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 8px;
+}
+.wb-inbox-pagination {
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  border-top: 1px solid var(--wb-border);
+  padding: 12px 0 0;
+  color: var(--wb-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.wb-inbox-page-tools {
+  flex-wrap: wrap;
+}
+.wb-inbox-capacity {
+  flex: 0 0 136px;
+  width: 136px;
+}
+@media (max-width: 650px) {
+  .wb-inbox-remote .wb-inbox-query {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .wb-inbox-remote .wb-inbox-query > :first-child {
+    flex-basis: 100%;
+  }
+  .wb-inbox-remote .wb-inbox-list {
+    padding-right: 0;
+  }
+  .wb-inbox-page-tools {
+    gap: 4px;
+  }
+  .wb-inbox-capacity {
+    flex-basis: 124px;
+    width: 124px;
+  }
+}

@@ -628,3 +628,19 @@ unit和desktop/mobile跨Tasks/Board、mode及表格设置保持均已验。
 不拿旧英文截图当中文证据。详见ADR-0019及
 `frontend/evidence/task-board-2026-11-20/README.md`。主4180未加载cap，Bootstrap仍全量，
 不是全站性能或用户视觉接受，也未扩执行权限。
+
+## 34. Inbox收尾与产品优先级回归
+
+日期：2026-11-20–21，Asia/Singapore。IZ-07.3c2b2复用既有Task query/detail API，
+Inbox增加真实分页、提交式文本搜索、独立即时类型scope及选中后读取详情。
+桌面列表/正文独立滚动、手机同一Dialog正文，footers在视口；没有新造数据或换组件库。
+
+失败不显示旧Bootstrap或伪0，busy保留内容但禁用旧动作；选中Task离开结果不换成别项。
+fresh detail已不符合当前Inbox时只提供刷新，精确Task/Run动作沿既有流程。
+实际手机8项、生产专项59及综合58通过，78最终PNG；两次脚本假设错误保留，
+详见ADR-0020及`frontend/evidence/inbox-2026-11-21/README.md`。
+
+用户指出“看着没什么变化，目标呢，任务呢”。这明确暴露当前工程切片与可见产品交付的
+偏差；近期读取改造也未在主4180加载。下一批不以再迁移一个视图为默认目标，按
+`PRODUCT_GOALS_CURRENT.md`推进本机版本对齐、目标/任务入口、执行安排、Agent跟进和成果审查。
+这些目标工作区任务仍待实现，不把本轮Inbox或文档当作已经完成的产品改版。

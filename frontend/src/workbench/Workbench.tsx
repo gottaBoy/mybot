@@ -772,7 +772,7 @@ export function Workbench() {
           </header>
           <main
             id="wb-main"
-            className={`wb-main ${route.page === 'run' ? 'wb-main-run' : ''} ${route.page === 'work' || (route.page === 'project' && project) ? 'wb-main-work' : ''}`}
+            className={`wb-main ${route.page === 'run' ? 'wb-main-run' : ''} ${route.page === 'work' || (route.page === 'project' && project) ? 'wb-main-work' : ''} ${route.page === 'inbox' && data?.capabilities.task_query === true ? 'wb-main-inbox' : ''}`}
             tabIndex={-1}
           >
             {error && (
@@ -868,6 +868,10 @@ export function Workbench() {
                     t={t}
                     onNewTask={newTask}
                     onPrepare={(task) => void prepare(task)}
+                    refreshRevision={queryRefreshRevision}
+                    location={listLocation}
+                    onLocationChange={updateListLocation}
+                    resetKey={queryDraftResetKey}
                   />
                 ) : route.page === 'hierarchy' ? (
                   <ProjectHierarchy

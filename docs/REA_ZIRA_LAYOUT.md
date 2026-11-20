@@ -172,3 +172,17 @@ mybot ADR-0019用一次只读快照返回五列真实Task-latest计数及每列2
 1540前端/996Python/build与生产50/实际8/综合58、76PNG见本轮证据。
 源码观察、代码复核发现、首次失败和最终runtime分别记录，未改变主4180或Bootstrap，
 不扩大成Zira全站/真机/用户视觉接受或执行能力。
+
+## Inbox边界与产品主线调整（2026-11-20–21）
+
+沿既有Zira固定HEAD `1ce0d0510cb590f3a79ca498f7239ff0852ed0d7`及query/data/selection/
+mobile专题，不重新读取或启动Zira。学习的仍是草稿/查询/选中/详情各自职责、可见读状态、
+滚动和焦点，不把旧源码的fallback或截图版功能当mybot接口能力。
+
+mybot ADR-0020复用Task-query与detail，不再创建相同语义的后端；pending/attention
+是Task-latest固定适配，独立inboxType/分页，只有选中并呈现时读详情。保留Astryx同一树，
+错误与真实空分开，不用Bootstrap error补充未返回的DTO。
+生产59/实际8/综合58、78最终PNG见本轮证据；不是Zira运行或用户视觉接受。
+
+用户反馈核心目标和任务不可见，后续以`PRODUCT_GOALS_CURRENT.md`为优先级，
+先整合目标→任务→Agent→成果路径。其余投影仅按实际阻塞推进，不把本专题当无限迁移清单。
