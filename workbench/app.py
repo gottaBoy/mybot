@@ -36,6 +36,7 @@ from .schemas import (
     SavedViewCreate, SavedViewDelete, SavedViewUpdate,
 )
 from .saved_views import SavedViewError
+from .run_query import RunQueryError, parse_run_query, read_run_page
 from .task_detail import TaskDetailError, parse_task_detail, read_task_detail
 from .task_query import EMPTY_QUERY, MAX_PAGE, TaskQueryError, parse_task_query, read_task_page
 from .workspace_reads import (
@@ -152,6 +153,10 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     async def task_query_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
 
+    @app.exception_handler(RunQueryError)
+    async def run_query_error(request, exc):
+        return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
+
     @app.exception_handler(TaskDetailError)
     async def task_detail_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
@@ -230,6 +235,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "parallel_research": True, "max_parallel": 2,
                                  "agent_work": True,
                                  "task_query": True,
+                                 "run_query": True,
                                  "task_detail": True,
                                  "workspace_counts": True,
                                  "workspace_search": True,
@@ -461,6 +467,24 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
             return store.create_run(identifier, body.request_id, config, context)
         except ValueError as exc:
             raise HTTPException(409, str(exc)) from exc
+
+    @app.get("/api/runs/query")
+    def run_query(
+        request: Request,
+        query: str = Query(EMPTY_QUERY, max_length=24000),
+        sorts: str = Query("[]", max_length=1024),
+        scope_project_id: str | None = Query(None, min_length=1, max_length=100),
+        page: int = Query(1, ge=1, le=MAX_PAGE),
+        page_size: int = Query(20, ge=20, le=100),
+    ):
+        allowed = {"query", "sorts", "scope_project_id", "page", "page_size"}
+        if any(
+            key not in allowed or len(request.query_params.getlist(key)) != 1
+            for key in request.query_params
+        ):
+            raise RunQueryError("run_query_parameters_invalid")
+        candidate = parse_run_query(query, sorts, scope_project_id, page, page_size)
+        return read_run_page(store.path, candidate)
 
     @app.get("/api/runs/{identifier}")
     async def run_detail(identifier: str):

@@ -140,3 +140,19 @@ sameID临时失败保留有stale反馈的已验对象和querydraft；missing/for
 真实APIfixture明确新增1Task及preview而非模型执行，原任务/Run/项目/模型均比对。
 1314前端/787Python/build及最终37/44/58/4项、81PNG见本轮证据；
 其他视图仍用Bootstrap、主4180未加载新cap，不把局部运行通过当整体减量或视觉接受。
+
+## Run历史结果合同适配（2026-11-20）
+
+继续固定Zira HEAD `1ce0d0510cb590f3a79ca498f7239ff0852ed0d7`及已记录的
+IssueNavigatorPage、filter-sidebar、toolbar/query-keys观察；本轮未重新clone/fetch/
+读取或启动Zira，不把用户截图当该源码的完整排序/分页支持证明。
+
+本地ADR-0018把“真实查询结果/唯一分页/明确分母/工具位置”的原则用于所有历史Run，
+与Task latest投影分开；Astryx保持唯一组件体系，未复制Zira组件或样式。
+已有AppDataTable支持serverSorted和全局row位置，行序与文字匹配由服务端决定；
+Run-specific URL单排序不借用Task多排序或SavedViews。UI保留单行候选/Search、右上设置，
+父视图保护列/行距及不抢焦点，GET失败不转成功空态。
+
+最终1415前端/906Python/build，生产48/实际9/综合58、80PNG无pageerror，见
+`frontend/evidence/run-query-2026-11-20/README.md`。真实fixture历史失败在Task恢复后仍保留，
+不是Zira运行验收、整体Bootstrap减量、主环境启用或用户视觉接受。

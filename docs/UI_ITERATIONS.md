@@ -591,3 +591,22 @@ forbidden清除对象、401清私有。新Task不默认Bootstrap首项，Astryx�
 现显式选fixture项目，未删原运行、预算及恢复检查。失败另存。
 见ADR-0017与`frontend/evidence/project-resources-2026-11-20/README.md`。
 原4180未启用cap，5173仍legacy；不声称Bootstrap已减量、全站视觉接受或设备/Workflow执行完成。
+
+## 32. 全历史Run分页和页面连续性
+
+日期：2026-11-20，Asia/Singapore。IZ-07.3c2a沿原顶栏/Filters/单行query/结果工具层次；
+Run记录由bounded endpoint提供，唯一footer支持20/50/100真实容量/总数，右上保留表格设置，
+不新增演示页、主题组件或与Task共用错误统计分母。
+
+查询不同key先隐藏旧页，同key刷新保留busy行并阻止旧链接/排序/翻页；403/404/invalid2xx
+显示失败和显式重试，不回退Bootstrap。手机结果体可横滚，文档不溢出。独立Run排序URL、
+Search草稿/IME、clamp不改URL、Back/刷新与服务端顺序均在生产构建实际验证。
+
+复核发现翻页remount会重置表格局部偏好，已上移父视图保存列/紧凑设置，新增组件及真实
+rowheight/列隐藏跨页断言；分页focus遇ARIA禁用选邻项，失败选Retry，不抢用户搜索焦点。
+未新增偏好reload持久化或容量选择专用focus恢复承诺。
+
+最终1415前端/906Python/build，生产48/实际9/综合58、80PNG无pageerror；三style双mode、
+390中英和reducedmotion已验。JQL wire/header及旧同步测试假设失败保留，详见
+`frontend/evidence/run-query-2026-11-20/README.md`和ADR-0018。
+原4180未加载cap、5173继续legacy；Bootstrap/其他视图未减，不声明全站视觉接受或整体提速。

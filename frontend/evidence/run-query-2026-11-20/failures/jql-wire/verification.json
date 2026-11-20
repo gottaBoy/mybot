@@ -1,0 +1,180 @@
+{
+  "synthetic": true,
+  "source": "Intercepted strict Run-query DTOs through the production frontend",
+  "limits": [
+    "Synthetic endpoint behavior is not actual SQLite or provider evidence.",
+    "Chrome viewports and synthetic composing Enter are not physical-device or IME certification."
+  ],
+  "checks": [
+    "desktop: 45 remote DTO rows own the bounded20-row view; poisoned Bootstrap is absent",
+    "desktop: Basic drafts and composing Enter issue no GET; ordinary Enter commits the exact candidate",
+    "desktop: exact20-row pages retain global ARIA indices across reload/Back/Forward",
+    "desktop: 20/50/100 capacities use one real footer and server clamp does not rewrite requested page99",
+    "desktop: header sorting commits Run-only runOrder and preserves server Unicode order without client sorting",
+    "desktop: server-authoritative text matches are displayed without browser re-filtering",
+    "desktop: invalid runOrder remains visible and blocks GET/results until explicit clear"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22release+4%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/auth/state",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/bootstrap",
+      "search": ""
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=3&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=2&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=3&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=50"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=100"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=99&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22ascending%22%7D%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22ascending%22%7D%5D&page=2&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%7B%22sortKey%22%3A%22title%22%2C%22direction%22%3A%22ascending%22%7D%5D&page=3&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22authority%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22%22%2C%22mode%22%3A%22basic%22%7D&sorts=%5B%5D&page=1&page_size=20"
+    },
+    {
+      "name": "desktop",
+      "method": "GET",
+      "path": "/api/runs/query",
+      "search": "?query=%7B%22text%22%3A%22%22%2C%22projects%22%3A%5B%5D%2C%22states%22%3A%5B%5D%2C%22jql%22%3A%22ORDER+BY+SUMMARY+DESC%22%2C%22mode%22%3A%22jql%22%7D&sorts=%5B%7B%22sortKey%22%3A%22created_at%22%2C%22direction%22%3A%22ascending%22%7D%5D&page=1&page_size=20"
+    }
+  ],
+  "writes": [],
+  "unexpected": [],
+  "externalRequests": [],
+  "errors": [],
+  "screenshots": [
+    "desktop-initial.png",
+    "desktop-clamped.png",
+    "desktop-server-sorted-last-page.png"
+  ],
+  "geometry": [
+    {
+      "name": "desktop",
+      "style": "neutral",
+      "mode": "light",
+      "width": 1440,
+      "background": "light-dark(#ffffff, #1c1f22)",
+      "surface": "",
+      "color": "rgb(0, 0, 0)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "inputRadius": "0px",
+      "inputHeight": 20
+    }
+  ],
+  "failure": {
+    "name": "desktop",
+    "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    {\n+     direction: 'ascending',\n+     sortKey: 'created_at'\n-     direction: 'descending',\n-     sortKey: 'title'\n    }\n  ]\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    {\n+     direction: 'ascending',\n+     sortKey: 'created_at'\n-     direction: 'descending',\n-     sortKey: 'title'\n    }\n  ]\n\n    at file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-run-query.mjs:495:14",
+    "tree": "- link \"Skip to content\":\n  - /url: \"#wb-main\"\n- complementary:\n  - link \"mybot WORKSPACE\":\n    - /url: \"#workbench\"\n    - strong: mybot\n    - text: WORKSPACE\n  - strong: R&D workspace\n  - text: Local · Single user\n  - button \"New task\":\n    - text: New task\n    - status\n  - navigation \"Main navigation\":\n    - link \"Overview\":\n      - /url: \"#overview\"\n    - link \"Workbench\":\n      - /url: \"#workbench\"\n    - link \"Inbox\":\n      - /url: \"#inbox\"\n    - link \"Projects\":\n      - /url: \"#projects\"\n    - link \"Documents\":\n      - /url: \"#documents\"\n    - link \"Models & resources\":\n      - /url: \"#models\"\n    - link \"Conversation backends\":\n      - /url: \"#backends\"\n  - text: PROJECTS\n  - button \"Create project\":\n    - status\n  - link \"Alpha\":\n    - /url: \"#project/run-query-alpha\"\n  - link \"Beta\":\n    - /url: \"#project/run-query-beta\"\n  - button \"Preferences\":\n    - text: Preferences\n    - status\n  - link \"Component lab\":\n    - /url: \"#templates\"\n  - link \"Classic workbench\":\n    - /url: http://127.0.0.1:4180/\n  - text: Read-only research\n- banner:\n  - text: Workspace\n  - strong: Workbench\n  - button \"Quick find\":\n    - text: Quick find\n    - status\n  - status: Synced\n  - button \"切换为中文\":\n    - status\n  - button \"Dark mode\":\n    - status\n  - button \"Refresh\":\n    - status\n- main:\n  - region \"Task list workspace\":\n    - complementary:\n      - navigation \"Task scope\":\n        - heading \"Filters\" [level=2]\n        - button \"Collapse filters\" [expanded]:\n          - status\n        - heading \"Run status\" [level=3]\n        - button \"All runs\" [pressed]:\n          - text: All runs 1\n          - status\n        - button \"Active\":\n          - text: Active 0\n          - status\n        - button \"Needs attention\":\n          - text: Needs attention 0\n          - status\n        - button \"Completed\":\n          - text: Completed 1\n          - status\n        - heading \"Projects\" [level=3]\n        - button \"All projects\" [pressed]:\n          - text: All projects 1\n          - status\n        - button \"Alpha\":\n          - text: Alpha 1\n          - status\n        - button \"Beta\":\n          - text: Beta 0\n          - status\n    - heading \"Run history\" [level=1]\n    - text: All projects\n    - status:\n      - strong: \"45\"\n      - text: runs\n    - button \"Views\":\n      - text: Views\n      - status\n    - region \"List search\":\n      - text: JQL query\n      - textbox \"JQL query\":\n        - /placeholder: ORDER BY created DESC\n        - text: ORDER BY SUMMARY DESC\n      - button \"Clear JQL query\":\n        - status\n      - radiogroup \"Query mode\":\n        - radio \"Basic\"\n        - radio \"JQL\" [checked]\n      - button \"Apply query\":\n        - status\n      - button \"Clear filters\":\n        - status\n    - region \"Workbench results\":\n      - toolbar \"Result views and table tools\":\n        - radiogroup \"Work view\":\n          - radio \"Tasks\"\n          - radio \"Board\"\n          - radio \"Runs\" [checked]\n      - status: 45 runs\n      - button \"Table settings\":\n        - text: Table settings\n        - status\n      - group \"Filtered runs\":\n        - table \"Filtered runs\":\n          - rowgroup:\n            - row \"Task Project Execution Run Created\":\n              - columnheader \"Task\"\n              - columnheader \"Project\"\n              - columnheader \"Execution\"\n              - columnheader \"Run\"\n              - columnheader \"Created\"\n          - rowgroup:\n            - row \"é Research release 3 Alpha Failed syntheti Nov 20, 09:39 AM\":\n              - cell \"é Research release 3\":\n                - link \"é Research release 3\":\n                  - /url: \"#run/synthetic-run-003\"\n              - cell \"Alpha\"\n              - cell \"Failed\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:39 AM\"\n            - row \"Z Research release 4 Beta Canceled syntheti Nov 20, 09:37 AM\":\n              - cell \"Z Research release 4\":\n                - link \"Z Research release 4\":\n                  - /url: \"#run/synthetic-run-004\"\n              - cell \"Beta\"\n              - cell \"Canceled\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:37 AM\"\n            - row \"Research release 45 Alpha Running syntheti Nov 20, 09:44 AM\":\n              - cell \"Research release 45\":\n                - link \"Research release 45\":\n                  - /url: \"#run/synthetic-run-045\"\n              - cell \"Alpha\"\n              - cell \"Running\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:44 AM\"\n            - row \"Research release 44 Beta Canceled syntheti Nov 20, 09:42 AM\":\n              - cell \"Research release 44\":\n                - link \"Research release 44\":\n                  - /url: \"#run/synthetic-run-044\"\n              - cell \"Beta\"\n              - cell \"Canceled\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:42 AM\"\n            - row \"Research release 43 Alpha Failed syntheti Nov 20, 09:40 AM\":\n              - cell \"Research release 43\":\n                - link \"Research release 43\":\n                  - /url: \"#run/synthetic-run-043\"\n              - cell \"Alpha\"\n              - cell \"Failed\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:40 AM\"\n            - row \"Research release 42 Beta Paused syntheti Nov 20, 09:38 AM\":\n              - cell \"Research release 42\":\n                - link \"Research release 42\":\n                  - /url: \"#run/synthetic-run-042\"\n              - cell \"Beta\"\n              - cell \"Paused\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:38 AM\"\n            - row \"Research release 41 Alpha Completed syntheti Nov 20, 09:36 AM\":\n              - cell \"Research release 41\":\n                - link \"Research release 41\":\n                  - /url: \"#run/synthetic-run-041\"\n              - cell \"Alpha\"\n              - cell \"Completed\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:36 AM\"\n            - row \"Research release 40 Beta Running syntheti Nov 20, 09:34 AM\":\n              - cell \"Research release 40\":\n                - link \"Research release 40\":\n                  - /url: \"#run/synthetic-run-040\"\n              - cell \"Beta\"\n              - cell \"Running\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:34 AM\"\n            - row \"Research release 39 Alpha Canceled syntheti Nov 20, 09:32 AM\":\n              - cell \"Research release 39\":\n                - link \"Research release 39\":\n                  - /url: \"#run/synthetic-run-039\"\n              - cell \"Alpha\"\n              - cell \"Canceled\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:32 AM\"\n            - row \"Research release 38 Beta Failed syntheti Nov 20, 09:30 AM\":\n              - cell \"Research release 38\":\n                - link \"Research release 38\":\n                  - /url: \"#run/synthetic-run-038\"\n              - cell \"Beta\"\n              - cell \"Failed\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:30 AM\"\n            - row \"Research release 37 Alpha Paused syntheti Nov 20, 09:28 AM\":\n              - cell \"Research release 37\":\n                - link \"Research release 37\":\n                  - /url: \"#run/synthetic-run-037\"\n              - cell \"Alpha\"\n              - cell \"Paused\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:28 AM\"\n            - row \"Research release 36 Beta Completed syntheti Nov 20, 09:26 AM\":\n              - cell \"Research release 36\":\n                - link \"Research release 36\":\n                  - /url: \"#run/synthetic-run-036\"\n              - cell \"Beta\"\n              - cell \"Completed\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:26 AM\"\n            - row \"Research release 35 Alpha Running syntheti Nov 20, 09:24 AM\":\n              - cell \"Research release 35\":\n                - link \"Research release 35\":\n                  - /url: \"#run/synthetic-run-035\"\n              - cell \"Alpha\"\n              - cell \"Running\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:24 AM\"\n            - row \"Research release 34 Beta Canceled syntheti Nov 20, 09:22 AM\":\n              - cell \"Research release 34\":\n                - link \"Research release 34\":\n                  - /url: \"#run/synthetic-run-034\"\n              - cell \"Beta\"\n              - cell \"Canceled\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:22 AM\"\n            - row \"Research release 33 Alpha Failed syntheti Nov 20, 09:20 AM\":\n              - cell \"Research release 33\":\n                - link \"Research release 33\":\n                  - /url: \"#run/synthetic-run-033\"\n              - cell \"Alpha\"\n              - cell \"Failed\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:20 AM\"\n            - row \"Research release 32 Beta Paused syntheti Nov 20, 09:18 AM\":\n              - cell \"Research release 32\":\n                - link \"Research release 32\":\n                  - /url: \"#run/synthetic-run-032\"\n              - cell \"Beta\"\n              - cell \"Paused\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:18 AM\"\n            - row \"Research release 31 Alpha Completed syntheti Nov 20, 09:16 AM\":\n              - cell \"Research release 31\":\n                - link \"Research release 31\":\n                  - /url: \"#run/synthetic-run-031\"\n              - cell \"Alpha\"\n              - cell \"Completed\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:16 AM\"\n            - row \"Research release 30 Beta Running syntheti Nov 20, 09:14 AM\":\n              - cell \"Research release 30\":\n                - link \"Research release 30\":\n                  - /url: \"#run/synthetic-run-030\"\n              - cell \"Beta\"\n              - cell \"Running\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:14 AM\"\n            - row \"Research release 29 Alpha Canceled syntheti Nov 20, 09:12 AM\":\n              - cell \"Research release 29\":\n                - link \"Research release 29\":\n                  - /url: \"#run/synthetic-run-029\"\n              - cell \"Alpha\"\n              - cell \"Canceled\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:12 AM\"\n            - row \"Research release 28 Beta Failed syntheti Nov 20, 09:10 AM\":\n              - cell \"Research release 28\":\n                - link \"Research release 28\":\n                  - /url: \"#run/synthetic-run-028\"\n              - cell \"Beta\"\n              - cell \"Failed\"\n              - cell \"syntheti\":\n                - code: syntheti\n              - cell \"Nov 20, 09:10 AM\"\n      - status: 1-20 / 45\n      - text: Runs per page\n      - combobox \"Runs per page\": 20 / page\n      - button \"Previous run page\" [disabled]:\n        - status\n      - status: 1 / 3\n      - button \"Next run page\":\n        - status"
+  }
+}

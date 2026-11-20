@@ -332,3 +332,20 @@ ADR-0016、REA第32节及`frontend/evidence/project-query-selection-2026-11-19/R
 1314前端/787Python/build；最终生产37/44/58/4项、81PNG、无pageerror。
 合同ADR-0017/REA第33节/`frontend/evidence/project-resources-2026-11-20/README.md`。
 主4180未加载cap、5173继续legacy；Bootstrap与其他消费者未减，不扩119统计或执行权限。
+
+## 21. Run历史有界表格
+
+2026-11-20，IZ-07.3c2a沿table-filter/table模式和原RunsTable，不生成新模板或第二页面树，
+继续React19/Astryx0.7.13与项目wrapper。
+
+| 采用模式 | 本地适配 | 未扩大为 |
+| --- | --- | --- |
+| table / AppDataTable | serverSorted保序、totalRows/rowStart真实全历史分母/ARIA、最小引用行 | 当前页冒充全量、browser再sort/filter/slice |
+| query / single sort | 同一Basic/JQL草稿行，runOrder单字段URL与Task排序分开 | 完整JQL、Task SavedView保存Run状态 |
+| table settings / density | 右上既有Dialog控制列/行距，父视图跨页保持，手机只结果体横滚 | 新主题分支、page size名义控件或持久view |
+| pagination / Button | 唯一20/50/100 footer、clamp、busy禁用与父层focus恢复 | 表格换页即模型执行、GET错误自动写重试 |
+
+1415前端/906Python/build；生产48/实际9/综合58、80最终PNG、无pageerror，
+三style双mode/390中英/迟到/真实poll/ARIA focus有证据。见ADR-0018及
+`frontend/evidence/run-query-2026-11-20/README.md`，源码观察与运行证据分开。
+原4180未加载cap、Bootstrap及其他视图仍全量，不外推整体传输或用户最终视觉接受。

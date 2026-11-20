@@ -794,3 +794,23 @@ git -C /tmp/mybot-upstream-astryx rev-parse HEAD
   只在fixture创建1Task及preview，未执行真实Provider。代码/源码观察/初轮失败/最终runtime分开，
   见ADR-0017和`frontend/evidence/project-resources-2026-11-20/README.md`。
   不外推Bootstrap总量、全部Zira能力、主环境启用、团队权限、真机或用户视觉接受。
+
+## 34. Astryx Run表格保序与生命周期复用（2026-11-20）
+
+- 身份：继续已安装`meta/astryx`Core0.7.13和既有研究commit
+  `5770e5b197cf80d5a824667c23046887cc8fa0f5`，不声称新版本或npm/Git逐字节一致；
+  未clone/fetch/升级/复制上游源码，原MIT/NOTICE保持。
+- R：复用已记录发布包Table/Button/Selector行为与本地
+  `frontend/src/components/ui/DataTable.tsx`、`RunViews.tsx`、
+  `components/ui/index.tsx`公开wrapper合同；本轮没有新增上游源码审计结论。
+- E：AppDataTable已有serverSorted/totalRows/rowStart，可传权威page且不在browser重排；
+  Astryx禁用按钮可能是aria-disabled，恢复focus必须同时排除native/ARIA两类。
+  不同query加载会卸载表格，表格内偏好/ref无法跨该生命周期保存。
+- A：RunsTable沿既有wrapper组成单页/总数/真实容量，父层持有列和compact偏好、按exact
+  request key恢复可用分页或Retry焦点，用户移焦时不抢回；busy旧行链接阻断。
+  DTO/Run状态/Unicode排序由ADR-0018后端与strict客户端负责，不是Table组件的新能力。
+- T：1415前端/906Python/build；生产专项48/实际9/综合58、80最终PNG无pageerror。
+  实测列/compact几何跨页、末页ARIA禁用、错误focus、三style双mode/390中英及真实poll；
+  源码既有观察、local实现、失败和最终运行见
+  `frontend/evidence/run-query-2026-11-20/README.md`。Bootstrap与其他消费者未减，
+  原4180未加载cap，不外推完整Zira、主服务启用或整体性能。

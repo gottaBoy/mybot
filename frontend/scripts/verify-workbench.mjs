@@ -2671,7 +2671,10 @@ async function verifyFullWorkbench() {
     .getByRole('button')
     .first()
     .click()
-  assert.equal(await runsTable.locator('th[aria-sort="ascending"]').count(), 1)
+  await assertPoll(
+    () => runsTable.locator('th[aria-sort="ascending"]').count(),
+    (count) => count === 1,
+  )
   await page.getByRole('button', { name: '表格设置', exact: true }).click()
   dialog = page.getByRole('dialog')
   await dialog.getByRole('checkbox', { name: '项目列', exact: true }).uncheck()

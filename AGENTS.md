@@ -297,6 +297,13 @@ product patterns, not replacing Astryx. Apply these rules to mybot:
   missing/forbidden/401 must hide or clear it. Task creation requires an explicit
   project candidate and a fresh exact-ID read before POST; no Bootstrap first-item
   default when references are supported. That read is not a lease or write retry.
+- Run history (ADR-0018) requires explicit `run_query`. It counts every joined
+  historical Run by its own status, independently of Task-latest state. The
+  minimal DTO is server ordered; never sort, filter or slice the admitted page
+  again. `runOrder` is a single Run-specific URL sort, separate from Task
+  `order/sorts` and SavedViews. Invalid Run order blocks remote Run results only.
+  Preserve column/density preferences across page remounts; restore pager focus
+  only when the user has not moved it, excluding native and ARIA-disabled actions.
 - Route and query listeners must consult the shared navigation admission guard.
   Restoring a dirty form's URL in a capture listener alone does not preserve the
   form. One navigation event must share one decision across consumers; confirmed

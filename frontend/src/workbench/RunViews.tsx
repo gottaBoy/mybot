@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import {
   ArrowRight,
+  ChevronLeft,
+  ChevronRight,
   Clock3,
   Columns3,
   FolderGit2,
@@ -13,6 +15,7 @@ import {
   AppCard,
   AppCheckbox,
   AppDialog,
+  AppSelect,
 } from '../components/ui'
 import {
   AppDataTable,
@@ -21,6 +24,8 @@ import {
 } from '../components/ui/DataTable'
 import { useAppDensity } from '../components/ui/DensityContext'
 import type { Bootstrap, Run, Task } from './api'
+import type { RunQueryPage } from './run-query'
+import { parseRunSort, type RunSortRule } from './run-sort'
 import { filteredItems, type BoardColumn } from './projections'
 import {
   statusText,
@@ -29,6 +34,25 @@ import {
   type Filter,
   type Locale,
 } from './state'
+import './run-history.css'
+
+export type RunHistoryRemote = {
+  page: RunQueryPage
+  busy: boolean
+  onSortChange: (sort: RunSortRule[]) => void
+  onPageChange: (page: number) => boolean | void
+  onPageSizeChange: (size: 20 | 50 | 100) => void
+  sortLocked?: boolean
+}
+
+export type RunTablePreferences = {
+  visible: {
+    project: boolean
+    id: boolean
+    created_at: boolean
+  }
+  compact: boolean | undefined
+}
 
 export function RunsTable({
   data,
@@ -36,40 +60,90 @@ export function RunsTable({
   t,
   locale,
   querySort,
+  remote,
+  preferences,
 }: {
   data: Bootstrap
   runs: Run[]
   t: Copy
   locale: Locale
   querySort?: AppTableSort
+  remote?: RunHistoryRemote
+  preferences?: {
+    value: RunTablePreferences
+    onChange: (value: RunTablePreferences) => void
+  }
 }) {
   const [settings, setSettings] = useState(false)
-  const [visible, setVisible] = useState({
-    project: true,
-    id: true,
-    created_at: true,
-  })
-  const [compact, setCompact] = useState<boolean | undefined>(undefined)
+  const [localPreferences, setLocalPreferences] = useState<RunTablePreferences>(
+    {
+      visible: { project: true, id: true, created_at: true },
+      compact: undefined,
+    },
+  )
+  const { visible, compact } = preferences?.value ?? localPreferences
+  const changePreferences = preferences?.onChange ?? setLocalPreferences
   const density = useAppDensity()
-  const rows = runs.map((run) => {
-    const task = data.tasks.find((task) => task.id === run.task_id)
-    return {
-      ...run,
-      title: task?.title ?? run.id,
-      project:
-        data.projects.find((project) => project.id === task?.project_id)
-          ?.name ?? '',
-    }
-  })
+  const busy = Boolean(remote?.busy)
+  const admission = useRef(!busy)
+  admission.current = !busy
+  const rows = remote
+    ? remote.page.items.map((item) => ({
+        ...item.run,
+        title: item.task.title,
+        projectName: item.project.name,
+        project: item.project.name,
+      }))
+    : runs.map((run) => {
+        const task = data.tasks.find((task) => task.id === run.task_id)
+        return {
+          ...run,
+          title: task?.title ?? run.id,
+          project:
+            data.projects.find((project) => project.id === task?.project_id)
+              ?.name ?? '',
+          projectName: '',
+        }
+      })
   type Row = (typeof rows)[number]
+  const sortable = remote ? !remote.sortLocked && !busy : !querySort
+  const changeSort = (sort: AppTableSort) => {
+    if (!remote || !admission.current || remote.sortLocked) return
+    const rule = sort.at(-1)
+    const parsed = parseRunSort(rule ? [rule] : [])
+    if (parsed) remote.onSortChange(parsed)
+  }
+  const changePage = (candidate: number) => {
+    if (!remote || !admission.current) return
+    const page = remote.page
+    if (candidate < 1 || candidate > page.total_pages) return
+    remote.onPageChange(candidate)
+  }
   const columns: AppColumn<Row>[] = [
     {
       key: 'title',
       title: t('任务', 'Task'),
       minWidth: 260,
-      sortable: !querySort,
+      sortable,
       render: (row) => (
-        <a className="wb-table-task" href={`#run/${row.id}`}>
+        <a
+          className="wb-table-task"
+          href={`#run/${row.id}`}
+          aria-disabled={busy || undefined}
+          tabIndex={busy ? -1 : undefined}
+          onClick={(event) => {
+            if (!admission.current) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+          }}
+          onKeyDown={(event) => {
+            if (!admission.current && event.key === 'Enter') {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+          }}
+        >
           {row.title}
           <ArrowRight size={14} />
         </a>
@@ -78,10 +152,10 @@ export function RunsTable({
     ...(visible.project
       ? [
           {
-            key: 'project',
+            key: remote ? 'projectName' : 'project',
             title: t('项目', 'Project'),
             minWidth: 130,
-            sortable: !querySort,
+            sortable,
           },
         ]
       : []),
@@ -89,7 +163,7 @@ export function RunsTable({
       key: 'status',
       title: t('执行状态', 'Execution'),
       width: 130,
-      sortable: !querySort,
+      sortable,
       render: (row) => (
         <AppBadge tone={statusTone(row.status)}>
           {statusText(row.status, t)}
@@ -102,6 +176,7 @@ export function RunsTable({
             key: 'id',
             title: 'Run',
             width: 100,
+            sortable: remote ? sortable : undefined,
             render: (row: Row) => <code>{row.id.slice(0, 8)}</code>,
           },
         ]
@@ -112,7 +187,7 @@ export function RunsTable({
             key: 'created_at',
             title: t('创建时间', 'Created'),
             width: 170,
-            sortable: !querySort,
+            sortable,
             render: (row: Row) =>
               new Date(row.created_at).toLocaleString(
                 locale === 'zh' ? 'zh-CN' : 'en-US',
@@ -128,10 +203,14 @@ export function RunsTable({
       : []),
   ]
   return (
-    <section className="wb-runs-table">
+    <section
+      className={`wb-runs-table${remote ? ' wb-run-history' : ''}`}
+      data-testid="run-history-table"
+      aria-busy={busy || undefined}
+    >
       <div className="wb-table-view-bar">
         <small role="status">
-          {runs.length} {t('条运行记录', 'runs')}
+          {remote ? remote.page.total : runs.length} {t('条运行记录', 'runs')}
         </small>
         <AppButton
           label={t('表格设置', 'Table settings')}
@@ -141,18 +220,90 @@ export function RunsTable({
           onClick={() => setSettings(true)}
         />
       </div>
-      <AppDataTable
-        rows={rows}
-        columns={columns}
-        label={t('运行筛选表', 'Filtered runs')}
-        compact={compact}
-        sorting={
-          querySort ? { sort: querySort, onSortChange: () => {} } : undefined
-        }
-        empty={
-          <p className="wb-empty">{t('没有匹配的运行', 'No matching runs')}</p>
-        }
-      />
+      <div className={remote ? 'wb-run-history-body' : undefined}>
+        <AppDataTable
+          rows={rows}
+          columns={columns}
+          label={t('运行筛选表', 'Filtered runs')}
+          compact={compact}
+          sorting={
+            remote
+              ? { sort: remote.page.sorts, onSortChange: changeSort }
+              : querySort
+                ? { sort: querySort, onSortChange: () => {} }
+                : undefined
+          }
+          serverSorted={Boolean(remote)}
+          totalRows={remote?.page.total}
+          rowStart={
+            remote
+              ? (remote.page.page - 1) * remote.page.page_size + 1
+              : undefined
+          }
+          empty={
+            <p className="wb-empty">
+              {t('没有匹配的运行', 'No matching runs')}
+            </p>
+          }
+        />
+      </div>
+      {remote && (
+        <footer className="wb-run-history-pagination">
+          <span
+            data-testid="run-history-range"
+            role="status"
+            aria-live="polite"
+          >
+            {remote.page.total
+              ? `${(remote.page.page - 1) * remote.page.page_size + 1}-${Math.min(remote.page.page * remote.page.page_size, remote.page.total)}`
+              : '0-0'}{' '}
+            / {remote.page.total}
+          </span>
+          <div className="wb-run-history-page-tools">
+            <div className="wb-run-history-capacity">
+              <AppSelect
+                label={t('每页运行数', 'Runs per page')}
+                hiddenLabel
+                value={String(remote.page.page_size)}
+                disabled={busy}
+                options={[20, 50, 100].map((size) => ({
+                  value: String(size),
+                  label: t(`每页 ${size}`, `${size} / page`),
+                }))}
+                onChange={(value) => {
+                  const size = Number(value)
+                  if (
+                    admission.current &&
+                    (size === 20 || size === 50 || size === 100)
+                  )
+                    remote.onPageSizeChange(size)
+                }}
+              />
+            </div>
+            <AppButton
+              label={t('上一页运行', 'Previous run page')}
+              icon={<ChevronLeft size={16} />}
+              iconOnly
+              tone="ghost"
+              data-run-history-page="previous"
+              disabled={busy || remote.page.page <= 1}
+              onClick={() => changePage(remote.page.page - 1)}
+            />
+            <span className="wb-run-history-page-position" role="status">
+              {remote.page.page} / {remote.page.total_pages}
+            </span>
+            <AppButton
+              label={t('下一页运行', 'Next run page')}
+              icon={<ChevronRight size={16} />}
+              iconOnly
+              tone="ghost"
+              data-run-history-page="next"
+              disabled={busy || !remote.page.has_more}
+              onClick={() => changePage(remote.page.page + 1)}
+            />
+          </div>
+        </footer>
+      )}
       {settings && (
         <AppDialog
           title={t('表格设置', 'Table settings')}
@@ -163,7 +314,9 @@ export function RunsTable({
             <AppCheckbox
               label={t('紧凑行距', 'Compact rows')}
               value={compact ?? density === 'compact'}
-              onChange={setCompact}
+              onChange={(value) =>
+                changePreferences({ visible, compact: value })
+              }
             />
             {(['project', 'id', 'created_at'] as const).map((key, i) => (
               <AppCheckbox
@@ -176,7 +329,12 @@ export function RunsTable({
                   ][i]
                 }
                 value={visible[key]}
-                onChange={(value) => setVisible({ ...visible, [key]: value })}
+                onChange={(value) =>
+                  changePreferences({
+                    visible: { ...visible, [key]: value },
+                    compact,
+                  })
+                }
               />
             ))}
           </div>

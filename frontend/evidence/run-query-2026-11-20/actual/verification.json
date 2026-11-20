@@ -1,0 +1,183 @@
+{
+  "fixture": true,
+  "source": "Actual disposable HTTP/API/SQLite through a production frontend",
+  "fixtureSource": "tests/seed_project_references_fixture.py",
+  "checks": [
+    "Actual SQLite endpoint returns all88 historical Run IDs in a minimal read-only projection",
+    "Project000 keeps45 historical Runs and15 failed attention records while the task latest Run is succeeded",
+    "Actual UI displays exact20-row server pages, all88 total and global ARIA row positions; page2 survives reload",
+    "Runs per page changes committed URL capacity to50 and100, resets page and preserves the real38-row last page",
+    "Run-specific URL sorting preserves the authenticated global server order on page2",
+    "Fixed-project UI renders45 historical Runs and15 own-status attention rows rather than the recovered task state",
+    "Search drafts leave rows and URL unchanged; Enter and reload find the exact old failed Run ID",
+    "390px mobile uses the same exact bounded Run page and accessible global positions without document overflow",
+    "Original projects/tasks/Runs/models remain unchanged; only public fixture login POST occurred, with no execution requests"
+  ],
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    }
+  ],
+  "blockedWrites": [],
+  "externalRequests": [],
+  "runQueryReads": [
+    {
+      "query": "{\"text\":\"\",\"projects\":[],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "1",
+      "page_size": "100"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "1",
+      "page_size": "20",
+      "scope_project_id": "reference-project-000"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[],\"states\":[\"attention\"],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "1",
+      "page_size": "20",
+      "scope_project_id": "reference-project-000"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "1",
+      "page_size": "20"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "1",
+      "page_size": "20"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "2",
+      "page_size": "20"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "2",
+      "page_size": "20"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "2",
+      "page_size": "20"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "1",
+      "page_size": "50"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "1",
+      "page_size": "50"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "2",
+      "page_size": "50"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "2",
+      "page_size": "50"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "1",
+      "page_size": "100"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[{\"sortKey\":\"id\",\"direction\":\"ascending\"}]",
+      "page": "2",
+      "page_size": "20"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[{\"sortKey\":\"id\",\"direction\":\"ascending\"}]",
+      "page": "2",
+      "page_size": "20"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[\"reference-project-000\"],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "1",
+      "page_size": "20",
+      "scope_project_id": "reference-project-000"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[\"reference-project-000\"],\"states\":[\"attention\"],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "1",
+      "page_size": "20",
+      "scope_project_id": "reference-project-000"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[\"reference-project-000\"],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "1",
+      "page_size": "20",
+      "scope_project_id": "reference-project-000"
+    },
+    {
+      "query": "{\"text\":\"reference-run-000-0-000\",\"projects\":[\"reference-project-000\"],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "1",
+      "page_size": "20",
+      "scope_project_id": "reference-project-000"
+    },
+    {
+      "query": "{\"text\":\"reference-run-000-0-000\",\"projects\":[],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "1",
+      "page_size": "20",
+      "scope_project_id": "reference-project-000"
+    },
+    {
+      "query": "{\"text\":\"reference-run-000-0-000\",\"projects\":[\"reference-project-000\"],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "1",
+      "page_size": "20",
+      "scope_project_id": "reference-project-000"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "2",
+      "page_size": "20",
+      "scope_project_id": "reference-project-000"
+    },
+    {
+      "query": "{\"text\":\"\",\"projects\":[\"reference-project-000\"],\"states\":[],\"jql\":\"\",\"mode\":\"basic\"}",
+      "sorts": "[]",
+      "page": "2",
+      "page_size": "20",
+      "scope_project_id": "reference-project-000"
+    }
+  ],
+  "screenshots": [
+    "actual-all-runs-page1.png",
+    "actual-all-runs-page2.png",
+    "actual-fifty-last-page.png",
+    "actual-historical-attention.png",
+    "actual-old-run-search.png",
+    "actual-mobile-project-page2.png"
+  ]
+}

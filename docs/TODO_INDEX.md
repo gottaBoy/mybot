@@ -18,6 +18,25 @@ UI 的 WUI 编号是交叉整改视图，执行包是实施组织方式，均可
 
 ## 当前执行包
 
+### 2026-11-20 全历史Run服务端查询
+
+IZ-07.3c2a本地验收完成；不关闭整体07.3/07.4，原119/9/110不变。
+
+| 工作 / 分工 | 状态 | 验收及边界 |
+| --- | --- | --- |
+| 后端Agent：Run历史有界API | 本地完成 | 119新增；明确cap、Run自身状态/历史分母、单排序、ro快照/认证/关闭连接 |
+| client Agent：strict DTO/URL/hook | 本地完成 | 91新增；runOrder独立、minimal身份/分页/绑定、取消/ready-only poll、无本地重排 |
+| table Agent + root：Astryx表格 | 本地完成 | 10新增；真实总数/20/50/100/ARIA、busy阻断、偏好跨页/父层焦点恢复 |
+| root + browser Agent：最终验收 | 完成所列范围 | 1415前端/906Python/build；生产48/实际9/综合58、80PNG无pageerror |
+| IZ-07.3c2b其他视图 | 下一项 | Board/Inbox/总览/层级/文档及剩余Project消费者独立投影，不拼假完整对象 |
+| IZ-07.3c3/d与07.4 | 待办 | Bootstrap协商减量/旧入口兼容、失效影响图、实际传输/响应/规模测量 |
+
+合同[ADR-0018](decisions/ADR-0018-bounded-run-history.md)；
+[最终证据/失败](../frontend/evidence/run-query-2026-11-20/README.md)。
+真实88 Run fixture原数组不变/仅登录，综合fresh fixture用FakeProvider/MockTransport。
+原4180未加载新cap、5173继续legacy；临时服务已停，无真实模型/正式DB/部署。
+Bootstrap仍全量；提交push以Git回执为准，不把本地测试当主环境已启用。
+
 ### 2026-11-20 完整项目资源消费者
 
 IZ-07.3c1b所列route/list/taskform本地验收；原119/9/110计数不变。
@@ -28,7 +47,7 @@ IZ-07.3c1b所列route/list/taskform本地验收；原119/9/110计数不变。
 | client Agent：strict DTO/hook/列表 | 本地完成 | 59专项；URL q/page/pageSize、目标/目录保留、按需详情/明确失败/无Bootstrap回退 |
 | 表单Agent + root：分页项目单选 | 本地完成 | 7picker+3form新增；显式ID、fresh GET、15s/取消/基线/duplicate锁、无项目dirty保护 |
 | root：路由/共享radio/浏览器/证据 | 完成所列范围 | 1314前端/787Python/build；生产37/44/58/4、81PNG，无pageerror |
-| IZ-07.3c2a全历史Run读取 | 下一项 | 建有界Run查询/分页合同，保留历史分母、真实顺序、过滤及选中Run行为 |
+| IZ-07.3c2a全历史Run读取 | 已由上方完成所列范围 | 有界查询/分页/历史分母/真实顺序已验，其他消费者留c2b |
 | IZ-07.3c2b其他视图 | 待办 | Board/Inbox/总览/层级/文档与剩余Project使用独立投影，不在browser拼假完整对象 |
 | IZ-07.3c3/d与07.4 | 待办 | Bootstrap协商减量/旧入口兼容、失效影响图、实际传输/响应/规模证据 |
 

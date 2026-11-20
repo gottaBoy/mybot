@@ -68,6 +68,7 @@ export type Bootstrap = {
     project_references?: boolean
     project_detail?: boolean
     project_query?: boolean
+    run_query?: boolean
   }
 }
 export type Snapshot = {

@@ -1,6 +1,7 @@
 import { parseQueryConditions } from './query-conditions'
 import type { QueryStateCategory } from './query-conditions'
 import { parseTaskSort, type TaskSortRule } from './task-sort'
+import { runOrderSort } from './run-sort'
 
 export const listKeys = [
   'q',
@@ -14,6 +15,7 @@ export const listKeys = [
   'states',
   'order',
   'sorts',
+  'runOrder',
   'groupBy',
   'group',
   'page',
@@ -32,6 +34,8 @@ export type ListLocation = {
   order?: string
   sorts?: TaskSortRule[]
   sortsInvalid?: true
+  runOrder?: string
+  runOrderInvalid?: true
   groupBy: string
   group: string
   page?: number
@@ -66,6 +70,7 @@ function normalizedParameter(key: string, value: string | null) {
   if (key === 'project') return value.trim() || undefined
   if (key === 'filter') return filterValue(value)
   if (key === 'order') return orderValue(value)
+  if (key === 'runOrder') return value
   if (key === 'projects' || key === 'states') {
     const result = parseQueryConditions(
       key === 'projects' ? value : null,
@@ -119,6 +124,7 @@ export function readListLocation(href: string): ListLocation {
   const filter = filterValue(params.get('filter'))
   const project = normalizedParameter('project', params.get('project'))
   const order = orderValue(params.get('order'))
+  const runOrder = params.get('runOrder')
   const conditions = parseQueryConditions(
     params.get('projects'),
     params.get('states'),
@@ -158,6 +164,14 @@ export function readListLocation(href: string): ListLocation {
             : {}),
         }),
     ...(order === undefined ? {} : { order }),
+    ...(runOrder === null
+      ? {}
+      : {
+          runOrder,
+          ...(runOrderSort(runOrder) === undefined
+            ? { runOrderInvalid: true as const }
+            : {}),
+        }),
     ...(params.has('sorts')
       ? sorts === undefined
         ? { sortsInvalid: true as const }

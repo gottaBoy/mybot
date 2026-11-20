@@ -2,6 +2,29 @@
 
 更新日期：2026-11-20（Asia/Singapore；历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
 
+**最新完成（2026-11-20，IZ-07.3c2a全历史Run服务端分页）：**
+起始5710f3d已push且工作树干净。先读
+[ADR-0018](docs/decisions/ADR-0018-bounded-run-history.md)和
+`frontend/evidence/run-query-2026-11-20/README.md`。
+继续用户多Agent授权：backend/client/table分工，root整合/焦点/浏览器/记录。
+新明确run_query能力、GET /api/runs/query，所有历史Run按自身status分类，minimal DTO、
+20/50/100/真实总数/有限JQL与单Run排序/一次ro query_only快照，不发送上下文或模型。
+客户端strict身份/分页/发送绑定、15s取消/迟到丢弃/ready-only poll，错误不回退Bootstrap。
+RunsTable使用同一Astryx wrapper/serverSorted，保留服务端行序，无browser再filter/sort/slice；
+独立runOrder URL不继承Task sorts，不进SavedViews；原单行查询/右上表格工具保持。
+翻页隐藏旧页、samekey刷新保留busy行并阻断；父视图保留列/紧凑偏好、分页focus排除native及
+ARIA禁用/不抢用户移焦。偏好仅当前页面内存，不宣称reload持久。
+最终1415前端（51文件）/906Python/typecheck/build；生产专项48/实际API9/综合58、
+80最终PNG无pageerror，三style双mode/390中英/8s跨6spoll/错误不重放/401已验。
+保留JQL wire/header、重复candidate和旧同步排序断言失败；未删除原模型/预算/恢复检查。
+真实fixture.cYS5vD从45项目45任务88终态Run/0model起，全部原业务数组前后不变，仅fixture登录；
+项目000为45历史/15失败，Task latest成功，分母和状态分别验证。综合fresh qExepv使用
+FakeProvider/MockTransport，无真实Provider或费用。Starlette/httpx及大包警告保留。
+主4180仍PID2064113未启用新cap；5173恢复200继续legacy，临时4187/5176停止。
+无凭证/正式DB写入/部署/兄弟修改/升级，原119/9/110不变；独立commit/push以Git回执为准。
+下一项IZ-07.3c2b Board/Inbox/总览/层级/文档等剩余投影与Project消费者，再协商Bootstrap减量、
+失效影响图及实际传输/规模测量；不因Run表格完成关闭07.3整体或07.4。
+
 **最新完成（2026-11-20，IZ-07.3c1b完整项目资源消费者）：**
 用户继续（America/Los_Angeles11月19日），起始7bb2140已push/工作树干净。先读
 [ADR-0017](docs/decisions/ADR-0017-project-resource-consumers.md)和

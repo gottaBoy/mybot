@@ -7,6 +7,58 @@ import {
 
 const example =
   'jql=assignee+%3D+currentUser%28%29+ORDER+BY+created+DESC&mode=basic&view=list&groupBy=&group=none'
+describe('Run history order URL state', () => {
+  it('round trips runOrder independently from Task order/sorts', () => {
+    const href = listLocationHref(
+      'http://localhost/?source=keep#workbench?view=table&order=attempts:descending',
+      {
+        runOrder: 'created_at:ascending',
+        page: 1,
+      },
+    )
+    expect(readListLocation(`http://localhost${href}`)).toMatchObject({
+      view: 'table',
+      order: 'attempts:descending',
+      runOrder: 'created_at:ascending',
+      page: 1,
+    })
+  })
+  it('preserves malformed Run sorting through unrelated presentation changes', () => {
+    const next = listLocationHref(
+      'http://localhost/#workbench?runOrder=attempts:ascending',
+      { view: 'list' },
+    )
+    const state = readListLocation(`http://localhost${next}`)
+    expect(state.runOrder).toBe('attempts:ascending')
+    expect(state.runOrderInvalid).toBe(true)
+    expect(supportedListQuery(state)).toEqual({ sort: undefined })
+  })
+  it('clears Run order without deleting independent Task settings', () => {
+    const href = listLocationHref(
+      'http://localhost/?runOrder=id:ascending#workbench?runOrder=status:descending&order=title:ascending',
+      { runOrder: undefined },
+    )
+    expect(readListLocation(`http://localhost${href}`)).toMatchObject({
+      order: 'title:ascending',
+    })
+    expect(readListLocation(`http://localhost${href}`)).not.toHaveProperty(
+      'runOrder',
+    )
+    expect(new URL(href, 'http://localhost').searchParams.has('runOrder')).toBe(
+      false,
+    )
+  })
+  it('prefers hash-scoped Run sorting and keeps empty candidate explicitly invalid', () => {
+    expect(
+      readListLocation(
+        'http://localhost/?runOrder=id:ascending#workbench?runOrder=',
+      ),
+    ).toMatchObject({
+      runOrder: '',
+      runOrderInvalid: true,
+    })
+  })
+})
 describe('shareable list URL state', () => {
   it('keeps a committed basic query separate from the JQL expression', () => {
     expect(

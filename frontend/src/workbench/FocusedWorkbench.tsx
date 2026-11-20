@@ -76,6 +76,9 @@ import { useWorkspaceCounts } from './useWorkspaceCounts'
 import { ProjectReferenceDirectory } from './ProjectReferenceDirectory'
 import { ProjectQueryPicker } from './ProjectQueryPicker'
 import { useProjectReferences } from './useProjectReferences'
+import { useRunQuery } from './useRunQuery'
+import { runOrderSort } from './run-sort'
+import type { RunTablePreferences } from './RunViews'
 import {
   ProjectSelectionChangedError,
   validateProjectSelection,
@@ -174,6 +177,11 @@ export function FocusedWorkbench(props: Props) {
   const [visibleColumns, setVisibleColumns] = useState(readTaskColumns)
   const [columnOrder, setColumnOrder] = useState(readTaskColumnOrder)
   const [tableSettingsOpen, setTableSettingsOpen] = useState(false)
+  const [runTablePreferences, setRunTablePreferences] =
+    useState<RunTablePreferences>({
+      visible: { project: true, id: true, created_at: true },
+      compact: undefined,
+    })
   const [projectInfoOpen, setProjectInfoOpen] = useState(false)
   const [viewFeedbackContainer, setViewFeedbackContainer] =
     useState<HTMLDivElement | null>(null)
@@ -259,12 +267,21 @@ export function FocusedWorkbench(props: Props) {
       : committedConditions.projects.some(
           (id) => !data.projects.some((project) => project.id === id),
         ))
-  const queryPolicy = supportedListQuery(location)
+  const runQueryEnabled = data.capabilities.run_query === true
+  const queryPolicy = supportedListQuery(
+    view === 'table' && runQueryEnabled
+      ? { ...location, sortsInvalid: undefined }
+      : location,
+  )
+  const runSort = runOrderSort(location.runOrder)
   const localProblem =
     queryPolicy.error ??
     committedSelection.error ??
     (projectReferencesError ? 'project_reference_error' : undefined) ??
     (unavailableProject ? 'condition_value_unavailable' : undefined) ??
+    (view === 'table' && runQueryEnabled && !runSort
+      ? 'run_sort_invalid'
+      : undefined) ??
     (view === 'board' && location.jql ? 'jql_unavailable' : undefined)
   const [serverPage, setServerPage] = useState<{
     key?: string
@@ -282,6 +299,31 @@ export function FocusedWorkbench(props: Props) {
     jql: location.jql,
     mode: location.mode,
   }
+  const runQuery = useRunQuery({
+    data,
+    refreshRevision,
+    enabled: view === 'table' && !localProblem && !projectReferencesBusy,
+    request: {
+      query: remoteQuery,
+      sorts: runSort ?? [],
+      scopeProjectId: scope,
+      page,
+      pageSize,
+    },
+  })
+  const runFocusKey = JSON.stringify([
+    data.workspace,
+    remoteQuery,
+    runSort,
+    scope,
+    page,
+    pageSize,
+  ])
+  const runPageFocus = useRef<{
+    key: string
+    direction: 'previous' | 'next'
+    origin: Element | null
+  }>(undefined)
   const remoteSorts = queryPolicy.sort ? [] : (parseTaskSort(sort) ?? [])
   const remoteQueryKey = JSON.stringify([
     data.workspace,
@@ -373,11 +415,39 @@ export function FocusedWorkbench(props: Props) {
   const currentServerPage =
     serverPage.key === remoteQueryKey ? serverPage : undefined
   const serverQueryProblem =
-    currentServerPage?.kind === 'error' ||
-    currentServerPage?.kind === 'unavailable'
+    view === 'list' &&
+    (currentServerPage?.kind === 'error' ||
+      currentServerPage?.kind === 'unavailable')
       ? 'task_query_error'
-      : undefined
+      : view === 'table' && runQuery.remote && runQuery.error
+        ? 'run_query_error'
+        : undefined
   const problem = localProblem ?? serverQueryProblem
+  useEffect(() => {
+    const pending = runPageFocus.current
+    if (!pending) return
+    if (pending.key !== runFocusKey || view !== 'table') {
+      runPageFocus.current = undefined
+      return
+    }
+    if (runQuery.busy || (!runQuery.value && !problem)) return
+    runPageFocus.current = undefined
+    if (
+      document.activeElement !== document.body &&
+      document.activeElement !== pending.origin
+    )
+      return
+    const available = ':not(:disabled):not([aria-disabled="true"])'
+    const preferred = pageRoot.current?.querySelector<HTMLButtonElement>(
+      problem
+        ? `.wf-query-error button${available}`
+        : `[data-run-history-page="${pending.direction}"]${available}`,
+    )
+    const fallback = pageRoot.current?.querySelector<HTMLButtonElement>(
+      `[data-run-history-page]${available}`,
+    )
+    ;(preferred ?? fallback)?.focus()
+  }, [runFocusKey, view, runQuery.busy, runQuery.value, problem])
   const serverQueryErrorText =
     currentServerPage?.error === 'unavailable'
       ? t('服务端任务查询接口不可用。', 'The server task query is unavailable.')
@@ -391,6 +461,12 @@ export function FocusedWorkbench(props: Props) {
     view === 'list' &&
     !projectReferencesBusy &&
     Boolean(currentServerPage?.value)
+  const runReady =
+    view === 'table' &&
+    runQuery.remote &&
+    !projectReferencesBusy &&
+    Boolean(runQuery.value)
+  const hasRemoteResult = remoteReady || runReady
   const remoteActive =
     taskQueryEnabled &&
     view === 'list' &&
@@ -398,6 +474,7 @@ export function FocusedWorkbench(props: Props) {
     !projectReferencesBusy
   const remoteBusy =
     projectReferencesBusy ||
+    (view === 'table' && runQuery.remote && runQuery.busy) ||
     (remoteActive &&
       (!currentServerPage ||
         currentServerPage.kind === 'loading' ||
@@ -697,6 +774,7 @@ export function FocusedWorkbench(props: Props) {
       projects: undefined,
       states: undefined,
       ...(location.sortsInvalid ? { sorts: undefined } : {}),
+      ...(location.runOrderInvalid ? { runOrder: undefined } : {}),
       jql: '',
       mode: 'basic',
       groupBy: '',
@@ -1145,10 +1223,12 @@ export function FocusedWorkbench(props: Props) {
               </span>
               <span className="wf-result-count" role="status">
                 <strong>
-                  {problem || (remoteBusy && !remoteReady)
+                  {problem || (remoteBusy && !hasRemoteResult)
                     ? '-'
                     : view === 'table'
-                      ? runs.length
+                      ? runReady
+                        ? runQuery.value!.total
+                        : runs.length
                       : resultTotal}
                 </strong>{' '}
                 {view === 'table' ? t('次运行', 'runs') : t('项任务', 'tasks')}
@@ -1359,7 +1439,8 @@ export function FocusedWorkbench(props: Props) {
                           '所选项目不可用，请重新选择条件。',
                           'A selected project is unavailable. Review the conditions.',
                         )
-                      : problem === 'sort_invalid'
+                      : problem === 'sort_invalid' ||
+                          problem === 'run_sort_invalid'
                         ? t(
                             '排序定义无效，未执行查询。',
                             'Invalid sort definition. No query was applied.',
@@ -1369,12 +1450,22 @@ export function FocusedWorkbench(props: Props) {
                               '项目引用读取失败，未显示结果。请重试。',
                               'Project references could not be read. No results were shown. Retry to continue.',
                             )
-                          : problem === 'task_query_error'
-                            ? serverQueryErrorText
-                            : t(
-                                '仅支持 created/summary ORDER BY 排序，其他 JQL 条件尚未实现。',
-                                'Only created/summary ordering is supported.',
-                              )}
+                          : problem === 'run_query_error'
+                            ? runQuery.error === 'forbidden'
+                              ? t(
+                                  '没有读取运行记录的权限。',
+                                  'Run history access is forbidden.',
+                                )
+                              : t(
+                                  '运行记录查询失败，未显示结果。请重试。',
+                                  'Run history could not be read. No results were shown. Retry to continue.',
+                                )
+                            : problem === 'task_query_error'
+                              ? serverQueryErrorText
+                              : t(
+                                  '仅支持 created/summary ORDER BY 排序，其他 JQL 条件尚未实现。',
+                                  'Only created/summary ordering is supported.',
+                                )}
             </span>
             <AppButton
               label={
@@ -1394,7 +1485,9 @@ export function FocusedWorkbench(props: Props) {
                 projectReferencesError
                   ? projectReferences.retry
                   : serverQueryProblem
-                    ? () => setQueryRefresh((value) => value + 1)
+                    ? serverQueryProblem === 'run_query_error'
+                      ? runQuery.retry
+                      : () => setQueryRefresh((value) => value + 1)
                     : clear
               }
             />
@@ -1411,13 +1504,15 @@ export function FocusedWorkbench(props: Props) {
               aria-busy={remoteBusy || undefined}
             >
               {resultTools}
-              {remoteBusy && !remoteReady ? (
+              {remoteBusy && !hasRemoteResult ? (
                 <div className="wf-empty">
                   <AppLoading
                     label={
                       projectReferencesBusy
                         ? t('正在确认项目引用', 'Validating project references')
-                        : t('正在读取任务', 'Loading tasks')
+                        : view === 'table'
+                          ? t('正在读取运行记录', 'Loading run history')
+                          : t('正在读取任务', 'Loading tasks')
                     }
                   />
                 </div>
@@ -1586,6 +1681,58 @@ export function FocusedWorkbench(props: Props) {
                       t={t}
                       locale={locale}
                       querySort={queryPolicy.sort ? sorting.sort : undefined}
+                      preferences={
+                        runQuery.remote
+                          ? {
+                              value: runTablePreferences,
+                              onChange: setRunTablePreferences,
+                            }
+                          : undefined
+                      }
+                      remote={
+                        runQuery.remote && runQuery.value
+                          ? {
+                              page: runQuery.value,
+                              busy: runQuery.busy,
+                              sortLocked: Boolean(queryPolicy.sort),
+                              onSortChange: (value) => {
+                                const first = value[0]
+                                onLocationChange({
+                                  runOrder: first
+                                    ? `${first.sortKey}:${first.direction}`
+                                    : undefined,
+                                  page: 1,
+                                })
+                              },
+                              onPageChange: (candidate) => {
+                                runPageFocus.current = {
+                                  key: JSON.stringify([
+                                    data.workspace,
+                                    remoteQuery,
+                                    runSort,
+                                    scope,
+                                    candidate,
+                                    pageSize,
+                                  ]),
+                                  direction:
+                                    candidate > runQuery.value!.page
+                                      ? 'next'
+                                      : 'previous',
+                                  origin: document.activeElement,
+                                }
+                                const admitted = setPage(candidate)
+                                if (admitted === false)
+                                  runPageFocus.current = undefined
+                                return admitted
+                              },
+                              onPageSizeChange: (value) =>
+                                onLocationChange({
+                                  pageSize: value,
+                                  page: 1,
+                                }),
+                            }
+                          : undefined
+                      }
                     />
                   ) : (
                     <TaskBoard
