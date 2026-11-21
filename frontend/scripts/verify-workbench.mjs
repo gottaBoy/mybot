@@ -2251,13 +2251,12 @@ async function verifyReadOnlyPagination() {
     await projectionPage.keyboard.press('ArrowDown')
     await projectionPage.keyboard.press('Enter')
     await quickFind.waitFor({ state: 'hidden' })
-    await assertRows([neverRunTask])
-    assert.equal(listParams().get('q'), neverRunTask.id)
-    assert.equal(listParams().get('project'), neverRunTask.project_id)
-    assert.equal(listParams().get('filter'), 'all')
-    assert.equal(listParams().get('page'), '1')
-    assert.equal(listParams().get('view'), 'list')
-    record('Quick find searches a never-run task beyond the former 30-record limit by full ID without changing the list until selection')
+    await projectionPage.getByTestId('task-workspace')
+      .getByRole('heading', { name: neverRunTask.title, exact: true }).waitFor()
+    assert.equal(new URL(projectionPage.url()).hash, `#task/${neverRunTask.id}`)
+    await projectionPage.getByTestId('task-goal')
+      .getByText(neverRunTask.goal, { exact: true }).waitFor()
+    record('Quick find finds a never-run Task beyond the old30 cap and opens its exact goal workspace only after selection')
     const dimensions = await projectionPage.evaluate(() => ({
       width: document.documentElement.clientWidth,
       scroll: document.documentElement.scrollWidth,
@@ -2368,28 +2367,20 @@ async function verifyFullWorkbench() {
     .fill('核对项目资料中多端共享、可视化编排与角色分工的实现边界')
   await dialog.getByLabel('明确选择的文件', { exact: true }).fill('README.md')
   await dialog
-    .getByRole('button', { name: '保存任务并检查资料', exact: true })
+    .getByRole('button', { name: '保存并打开任务', exact: true })
     .click()
-  await page
-    .getByRole('dialog', { name: '确认资料与运行资源', exact: true })
-    .waitFor()
-  await page
-    .getByRole('dialog')
-    .getByRole('button', { name: '下一步', exact: true })
-    .click()
-  await page.getByRole('dialog')
-    .getByRole('button', { name: '下一步', exact: true }).click()
-  await page.getByRole('dialog').locator('p.wb-error[role="alert"]')
-    .filter({ hasText: '请检查标记的字段' }).waitFor()
-  assert.equal(await page.getByRole('dialog')
-    .getByRole('button', { name: '确认启动', exact: true }).count(), 0)
+  await page.getByTestId('task-workspace').waitFor()
+  await page.getByRole('heading', { name: primaryTaskTitle, exact: true }).waitFor()
+  assert.equal(await page.getByRole('dialog').count(), 0)
+  assert.equal(
+    await page.getByRole('button', { name: '安排执行', exact: true })
+      .getAttribute('aria-disabled'), 'true',
+  )
+  assert.equal(writes.filter((path) => /\/preview$/.test(path)).length, 0)
   assert.equal(writes.filter((path) => /\/runs$/.test(path)).length, 0)
-  await page
-    .getByRole('dialog')
-    .getByRole('button', { name: '关闭', exact: true })
-    .first()
-    .click()
   await page.reload()
+  await page.getByTestId('task-workspace').waitFor()
+  await page.locator('.wb-nav').getByRole('link', { name: '工作台', exact: true }).click()
   await taskTable().getByRole('button', {
     name: primaryTaskTitle,
     exact: true,
@@ -2446,7 +2437,12 @@ async function verifyFullWorkbench() {
   await inspectTask(primaryTaskTitle)
   await page
     .locator('.wf-inspector')
-    .getByRole('button', { name: '检查并运行', exact: true })
+    .getByRole('link', { name: '打开任务工作区', exact: true })
+    .click()
+  await page.getByTestId('task-goal').waitFor()
+  await shot('task-goal-desktop')
+  await page
+    .getByRole('button', { name: '安排执行', exact: true })
     .click()
   dialog = page.getByRole('dialog')
   await dialog.getByText(/Browser test repository/, { exact: false }).waitFor()
@@ -2471,8 +2467,11 @@ async function verifyFullWorkbench() {
   await dialog
     .getByRole('button', { name: '确认并开始运行', exact: true })
     .click()
-  await page.waitForURL(/#run\//)
-  const id = new URL(page.url()).hash.slice('#run/'.length)
+  await page.waitForURL(/#task\/.*taskRun=/)
+  const taskRunParams = new URLSearchParams(new URL(page.url()).hash.split('?')[1])
+  assert.equal(taskRunParams.get('taskTab'), 'work')
+  const id = taskRunParams.get('taskRun')
+  assert.ok(id)
   await waitRun(id, 'succeeded')
   await page.getByRole('button', { name: '刷新运行', exact: true }).click()
   await page
@@ -2484,7 +2483,7 @@ async function verifyFullWorkbench() {
   assert.equal(complete.run.config.max_calls, 3)
   assert.equal(writes.filter((path) => /\/runs$/.test(path)).length, 1)
   record(
-    'Explicit snapshot consent starts one fixture run with selected budget; polling reaches completion',
+    'Task workspace uses explicit snapshot consent and budget, starts one fixture Run, stays in Task Agent view and reaches completion',
   )
   await shot('run-desktop-light')
   await page

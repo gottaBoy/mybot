@@ -137,6 +137,13 @@ describe('workbench read models', () => {
 })
 
 describe('workbench routing', () => {
+  it('opens exact encoded task IDs and rejects malformed task paths', () => {
+    expect(
+      routeFromHash('#task/task%2F%E7%A0%94%E7%A9%B6?taskTab=work'),
+    ).toEqual({ page: 'task', id: 'task/研究' })
+    for (const hash of ['#task/', '#task/a/b', '#task/%xx'])
+      expect(routeFromHash(hash).page).toBe('missing')
+  })
   it.each(['', '#workbench', '#home', '#agent-work'])(
     'supports intentional work-list aliases: %s',
     (hash) => {

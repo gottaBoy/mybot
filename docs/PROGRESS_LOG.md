@@ -1029,6 +1029,41 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
   主4180仍PID2064113未advertise task_query/task_detail，5173为200/legacy；
   临时4187/5176停止，无凭证/正式DB写入/兄弟修改/升级/部署。提交push以Git回执为准。
 
+### 产品工作项：T0–T6目标与任务工作区初版
+
+- 起始344d7ba已push/工作树干净。先记录ADR-0021与T0–T6；用户明确要求列待办、多Agent
+  实现，client/UI/browser三条，root整合路由/所有入口/Forms/RunWorkspace/主服务启用。
+- 新#task/encodedID，创建保存、列表箭头、Inspector、Inbox、Quickfind进入同一Task。
+  Project目标与Task目标/验收/文件分开，真实latest与20项历史页；goal/work/review受管URL，
+  noRun/noModel/forbidden/missing/loading/busy明确，模型缺失提供Configure真实入口。
+- Agent与成果lazy复用原RunWorkspace（图/调用/transcript/usage/恢复/审查），expectedTaskId
+  同Run.id/task.id/project.id绑定；abort检查先于state写，refresh401/403/404清旧私有和动作。
+  不复制执行权威、不伪造进度/模型能力，主题/语言不丢Task视图。
+- Arrange显式沿原preview/角色模型/预算/consent，Task启动Run后留在同Task Agent视图。
+  browser抓到保存Task后navigation被已完成表单operationBusy阻断；guard只对未saved操作busy，
+  真实submit锁仍保持至unmount。最终新建无preview、Task内执行与成果审查通过。
+- 1683前端（58文件）/996Python/typecheck/build通过，78新增（client53/UI24/route1）。
+  生产workspace37/12PNG、综合58/61PNG；主入口只读6项，共101浏览器检查、73最终PNG，
+  无最终pageerror。三style双mode/中英390/长标题和files/目标首屏、403与迟到等已验。
+  全链路真接口fixture.0h505H使用FakeProvider/MockTransport，不是真实Provider或费用；
+  手机合成走goal/work/review+preview，未声称physicalphone完整执行认证。
+- 失败保存Project hash呈现不重读的脚本假设、Required标签定位、创建导航真缺陷、旧Quickfind
+  仍期望过滤列表；综合已改验Task精确路由/goal及Task启动新Run，所有原模型/预算/恢复断言保留。
+  初轮unit同旧路由假设已修。证据`frontend/evidence/task-workspace-2026-11-21/README.md`。
+- T0主服务原PID2064113核实cwd/命令/原环境（内存继承，不输出secret），仅回环4180；
+  无active/queued Run/Call/modeltest/applying恢复/check/子执行进程。原1Project/1Task/6终态Run/
+  1model/18Agent/17call/6artifact/157event。一致在线backup、私有副本Store迁移原行对比，
+  再确认空闲后SIGTERM、锁释放、停服backup，同命令/cwd/环境启动新PID3356362。
+- 原workspace/auth不变，近期read capabilities已true；原表原列digest启动后及浏览器后不变。
+  私有`.runtime/backups/before-task-workspace-20261121T031726Z/`700、DB/log600，Git忽略，
+  不保存到公开目录。回退不得热覆盖，备份非旧内存代码。身份绑定activation脚本不重复执行。
+- 5173初查停止已恢复200；桌面/手机GET-only6项读真实Task目标/历史/Agent/成果，无写请求、
+  外部HTTP/pageerror，不导出真实截图/DOM/正文。临时4187/5176停止；用户服务保持运行。
+- 既有Starlette/httpx及chunk>500kB警告保留；chunk数据见buildlog，非整体transfer/提速证明。
+  无新Python/依赖/凭证/兄弟修改/远程部署/执行权限提升。119/9/110不变，T0–T6仅本初版范围。
+  下一批持续会话/补充要求/下一轮Task Run，再固定Workflow版本；设备接力与连接器仍待办。
+  本批独立commit/push以Git回执为准，不再自动迁移下一列表或重复Task页。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。

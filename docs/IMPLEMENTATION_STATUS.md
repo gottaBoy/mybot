@@ -1,6 +1,16 @@
 # 实现进度与平台范围
 
-更新日期：2026-11-18。
+更新日期：2026-11-21。
+
+**当前交付：目标与任务工作区初版（ADR-0021）。** 新建/搜索/列表/Inspector/Inbox进入
+稳定Task route；目标验收、Agent执行、成果审查在同一Task上下文，显式Arrange沿原确认流程，
+新Run保持Task上下文。不是持续会话、任意Workflow或Cindy多端控制完成。
+1683前端/996Python/build、37生产专项/58综合/6主入口检查通过，73最终PNG。
+主4180已备份/空闲核查/原记录对比后更新为PID3356362，5173实际加载新读取能力；
+原1Project/1Task/6Run及所有原行不变，主验收GET-only无模型调用。
+见[交付与启用证据](../frontend/evidence/task-workspace-2026-11-21/README.md)和
+[当前产品任务](PRODUCT_GOALS_CURRENT.md)。下一批持续会话/下一轮Run，再固定Workflow版本。
+以下是历史分批记录，“未加载/legacy”和旧测试数不代表当前启用状态。
 
 最新切片IZ-07.3b1全局计数/快速查找本地验收完成。明确workspace_counts/workspace_search
 能力才采用新读；Task最新态与Run全历史计数分开，未知不伪0，失败显式GET重试。

@@ -849,3 +849,19 @@ git -C /tmp/mybot-upstream-astryx rev-parse HEAD
   poll已验，详见ADR-0020和`frontend/evidence/inbox-2026-11-21/README.md`。
   用户的核心目标反馈另记`PRODUCT_GOALS_CURRENT.md`；该局部完成不等于Cindy能力、
   可执行Workflow、Bootstrap减量、主环境启用或整体视觉接受。
+
+## 37. 复用Astryx与原Run工作区形成Task产品上下文（2026-11-21）
+
+- 身份：继续已安装meta/astryx Core0.7.13与既有研究commit
+  `5770e5b197cf80d5a824667c23046887cc8fa0f5`；未clone/fetch/升级/复制组件，
+  不声明npm/Git逐字节一致，原MIT/NOTICE保留。
+- R：复用已有work-item-detail采用记录、AppSegments/Button/Badge与原RunWorkspace；
+  本批没有新增上游源码审计或引入第二组件库，不复制Cindy/OpenMausBot视觉。
+- E：模板详情结构不提供Task身份/完整项目目标/执行事实；Agent和成果必须复用持久Run，
+  不能为Task页重造假执行器。已确认写成功后的navigation仍可能被自己的busy阻断，
+  通用Dialog成功关闭并不证明目标路由已获准。
+- A：稳定Task route与goal/work/review业务树，完整Task/Project读取；embedded原Run组件
+  绑定expectedTask，硬权限错误清私有。保存进入Task无自动preview；Arrange/consent沿旧合同。
+- T：1683前端/996Python/build、37专项/58综合/6主入口、73最终PNG；
+  真fixture Task→Arrange→FakeRun→review与主真实数据GET-only已验，见ADR-0021及evidence。
+  不等于Cindy接力、通用Workflow编辑、真实模型/真机认证或用户视觉接受。

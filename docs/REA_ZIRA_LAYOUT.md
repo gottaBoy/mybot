@@ -186,3 +186,15 @@ mybot ADR-0020复用Task-query与detail，不再创建相同语义的后端；pe
 
 用户反馈核心目标和任务不可见，后续以`PRODUCT_GOALS_CURRENT.md`为优先级，
 先整合目标→任务→Agent→成果路径。其余投影仅按实际阻塞推进，不把本专题当无限迁移清单。
+
+## Task上下文的本地交付（2026-11-21）
+
+继续此前固定Zira HEAD `1ce0d0510cb590f3a79ca498f7239ff0852ed0d7`记录的页面上下文、
+完整对象/详情、受管导航与共享事实原则。本轮不重新读取或运行Zira，不复制其组件/品牌。
+mybot ADR-0021使用原Astryx work-item-detail组合和既有RunWorkspace形成独立Task页：
+Project目标、Task目标、验收、资料和真实运行分离，goal/work/review沿同一持久Task。
+新建不自动preview，创建和执行成功后的导航须真正获准，不能仅以弹窗关闭当成功。
+
+1683前端/996Python/build及37专项/58综合/6本机只读通过，73最终PNG见
+`frontend/evidence/task-workspace-2026-11-21/README.md`。4180已受控更新且原记录不变，
+不是Zira运行验收、完整Workflow、多端控制、真实模型或用户视觉接受。

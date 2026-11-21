@@ -1,0 +1,14 @@
+{
+  "source": "Primary5173 ->4180 read-only browser",
+  "checks": [
+    "desktop: real Task/project goals and6 historical Runs render on primary entry",
+    "desktop: Task Agent view reads existing Run without execution",
+    "desktop: Task artifact view and responsive layout render without writes",
+    "mobile: real Task/project goals and6 historical Runs render on primary entry",
+    "mobile: Task Agent view reads existing Run without execution",
+    "mobile: Task artifact view and responsive layout render without writes"
+  ],
+  "writes": [],
+  "external": [],
+  "errors": []
+}

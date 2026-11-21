@@ -1,0 +1,230 @@
+.wb-task-workspace {
+  min-width: 0;
+}
+.wb-task-heading,
+.wb-task-heading-actions,
+.wb-task-identity,
+.wb-task-model-state,
+.wb-task-latest-status,
+.wb-task-latest-actions,
+.wb-task-history-heading,
+.wb-task-history-pagination,
+.wb-task-history-pagination > div,
+.wb-task-execution-context {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.wb-task-heading {
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 20px;
+}
+.wb-task-heading-content {
+  min-width: 0;
+}
+.wb-task-heading h1 {
+  margin: 12px 0;
+  font-size: 24px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.wb-task-heading-actions,
+.wb-task-identity,
+.wb-task-latest-actions {
+  flex-wrap: wrap;
+}
+.wb-task-identity,
+.wb-task-identity > code,
+.wb-task-latest > code,
+.wb-task-history time,
+.wb-task-latest time {
+  color: var(--wb-muted);
+  font-size: 12px;
+}
+.wb-task-identity > code,
+.wb-task-latest > code {
+  overflow-wrap: anywhere;
+}
+.wb-task-model-state {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 8px 0 16px;
+  color: var(--wb-muted);
+  font-size: 13px;
+}
+.wb-task-tabs {
+  padding: 12px 0;
+  border-top: 1px solid var(--wb-border);
+  border-bottom: 1px solid var(--wb-border);
+  overflow-x: auto;
+}
+.wb-task-goal-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 34%);
+  min-width: 0;
+}
+.wb-task-brief {
+  min-width: 0;
+  padding-right: 28px;
+}
+.wb-task-brief-section,
+.wb-task-latest,
+.wb-task-history {
+  padding: 24px 0;
+  min-width: 0;
+  border-bottom: 1px solid var(--wb-border);
+}
+.wb-task-brief-section h2,
+.wb-task-latest h2,
+.wb-task-history h2 {
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.wb-task-brief-section h3 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.wb-task-brief-section p {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.wb-task-files {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.wb-task-files code {
+  color: var(--wb-muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.wb-task-run-rail {
+  min-width: 0;
+  border-left: 1px solid var(--wb-border);
+  padding-left: 24px;
+}
+.wb-task-latest-status {
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.wb-task-latest-actions {
+  margin-top: 16px;
+}
+.wb-task-no-run,
+.wb-task-empty-run,
+.wb-task-read-state {
+  color: var(--wb-muted);
+  padding: 16px 0;
+}
+.wb-task-no-run {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.wb-task-no-run p {
+  margin: 0;
+}
+.wb-task-history-heading {
+  justify-content: space-between;
+  color: var(--wb-muted);
+  font-size: 12px;
+}
+.wb-task-history-heading h2 {
+  color: var(--wb-fg);
+}
+.wb-task-history-items {
+  max-height: 420px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.wb-task-history-row {
+  text-align: start;
+  margin-bottom: 4px;
+}
+.wb-task-history-copy {
+  min-width: 0;
+}
+.wb-task-history-state {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.wb-task-history-row code {
+  display: block;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+}
+.wb-task-history-row time {
+  display: block;
+}
+.wb-task-history-pagination {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding-top: 12px;
+  font-size: 12px;
+  color: var(--wb-muted);
+}
+.wb-task-execution {
+  min-width: 0;
+}
+.wb-task-execution-context {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 16px 0;
+  color: var(--wb-muted);
+  font-size: 12px;
+}
+.wb-task-execution-context code {
+  overflow-wrap: anywhere;
+}
+.wb-task-empty-run {
+  padding: 56px 16px;
+  text-align: center;
+}
+.wb-task-empty-run h2 {
+  font-size: 17px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 900px) {
+  .wb-task-goal-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .wb-task-brief {
+    padding-right: 0;
+  }
+  .wb-task-run-rail {
+    border-left: 0;
+    padding-left: 0;
+  }
+}
+@media (max-width: 650px) {
+  .wb-task-heading {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .wb-task-heading h1 {
+    font-size: 21px;
+  }
+  .wb-task-heading-actions {
+    align-self: stretch;
+    justify-content: flex-end;
+  }
+  .wb-task-brief-section,
+  .wb-task-latest,
+  .wb-task-history {
+    padding: 20px 0;
+  }
+}

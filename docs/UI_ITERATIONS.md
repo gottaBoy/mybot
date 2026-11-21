@@ -644,3 +644,22 @@ fresh detail已不符合当前Inbox时只提供刷新，精确Task/Run动作沿�
 偏差；近期读取改造也未在主4180加载。下一批不以再迁移一个视图为默认目标，按
 `PRODUCT_GOALS_CURRENT.md`推进本机版本对齐、目标/任务入口、执行安排、Agent跟进和成果审查。
 这些目标工作区任务仍待实现，不把本轮Inbox或文档当作已经完成的产品改版。
+
+## 35. 可见Task工作区交付与本机对齐
+
+日期：2026-11-21。回应用户“看着没什么变化，目标呢，任务呢”，本批不再迁移另一个投影，
+新增稳定Task工作区：页头真实任务/状态/次数与Arrange，goal/work/review三视图；
+Project目标在Task目标前，验收与显式资料独立，右侧真实latest/history，手机同源纵向布局。
+列表箭头、Inspector、Inbox、Quickfind和新建保存直达Task，不再自动preview。
+
+Agent/成果视图lazy复用原RunWorkspace，保持原图/调用/成果/审查/恢复，嵌入时紧凑heading
+并验证Task/Run/Project身份。Task内Run创建留在同Task，确认资料/预算/consent保持。
+真实browser发现saved后仍被自己的busy导航锁阻挡；修复后Task创建无preview以及
+真实fixture Task→Arrange→FakeProvider执行→人工审查通过。迟到响应和403旧内容亦修复。
+
+1683前端/996Python/build；生产专项37/12PNG、综合58/61PNG，主5173只读6项，共73最终PNG。
+三style双mode/中英390、目标首屏位置和长文本已验；不是用户最终视觉接受或真机认证。
+主4180已备份/空闲确认/原行比对后更新PID3356362，5173桌面手机实际访问新Task页，
+无真实Provider/正式业务写入/外部请求；不再以“主后端尚未加载”作为本批交付状态。
+详见ADR-0021与`frontend/evidence/task-workspace-2026-11-21/README.md`。
+下一批任务内持续会话和固定Workflow版本，设备/连接器仍待办。

@@ -27,7 +27,7 @@ import {
 } from '../components/ui'
 import { AppMarkdown } from '../components/ui/Markdown'
 import { AppAvatarGroup } from '../components/ui/Avatars'
-import { api, post, type Artifact, type RunDetail } from './api'
+import { ApiError, api, post, type Artifact, type RunDetail } from './api'
 import { resolveCallSelection } from './call-selection'
 import { pushWorkbenchNavigation } from './navigation-guard'
 import {
@@ -58,16 +58,22 @@ export function RunWorkspace({
   t,
   locale,
   legacyUrl,
+  embedded = false,
+  expectedTaskId,
+  initialTab = 'work',
 }: {
   runId?: string
   t: Copy
   locale: Locale
   legacyUrl: string
+  embedded?: boolean
+  expectedTaskId?: string
+  initialTab?: 'work' | 'artifacts'
 }) {
   const [detail, setDetail] = useState<RunDetail | null>(null)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState('')
-  const [tab, setTab] = useState('work')
+  const [tab, setTab] = useState<string>(initialTab)
   const [artifactId, setArtifactId] = useState('')
   const [callId, setCallId] = useState('')
   const [confirmCancel, setConfirmCancel] = useState(false)
@@ -89,17 +95,37 @@ export function RunWorkspace({
       const next = await api<RunDetail>(`/runs/${encodeURIComponent(runId)}`, {
         signal: controller.signal,
       })
+      if (controller.signal.aborted) return
+      if (
+        !next?.run ||
+        next.run.id !== runId ||
+        !next.task ||
+        next.run.task_id !== next.task.id ||
+        (expectedTaskId !== undefined && next.task.id !== expectedTaskId) ||
+        !next.project ||
+        next.project.id !== next.task.project_id
+      ) {
+        setDetail(null)
+        throw new Error(
+          locale === 'zh'
+            ? '运行与当前任务不匹配。'
+            : 'The run does not belong to this task.',
+        )
+      }
       if (!controller.signal.aborted) {
         setDetail(next)
         setError('')
       }
     } catch (reason) {
-      if (!controller.signal.aborted)
+      if (!controller.signal.aborted) {
+        if (reason instanceof ApiError && [401, 403, 404].includes(reason.status))
+          setDetail(null)
         setError(reason instanceof Error ? reason.message : String(reason))
+      }
     } finally {
       if (!controller.signal.aborted) setRefreshing(false)
     }
-  }, [runId])
+  }, [runId, expectedTaskId, locale])
   useEffect(() => {
     void refresh()
     return () => request.current?.abort()
@@ -255,14 +281,29 @@ export function RunWorkspace({
           />
         </div>
       )}
-      <div className="wb-run-heading">
+      <div
+        className={`wb-run-heading${embedded ? ' wb-run-embedded-heading' : ''}`}
+      >
         <div>
-          <a className="wb-text-link" href={`#project/${project.id}`}>
+          <a
+            className="wb-text-link"
+            href={embedded ? `#run/${run.id}` : `#project/${project.id}`}
+          >
             <ArrowLeft size={14} />
-            {project.name}
+            {embedded
+              ? t('完整运行工作区', 'Full run workspace')
+              : project.name}
           </a>
-          <h1>{task.title}</h1>
-          <p className="wb-muted">{task.goal}</p>
+          {embedded ? (
+            <h2>
+              {t('运行', 'Run')} {run.id.slice(0, 8)}
+            </h2>
+          ) : (
+            <>
+              <h1>{task.title}</h1>
+              <p className="wb-muted">{task.goal}</p>
+            </>
+          )}
         </div>
         <div className="wb-inline">
           <AppButton
@@ -299,7 +340,9 @@ export function RunWorkspace({
               }}
             />
           )}
-          {!['failed', 'paused', 'interrupted', 'canceled'].includes(run.status) && (
+          {!['failed', 'paused', 'interrupted', 'canceled'].includes(
+            run.status,
+          ) && (
             <AppButton
               label={t('恢复请求记录', 'Recovery request history')}
               icon={<RotateCcw size={15} />}

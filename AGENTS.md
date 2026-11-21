@@ -5,8 +5,9 @@
 Read `CONTINUE.md` before making assumptions about the project. Then read the latest ADR referenced there and the document relevant to the requested work.
 Use `docs/PRODUCT_GOALS_CURRENT.md` for product delivery priorities. A completed
 query/pagination slice is not completion of the goal/task/Agent/outcome workflow.
-After the current Inbox slice, prioritize that visible workflow rather than
-automatically choosing the next remaining data projection.
+The initial Task workspace is delivered in ADR-0021. Prioritize persistent Task
+conversation and fixed Workflow versions next, rather than automatically choosing
+the next remaining data projection. Distinguish local activation from isolated tests.
 For frontend work, also read `docs/ASTRYX_TEMPLATE_INTEGRATION.md` and
 `docs/UI_ITERATIONS.md`. For Zira-derived work, read `docs/ZIRA_FRONTEND_STUDY.md`
 and `docs/REA_ZIRA_LAYOUT.md`; the 625-file structural index is not runtime evidence.
@@ -322,6 +323,14 @@ product patterns, not replacing Astryx. Apply these rules to mybot:
   advertised failures cannot fall back to Bootstrap/list details. Fresh details
   outside the current Inbox are not actionable. Retain explicit stable-ID
   selection on same-key refresh and never substitute another task after removal.
+- Task workspace (ADR-0021) owns the stable encoded Task route and goal/work/review
+  views. Reuse full Task/Project read contracts and the existing RunWorkspace;
+  bind embedded Run responses to exact Task/Run/Project identity before actions.
+  Abort checks precede every response state write. Hard401/403/404 refresh errors
+  clear private Run content and controls. Creating a Task navigates without
+  automatic context preview; Arrange and Run consent remain separate actions.
+  A confirmed saved form can release its own navigation blocker while retaining
+  duplicate-submit protection. Successful Task-started Runs stay in that Task.
 - Route and query listeners must consult the shared navigation admission guard.
   Restoring a dirty form's URL in a capture listener alone does not preserve the
   form. One navigation event must share one decision across consumers; confirmed

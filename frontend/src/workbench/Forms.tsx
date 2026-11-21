@@ -236,7 +236,7 @@ export function WorkbenchForm({
     const unregister = registerWorkbenchNavigationBlocker({
       getState: () => ({
         dirty: !saved.current && guardState.current.dirty,
-        busy: operationBusy.current,
+        busy: !saved.current && operationBusy.current,
       }),
       onBlocked: (intent) => {
         setUnmanagedNavigation(intent.kind === 'unmanaged')
@@ -641,7 +641,7 @@ export function WorkbenchForm({
       </>
     )
   } else if (state.kind === 'task') {
-    submitLabel = t('保存任务并检查资料', 'Save task & review context')
+    submitLabel = t('保存并打开任务', 'Save task & open workspace')
     content = (
       <>
         {fieldBlock(

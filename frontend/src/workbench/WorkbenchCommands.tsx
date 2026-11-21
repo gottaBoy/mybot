@@ -16,6 +16,7 @@ import {
 } from './commands-source'
 import type { Bootstrap } from './api'
 import type { Copy } from './state'
+import { taskWorkspaceHref } from './task-workspace-location'
 
 function domainCommand(
   item: WorkspaceSearchItem,
@@ -32,20 +33,14 @@ function domainCommand(
       onSelect: () => onNavigate(`#project/${item.project.id}`),
     }
   if (item.kind === 'task') {
-    const params = new URLSearchParams({
-      q: item.task.id,
-      view: 'list',
-      project: item.task.project_id,
-      filter: 'all',
-      page: '1',
-    })
+    const href = taskWorkspaceHref(item.task.id)
     return {
       id: `task:${item.task.id}`,
       label: `${item.task.title} · ${item.task.id}`,
       group: t('任务', 'Tasks'),
       keywords: [item.task.id, item.task.title, item.project.name],
-      href: `#workbench?${params.toString()}`,
-      onSelect: () => onNavigate(`#workbench?${params.toString()}`),
+      href,
+      onSelect: () => onNavigate(href),
     }
   }
   return {

@@ -13,6 +13,7 @@ import { ApiError, type Bootstrap, type Task } from './api'
 import type { WorkItem } from './projections'
 import { statusText, statusTone, type Copy } from './state'
 import { fetchTaskDetail, type TaskDetail } from './task-detail'
+import { taskWorkspaceHref } from './task-workspace-location'
 
 type DetailState = {
   key: string
@@ -228,6 +229,12 @@ export function TaskInspector({
       ) : (
         <>
           <div className="wf-inspector-action">
+            <AppButton
+              label={t('打开任务工作区', 'Open task workspace')}
+              icon={<ArrowRight size={15} />}
+              href={taskWorkspaceHref(display.id)}
+              disabled={busy}
+            />
             <AppBadge
               tone={display.run ? statusTone(display.run.status) : 'neutral'}
             >

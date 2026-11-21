@@ -383,3 +383,21 @@ ADR-0016、REA第32节及`frontend/evidence/project-query-selection-2026-11-19/R
 慢GET跨poll/迟到/明确失败与移动焦点见ADR-0020和本轮evidence。
 这是Inbox局部闭环，后续优先按`PRODUCT_GOALS_CURRENT.md`整合目标/任务/Agent/成果，
 不自动继续下一投影；主4180未加载cap、Bootstrap仍全量。
+
+## 24. 目标、任务、Agent与成果工作区
+
+2026-11-21，产品T0–T6初版沿work-item-detail、shell-nav、table与原Run工作区整合；
+继续React19/Astryx0.7.13、project wrappers和同一业务树，不再生成演示模板。
+
+| 采用模式 | 本地适配 | 未扩大为 |
+| --- | --- | --- |
+| work-item-detail | 稳定Task route，Project/Task目标、验收、文件分开；创建落在Task | 装饰性目标卡、静态进度或假Agent |
+| SegmentedControl / semantic layout | goal/work/review URL视图，桌面上下文/运行侧栏、手机同源纵向布局 | 按主题复制页面、任意Workflow编辑器 |
+| Button / task history | 真实20项历史页和exact Run选择，busy/focus保护，缺模型有配置入口 | 历史失败当Task失败、读取即执行授权 |
+| original RunWorkspace | lazy嵌入Agent/Call/graph/artifacts/review/recovery，expectedTask身份约束 | 第二执行权威或另一份成果写逻辑 |
+
+1683前端/996Python/build、生产37/58和主入口6检查通过，73最终PNG；
+三style双mode/390中英/长资料，目标均在首屏，见ADR-0021及
+`frontend/evidence/task-workspace-2026-11-21/README.md`。保留创建后navigation被busy阻断真缺陷、
+403内容保留及迟到guard修复。4180已在备份/原记录比对后更新，5173实际使用新能力。
+不是持续会话、Workflow版本、多端控制或全部模板业务能力完成，119台账不变。

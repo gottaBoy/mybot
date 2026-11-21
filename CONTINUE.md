@@ -2,12 +2,41 @@
 
 更新日期：2026-11-21（Asia/Singapore；用户日期11月20日America/New_York，历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
 
+**最新交付并本机启用（2026-11-21，目标/任务工作区T0–T6初版）：**
+起始344d7ba已push/工作树干净。先读
+[ADR-0021](docs/decisions/ADR-0021-task-workspace.md)及
+`frontend/evidence/task-workspace-2026-11-21/README.md`；产品路线见PRODUCT_GOALS_CURRENT。
+用户明确要求列待办并多Agent实现，client/UI/browser分工，root负责路由/入口/Forms/
+RunWorkspace身份/主服务启用/完整回归与记录。新增稳定#task/encodedID，同一Astryx树
+三视图目标验收/Agent执行/成果审查；完整项目目标与任务目标/验收/文件分开，历史20项页。
+新建保存后进入Task，不自动preview；列表箭头/Inspector/Inbox/Quickfind直达Task。
+Arrange显式复用既有资料/模型/角色/预算/consent，成功新Run仍在Task Agent页。
+RunWorkspace lazy嵌入复用原调用/图/成果/审查/恢复，绑定exactTask/Run/Project防串任务；
+取消检查先于response写，403/404/401清旧私有内容/操作。
+浏览器发现Task保存后被表单自身busy guard阻断导航，已修为saved后仅释放navigation，
+operationBusy重复提交锁保持；生产真实fixture Task→Arrange→budget3→FakeRun→审查链通过。
+最终1683前端（58文件）/996Python/typecheck/build；生产workspace37/12PNG、
+综合58/61PNG，73最终PNG无pageerror，三style双mode/390中文/长内容/缺cap/错误/迟到已验。
+保留Project presentation未重读、字段Required定位、创建导航真缺陷和旧Quickfind脚本失败。
+新fixture.0h505H专用FakeProvider/MockTransport；无真实Provider或费用，无新Python/deps。
+**主4180已受控更新为PID3356362，近期读取cap现为true，5173使用新工作区，不再说legacy。**
+更新前原2064113空闲：1项目1Task6终态Run/1model/18Agent/17call/6artifact/157event；
+无active/queued/call/test/applying/子进程，一致备份+私有副本Store迁移比较、停服备份、
+同命令/cwd/环境启动，原表原列逐行摘要启动后及浏览器后不变，认证/workspace不变。
+私有备份`.runtime/backups/before-task-workspace-20261121T031726Z/`700，DB/log600；
+不含旧内存代码，回退需停服务并另行确认，不热覆盖。身份绑定脚本不可重复运行。
+主5173桌面/手机6项只读通过，无写请求/外部HTTP/pageerror，不导出真实截图/DOM/正文。
+初查5173未运行，已恢复200；临时4187/5176停止。无凭证/兄弟修改/远程部署/权限扩张。
+原119/9/110不变，T0–T6只关闭本初版范围；真机/真实Provider长期能力未认证。
+下一批**任务内持续会话/补充要求/下一轮Run**，再固定Workflow版本；设备接力/连接器仍待办。
+不要再自动做其他列表投影，也不要重复搭建Task页。commit/push以Git回执为准。
+
 **优先级调整（2026-11-20，用户反馈“看着没什么变化，目标呢，任务呢”）：**
 先读[当前产品目标与交付任务](docs/PRODUCT_GOALS_CURRENT.md)。
 收尾进行中的Inbox/ADR-0020后，下一批优先做“目标与任务工作区”的可见闭环：
 真实目标/任务→资源安排→Agent过程→成果/审查；然后持续会话和固定Workflow版本。
 总览/层级/文档等剩余投影和Bootstrap减量不再自动成为下一批，只按阻塞/正确性/规模推进。
-当前Inbox已按下方完成本地验收，不把路线调整写成上述新目标工作区已完成或主4180已启用。
+该调整已由上方Task初版交付落实；下方记录保留当时的事实，不再视为最新启用状态。
 
 **最新完成（2026-11-20–21，IZ-07.3c2b2 Inbox收尾）：**
 起始dd6b34c已push/工作树干净。先读

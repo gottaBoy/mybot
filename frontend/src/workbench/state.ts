@@ -152,6 +152,15 @@ export function routeFromHash(hash: string) {
   if (['', 'home', 'workbench', 'agent-work'].includes(path))
     return { page: 'work', id: '' }
   const [page, id = ''] = path.split('/')
+  if (page === 'task') {
+    try {
+      return path.split('/').length === 2 && id
+        ? { page, id: decodeURIComponent(id) }
+        : { page: 'missing', id: '' }
+    } catch {
+      return { page: 'missing', id: '' }
+    }
+  }
   if (['run', 'chat', 'project'].includes(page))
     return { page: page === 'chat' ? 'run' : page, id }
   if (

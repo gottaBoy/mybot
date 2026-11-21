@@ -1,5 +1,6 @@
 import type { Bootstrap } from './api'
 import type { Copy } from './state'
+import { taskWorkspaceHref } from './task-workspace-location'
 
 export type WorkbenchCommand = {
   id: string
@@ -50,19 +51,12 @@ export function buildWorkbenchCommands(
     })),
     ...data.tasks.map((task) => {
       const projectName = projectNames.get(task.project_id) ?? task.project_id
-      const params = new URLSearchParams({
-        q: task.id,
-        view: 'list',
-        project: task.project_id,
-        filter: 'all',
-        page: '1',
-      })
       return {
         id: `task:${task.id}`,
         label: `${task.title} · ${task.id}`,
         group: t('任务', 'Tasks'),
         keywords: [task.id, task.title, task.project_id, projectName],
-        href: `#workbench?${params.toString()}`,
+        href: taskWorkspaceHref(task.id),
       }
     }),
     ...[...data.runs]

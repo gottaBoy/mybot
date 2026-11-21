@@ -1,0 +1,395 @@
+{
+  "synthetic": true,
+  "source": "Intercepted Task/Project detail and Run facts through production Task workspace",
+  "limits": [
+    "Synthetic persisted facts do not prove actual database or Provider execution.",
+    "Chrome viewports and keyboard events do not certify physical devices or IMEs.",
+    "Fixture context previews and artifact decisions occur only after explicit scripted user actions."
+  ],
+  "checks": [
+    "desktop: the first viewport shows distinct real Project/Task goals, acceptance/files and20 bounded history rows, with no implicit Run or preview request",
+    "desktop: history pages20/3 retain exact ordered Run identities and restore an available pager focus",
+    "desktop: Agent work reuses persisted stages, three real Agent records and the existing interactive read-only work graph",
+    "desktop: artifact review remains in Task context and uses the existing exact artifact facts and decision control",
+    "desktop: the selected Task view and exact Run survive URL reload and history navigation",
+    "desktop: a pending Task has a real no-Run state; explicit Arrange previews that exact Task without executing a model",
+    "desktop: invalid Task view is explicit and Clear returns to the same Task goal without execution",
+    "desktop: a Run belonging to another Task fails before stages, artifacts or domain actions are exposed",
+    "desktop: Project read failure cannot manufacture a goal or enable preparation; explicit read Retry restores it",
+    "desktop: advertised403/404/malformed Task reads hide stale content without Bootstrap fallback; explicit Retry sends one GET",
+    "desktop: busy retained Task snapshots block preparation and a canceled old response cannot replace a newer Task"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/artifacts/goal-artifact/decision",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/pending-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/pending-task/preview",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/pending-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/pending-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    }
+  ],
+  "writes": [
+    {
+      "name": "desktop",
+      "path": "/api/artifacts/goal-artifact/decision",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "decision": "accepted"
+      }
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/pending-task/preview",
+      "search": "",
+      "method": "POST",
+      "body": {}
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "project_id": "goal-project",
+        "title": "Created Task stays in its working context",
+        "goal": "A newly saved task must land on goals without automatically reading context.",
+        "acceptance": "No context preview occurs until Arrange execution.",
+        "files": []
+      }
+    }
+  ],
+  "unexpected": [],
+  "externalRequests": [],
+  "errors": [],
+  "screenshots": [
+    "desktop-goals.png",
+    "desktop-agent-work.png",
+    "desktop-artifact-review.png"
+  ],
+  "geometry": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "style": "neutral",
+      "mode": "light",
+      "overflow": 0,
+      "color": "rgb(0, 0, 0)",
+      "background": "rgba(0, 0, 0, 0)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "projectTop": 260.890625,
+      "goalTop": 388.765625,
+      "height": 1000
+    }
+  ],
+  "failureName": "desktop",
+  "failure": {
+    "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('task-workspace').getByRole('heading', { name: 'Created Task stays in its working context', exact: true }) to be visible\u001b[22m\n",
+    "stack": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('task-workspace').getByRole('heading', { name: 'Created Task stays in its working context', exact: true }) to be visible\u001b[22m\n\n    at goalReady (/home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-task-workspace.mjs:442:10)\n    at /home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-task-workspace.mjs:818:15"
+  }
+}

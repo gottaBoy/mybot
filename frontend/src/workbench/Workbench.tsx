@@ -81,6 +81,7 @@ import { ProjectReferenceDirectory } from './ProjectReferenceDirectory'
 import { useProjectDetail } from './useProjectDetail'
 import { useDockedWorkbenchNavigation } from '../components/ui/useViewport'
 import { projectWorkspaceLocation } from './project-workspace'
+import { taskWorkspaceHref } from './task-workspace-location'
 import { clearModelTests } from './model-test-state'
 import { clearListContinuityCache } from './list-continuity'
 import {
@@ -93,6 +94,11 @@ import {
 
 const RunWorkspace = lazy(() =>
   import('./RunWorkspace').then((module) => ({ default: module.RunWorkspace })),
+)
+const TaskWorkspace = lazy(() =>
+  import('./TaskWorkspace').then((module) => ({
+    default: module.TaskWorkspace,
+  })),
 )
 const Overview = lazy(() =>
   import('./WorkspacePages').then((module) => ({ default: module.Overview })),
@@ -470,9 +476,11 @@ export function Workbench() {
                       ? t('会话后端', 'Conversation backends')
                       : route.page === 'run'
                         ? t('运行工作区', 'Run workspace')
-                        : route.page === 'missing'
-                          ? t('页面不存在', 'Page not found')
-                          : t('工作台', 'Workbench')
+                        : route.page === 'task'
+                          ? t('任务工作区', 'Task workspace')
+                          : route.page === 'missing'
+                            ? t('页面不存在', 'Page not found')
+                            : t('工作台', 'Workbench')
   useEffect(() => {
     document.title = `${pageTitle} · mybot`
   }, [pageTitle])
@@ -532,6 +540,7 @@ export function Workbench() {
             href={`#${hash}`}
             aria-current={
               route.page === page ||
+              (page === 'work' && route.page === 'task') ||
               (page === 'projects' &&
                 ['project', 'hierarchy'].includes(route.page))
                 ? 'page'
@@ -883,6 +892,24 @@ export function Workbench() {
                 ) : (
                   <ProjectDocuments data={data} t={t} />
                 )}
+              </Suspense>
+            ) : route.page === 'task' ? (
+              <Suspense
+                fallback={
+                  <AppLoading label={t('正在读取任务', 'Loading task')} />
+                }
+              >
+                <TaskWorkspace
+                  key={route.id}
+                  taskId={route.id}
+                  data={data}
+                  refreshRevision={queryRefreshRevision}
+                  t={t}
+                  locale={locale}
+                  legacyUrl={legacyUrl}
+                  preparing={Boolean(actionBusy)}
+                  onPrepare={(task) => void prepare(task)}
+                />
               </Suspense>
             ) : route.page === 'run' ? (
               <Suspense
@@ -1436,9 +1463,15 @@ export function Workbench() {
           onClose={() => setForm(null)}
           onSaved={refresh}
           onCreateProject={() => setForm({ kind: 'project' })}
-          onTask={(task) => void prepare(task)}
+          onTask={(task) => {
+            pushWorkbenchNavigation(taskWorkspaceHref(task.id))
+          }}
           onRun={(id) => {
-            pushWorkbenchNavigation(`#run/${id}`)
+            pushWorkbenchNavigation(
+              form.kind === 'run' && route.page === 'task'
+                ? taskWorkspaceHref(form.task.id, { tab: 'work', runId: id })
+                : `#run/${id}`,
+            )
           }}
         />
       )}

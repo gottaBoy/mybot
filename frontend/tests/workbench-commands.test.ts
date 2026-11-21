@@ -8,7 +8,6 @@ import {
   hasBlockingCommandOverlay,
   type CommandScope,
 } from '../src/workbench/commands-source'
-import { readListLocation } from '../src/workbench/list-location'
 
 const english = (_: string, en: string) => en
 function fixture(): Bootstrap {
@@ -75,19 +74,11 @@ describe('global command source', () => {
       keywords: ['task-44', 'Research 44', 'p1', 'Research lab'],
     })
   })
-  it('offers task-scoped list navigation, not a Run start or provider action', () => {
+  it('opens the exact task workspace without a provider or execution action', () => {
     const commands = buildWorkbenchCommands(fixture(), english)
     const task = commands.find((item) => item.id === 'task:task-44')!
-    expect(task.href).toBe(
-      '#workbench?q=task-44&view=list&project=p1&filter=all&page=1',
-    )
-    expect(readListLocation(`http://localhost/${task.href}`)).toMatchObject({
-      query: 'task-44',
-      view: 'list',
-      project: 'p1',
-      filter: 'all',
-      page: 1,
-    })
+    expect(task.href).toBe('#task/task-44')
+    expect(task.href).not.toContain('run')
     expect(commands.every((item) => item.href.startsWith('#'))).toBe(true)
     expect(commands.every((item) => !('onSelect' in item))).toBe(true)
   })

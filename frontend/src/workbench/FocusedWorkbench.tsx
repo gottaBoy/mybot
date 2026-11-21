@@ -81,6 +81,7 @@ import { runOrderSort } from './run-sort'
 import type { RunTablePreferences } from './RunViews'
 import { useTaskBoard } from './useTaskBoard'
 import { boardPagesFromRaw, defaultBoardPages } from './board-pages'
+import { taskWorkspaceHref } from './task-workspace-location'
 import {
   ProjectSelectionChangedError,
   validateProjectSelection,
@@ -767,6 +768,15 @@ export function FocusedWorkbench(props: Props) {
               </span>
             </AppButton>
           </div>
+          <AppButton
+            label={t('打开任务工作区', 'Open task workspace')}
+            icon={<ArrowRight size={15} />}
+            iconOnly
+            tone="ghost"
+            size="sm"
+            href={taskWorkspaceHref(row.id)}
+            disabled={remoteBusy}
+          />
         </div>
       ),
     },

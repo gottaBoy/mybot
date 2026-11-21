@@ -1,0 +1,1031 @@
+{
+  "synthetic": true,
+  "source": "Intercepted Task/Project detail and Run facts through production Task workspace",
+  "limits": [
+    "Synthetic persisted facts do not prove actual database or Provider execution.",
+    "Chrome viewports and keyboard events do not certify physical devices or IMEs.",
+    "Fixture context previews and artifact decisions occur only after explicit scripted user actions."
+  ],
+  "checks": [
+    "desktop: the first viewport shows distinct real Project/Task goals, acceptance/files and20 bounded history rows, with no implicit Run or preview request",
+    "desktop: history pages20/3 retain exact ordered Run identities and restore an available pager focus",
+    "desktop: Agent work reuses persisted stages, three real Agent records and the existing interactive read-only work graph",
+    "desktop: artifact review remains in Task context and uses the existing exact artifact facts and decision control",
+    "desktop: the selected Task view and exact Run survive URL reload and history navigation",
+    "desktop: a pending Task has a real no-Run state; explicit Arrange previews that exact Task without executing a model",
+    "desktop: invalid Task view is explicit and Clear returns to the same Task goal without execution",
+    "desktop: a Run belonging to another Task fails before stages, artifacts or domain actions are exposed",
+    "desktop: a forbidden Run refresh removes retained Agent, artifact and control projections",
+    "desktop: Project read failure cannot manufacture a goal or enable preparation; explicit read Retry restores it",
+    "desktop: advertised403/404/malformed Task reads hide stale content without Bootstrap fallback; explicit Retry sends one GET",
+    "desktop: busy retained Task snapshots block preparation and a canceled old response cannot replace a newer Task",
+    "desktop: saving a Task lands directly in its working context and does not automatically preview or start it",
+    "desktop: missing remote capabilities retain real legacy Task/Project objects without requesting unsupported detail routes",
+    "desktop: 401 removes private Task content and returns to sign-in without replay",
+    "mobile: the first viewport shows distinct real Project/Task goals, acceptance/files and20 bounded history rows, with no implicit Run or preview request",
+    "mobile: history pages20/3 retain exact ordered Run identities and restore an available pager focus",
+    "mobile: Agent work reuses persisted stages, three real Agent records and the existing interactive read-only work graph",
+    "mobile: artifact review remains in Task context and uses the existing exact artifact facts and decision control",
+    "mobile: the selected Task view and exact Run survive URL reload and history navigation",
+    "mobile: a pending Task has a real no-Run state; explicit Arrange previews that exact Task without executing a model",
+    "mobile: invalid Task view is explicit and Clear returns to the same Task goal without execution",
+    "mobile: a Run belonging to another Task fails before stages, artifacts or domain actions are exposed",
+    "mobile: a forbidden Run refresh removes retained Agent, artifact and control projections",
+    "mobile: Project read failure cannot manufacture a goal or enable preparation; explicit read Retry restores it",
+    "mobile: advertised403/404/malformed Task reads hide stale content without Bootstrap fallback; explicit Retry sends one GET",
+    "mobile: busy retained Task snapshots block preparation and a canceled old response cannot replace a newer Task",
+    "mobile: missing remote capabilities retain real legacy Task/Project objects without requesting unsupported detail routes",
+    "mobile: 401 removes private Task content and returns to sign-in without replay",
+    "neutral-dark: the first viewport shows distinct real Project/Task goals, acceptance/files and20 bounded history rows, with no implicit Run or preview request",
+    "neutral-dark: appearance uses one Task tree and changing presentation preserves Task detail without refetch",
+    "zira-light: the first viewport shows distinct real Project/Task goals, acceptance/files and20 bounded history rows, with no implicit Run or preview request",
+    "zira-light: appearance uses one Task tree and changing presentation preserves Task detail without refetch",
+    "y2k-light: the first viewport shows distinct real Project/Task goals, acceptance/files and20 bounded history rows, with no implicit Run or preview request",
+    "y2k-light: appearance uses one Task tree and changing presentation preserves Task detail without refetch",
+    "y2k-dark: the first viewport shows distinct real Project/Task goals, acceptance/files and20 bounded history rows, with no implicit Run or preview request",
+    "y2k-dark: appearance uses one Task tree and changing presentation preserves Task detail without refetch"
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/artifacts/goal-artifact/decision",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/pending-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/pending-task/preview",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/pending-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/created-goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=2&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/pending-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/pending-task/preview",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/pending-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark",
+      "path": "/api/tasks/goal-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark",
+      "path": "/api/projects/goal-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark",
+      "path": "/api/runs/goal-run-022",
+      "search": "",
+      "method": "GET"
+    }
+  ],
+  "writes": [
+    {
+      "name": "desktop",
+      "path": "/api/artifacts/goal-artifact/decision",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "decision": "accepted"
+      }
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/pending-task/preview",
+      "search": "",
+      "method": "POST",
+      "body": {}
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "project_id": "goal-project",
+        "title": "Created Task stays in its working context",
+        "goal": "A newly saved task must land on goals without automatically reading context.",
+        "acceptance": "No context preview occurs until Arrange execution.",
+        "files": []
+      }
+    },
+    {
+      "name": "mobile",
+      "path": "/api/tasks/pending-task/preview",
+      "search": "",
+      "method": "POST",
+      "body": {}
+    }
+  ],
+  "unexpected": [],
+  "externalRequests": [],
+  "errors": [],
+  "screenshots": [
+    "desktop-goals.png",
+    "desktop-agent-work.png",
+    "desktop-artifact-review.png",
+    "desktop-signed-out.png",
+    "mobile-goals.png",
+    "mobile-agent-work.png",
+    "mobile-artifact-review.png",
+    "mobile-signed-out.png",
+    "neutral-dark-goals.png",
+    "zira-light-goals.png",
+    "y2k-light-goals.png",
+    "y2k-dark-goals.png"
+  ],
+  "geometry": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "style": "neutral",
+      "mode": "light",
+      "overflow": 0,
+      "color": "rgb(0, 0, 0)",
+      "background": "rgba(0, 0, 0, 0)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "projectTop": 260.890625,
+      "goalTop": 388.765625,
+      "height": 1000
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "style": "zira",
+      "mode": "dark",
+      "overflow": 0,
+      "color": "rgb(230, 233, 239)",
+      "background": "rgba(0, 0, 0, 0)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif",
+      "projectTop": 333.1875,
+      "goalTop": 476.15625,
+      "height": 844
+    },
+    {
+      "name": "neutral-dark",
+      "width": 1440,
+      "style": "neutral",
+      "mode": "dark",
+      "overflow": 0,
+      "color": "rgb(255, 255, 255)",
+      "background": "rgba(0, 0, 0, 0)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "projectTop": 260.890625,
+      "goalTop": 388.765625,
+      "height": 1000
+    },
+    {
+      "name": "zira-light",
+      "width": 1440,
+      "style": "zira",
+      "mode": "light",
+      "overflow": 0,
+      "color": "rgb(23, 43, 77)",
+      "background": "rgba(0, 0, 0, 0)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif",
+      "projectTop": 260.890625,
+      "goalTop": 388.765625,
+      "height": 1000
+    },
+    {
+      "name": "y2k-light",
+      "width": 1440,
+      "style": "y2k",
+      "mode": "light",
+      "overflow": 0,
+      "color": "rgb(45, 36, 27)",
+      "background": "rgba(0, 0, 0, 0)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "projectTop": 264.890625,
+      "goalTop": 392.765625,
+      "height": 1000
+    },
+    {
+      "name": "y2k-dark",
+      "width": 1440,
+      "style": "y2k",
+      "mode": "dark",
+      "overflow": 0,
+      "color": "rgb(237, 239, 252)",
+      "background": "rgba(0, 0, 0, 0)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "projectTop": 264.890625,
+      "goalTop": 392.765625,
+      "height": 1000
+    }
+  ]
+}

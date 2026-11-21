@@ -40,6 +40,7 @@ import {
 } from './hierarchy-state'
 import { errorText, statusText, statusTone, type Copy } from './state'
 import { resolveInboxSelection } from './inbox-selection'
+import { taskWorkspaceHref } from './task-workspace-location'
 import type { ListLocation } from './list-location'
 import { parseInboxType, prepareInboxRequest } from './inbox-query'
 import { useInboxQuery } from './useInboxQuery'
@@ -556,6 +557,18 @@ export function WorkInbox({
           </div>
         )}
         <div className="wb-inline">
+          <AppButton
+            label={t('打开任务工作区', 'Open task workspace')}
+            icon={<ArrowRight size={15} />}
+            href={taskWorkspaceHref(display.id)}
+            disabled={!admission.current.detail}
+            onClick={(event) => {
+              if (!canAct()) {
+                event.preventDefault()
+                event.stopPropagation()
+              }
+            }}
+          />
           {display.run ? (
             <AppButton
               label={t('打开运行', 'Open run')}

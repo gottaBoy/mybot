@@ -1,0 +1,57 @@
+{
+  "old_pid": 2064113,
+  "new_pid": 3356362,
+  "healthy": true,
+  "original_records_unchanged": true,
+  "counts": {
+    "agents": 18,
+    "artifacts": 6,
+    "backend_connections": 0,
+    "calls": 17,
+    "conversation_messages": 0,
+    "conversation_refs": 0,
+    "events": 157,
+    "model_tests": 0,
+    "models": 1,
+    "projects": 1,
+    "recovery_intents": 0,
+    "runs": 6,
+    "saved_views": 0,
+    "tasks": 1,
+    "workspace_settings": 1
+  },
+  "auth_required": false,
+  "capabilities": {
+    "code_write": false,
+    "shell": false,
+    "deployment": false,
+    "backend_sync": false,
+    "parallel_research": true,
+    "max_parallel": 2,
+    "agent_work": true,
+    "task_query": true,
+    "task_board": true,
+    "run_query": true,
+    "task_detail": true,
+    "workspace_counts": true,
+    "workspace_search": true,
+    "project_references": true,
+    "project_detail": true,
+    "project_query": true,
+    "harness": {
+      "id": "local-superagent",
+      "version": 1,
+      "mode": "read_only",
+      "stages": [
+        "planning",
+        "research",
+        "synthesis"
+      ],
+      "tools": [],
+      "supports_pause": true,
+      "supports_cancel": true,
+      "supports_resume": true,
+      "supports_parallel_research": true
+    }
+  }
+}
