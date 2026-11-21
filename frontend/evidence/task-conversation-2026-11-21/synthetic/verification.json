@@ -1,0 +1,1530 @@
+{
+  "synthetic": true,
+  "source": "Production TaskConversation and Forms with intercepted exact ADR-0022 DTOs.",
+  "limits": [
+    "Synthetic HTTP fixtures do not prove database, Provider or primary-service activation.",
+    "Desktop/mobile Chrome viewports do not certify physical devices or IMEs.",
+    "Every fixture mutation below follows a scripted explicit user action."
+  ],
+  "checks": [
+    "desktop: Conversation shows real persisted messages with bounded20/3 paging.",
+    "desktop: Dirty composer survives Task tabs/theme changes and rejected navigation; none of those actions writes or calls a model.",
+    "desktop: Save persists one stable request ID and clears its taskSend marker without preview/prepare/Run side effects.",
+    "desktop: Explicit preview and resource review lead to exact prepare/execute with fresh consent; linked Run stays in Task Agent work.",
+    "prepare-response-loss: Lost preparation response reconciles without auto-execution; reload keeps the prepared lock, immutable resources and unchecked consent until explicit reopen/start.",
+    "execute-response-loss: Lost applied execute response reconciles through exact Turn GET only; a failed receipt read preserves the lock and no duplicate Run appears.",
+    "saved-response-loss: Uncertain saved message survives reload through taskSend and exact request receipt GET; no automatic or duplicate POST occurs.",
+    "unsaved-response-loss: Failed receipt reads keep the original save locked; authoritative404 alone enables an explicit retry of the identical message/request ID.",
+    "reload-missing-save-receipt: A reload404 without the original in-memory save candidate keeps its request marker and mutation lock; it cannot invent text or unlock a new request.",
+    "changed-prepare-request_id: A schema-valid prepare receipt with changed request_id fails immutable message identity validation before execute and preserves the uncertain lock.",
+    "changed-prepare-content: A schema-valid prepare receipt with changed content fails immutable message identity validation before execute and preserves the uncertain lock.",
+    "changed-prepare-created_at: A schema-valid prepare receipt with changed created_at fails immutable message identity validation before execute and preserves the uncertain lock.",
+    "changed-prepare-reconcile-config: An unknown prepare GET with changed config cannot replace its pending exact candidate or unlock execution; the matching receipt restores review without auto-execution.",
+    "changed-prepare-reconcile-context_hash: An unknown prepare GET with changed context_hash cannot replace its pending exact candidate or unlock execution; the matching receipt restores review without auto-execution.",
+    "read-boundaries: An independently hydrated off-page prepared Turn remains visible as the21st bounded DTO and locks Arrange; its page overlap renders one consistent message.",
+    "read-boundaries: Capabilityfalse performs no Turn reads; advertised403/404/503/malformed pages hide old content and pause Arrange without Bootstrap fallback.",
+    "read-boundaries: An obsolete held Task conversation response cannot overwrite the next Task or expose its message controls.",
+    "read-boundaries: 401 removes the private conversation and returns to authentication without mutations or replay.",
+    "neutral-light-1440: One Conversation tree renders reduced motion, localized controls and bounded content without document overflow or model/mutation calls.",
+    "neutral-dark-1440: One Conversation tree renders reduced motion, localized controls and bounded content without document overflow or model/mutation calls.",
+    "zira-light-1440: One Conversation tree renders reduced motion, localized controls and bounded content without document overflow or model/mutation calls.",
+    "zira-dark-390: One Conversation tree renders reduced motion, localized controls and bounded content without document overflow or model/mutation calls.",
+    "y2k-light-1440: One Conversation tree renders reduced motion, localized controls and bounded content without document overflow or model/mutation calls.",
+    "y2k-dark-390: One Conversation tree renders reduced motion, localized controls and bounded content without document overflow or model/mutation calls."
+  ],
+  "requests": [
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=2",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/turn-task/turns/new-turn-1/preview",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/turn-task/turns/new-turn-1/prepare",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/turn-task/turns/new-turn-1/execute",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "desktop",
+      "path": "/api/runs/linked-run-2",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/preview",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/prepare",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/execute",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/preview",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/prepare",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/execute",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "saved-response-loss",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "saved-response-loss",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "saved-response-loss",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "saved-response-loss",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "saved-response-loss",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "saved-response-loss",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "saved-response-loss",
+      "path": "/api/tasks/turn-task/turns/requests/369ed919-d06f-4b6f-b2da-e66788dbe6b2",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "saved-response-loss",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "saved-response-loss",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "saved-response-loss",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "saved-response-loss",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "saved-response-loss",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "saved-response-loss",
+      "path": "/api/tasks/turn-task/turns/requests/369ed919-d06f-4b6f-b2da-e66788dbe6b2",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "saved-response-loss",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "unsaved-response-loss",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "unsaved-response-loss",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "unsaved-response-loss",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "unsaved-response-loss",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "unsaved-response-loss",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "unsaved-response-loss",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "unsaved-response-loss",
+      "path": "/api/tasks/turn-task/turns/requests/e39e0943-8a63-46fa-a8ea-6c46d7ddaf63",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "unsaved-response-loss",
+      "path": "/api/tasks/turn-task/turns/requests/e39e0943-8a63-46fa-a8ea-6c46d7ddaf63",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "unsaved-response-loss",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "unsaved-response-loss",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "reload-missing-save-receipt",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "reload-missing-save-receipt",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "reload-missing-save-receipt",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "reload-missing-save-receipt",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "reload-missing-save-receipt",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "reload-missing-save-receipt",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "reload-missing-save-receipt",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "reload-missing-save-receipt",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "reload-missing-save-receipt",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "reload-missing-save-receipt",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "reload-missing-save-receipt",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "reload-missing-save-receipt",
+      "path": "/api/tasks/turn-task/turns/requests/b9fffcd9-a6b3-4d1a-b311-c29d9386b591",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-request_id",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-request_id",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-request_id",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-request_id",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-request_id",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-request_id",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/preview",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "changed-prepare-request_id",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/prepare",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "changed-prepare-content",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-content",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-content",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-content",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-content",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-content",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/preview",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "changed-prepare-content",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/prepare",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "changed-prepare-created_at",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-created_at",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-created_at",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-created_at",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-created_at",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-created_at",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/preview",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "changed-prepare-created_at",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/prepare",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "changed-prepare-reconcile-config",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-reconcile-config",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-reconcile-config",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-reconcile-config",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-reconcile-config",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-reconcile-config",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/preview",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "changed-prepare-reconcile-config",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/prepare",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "changed-prepare-reconcile-config",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-reconcile-config",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-reconcile-config",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-reconcile-context_hash",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-reconcile-context_hash",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-reconcile-context_hash",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-reconcile-context_hash",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-reconcile-context_hash",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-reconcile-context_hash",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/preview",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "changed-prepare-reconcile-context_hash",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/prepare",
+      "search": "",
+      "method": "POST"
+    },
+    {
+      "name": "changed-prepare-reconcile-context_hash",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-reconcile-context_hash",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "changed-prepare-reconcile-context_hash",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=2",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/other-turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/other-turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "read-boundaries",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-light-1440",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-light-1440",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-light-1440",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-light-1440",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-light-1440",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark-1440",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark-1440",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark-1440",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark-1440",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "neutral-dark-1440",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light-1440",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light-1440",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light-1440",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light-1440",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "zira-light-1440",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "zira-dark-390",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "zira-dark-390",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "zira-dark-390",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "zira-dark-390",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "zira-dark-390",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light-1440",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light-1440",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light-1440",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light-1440",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-light-1440",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark-390",
+      "path": "/api/auth/state",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark-390",
+      "path": "/api/bootstrap",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark-390",
+      "path": "/api/tasks/turn-task/detail",
+      "search": "?page=1&page_size=20",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark-390",
+      "path": "/api/projects/turn-project/detail",
+      "search": "",
+      "method": "GET"
+    },
+    {
+      "name": "y2k-dark-390",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "?page=1",
+      "method": "GET"
+    }
+  ],
+  "writes": [
+    {
+      "name": "desktop",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "request_id": "46048dd4-52a3-4e59-9887-f640118d7b16",
+        "content": "Only this saved supplemental requirement is selected for the next Run. 研发验收"
+      }
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/turn-task/turns/new-turn-1/preview",
+      "search": "",
+      "method": "POST",
+      "body": {}
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/turn-task/turns/new-turn-1/prepare",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "coordinator_model": "turn-model",
+        "researcher_model": "turn-model",
+        "reviewer_model": "turn-model",
+        "max_calls": 5,
+        "parallel": 2,
+        "minutes": 10,
+        "max_output_tokens": 1800,
+        "context_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "name": "desktop",
+      "path": "/api/tasks/turn-task/turns/new-turn-1/execute",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "candidate_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "consent": true
+      }
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/preview",
+      "search": "",
+      "method": "POST",
+      "body": {}
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/prepare",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "coordinator_model": "turn-model",
+        "researcher_model": "turn-model",
+        "reviewer_model": "turn-model",
+        "max_calls": 4,
+        "parallel": 2,
+        "minutes": 10,
+        "max_output_tokens": 1800,
+        "context_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "name": "prepare-response-loss",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/execute",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "candidate_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "consent": true
+      }
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/preview",
+      "search": "",
+      "method": "POST",
+      "body": {}
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/prepare",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "coordinator_model": "turn-model",
+        "researcher_model": "turn-model",
+        "reviewer_model": "turn-model",
+        "max_calls": 4,
+        "parallel": 2,
+        "minutes": 10,
+        "max_output_tokens": 1800,
+        "context_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "name": "execute-response-loss",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/execute",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "candidate_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "consent": true
+      }
+    },
+    {
+      "name": "saved-response-loss",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "request_id": "369ed919-d06f-4b6f-b2da-e66788dbe6b2",
+        "content": "Immutable candidate retained across an uncertain save"
+      }
+    },
+    {
+      "name": "unsaved-response-loss",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "request_id": "e39e0943-8a63-46fa-a8ea-6c46d7ddaf63",
+        "content": "Immutable candidate retained across an uncertain save"
+      }
+    },
+    {
+      "name": "unsaved-response-loss",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "request_id": "e39e0943-8a63-46fa-a8ea-6c46d7ddaf63",
+        "content": "Immutable candidate retained across an uncertain save"
+      }
+    },
+    {
+      "name": "reload-missing-save-receipt",
+      "path": "/api/tasks/turn-task/turns",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "request_id": "b9fffcd9-a6b3-4d1a-b311-c29d9386b591",
+        "content": "This original text is never persisted in browser storage"
+      }
+    },
+    {
+      "name": "changed-prepare-request_id",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/preview",
+      "search": "",
+      "method": "POST",
+      "body": {}
+    },
+    {
+      "name": "changed-prepare-request_id",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/prepare",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "coordinator_model": "turn-model",
+        "researcher_model": "turn-model",
+        "reviewer_model": "turn-model",
+        "max_calls": 4,
+        "parallel": 2,
+        "minutes": 10,
+        "max_output_tokens": 1800,
+        "context_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "name": "changed-prepare-content",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/preview",
+      "search": "",
+      "method": "POST",
+      "body": {}
+    },
+    {
+      "name": "changed-prepare-content",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/prepare",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "coordinator_model": "turn-model",
+        "researcher_model": "turn-model",
+        "reviewer_model": "turn-model",
+        "max_calls": 4,
+        "parallel": 2,
+        "minutes": 10,
+        "max_output_tokens": 1800,
+        "context_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "name": "changed-prepare-created_at",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/preview",
+      "search": "",
+      "method": "POST",
+      "body": {}
+    },
+    {
+      "name": "changed-prepare-created_at",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/prepare",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "coordinator_model": "turn-model",
+        "researcher_model": "turn-model",
+        "reviewer_model": "turn-model",
+        "max_calls": 4,
+        "parallel": 2,
+        "minutes": 10,
+        "max_output_tokens": 1800,
+        "context_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "name": "changed-prepare-reconcile-config",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/preview",
+      "search": "",
+      "method": "POST",
+      "body": {}
+    },
+    {
+      "name": "changed-prepare-reconcile-config",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/prepare",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "coordinator_model": "turn-model",
+        "researcher_model": "turn-model",
+        "reviewer_model": "turn-model",
+        "max_calls": 4,
+        "parallel": 2,
+        "minutes": 10,
+        "max_output_tokens": 1800,
+        "context_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "name": "changed-prepare-reconcile-context_hash",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/preview",
+      "search": "",
+      "method": "POST",
+      "body": {}
+    },
+    {
+      "name": "changed-prepare-reconcile-context_hash",
+      "path": "/api/tasks/turn-task/turns/saved-turn-000/prepare",
+      "search": "",
+      "method": "POST",
+      "body": {
+        "coordinator_model": "turn-model",
+        "researcher_model": "turn-model",
+        "reviewer_model": "turn-model",
+        "max_calls": 4,
+        "parallel": 2,
+        "minutes": 10,
+        "max_output_tokens": 1800,
+        "context_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    }
+  ],
+  "unexpected": [],
+  "externalRequests": [],
+  "errors": [],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "width": 1440,
+      "locale": "en",
+      "overflow": 0,
+      "color": "rgb(0, 0, 0)",
+      "background": "rgb(246, 247, 249)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "radius": "0px",
+      "visibleWidth": 1160,
+      "reducedMotion": true,
+      "bodyColor": "rgb(246, 247, 249)"
+    },
+    {
+      "style": "neutral",
+      "mode": "dark",
+      "width": 1440,
+      "locale": "en",
+      "overflow": 0,
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(246, 247, 249)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "radius": "0px",
+      "visibleWidth": 1160,
+      "reducedMotion": true,
+      "bodyColor": "rgb(246, 247, 249)"
+    },
+    {
+      "style": "zira",
+      "mode": "light",
+      "width": 1440,
+      "locale": "en",
+      "overflow": 0,
+      "color": "rgb(23, 43, 77)",
+      "background": "rgb(246, 247, 249)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif",
+      "radius": "0px",
+      "visibleWidth": 1160,
+      "reducedMotion": true,
+      "bodyColor": "rgb(246, 247, 249)"
+    },
+    {
+      "style": "zira",
+      "mode": "dark",
+      "width": 390,
+      "locale": "zh",
+      "overflow": 0,
+      "color": "rgb(230, 233, 239)",
+      "background": "rgb(246, 247, 249)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif",
+      "radius": "0px",
+      "visibleWidth": 354,
+      "reducedMotion": true,
+      "bodyColor": "rgb(246, 247, 249)"
+    },
+    {
+      "style": "y2k",
+      "mode": "light",
+      "width": 1440,
+      "locale": "en",
+      "overflow": 0,
+      "color": "rgb(45, 36, 27)",
+      "background": "rgb(246, 247, 249)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "radius": "0px",
+      "visibleWidth": 1160,
+      "reducedMotion": true,
+      "bodyColor": "rgb(246, 247, 249)"
+    },
+    {
+      "style": "y2k",
+      "mode": "dark",
+      "width": 390,
+      "locale": "zh",
+      "overflow": 0,
+      "color": "rgb(237, 239, 252)",
+      "background": "rgb(246, 247, 249)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "radius": "0px",
+      "visibleWidth": 354,
+      "reducedMotion": true,
+      "bodyColor": "rgb(246, 247, 249)"
+    }
+  ],
+  "screenshots": [
+    "desktop-saved-conversation.png",
+    "desktop-linked-agent-work.png",
+    "neutral-light-1440-conversation.png",
+    "neutral-dark-1440-conversation.png",
+    "zira-light-1440-conversation.png",
+    "zira-dark-390-conversation.png",
+    "y2k-light-1440-conversation.png",
+    "y2k-dark-390-conversation.png"
+  ]
+}

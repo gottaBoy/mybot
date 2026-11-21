@@ -82,6 +82,7 @@ import { useProjectDetail } from './useProjectDetail'
 import { useDockedWorkbenchNavigation } from '../components/ui/useViewport'
 import { projectWorkspaceLocation } from './project-workspace'
 import { taskWorkspaceHref } from './task-workspace-location'
+import type { TaskTurn } from './task-turns'
 import { clearModelTests } from './model-test-state'
 import { clearListContinuityCache } from './list-continuity'
 import {
@@ -909,6 +910,22 @@ export function Workbench() {
                   legacyUrl={legacyUrl}
                   preparing={Boolean(actionBusy)}
                   onPrepare={(task) => void prepare(task)}
+                  onPrepareTurn={(
+                    task: Task,
+                    turn: TaskTurn,
+                    snapshot: Snapshot,
+                  ) => {
+                    setForm({ kind: 'run', task, turn, snapshot })
+                  }}
+                  onOpenPreparedTurn={(task: Task, turn: TaskTurn) => {
+                    if (turn.candidate)
+                      setForm({
+                        kind: 'run',
+                        task,
+                        turn,
+                        snapshot: turn.candidate.snapshot,
+                      })
+                  }}
                 />
               </Suspense>
             ) : route.page === 'run' ? (
@@ -1455,7 +1472,7 @@ export function Workbench() {
       )}
       {form && data && (
         <WorkbenchForm
-          key={`${form.kind}-${'task' in form ? form.task.id : 'model' in form ? form.model.id : 'backend' in form ? form.backend.id : ''}`}
+          key={`${form.kind}-${'task' in form ? form.task.id : 'model' in form ? form.model.id : 'backend' in form ? form.backend.id : ''}-${form.kind === 'run' ? (form.turn?.id ?? 'ordinary') : ''}`}
           state={form}
           data={data}
           refreshRevision={queryRefreshRevision}

@@ -1064,10 +1064,57 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
   下一批持续会话/补充要求/下一轮Task Run，再固定Workflow版本；设备接力与连接器仍待办。
   本批独立commit/push以Git回执为准，不再自动迁移下一列表或重复Task页。
 
+### 产品工作项：C1–C6任务会话与下一轮Run
+
+- 起始391603c已push且工作树干净。用户要求继续、多Agent实现和清晰任务进展；
+  backend/client/UI三Agent分工，root整合Forms/Workbench、实际API、原功能回归、
+  本机启用和记录。C1–C6与下一批W1–W5已列PRODUCT_GOALS_CURRENT/TODO_INDEX。
+- 新Task“任务会话”页签、不可变补充消息及固定20项页，saved/prepared/applied与真实Run
+  链接分别展示。只发原Task资料和所选消息，无旧消息/输出自动重发或假assistant回复。
+  保存不读文件/开始Run；Task及旧Run快照不变。仍为原固定只读Harness。
+- 新task_conversation明确cap和精确save/request/read/preview/prepare/execute合同；
+  prepare持久冻结上下文与7字段资源，execute原子创建唯一Run并关联applied。
+  一Task最多1prepared，页外独立同快照补取最多21DTO；普通Run/重试/恢复不能绕过。
+- strict DTO/URL、15s mutation deadline、取消/迟到/401清私有，未知结果GET-only核对。
+  direct/GET回执绑定immutable Task/turn/request/content/time、完整candidate及发送配置/hash；
+  prepare恢复不自动执行，重开仍新consent。reload404无原文保留taskSend锁；
+  有原文仅同ID同文显式重试，不能以404推断在途POST终止。
+- 修复草稿guard被新表单覆盖、同Task不同消息旧Form state复用、回执candidate身份缺口。
+  手机四tab沿Astryx iconOnly保留完整ARIA名，输入单Unicode计数、超8000禁保存。
+  没有shared组件替代、依赖升级或执行权限变化。
+- 最终1813前端（60文件）/1055Python/typecheck/build通过；59新增后端、
+  112client定向及42Task/Conversation定向通过，定向数属于总数不相加。
+  生产专项24/26PNG、实际SQLite/FakeProvider5/4PNG、综合58/61PNG、
+  主入口只读6，共93最终浏览器检查/91fixturePNG，无最终pageerror。
+  三style双mode/390中英、六组overflow0及中文手机完整名称已验。
+- 实际fresh fixture.8k8JKc两消息两Run，各4次FakeProvider；故意丢prepare/execute响应，
+  GET核对后重新同意/打开原Run，重复exact execute没有第三Run，第二条不带第一条补充。
+  综合另一fresh fixture为FakeProvider/MockTransport，无真实Provider/费用。
+  首轮unmanaged hash导致保存未POST，后两轮async wait错误导致提前断言；
+  改fresh deep link与有界GET轮询后通过，三份失败报告/PNG保留。
+- 本机原PID3356362核对命令/cwd/原环境，空闲且无未决恢复/子执行器。
+  在线一致backup、副本Store迁移原行比对、再核查、SIGTERM/锁释放/停服backup，
+  同命令/cwd/原环境内存继承启动PID234937，cap=true。原表原列摘要启动后及主browser后不变：
+  1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event；新task_turns为空。
+- 私有备份`.runtime/backups/before-task-conversation-20261121T102836Z/`700、DB/log600；
+  不导出正式正文/截图/环境/凭证，activation脚本绑定旧PID不可重跑，不热覆盖回退。
+  主5173桌面/手机GET-only6项通过，无写请求/外部HTTP/pageerror，主4180/5173保持运行。
+  临时4187/5176已停止；最终证据`frontend/evidence/task-conversation-2026-11-21/`。
+- Starlette/httpx及大chunk警告保留，app JS179.53/gzip58.12kB、CSS38.91/7.35；
+  lazy TaskWorkspace JS30.37/10.15、CSS5.62/1.26；非初始transfer或整体性能结论，
+  Bootstrap仍全量。原119/9/110不变，不关闭026–034等全部长期范围。
+- prepared暂无撤销/改资源；reload后无原文且持续404仍待核对，无伪造终止/解锁。
+  自动会话记忆、Workflow版本、真机/真实Provider、多端控制与连接器未完成。
+  下一批W1定义/W2版本/W3可见配置/W4冲突确认/W5验收，不自动回到下个列表投影。
+  本批独立commit/push以Git回执为准。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。
 
 ## 当前路线引用
 
-完整目标、阶段、验收和停止条件见 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)。当前主线是 Phase 3：OpenMausBot fork 固定版本的只读 BackendConnection/ConversationRef；Cindy/Headscale/IM/代码执行均为后续阶段。
+当前交付顺序以 [PRODUCT_GOALS_CURRENT.md](PRODUCT_GOALS_CURRENT.md) 为准：
+Task工作区和选定消息持续工作初版已交付，接下来是固定Workflow定义/版本。
+[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)保留阶段架构与能力边界；
+OpenMausBot执行采用、Cindy/Headscale/IM/代码执行仍有各自未完成范围，不覆盖当前产品优先级。

@@ -43,6 +43,7 @@ def seed(directory: str):
                 "calls", "artifacts", "events", "workspace_settings", "saved_views",
                 "recovery_intents", "backend_connections", "conversation_refs",
                 "conversation_messages",
+                "task_turns",
             }
             if tables != required:
                 raise ValueError("The fixture schema does not match the expected workbench")

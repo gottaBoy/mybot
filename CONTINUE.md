@@ -2,6 +2,37 @@
 
 更新日期：2026-11-21（Asia/Singapore；用户日期11月20日America/New_York，历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
 
+**最新交付并本机启用（2026-11-21，C1–C6任务会话与下一轮Run初版）：**
+起始391603c已push/工作树干净。先读
+[ADR-0022](docs/decisions/ADR-0022-task-conversation-turns.md)及
+`frontend/evidence/task-conversation-2026-11-21/README.md`，产品任务以PRODUCT_GOALS_CURRENT为准。
+backend/client/UI三个Agent分工，root负责Forms/集成/真实接口/主入口/记录；
+backend Agent另做异常浏览器验证。新Task“任务会话”页签、持久不可变消息/20项页，
+选单条补充要求→显式preview/资源向导→prepare冻结→execute关联唯一Run，同Task看Agent/成果。
+只发原资料和所选消息，不隐式发送旧消息/输出；保存不读文件/开始Run，原Task和旧快照不变。
+prepared独立页外补取最多21DTO，一Task最多1条，普通Run/恢复不能绕过。
+15s mutation未知结果保留同ID/GET核对；回执绑定immutable身份、完整candidate及送出的配置/hash，
+不自动重试/执行。reload save404无原文继续taskSend锁，404不是在途POST终止。
+修复composer草稿被其他表单guard覆盖、同Task不同turn表单key、回执candidate身份缺口；
+手机四tab使用Astryx具名图标、单Unicode计数，未另建主题/页面树。
+最终1813前端（60文件）/1055Python/typecheck/build通过；生产专项24/实际5/综合58/
+主只读6，共93项浏览器与91最终fixturePNG，最终pageerror0。三style双mode/390中英、
+草稿/过期读/缺cap/401/篡改及丢响应已验，失败脚本证据保留。
+实际fresh fixture.8k8JKc两消息两Run，各4次FakeProvider，重复execute无第三Run，
+第二条不带第一条补充；综合另一fresh fixture使用FakeProvider/MockTransport，无真实费用。
+主4180由PID3356362受控更新为PID234937：空闲核查、在线一致备份、副本Store迁移、
+原表原列摘要比对、SIGTERM/锁释放/停服备份，同命令/cwd/原环境内存继承。
+原1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event及其他原行不变，
+task_turns为空，task_conversation=true；主5173桌面/手机GET-only6项通过、无模型/业务写入。
+私有备份`.runtime/backups/before-task-conversation-20261121T102836Z/`700，DB/log600；
+身份绑定activation脚本不可再跑旧PID，不热覆盖回退，不导出正式内容/凭证。
+主4180/5173保持运行，临时4187/5176已停止；Starlette/httpx和大chunk警告保留。
+原119/9/110不变。prepared尚无撤销/改配置协议，无原文且持续404仍保留未知；
+不是自动长期记忆、任意DAG、真机/真实Provider认证、多端控制或连接器完成。
+下一批**W1–W5固定Workflow定义/不可变版本/可见配置/CAS与确认/验收**，
+再多端接续和飞书/语雀/邮箱等。不重复搭建Task/会话页或自动挑下个列表投影。
+本批commit/push以Git回执为准；下方“下一批会话”和旧PID是历史事实。
+
 **最新交付并本机启用（2026-11-21，目标/任务工作区T0–T6初版）：**
 起始344d7ba已push/工作树干净。先读
 [ADR-0021](docs/decisions/ADR-0021-task-workspace.md)及

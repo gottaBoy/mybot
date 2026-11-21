@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import {
   ArrowLeft,
   ArrowRight,
@@ -9,14 +9,29 @@ import {
   FolderGit2,
   GitBranch,
   ListChecks,
+  MessageSquare,
   Play,
   RefreshCw,
+  Save,
   SlidersHorizontal,
   Workflow,
 } from 'lucide-react'
-import { AppBadge, AppButton, AppLoading, AppSegments } from '../components/ui'
-import type { Bootstrap, Task } from './api'
-import { pushWorkbenchNavigation } from './navigation-guard'
+import {
+  AppBadge,
+  AppButton,
+  AppLoading,
+  AppSegments,
+  AppTextArea,
+} from '../components/ui'
+import { AppDraftGuard } from '../components/ui/DraftGuard'
+import { useCompactTaskList } from '../components/ui/useViewport'
+import { ApiError, type Bootstrap, type Snapshot, type Task } from './api'
+import {
+  cancelWorkbenchNavigation,
+  confirmWorkbenchNavigation,
+  pushWorkbenchNavigation,
+  registerWorkbenchNavigationBlocker,
+} from './navigation-guard'
 import {
   readTaskWorkspaceLocation,
   taskWorkspaceHref,
@@ -25,6 +40,15 @@ import {
 import { statusText, statusTone, type Copy, type Locale } from './state'
 import { useProjectDetail } from './useProjectDetail'
 import { useTaskWorkspace } from './useTaskWorkspace'
+import { useTaskTurns } from './useTaskTurns'
+import {
+  fetchTaskTurnRequest,
+  previewTaskTurn,
+  saveTaskTurn,
+  type TaskTurn,
+  type TaskTurnPage,
+} from './task-turns'
+import { stripQueryWhitespace } from './task-query'
 import './task-workspace.css'
 
 const RunWorkspace = lazy(() =>
@@ -41,6 +65,8 @@ export type TaskWorkspaceProps = {
   locale: Locale
   legacyUrl: string
   onPrepare: (task: Task) => void
+  onPrepareTurn?: (task: Task, turn: TaskTurn, snapshot: Snapshot) => void
+  onOpenPreparedTurn?: (task: Task, turn: TaskTurn) => void
   preparing?: boolean
 }
 
@@ -52,8 +78,11 @@ export function TaskWorkspace({
   locale,
   legacyUrl,
   onPrepare,
+  onPrepareTurn,
+  onOpenPreparedTurn,
   preparing = false,
 }: TaskWorkspaceProps) {
+  const compact = useCompactTaskList()
   const [paging, setPaging] = useState({ taskId, page: 1 })
   const page = paging.taskId === taskId ? paging.page : 1
   const read = useTaskWorkspace({
@@ -81,7 +110,28 @@ export function TaskWorkspace({
   )
   const tab = location.tab
   const runId = location.runId ?? item?.run?.id
+  const [turnPaging, setTurnPaging] = useState({ taskId, page: 1 })
+  const turnPage = turnPaging.taskId === taskId ? turnPaging.page : 1
+  const turns = useTaskTurns({
+    data,
+    refreshRevision,
+    taskId,
+    page: turnPage,
+    enabled: Boolean(item && !read.error),
+  })
+  const [composerLocked, setComposerLocked] = useState(false)
+  const composerLock = useRef(false)
+  const setConversationLock = useCallback((locked: boolean) => {
+    composerLock.current = locked
+    setComposerLocked(locked)
+  }, [])
+  const conversationLocked = Boolean(
+    location.pendingRequestId ||
+    (turns.remote &&
+      (turns.busy || turns.error || !turns.value || turns.value.prepared)),
+  )
   const root = useRef<HTMLElement>(null)
+  const conversationNavigation = useRef(false)
   const retryTrigger = useRef<HTMLButtonElement>(null)
   const pageFocus = useRef<{
     taskId: string
@@ -95,6 +145,8 @@ export function TaskWorkspace({
     identity,
     prepare: false,
     navigate: false,
+    prepared: '',
+    pendingSave: '',
   })
   admission.current = {
     taskId,
@@ -108,9 +160,13 @@ export function TaskWorkspace({
       !projectUnavailable &&
       !preparing &&
       !location.error &&
+      !conversationLocked &&
+      !composerLocked &&
       data.models.length,
     ),
     navigate: Boolean(item && !read.busy && !read.error),
+    prepared: turns.value?.prepared ? JSON.stringify(turns.value.prepared) : '',
+    pendingSave: location.pendingRequestId ?? '',
   }
   const canNavigate = () =>
     admission.current.taskId === taskId && admission.current.navigate
@@ -119,16 +175,30 @@ export function TaskWorkspace({
       !item ||
       !admission.current.prepare ||
       admission.current.taskId !== taskId ||
-      admission.current.identity !== identity
+      admission.current.identity !== identity ||
+      composerLock.current
     )
       return
     onPrepare(item.task)
   }
   const navigate = (nextTab: TaskWorkspaceTab, nextRun = location.runId) => {
-    if (!canNavigate()) return
-    pushWorkbenchNavigation(
-      taskWorkspaceHref(taskId, { tab: nextTab, runId: nextRun }),
+    if (
+      !canNavigate() ||
+      (admission.current.pendingSave && nextTab !== 'conversation')
     )
+      return
+    conversationNavigation.current = true
+    try {
+      pushWorkbenchNavigation(
+        taskWorkspaceHref(taskId, {
+          tab: nextTab,
+          runId: nextRun,
+          pendingRequestId: location.pendingRequestId,
+        }),
+      )
+    } finally {
+      conversationNavigation.current = false
+    }
   }
   const changePage = (candidate: number, direction: 'previous' | 'next') => {
     if (
@@ -294,6 +364,76 @@ export function TaskWorkspace({
           />
         </div>
       )}
+      {turns.remote && turns.value?.prepared && (
+        <div className="wb-task-prepared-state" role="status">
+          <div>
+            <strong>
+              {t(
+                '下一轮已准备，等待确认',
+                'Next run prepared, awaiting confirmation',
+              )}
+            </strong>
+            <p>{turns.value.prepared.content}</p>
+          </div>
+          <AppButton
+            label={t('继续确认下一轮', 'Continue prepared run')}
+            icon={<ArrowRight size={15} />}
+            disabled={
+              read.busy ||
+              turns.busy ||
+              preparing ||
+              Boolean(location.pendingRequestId) ||
+              composerLocked ||
+              !onOpenPreparedTurn
+            }
+            onClick={() => {
+              const preparedTurn = turns.value?.prepared
+              if (
+                preparedTurn &&
+                !read.busy &&
+                !turns.busy &&
+                !preparing &&
+                !location.pendingRequestId &&
+                !composerLock.current &&
+                admission.current.prepared === JSON.stringify(preparedTurn) &&
+                onOpenPreparedTurn
+              )
+                onOpenPreparedTurn(item.task, preparedTurn)
+            }}
+          />
+        </div>
+      )}
+      {turns.remote && turns.error && tab !== 'conversation' && (
+        <div className="wb-error" role="alert">
+          <span>
+            {t(
+              '会话状态尚未确认，安排执行已暂停。',
+              'Conversation state is unconfirmed. Arrange execution is paused.',
+            )}
+          </span>
+          <AppButton
+            label={t('重试读取会话', 'Retry conversation')}
+            icon={<RefreshCw size={15} />}
+            onClick={turns.retry}
+          />
+        </div>
+      )}
+      {location.pendingRequestId && tab !== 'conversation' && (
+        <div className="wb-error" role="status">
+          <span>
+            {t(
+              '消息保存结果待核对，请回到任务会话。',
+              'A message save needs reconciliation. Open the task conversation.',
+            )}
+          </span>
+          <AppButton
+            label={t('打开任务会话', 'Open task conversation')}
+            onClick={() => {
+              navigate('conversation')
+            }}
+          />
+        </div>
+      )}
       {location.error ? (
         <div className="wb-error" role="alert">
           <p>
@@ -319,6 +459,7 @@ export function TaskWorkspace({
           >
             <AppSegments
               label={t('任务视图', 'Task view')}
+              iconOnly={compact}
               value={tab}
               onChange={(value) => navigate(value as TaskWorkspaceTab)}
               options={[
@@ -326,6 +467,11 @@ export function TaskWorkspace({
                   value: 'goal',
                   label: t('目标与验收', 'Goal & acceptance'),
                   icon: <ListChecks size={16} />,
+                },
+                {
+                  value: 'conversation',
+                  label: t('任务会话', 'Conversation'),
+                  icon: <MessageSquare size={16} />,
                 },
                 {
                   value: 'work',
@@ -340,7 +486,28 @@ export function TaskWorkspace({
               ]}
             />
           </nav>
-          {tab === 'goal' ? (
+          <div hidden={tab !== 'conversation'}>
+            <TaskConversation
+              key={taskId}
+              task={item.task}
+              t={t}
+              locale={locale}
+              remote={turns.remote}
+              value={turns.value}
+              busy={turns.busy || read.busy}
+              error={turns.error}
+              retry={turns.retry}
+              pendingRequestId={location.pendingRequestId}
+              runId={location.runId}
+              preparing={preparing}
+              navigationAllowance={conversationNavigation}
+              onComposerLockChange={setConversationLock}
+              onPrepareTurn={onPrepareTurn}
+              onOpenPreparedTurn={onOpenPreparedTurn}
+              onPageChange={(next) => setTurnPaging({ taskId, page: next })}
+            />
+          </div>
+          {tab === 'conversation' ? null : tab === 'goal' ? (
             <div className="wb-task-goal-layout">
               <div className="wb-task-brief">
                 <section
@@ -587,6 +754,714 @@ export function TaskWorkspace({
             </div>
           )}
         </>
+      )}
+    </section>
+  )
+}
+
+type ConversationReadError = ReturnType<typeof useTaskTurns>['error']
+type MessageSave =
+  | { phase: 'idle' }
+  | {
+      phase: 'saving' | 'unknown' | 'checking' | 'missing'
+      requestId: string
+      content?: string
+    }
+
+export function TaskConversation({
+  task,
+  t,
+  locale,
+  remote,
+  value,
+  busy,
+  error,
+  retry,
+  pendingRequestId,
+  runId,
+  preparing,
+  navigationAllowance,
+  onComposerLockChange,
+  onPrepareTurn,
+  onOpenPreparedTurn,
+  onPageChange,
+}: {
+  task: Task
+  t: Copy
+  locale: Locale
+  remote: boolean
+  value: TaskTurnPage | undefined
+  busy: boolean
+  error: ConversationReadError
+  retry: () => void
+  pendingRequestId?: string
+  runId?: string
+  preparing: boolean
+  navigationAllowance?: { current: boolean }
+  onComposerLockChange?: (locked: boolean) => void
+  onPrepareTurn?: TaskWorkspaceProps['onPrepareTurn']
+  onOpenPreparedTurn?: TaskWorkspaceProps['onOpenPreparedTurn']
+  onPageChange: (page: number) => void
+}) {
+  const [draft, setDraft] = useState('')
+  const [save, setSave] = useState<MessageSave>(
+    pendingRequestId
+      ? { phase: 'unknown', requestId: pendingRequestId }
+      : { phase: 'idle' },
+  )
+  const [notice, setNotice] = useState<
+    { tone: 'error' | 'info'; text: string } | undefined
+  >()
+  const [discardOpen, setDiscardOpen] = useState(false)
+  const [previewing, setPreviewing] = useState('')
+  const root = useRef<HTMLElement>(null)
+  const retryTrigger = useRef<HTMLButtonElement>(null)
+  const pageFocus = useRef<{
+    direction: 'previous' | 'next'
+    origin: Element | null
+  }>(undefined)
+  const request = useRef<AbortController | undefined>(undefined)
+  const mounted = useRef(true)
+  const localInternalNavigation = useRef(false)
+  const internalNavigation = navigationAllowance ?? localInternalNavigation
+  const operation = useRef(false)
+  const activeTask = useRef(task.id)
+  activeTask.current = task.id
+  const saveState = useRef(save)
+  saveState.current = save
+  const draftState = useRef(draft)
+  draftState.current = draft
+  const admission = useRef({
+    taskId: task.id,
+    ready: false,
+    prepared: '',
+    turns: new Map<string, string>(),
+  })
+  admission.current = {
+    taskId: task.id,
+    ready: Boolean(remote && value && !busy && !error && !preparing),
+    prepared: value?.prepared?.id ?? '',
+    turns: new Map(
+      [
+        ...(value?.items ?? []),
+        ...(value?.prepared ? [value.prepared] : []),
+      ].map((turn) => [turn.id, JSON.stringify(turn)]),
+    ),
+  }
+  const uncertain = save.phase === 'unknown' || save.phase === 'checking'
+  const saveLocked = save.phase !== 'idle'
+  const guardActive = Boolean(draft || saveLocked || previewing)
+  useEffect(() => {
+    onComposerLockChange?.(guardActive)
+    return () => onComposerLockChange?.(false)
+  }, [guardActive, onComposerLockChange])
+  const guard = useRef({ dirty: false, busy: false })
+  guard.current = {
+    dirty: Boolean(draft) || save.phase === 'missing',
+    busy: saveLocked || uncertain || Boolean(previewing),
+  }
+  useEffect(() => {
+    mounted.current = true
+    return () => {
+      mounted.current = false
+      request.current?.abort()
+    }
+  }, [])
+  useEffect(() => {
+    if (
+      pendingRequestId &&
+      (saveState.current.phase === 'idle' ||
+        saveState.current.requestId !== pendingRequestId)
+    )
+      setSave({ phase: 'unknown', requestId: pendingRequestId })
+  }, [pendingRequestId])
+  useEffect(() => {
+    if (!guardActive) return
+    const unregister = registerWorkbenchNavigationBlocker({
+      getState: () =>
+        internalNavigation.current
+          ? { dirty: false, busy: false }
+          : guard.current,
+      onBlocked: () => setDiscardOpen(true),
+      onReset: () => setDiscardOpen(false),
+    })
+    const unload = (event: BeforeUnloadEvent) => {
+      if (!guard.current.dirty && !guard.current.busy) return
+      event.preventDefault()
+      event.returnValue = ''
+    }
+    window.addEventListener('beforeunload', unload)
+    return () => {
+      unregister()
+      window.removeEventListener('beforeunload', unload)
+    }
+  }, [guardActive])
+  useEffect(() => {
+    const pending = pageFocus.current
+    if (!pending || busy || (!value && !error)) return
+    pageFocus.current = undefined
+    if (
+      document.activeElement !== document.body &&
+      document.activeElement !== pending.origin
+    )
+      return
+    if (error) {
+      retryTrigger.current?.focus()
+      return
+    }
+    const available = ':not(:disabled):not([aria-disabled="true"])'
+    const preferred = root.current?.querySelector<HTMLButtonElement>(
+      `[data-task-turn-page="${pending.direction}"]${available}`,
+    )
+    const fallback = root.current?.querySelector<HTMLButtonElement>(
+      `[data-task-turn-page]${available}`,
+    )
+    ;(preferred ?? fallback)?.focus()
+  }, [busy, error, value])
+  const stampRequest = (id?: string) => {
+    internalNavigation.current = true
+    try {
+      return pushWorkbenchNavigation(
+        taskWorkspaceHref(task.id, {
+          tab: 'conversation',
+          runId,
+          pendingRequestId: id,
+        }),
+        { replace: true },
+      )
+    } finally {
+      internalNavigation.current = false
+    }
+  }
+  const current = (taskId: string) =>
+    mounted.current && activeTask.current === taskId
+  const finishSave = () => {
+    cancelWorkbenchNavigation()
+    if (!stampRequest()) {
+      const pending = saveState.current
+      if (pending.phase !== 'idle') setSave({ ...pending, phase: 'unknown' })
+      setNotice({
+        tone: 'error',
+        text: t(
+          '消息已保存，但页面状态未更新。请核对保存回执。',
+          'The message was saved, but navigation did not update. Check its receipt.',
+        ),
+      })
+      return
+    }
+    setDraft('')
+    setSave({ phase: 'idle' })
+    setNotice({
+      tone: 'info',
+      text: t('消息已保存，尚未执行。', 'Message saved. No run has started.'),
+    })
+    onPageChange(1)
+    retry()
+  }
+  const send = async (candidate?: { requestId: string; content: string }) => {
+    if (
+      operation.current ||
+      !admission.current.ready ||
+      admission.current.taskId !== task.id ||
+      (!candidate && saveState.current.phase !== 'idle')
+    )
+      return
+    const text = candidate?.content ?? stripQueryWhitespace(draftState.current)
+    if (!text || [...text].length > 8000) {
+      setNotice({
+        tone: 'error',
+        text: t(
+          '补充要求须为 1 至 8000 个字符。',
+          'Supplemental requirements must contain 1 to 8000 characters.',
+        ),
+      })
+      return
+    }
+    const requestId = candidate?.requestId ?? crypto.randomUUID()
+    const taskId = task.id
+    operation.current = true
+    setNotice(undefined)
+    if (!stampRequest(requestId)) {
+      operation.current = false
+      return
+    }
+    setSave({ phase: 'saving', requestId, content: text })
+    request.current?.abort()
+    const controller = new AbortController()
+    request.current = controller
+    try {
+      await saveTaskTurn(
+        taskId,
+        { request_id: requestId, content: text },
+        controller.signal,
+      )
+      if (current(taskId) && !controller.signal.aborted) finishSave()
+    } catch {
+      if (!current(taskId)) return
+      setSave({ phase: 'unknown', requestId, content: text })
+      setNotice({
+        tone: 'error',
+        text: t(
+          '保存结果未确认，请按原请求核对回执。不会自动重发。',
+          'The save outcome is unconfirmed. Check the original request receipt. It will not be resent automatically.',
+        ),
+      })
+    } finally {
+      if (current(taskId)) operation.current = false
+    }
+  }
+  const reconcile = async () => {
+    const before = saveState.current
+    if (
+      operation.current ||
+      before.phase === 'idle' ||
+      before.phase === 'saving'
+    )
+      return
+    const taskId = task.id
+    operation.current = true
+    setSave({ ...before, phase: 'checking' })
+    setNotice(undefined)
+    request.current?.abort()
+    const controller = new AbortController()
+    request.current = controller
+    const timeout = setTimeout(() => controller.abort(), 15_000)
+    try {
+      const receipt = await fetchTaskTurnRequest(
+        taskId,
+        before.requestId,
+        controller.signal,
+      )
+      if (!current(taskId) || controller.signal.aborted) return
+      if (before.content !== undefined && receipt.content !== before.content)
+        throw new Error('task_turn_receipt_candidate_mismatch')
+      finishSave()
+    } catch (reason) {
+      if (!current(taskId)) return
+      if (reason instanceof ApiError && reason.status === 404) {
+        if (before.content === undefined) {
+          setSave({ ...before, phase: 'unknown' })
+          setNotice({
+            tone: 'error',
+            text: t(
+              '暂未找到原请求，仍不能确认此前保存是否结束。原文未保存在浏览器，请保留此请求继续核对。',
+              'The original request was not found yet, but its earlier save may still be in flight. Its text was not stored in the browser. Keep this request and check again.',
+            ),
+          })
+        } else {
+          setSave({ ...before, phase: 'missing' })
+          setNotice({
+            tone: 'info',
+            text: t(
+              '暂未找到该请求。可用同一请求标识重试原消息，不会更换消息或新建请求。',
+              'This request was not found yet. You may retry the original message with the same request ID; its text and identity stay fixed.',
+            ),
+          })
+        }
+      } else {
+        setSave({ ...before, phase: 'unknown' })
+        setNotice({
+          tone: 'error',
+          text: t(
+            '回执读取失败，原请求仍待核对。',
+            'The receipt could not be read. The original request remains unresolved.',
+          ),
+        })
+      }
+    } finally {
+      clearTimeout(timeout)
+      if (current(taskId)) operation.current = false
+    }
+  }
+  const preview = async (turn: TaskTurn) => {
+    if (
+      operation.current ||
+      !admission.current.ready ||
+      admission.current.taskId !== task.id ||
+      admission.current.prepared ||
+      admission.current.turns.get(turn.id) !== JSON.stringify(turn) ||
+      turn.state !== 'saved' ||
+      draftState.current ||
+      saveState.current.phase !== 'idle' ||
+      !onPrepareTurn
+    )
+      return
+    const taskId = task.id
+    operation.current = true
+    setPreviewing(turn.id)
+    setNotice(undefined)
+    request.current?.abort()
+    const controller = new AbortController()
+    request.current = controller
+    try {
+      const snapshot = await previewTaskTurn(taskId, turn.id, controller.signal)
+      if (!current(taskId) || controller.signal.aborted) return
+      if (
+        snapshot.supplement.id !== turn.id ||
+        snapshot.supplement.content !== turn.content
+      )
+        throw new Error('task_turn_preview_candidate_mismatch')
+      onPrepareTurn(task, turn, snapshot)
+    } catch {
+      if (current(taskId))
+        setNotice({
+          tone: 'error',
+          text: t(
+            '下一轮资料读取失败，尚未准备或执行。',
+            'The next-run context could not be read. No candidate was prepared or executed.',
+          ),
+        })
+    } finally {
+      if (current(taskId)) {
+        setPreviewing('')
+        operation.current = false
+      }
+    }
+  }
+  const canUseTurn = (turn: TaskTurn) =>
+    admission.current.ready &&
+    admission.current.taskId === task.id &&
+    admission.current.turns.get(turn.id) === JSON.stringify(turn) &&
+    !operation.current &&
+    !draft &&
+    !saveLocked
+  const when = (createdAt: string) =>
+    new Date(createdAt).toLocaleString(locale === 'zh' ? 'zh-CN' : 'en-US')
+  const preparedOffPage =
+    value?.prepared &&
+    !value.items.some((turn) => turn.id === value.prepared!.id)
+      ? value.prepared
+      : undefined
+  const timeline = preparedOffPage
+    ? [preparedOffPage, ...(value?.items ?? [])]
+    : (value?.items ?? [])
+  const changePage = (page: number, direction: 'previous' | 'next') => {
+    if (
+      !admission.current.ready ||
+      operation.current ||
+      saveLocked ||
+      !value ||
+      page < 1 ||
+      page > value.total_pages
+    )
+      return
+    pageFocus.current = { direction, origin: document.activeElement }
+    onPageChange(page)
+  }
+  return (
+    <section
+      ref={root}
+      className="wb-task-conversation"
+      data-testid="task-conversation"
+      aria-busy={busy || undefined}
+    >
+      {!remote ? (
+        <div className="wb-task-read-state" role="status">
+          <MessageSquare size={25} />
+          <h2>
+            {t(
+              '当前服务未启用任务会话',
+              'Task conversation is not enabled on this server',
+            )}
+          </h2>
+        </div>
+      ) : (
+        <>
+          <div className="wb-task-conversation-heading">
+            <div>
+              <h2>
+                {t(
+                  '补充要求与下一轮工作',
+                  'Supplemental requirements and next work',
+                )}
+              </h2>
+              <p>
+                {t(
+                  '下一轮仅发送原任务资料和所选消息，之前的会话与模型输出不会自动附加。',
+                  'The next run sends the original Task context and selected message only. Previous messages and model outputs are not appended automatically.',
+                )}
+              </p>
+            </div>
+            <AppButton
+              label={t('刷新会话', 'Refresh conversation')}
+              icon={<RefreshCw size={16} />}
+              iconOnly
+              tone="ghost"
+              disabled={busy || operation.current}
+              onClick={retry}
+            />
+          </div>
+          <div className="wb-task-message-composer">
+            <AppTextArea
+              label={t('补充要求', 'Supplemental requirements')}
+              value={draft}
+              onChange={(next) => {
+                if (saveState.current.phase === 'idle' && !operation.current)
+                  setDraft(next)
+              }}
+              isDisabled={saveLocked || Boolean(previewing) || preparing}
+              rows={4}
+            />
+            <div className="wb-task-message-composer-actions">
+              <span className="wb-muted">{[...draft].length} / 8000</span>
+              <AppButton
+                label={t('保存消息', 'Save message')}
+                icon={<Save size={16} />}
+                tone="primary"
+                busy={save.phase === 'saving'}
+                disabled={
+                  !admission.current.ready ||
+                  saveLocked ||
+                  Boolean(previewing) ||
+                  [...draft].length > 8000 ||
+                  !draft.trim()
+                }
+                onClick={() => void send()}
+              />
+            </div>
+          </div>
+          {notice && (
+            <div
+              className={notice.tone === 'error' ? 'wb-error' : 'wb-notice'}
+              role={notice.tone === 'error' ? 'alert' : 'status'}
+            >
+              {notice.text}
+            </div>
+          )}
+          {save.phase !== 'idle' && save.phase !== 'saving' && (
+            <div className="wb-task-message-receipt" role="status">
+              <code>{save.requestId}</code>
+              <AppButton
+                label={t('核对保存回执', 'Check save receipt')}
+                icon={<RefreshCw size={15} />}
+                busy={save.phase === 'checking'}
+                disabled={operation.current}
+                onClick={() => void reconcile()}
+              />
+              {save.phase === 'missing' && save.content !== undefined && (
+                <>
+                  <AppButton
+                    label={t('重试原消息', 'Retry original message')}
+                    disabled={!admission.current.ready || operation.current}
+                    onClick={() => {
+                      const candidate = saveState.current
+                      if (
+                        candidate.phase === 'missing' &&
+                        candidate.content !== undefined
+                      )
+                        void send({
+                          requestId: candidate.requestId,
+                          content: candidate.content,
+                        })
+                    }}
+                  />
+                </>
+              )}
+            </div>
+          )}
+          {error ? (
+            <div className="wb-error" role="alert">
+              <p>
+                {error === 'forbidden'
+                  ? t(
+                      '没有读取任务会话的权限。',
+                      'Task conversation access is forbidden.',
+                    )
+                  : error === 'missing'
+                    ? t(
+                        '任务会话不存在或不可用。',
+                        'Task conversation is missing or unavailable.',
+                      )
+                    : t(
+                        '会话读取失败，未显示消息。',
+                        'Conversation could not be read. No messages were shown.',
+                      )}
+              </p>
+              <AppButton
+                ref={retryTrigger}
+                label={t('重试读取会话', 'Retry conversation')}
+                icon={<RefreshCw size={15} />}
+                onClick={retry}
+              />
+            </div>
+          ) : !value ? (
+            <AppLoading label={t('正在读取会话', 'Loading conversation')} />
+          ) : (
+            <>
+              <div
+                className="wb-task-message-list"
+                aria-label={t('已保存消息', 'Saved messages')}
+              >
+                {timeline.map((turn) => (
+                  <article
+                    className="wb-task-message"
+                    key={turn.id}
+                    data-task-turn={turn.id}
+                  >
+                    <header>
+                      <AppBadge
+                        tone={
+                          turn.state === 'applied'
+                            ? 'info'
+                            : turn.state === 'prepared'
+                              ? 'warning'
+                              : 'neutral'
+                        }
+                      >
+                        {turn.state === 'saved'
+                          ? t('已保存，未执行', 'Saved, not executed')
+                          : turn.state === 'prepared'
+                            ? t('已准备，待确认', 'Prepared, awaiting consent')
+                            : t('已关联运行', 'Run linked')}
+                      </AppBadge>
+                      <time dateTime={turn.created_at}>
+                        {when(turn.created_at)}
+                      </time>
+                    </header>
+                    <p className="wb-task-message-content">{turn.content}</p>
+                    {turn.state === 'prepared' && turn.candidate && (
+                      <dl className="wb-task-message-budget">
+                        <dt>{t('调用上限', 'Call limit')}</dt>
+                        <dd>{turn.candidate.config.max_calls}</dd>
+                        <dt>
+                          {t('并行研究 Agent', 'Parallel research Agents')}
+                        </dt>
+                        <dd>{turn.candidate.config.parallel}</dd>
+                        <dt>{t('时间上限', 'Time limit')}</dt>
+                        <dd>{turn.candidate.config.minutes} min</dd>
+                      </dl>
+                    )}
+                    <div className="wb-task-message-actions">
+                      {turn.state === 'saved' ? (
+                        <AppButton
+                          label={t('安排下一轮', 'Arrange next run')}
+                          icon={<Play size={15} />}
+                          busy={previewing === turn.id}
+                          disabled={
+                            !canUseTurn(turn) ||
+                            Boolean(value.prepared) ||
+                            !onPrepareTurn
+                          }
+                          onClick={() => void preview(turn)}
+                        />
+                      ) : turn.state === 'prepared' ? (
+                        <AppButton
+                          label={t('继续确认下一轮', 'Continue prepared run')}
+                          icon={<ArrowRight size={15} />}
+                          disabled={!canUseTurn(turn) || !onOpenPreparedTurn}
+                          onClick={() => {
+                            if (canUseTurn(turn) && onOpenPreparedTurn)
+                              onOpenPreparedTurn(task, turn)
+                          }}
+                        />
+                      ) : turn.run_id ? (
+                        <>
+                          <AppButton
+                            label={t('查看 Agent 执行', 'View Agent work')}
+                            icon={<Workflow size={15} />}
+                            disabled={!canUseTurn(turn)}
+                            onClick={() => {
+                              if (canUseTurn(turn))
+                                pushWorkbenchNavigation(
+                                  taskWorkspaceHref(task.id, {
+                                    tab: 'work',
+                                    runId: turn.run_id!,
+                                  }),
+                                )
+                            }}
+                          />
+                          <AppButton
+                            label={t('审查成果', 'Review artifacts')}
+                            icon={<FileCheck2 size={15} />}
+                            disabled={!canUseTurn(turn)}
+                            onClick={() => {
+                              if (canUseTurn(turn))
+                                pushWorkbenchNavigation(
+                                  taskWorkspaceHref(task.id, {
+                                    tab: 'review',
+                                    runId: turn.run_id!,
+                                  }),
+                                )
+                            }}
+                          />
+                        </>
+                      ) : null}
+                    </div>
+                  </article>
+                ))}
+                {!timeline.length && (
+                  <div className="wb-task-message-empty">
+                    <MessageSquare size={24} />
+                    <h3>
+                      {t('还没有补充消息', 'No supplemental messages yet')}
+                    </h3>
+                  </div>
+                )}
+              </div>
+              <footer className="wb-task-message-pagination">
+                <span data-testid="task-turn-range">
+                  {value.total
+                    ? `${(value.page - 1) * value.page_size + 1}-${Math.min(value.page * value.page_size, value.total)}`
+                    : '0-0'}{' '}
+                  / {value.total}
+                </span>
+                <div>
+                  <AppButton
+                    label={t('上一页消息', 'Previous messages')}
+                    icon={<ChevronLeft size={15} />}
+                    iconOnly
+                    tone="ghost"
+                    data-task-turn-page="previous"
+                    disabled={
+                      busy || operation.current || saveLocked || value.page <= 1
+                    }
+                    onClick={() => changePage(value.page - 1, 'previous')}
+                  />
+                  <span>
+                    {value.page} / {value.total_pages}
+                  </span>
+                  <AppButton
+                    label={t('下一页消息', 'Next messages')}
+                    icon={<ChevronRight size={15} />}
+                    iconOnly
+                    tone="ghost"
+                    data-task-turn-page="next"
+                    disabled={
+                      busy || operation.current || saveLocked || !value.has_more
+                    }
+                    onClick={() => changePage(value.page + 1, 'next')}
+                  />
+                </div>
+              </footer>
+            </>
+          )}
+        </>
+      )}
+      {discardOpen && (
+        <AppDraftGuard
+          title={t(
+            '放弃未保存的补充要求？',
+            'Discard unsaved supplemental requirements?',
+          )}
+          description={t(
+            '补充要求尚未保存。',
+            'These requirements have not been saved.',
+          )}
+          keepLabel={t('继续编辑', 'Keep editing')}
+          discardLabel={t('放弃更改', 'Discard changes')}
+          onKeep={() => {
+            cancelWorkbenchNavigation()
+            setDiscardOpen(false)
+          }}
+          onDiscard={() => {
+            if (guard.current.busy) return
+            guard.current = { dirty: false, busy: false }
+            setDraft('')
+            setSave({ phase: 'idle' })
+            setDiscardOpen(false)
+            confirmWorkbenchNavigation()
+          }}
+        />
       )}
     </section>
   )

@@ -1,0 +1,45 @@
+{
+  "fixture": true,
+  "checks": [
+    "Real SQLite message survives reload; saving does not read context or create a Run"
+  ],
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/5402e08191ad420aafd3c4bf15d029ab/turns",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/5402e08191ad420aafd3c4bf15d029ab/turns/675d987deb6f437095cf9591526af962/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/5402e08191ad420aafd3c4bf15d029ab/turns/675d987deb6f437095cf9591526af962/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/5402e08191ad420aafd3c4bf15d029ab/turns/675d987deb6f437095cf9591526af962/execute",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "live-saved-message.png"
+  ],
+  "failure": "TypeError: Cannot read properties of undefined (reading 'context')\n    at file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-task-conversation-live.mjs:202:21"
+}

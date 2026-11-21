@@ -5,9 +5,10 @@
 Read `CONTINUE.md` before making assumptions about the project. Then read the latest ADR referenced there and the document relevant to the requested work.
 Use `docs/PRODUCT_GOALS_CURRENT.md` for product delivery priorities. A completed
 query/pagination slice is not completion of the goal/task/Agent/outcome workflow.
-The initial Task workspace is delivered in ADR-0021. Prioritize persistent Task
-conversation and fixed Workflow versions next, rather than automatically choosing
-the next remaining data projection. Distinguish local activation from isolated tests.
+The initial Task workspace and persistent selected-message continuation are delivered
+in ADR-0021/0022. Prioritize fixed Workflow definitions and versions next, rather than
+automatically choosing the next data projection. Distinguish local activation from
+isolated tests; Task messages are not implicit model memory.
 For frontend work, also read `docs/ASTRYX_TEMPLATE_INTEGRATION.md` and
 `docs/UI_ITERATIONS.md`. For Zira-derived work, read `docs/ZIRA_FRONTEND_STUDY.md`
 and `docs/REA_ZIRA_LAYOUT.md`; the 625-file structural index is not runtime evidence.
@@ -331,6 +332,18 @@ product patterns, not replacing Astryx. Apply these rules to mybot:
   automatic context preview; Arrange and Run consent remain separate actions.
   A confirmed saved form can release its own navigation blocker while retaining
   duplicate-submit protection. Successful Task-started Runs stay in that Task.
+- Task conversation (ADR-0022) requires explicit `task_conversation`. Saving an
+  immutable message never previews files or starts a Run. Only the selected message
+  is appended to original Task context; previous messages/outputs are not resent.
+  Persist preparation before execution and bind immutable message identity, the
+  full candidate, sent resources and context hash before accepting receipts.
+  Prepared state is independently hydrated outside the20-item page and blocks
+  ordinary/recovery execution for the Task. Reopen with fresh unchecked consent.
+  Unknown outcomes keep the same request ID and GET-only reconciliation; a404
+  is not termination of an in-flight POST. Without original in-memory content
+  after reload, retain the pending marker/lock, never invent a new save candidate.
+  Composer drafts survive same-Task tab changes, remain outside durable preferences,
+  and block opening another form that would replace their navigation guard.
 - Route and query listeners must consult the shared navigation admission guard.
   Restoring a dirty form's URL in a capture listener alone does not preserve the
   form. One navigation event must share one decision across consumers; confirmed

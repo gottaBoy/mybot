@@ -33,6 +33,15 @@ import {
   type Snapshot,
   type Task,
 } from './api'
+import {
+  executeTaskTurn,
+  fetchTaskTurn,
+  prepareTaskTurn,
+  previewTaskTurn,
+  assertTaskTurnReceipt,
+  type TaskTurn,
+  type TurnPreparation,
+} from './task-turns'
 import { splitFiles, type Copy } from './state'
 import { isContextChangedError, recheckedRunContext } from './run-context'
 import { AppDraftGuard } from '../components/ui/DraftGuard'
@@ -70,7 +79,7 @@ export type FormState =
   | { kind: 'task'; projectId?: string }
   | { kind: 'model' }
   | { kind: 'backend' }
-  | { kind: 'run'; task: Task; snapshot: Snapshot }
+  | { kind: 'run'; task: Task; snapshot: Snapshot; turn?: TaskTurn }
   | { kind: 'test'; model: Model }
   | { kind: 'check' | 'revoke'; backend: Backend }
 
@@ -146,6 +155,27 @@ export function WorkbenchForm({
     minutes: 10,
     max_output_tokens: 1800,
   })
+  const [turn, setTurn] = useState<TaskTurn | undefined>(
+    state.kind === 'run' ? state.turn : undefined,
+  )
+  const [turnUncertain, setTurnUncertain] = useState(false)
+  const [checkingTurn, setCheckingTurn] = useState(false)
+  const turnLocked = Boolean(turn?.candidate || turnUncertain)
+  useEffect(() => {
+    if (state.kind !== 'run' || !state.turn?.candidate) return
+    const config = state.turn.candidate.config
+    setRouting({
+      coordinator_model: config.coordinator_model,
+      researcher_model: config.researcher_model,
+      reviewer_model: config.reviewer_model,
+    })
+    setLimits({
+      max_calls: config.max_calls,
+      parallel: config.parallel,
+      minutes: config.minutes,
+      max_output_tokens: config.max_output_tokens,
+    })
+  }, [])
   const [consent, setConsent] = useState(false)
   const [runSnapshot, setRunSnapshot] = useState(
     state.kind === 'run' ? state.snapshot : undefined,
@@ -168,6 +198,8 @@ export function WorkbenchForm({
   const [discardOpen, setDiscardOpen] = useState(false)
   const [unmanagedNavigation, setUnmanagedNavigation] = useState(false)
   const taskValidationRequest = useRef<AbortController | null>(null)
+  const turnReceiptRequest = useRef<AbortController | null>(null)
+  const pendingPreparation = useRef<TurnPreparation | null>(null)
   const [checkingTaskProject, setCheckingTaskProject] = useState(false)
   const mounted = useRef(true)
   const formRef = useRef<HTMLFormElement>(null)
@@ -197,7 +229,8 @@ export function WorkbenchForm({
     !saved.current &&
     (fingerprint !== initialFingerprint.current ||
       (state.kind === 'test' &&
-        ['running', 'unknown'].includes(modelTest.phase)))
+        ['running', 'unknown'].includes(modelTest.phase)) ||
+      turnUncertain)
   const guardState = useRef({ dirty, busy })
   guardState.current = { dirty, busy }
   function setFormBusy(value: boolean) {
@@ -255,6 +288,7 @@ export function WorkbenchForm({
     return () => {
       mounted.current = false
       taskValidationRequest.current?.abort()
+      turnReceiptRequest.current?.abort()
       unregister()
       window.removeEventListener('beforeunload', unload)
     }
@@ -318,6 +352,7 @@ export function WorkbenchForm({
     if (operationBusy.current) return
     if (state.kind === 'test' && modelTest.phase !== 'ready') return
     if (state.kind === 'run' && contextChanged) return
+    if (state.kind === 'run' && turnUncertain) return
     const validation = validateFormDraft(
       state.kind,
       draft,
@@ -431,6 +466,56 @@ export function WorkbenchForm({
         await post('/backends', { name, endpoint })
       } else if (state.kind === 'run') {
         if (!consent) return
+        if (turn) {
+          setConsent(false)
+          let preparedTurn = turn
+          try {
+            if (!preparedTurn.candidate) {
+              setTurnUncertain(true)
+              const preparation = {
+                ...routing,
+                ...limits,
+                context_hash: (runSnapshot ?? state.snapshot).context_hash,
+              }
+              pendingPreparation.current = preparation
+              preparedTurn = await prepareTaskTurn(
+                state.task.id,
+                turn.id,
+                preparation,
+              )
+              assertTaskTurnReceipt(preparedTurn, turn, preparation)
+              setTurn(preparedTurn)
+              pendingPreparation.current = null
+              setTurnUncertain(false)
+            }
+            if (!preparedTurn.candidate)
+              throw new Error('task_turn_preparation_missing')
+            setTurnUncertain(true)
+            const applied = await executeTaskTurn(state.task.id, turn.id, {
+              candidate_hash: preparedTurn.candidate.candidate_hash,
+              consent: true,
+            })
+            assertTaskTurnReceipt(applied, preparedTurn)
+            if (applied.state !== 'applied' || !applied.run_id)
+              throw new Error('task_turn_execution_unconfirmed')
+            setTurn(applied)
+            setTurnUncertain(false)
+            await onSaved()
+            saved.current = true
+            if (!confirmWorkbenchNavigation()) onRun(applied.run_id)
+            onClose()
+            return
+          } catch (reason) {
+            // A rejected HTTP response is confirmed; transport/invalid receipt
+            // remains locked until the exact durable turn can be read.
+            if (
+              reason instanceof ApiError &&
+              [400, 403, 404, 422].includes(reason.status)
+            )
+              setTurnUncertain(false)
+            throw reason
+          }
+        }
         const run = await post<{ id: string }>(`/tasks/${state.task.id}/runs`, {
           ...routing,
           ...limits,
@@ -537,7 +622,10 @@ export function WorkbenchForm({
     setError('')
     setConsent(false)
     try {
-      const snapshot = await post<Snapshot>(`/tasks/${state.task.id}/preview`)
+      if (turnLocked) return
+      const snapshot = turn
+        ? await previewTaskTurn(state.task.id, turn.id)
+        : await post<Snapshot>(`/tasks/${state.task.id}/preview`)
       const next = recheckedRunContext(
         {
           snapshot: runSnapshot ?? state.snapshot,
@@ -559,6 +647,64 @@ export function WorkbenchForm({
     } finally {
       setRechecking(false)
       setFormBusy(false)
+    }
+  }
+  async function reconcileTurn() {
+    if (!turn || state.kind !== 'run' || operationBusy.current) return
+    setFormBusy(true)
+    setCheckingTurn(true)
+    setError('')
+    setConsent(false)
+    turnReceiptRequest.current?.abort()
+    const controller = new AbortController()
+    turnReceiptRequest.current = controller
+    const timer = setTimeout(() => controller.abort(), 15_000)
+    try {
+      const current = await fetchTaskTurn(
+        state.task.id,
+        turn.id,
+        controller.signal,
+      )
+      if (!mounted.current || controller.signal.aborted) return
+      assertTaskTurnReceipt(
+        current,
+        turn,
+        pendingPreparation.current ?? undefined,
+      )
+      setTurn(current)
+      pendingPreparation.current = null
+      setTurnUncertain(false)
+      if (current.candidate) {
+        const config = current.candidate.config
+        setRouting({
+          coordinator_model: config.coordinator_model,
+          researcher_model: config.researcher_model,
+          reviewer_model: config.reviewer_model,
+        })
+        setLimits({
+          max_calls: config.max_calls,
+          parallel: config.parallel,
+          minutes: config.minutes,
+          max_output_tokens: config.max_output_tokens,
+        })
+        setRunSnapshot(current.candidate.snapshot)
+      }
+      if (current.state === 'applied' && current.run_id) {
+        await onSaved()
+        saved.current = true
+        if (!confirmWorkbenchNavigation()) onRun(current.run_id)
+        onClose()
+      }
+    } catch (reason) {
+      if (!mounted.current) return
+      setTurnUncertain(true)
+      setError(reason instanceof Error ? reason.message : String(reason))
+    } finally {
+      clearTimeout(timer)
+      if (mounted.current) {
+        setCheckingTurn(false)
+        setFormBusy(false)
+      }
     }
   }
   const field = (
@@ -845,7 +991,7 @@ export function WorkbenchForm({
   } else if (state.kind === 'run') {
     const snapshot = runSnapshot ?? state.snapshot
     submitLabel = t('确认并开始运行', 'Confirm & start run')
-    disabled = contextChanged
+    disabled = contextChanged || turnUncertain
     const used = data.models.filter((item) =>
       Object.values(routing).includes(item.id),
     )
@@ -860,6 +1006,40 @@ export function WorkbenchForm({
             )}
           </span>
         </div>
+        {turn && (
+          <div
+            className={turnUncertain ? 'wb-error' : 'wb-notice'}
+            role="status"
+          >
+            <strong>
+              {t('本轮补充要求', 'Selected supplemental message')}
+            </strong>
+            <p className="wb-wrap">{turn.content}</p>
+            <p>
+              {turnUncertain
+                ? t(
+                    '请求结果未确认。请查询原记录，勿重复发送。',
+                    'The request outcome is unconfirmed. Check the original receipt before sending again.',
+                  )
+                : turn.candidate
+                  ? t(
+                      '本轮资料与资源已锁定；开始前仍需确认。',
+                      'This turn context and resources are locked. Fresh execution consent is still required.',
+                    )
+                  : t(
+                      '仅发送这条补充要求及下方资料；其他历史消息不会自动发送。',
+                      'Only this message and the context below will be sent. Other conversation messages are not automatically included.',
+                    )}
+            </p>
+            <AppButton
+              label={t('核对本轮记录', 'Check turn receipt')}
+              icon={<RefreshCw size={15} />}
+              onClick={() => void reconcileTurn()}
+              busy={checkingTurn}
+              disabled={busy}
+            />
+          </div>
+        )}
         <div
           className="wb-wizard-steps"
           aria-label={t('运行确认步骤', 'Run review steps')}
@@ -898,7 +1078,11 @@ export function WorkbenchForm({
             </p>
           )}
         </div>
-        <div hidden={step !== 1} className="wb-wizard-section">
+        <div
+          hidden={step !== 1}
+          className="wb-wizard-section"
+          inert={turnLocked || undefined}
+        >
           {!data.models.length && (
             <p className="wb-error">
               {t(
@@ -1254,7 +1438,7 @@ export function WorkbenchForm({
                 icon={<RefreshCw size={16} />}
                 onClick={() => void recheckContext()}
                 busy={rechecking}
-                disabled={busy}
+                disabled={busy || turnLocked}
               />
             </div>
           )}

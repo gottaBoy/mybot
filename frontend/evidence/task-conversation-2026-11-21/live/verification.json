@@ -1,0 +1,71 @@
+{
+  "fixture": true,
+  "checks": [
+    "Real SQLite message survives reload; saving does not read context or create a Run",
+    "Explicit wizard creates exactly one linked FakeProvider Run with selected supplemental goal and original Task unchanged",
+    "Lost preparation response is reconciled by GET; reload restores exact locked candidate without another Run",
+    "Lost execute response resolves to exact applied receipt; repeated same-candidate execution cannot create a third Run; old snapshot unchanged",
+    "Chinese390px task conversation displays both real message-to-Run links without document overflow"
+  ],
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/94bd1fea2589437890d6127d60d5a404/turns",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/94bd1fea2589437890d6127d60d5a404/turns/411b2468275f45078f41b58139f52ac7/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/94bd1fea2589437890d6127d60d5a404/turns/411b2468275f45078f41b58139f52ac7/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/94bd1fea2589437890d6127d60d5a404/turns/411b2468275f45078f41b58139f52ac7/execute",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/94bd1fea2589437890d6127d60d5a404/turns",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/94bd1fea2589437890d6127d60d5a404/turns/b47ea903bf644b178565b3b822a52a5b/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/94bd1fea2589437890d6127d60d5a404/turns/b47ea903bf644b178565b3b822a52a5b/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/94bd1fea2589437890d6127d60d5a404/turns/b47ea903bf644b178565b3b822a52a5b/execute",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/94bd1fea2589437890d6127d60d5a404/turns/b47ea903bf644b178565b3b822a52a5b/execute",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "live-saved-message.png",
+    "live-first-agent-run.png",
+    "live-prepared-after-reload.png",
+    "live-mobile-conversation.png"
+  ]
+}

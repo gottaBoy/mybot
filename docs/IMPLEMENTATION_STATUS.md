@@ -2,7 +2,16 @@
 
 更新日期：2026-11-21。
 
-**当前交付：目标与任务工作区初版（ADR-0021）。** 新建/搜索/列表/Inspector/Inbox进入
+**当前交付：任务会话与下一轮Run初版（ADR-0022）。** Task新增“任务会话”、
+持久补充消息、选单条后资源确认与同Task新Run，原Task/旧Run快照保留；
+未知保存/prepare/execute按同ID和完整候选GET核对，不自动重发。
+1813前端/1055Python/typecheck/build，24专项/5真实接口/58综合/6主只读通过，
+91最终fixturePNG。主4180 PID234937已advertise task_conversation=true，
+私有一致备份/副本迁移/原记录比对后启用，5173桌面/手机真实加载，未写正式消息/Run或调用模型。
+见[交付证据](../frontend/evidence/task-conversation-2026-11-21/README.md)。
+下一批W1–W5固定Workflow定义和版本；自动长期记忆、多端控制及连接器仍未完成。
+
+**上一批：目标与任务工作区初版（ADR-0021）。** 新建/搜索/列表/Inspector/Inbox进入
 稳定Task route；目标验收、Agent执行、成果审查在同一Task上下文，显式Arrange沿原确认流程，
 新Run保持Task上下文。不是持续会话、任意Workflow或Cindy多端控制完成。
 1683前端/996Python/build、37生产专项/58综合/6主入口检查通过，73最终PNG。

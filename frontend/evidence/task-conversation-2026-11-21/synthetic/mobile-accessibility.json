@@ -1,0 +1,28 @@
+[
+  {
+    "style": "zira",
+    "width": 390,
+    "locale": "zh",
+    "names": [
+      "目标与验收",
+      "任务会话",
+      "Agent 执行",
+      "成果审查"
+    ],
+    "overflow": 0,
+    "aria": "- navigation \"任务工作区视图\":\n  - radiogroup \"任务视图\":\n    - radio \"目标与验收\"\n    - radio \"任务会话\" [checked]\n    - radio \"Agent 执行\"\n    - radio \"成果审查\""
+  },
+  {
+    "style": "y2k",
+    "width": 390,
+    "locale": "zh",
+    "names": [
+      "目标与验收",
+      "任务会话",
+      "Agent 执行",
+      "成果审查"
+    ],
+    "overflow": 0,
+    "aria": "- navigation \"任务工作区视图\":\n  - radiogroup \"任务视图\":\n    - radio \"目标与验收\"\n    - radio \"任务会话\" [checked]\n    - radio \"Agent 执行\"\n    - radio \"成果审查\""
+  }
+]

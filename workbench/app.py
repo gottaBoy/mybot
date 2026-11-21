@@ -40,6 +40,9 @@ from .run_query import RunQueryError, parse_run_query, read_run_page
 from .task_board import EMPTY_PAGES, TaskBoardError, parse_task_board, read_task_board
 from .task_detail import TaskDetailError, parse_task_detail, read_task_detail
 from .task_query import EMPTY_QUERY, MAX_PAGE, TaskQueryError, parse_task_query, read_task_page
+from .task_turns import (
+    TaskTurnCreate, TaskTurnError, TaskTurnExecute, TaskTurnPrepare, TaskTurnService, TurnInput,
+)
 from .workspace_reads import (
     WorkspaceReadError, parse_workspace_counts, parse_workspace_search,
     read_workspace_counts, read_workspace_search,
@@ -53,6 +56,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     engine = Engine(store, provider or ProviderRouter(), settings.poll_interval)
     model_tests = ModelTestService(store, engine.provider, settings.workspace)
     backends = BackendService(store, backend_adapter)
+    task_turns = TaskTurnService(store, settings.workspace)
     sessions = {}
     login_attempts = {}
     root = Path(__file__).resolve().parents[1]
@@ -76,6 +80,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     app.state.store, app.state.engine = store, engine
     app.state.backends = backends
     app.state.model_tests = model_tests
+    app.state.task_turns = task_turns
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=list(settings.allowed_hosts))
 
     def loopback(request):
@@ -166,6 +171,10 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     async def task_detail_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
 
+    @app.exception_handler(TaskTurnError)
+    async def task_turn_error(request, exc):
+        return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
+
     @app.exception_handler(WorkspaceReadError)
     async def workspace_read_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
@@ -243,6 +252,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "task_board": True,
                                  "run_query": True,
                                  "task_detail": True,
+                                 "task_conversation": True,
                                  "workspace_counts": True,
                                  "workspace_search": True,
                                  "project_references": True,
@@ -445,6 +455,51 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                 "text": text, "evidence": evidence, "bytes": len(text.encode()),
                 "access": "read_only", "tools": [],
                 "context_hash": hashlib.sha256(json_bytes(task, project, text)).hexdigest()}
+
+    @app.get("/api/tasks/{identifier}/turns")
+    def task_turn_list(identifier: str, request: Request, page: int = Query(1, ge=1, le=MAX_PAGE)):
+        if any(
+            key != "page" or len(request.query_params.getlist(key)) != 1
+            for key in request.query_params
+        ):
+            raise TaskTurnError("task_turn_parameters_invalid", 422)
+        return task_turns.list(identifier, page)
+
+    @app.post("/api/tasks/{identifier}/turns", status_code=201)
+    def task_turn_save(identifier: str, body: TaskTurnCreate, request: Request):
+        if request.query_params:
+            raise TaskTurnError("task_turn_parameters_invalid", 422)
+        return task_turns.save(identifier, body)
+
+    @app.get("/api/tasks/{identifier}/turns/requests/{request_id}")
+    def task_turn_request(identifier: str, request_id: str, request: Request):
+        if request.query_params:
+            raise TaskTurnError("task_turn_parameters_invalid", 422)
+        return task_turns.by_request(identifier, request_id)
+
+    @app.get("/api/tasks/{identifier}/turns/{turn_id}")
+    def task_turn_read(identifier: str, turn_id: str, request: Request):
+        if request.query_params:
+            raise TaskTurnError("task_turn_parameters_invalid", 422)
+        return task_turns.read(identifier, turn_id)
+
+    @app.post("/api/tasks/{identifier}/turns/{turn_id}/preview")
+    def task_turn_preview(identifier: str, turn_id: str, body: TurnInput, request: Request):
+        if request.query_params:
+            raise TaskTurnError("task_turn_parameters_invalid", 422)
+        return task_turns.preview(identifier, turn_id)
+
+    @app.post("/api/tasks/{identifier}/turns/{turn_id}/prepare")
+    def task_turn_prepare(identifier: str, turn_id: str, body: TaskTurnPrepare, request: Request):
+        if request.query_params:
+            raise TaskTurnError("task_turn_parameters_invalid", 422)
+        return task_turns.prepare(identifier, turn_id, body)
+
+    @app.post("/api/tasks/{identifier}/turns/{turn_id}/execute")
+    def task_turn_execute(identifier: str, turn_id: str, body: TaskTurnExecute, request: Request):
+        if request.query_params:
+            raise TaskTurnError("task_turn_parameters_invalid", 422)
+        return task_turns.execute(identifier, turn_id, body)
 
     @app.get("/api/tasks/{identifier}/detail")
     def task_detail(

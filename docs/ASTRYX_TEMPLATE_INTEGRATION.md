@@ -16,8 +16,8 @@
 | table-inbox | `#inbox` 待处理双栏 | 未运行/异常/暂停任务，不是 IM/邮件已接入 |
 | canvas-editor | Run “工作图” | 固定阶段、选择/缩放/检查器；不是图文编辑器或任意 DAG 执行 |
 | work-item-detail | Run 工作/调用/成果/审计 | 来源、执行、测试、人工决定分开 |
-| ai-chat | Run “对话” | 持久化目标与 Agent 正文，无新消息发送、无伪装工具调用 |
-| ai-chat-landing | 任务目标入口与未运行空态 | 提交任务后先保存/检查，再单独确认调用；未接长期会话 |
+| ai-chat | Run正文与Task“任务会话” | Task不可变补充消息、选单条后显式安排下一轮；不隐式重发历史或伪造assistant正文 |
+| ai-chat-landing | 任务目标入口、会话与未运行空态 | 保存Task/消息不调用模型，资料/资源确认后独立执行；未接自动长期Agent |
 | form-wizard / form-wizard-inline / form-wizard-dialog | 资料→模型资源→确认运行 | 一条共享确认流程；前两步不调用模型，返回修改清除 consent |
 | settings-dialog | “偏好设置”与配置表单 | 样式/明暗/密度/语言本地保存；连接仍需显式测试 |
 | documentation / documentation-technical | `#documents` 项目资料、任务验收与文件清单 | 只读已保存项目资料，不静默读取源码或自动远程图片 |
@@ -401,3 +401,21 @@ ADR-0016、REA第32节及`frontend/evidence/project-query-selection-2026-11-19/R
 `frontend/evidence/task-workspace-2026-11-21/README.md`。保留创建后navigation被busy阻断真缺陷、
 403内容保留及迟到guard修复。4180已在备份/原记录比对后更新，5173实际使用新能力。
 不是持续会话、Workflow版本、多端控制或全部模板业务能力完成，119台账不变。
+
+## 25. 任务会话与显式下一轮
+
+2026-11-21，沿已生成的ai-chat、work-item-detail与form-wizard模式，继续React19、
+Astryx0.7.13和项目wrapper；本批未新复制上游源码或引入第二业务树。
+
+| 采用模式 | 本地适配 | 边界 |
+| --- | --- | --- |
+| ai-chat / AppTextArea | 持久补充消息、单Unicode计数、20项时间线 | 无伪造assistant、自动历史重发或长期记忆 |
+| SegmentedControl / iconOnly | Task四视图，手机具名图标/完整ARIA名称 | 不按主题复制Task页或截断所有标签 |
+| Badge / Button | saved/prepared/applied、精确Agent/成果链接、独立页外prepared | 关联Run不等于执行成功，组件不生成事实 |
+| form-wizard / Dialog | preview→资源确认→持久prepare→同IDexecute，未知GET核对 | 没有自动POST重试、重开自动同意或绕过prepared |
+
+最终1813前端/1055Python/build；24专项/5真实接口/58综合/6主入口，
+91最终fixturePNG，无最终pageerror。三style双mode/390中英与手机可访问名称已验。
+见ADR-0022及`frontend/evidence/task-conversation-2026-11-21/README.md`；
+主4180已受控启用PID234937，5173实际使用，不把fixture当正式数据。
+prepared撤销、自动会话记忆、Workflow版本、设备接续和连接器仍未完成，119计数不变。

@@ -1,0 +1,45 @@
+{
+  "fixture": true,
+  "checks": [
+    "Real SQLite message survives reload; saving does not read context or create a Run"
+  ],
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/1dad9679bbe647c6b4d837fe4c66a084/turns",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/1dad9679bbe647c6b4d837fe4c66a084/turns/6be60762cd6944a08d6871adb99a313b/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/1dad9679bbe647c6b4d837fe4c66a084/turns/6be60762cd6944a08d6871adb99a313b/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/1dad9679bbe647c6b4d837fe4c66a084/turns/6be60762cd6944a08d6871adb99a313b/execute",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "live-saved-message.png"
+  ],
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 4\n\n    at file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-task-conversation-live.mjs:203:10"
+}

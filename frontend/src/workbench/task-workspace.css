@@ -198,6 +198,125 @@
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
+.wb-task-prepared-state,
+.wb-task-conversation-heading,
+.wb-task-message-composer-actions,
+.wb-task-message-receipt,
+.wb-task-message-actions,
+.wb-task-message-pagination,
+.wb-task-message-pagination > div,
+.wb-task-message > header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.wb-task-prepared-state {
+  justify-content: space-between;
+  padding: 12px 0;
+  border-top: 1px solid var(--wb-border);
+  color: var(--wb-muted);
+  font-size: 13px;
+}
+.wb-task-prepared-state > div {
+  flex: 1;
+  min-width: 160px;
+}
+.wb-task-prepared-state strong {
+  color: var(--wb-fg);
+}
+.wb-task-prepared-state p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 8px 0 0;
+}
+.wb-task-conversation {
+  padding: 24px 0;
+  min-width: 0;
+}
+.wb-task-conversation-heading {
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.wb-task-conversation-heading > div {
+  flex: 1;
+  min-width: 200px;
+}
+.wb-task-conversation-heading h2 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+.wb-task-conversation-heading p {
+  color: var(--wb-muted);
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 0;
+}
+.wb-task-message-composer {
+  max-width: 880px;
+  margin-bottom: 20px;
+}
+.wb-task-message-composer-actions,
+.wb-task-message-pagination {
+  justify-content: space-between;
+  padding-top: 12px;
+  font-size: 12px;
+}
+.wb-task-message-receipt {
+  padding: 12px 0;
+  font-size: 12px;
+}
+.wb-task-message-receipt code {
+  overflow-wrap: anywhere;
+}
+.wb-task-message-list {
+  margin-top: 20px;
+}
+.wb-task-message {
+  padding: 20px 0;
+  border-top: 1px solid var(--wb-border);
+}
+.wb-task-message > header {
+  justify-content: space-between;
+}
+.wb-task-message time {
+  color: var(--wb-muted);
+  font-size: 12px;
+}
+.wb-task-message-content {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 14px 0;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.wb-task-message-budget {
+  display: grid;
+  grid-template-columns: minmax(100px, auto) minmax(0, 1fr);
+  gap: 8px 20px;
+  color: var(--wb-muted);
+  font-size: 12px;
+  margin: 14px 0;
+}
+.wb-task-message-budget dd {
+  margin: 0;
+  color: var(--wb-fg);
+}
+.wb-task-message-pagination {
+  border-top: 1px solid var(--wb-border);
+  color: var(--wb-muted);
+}
+.wb-task-message-empty {
+  color: var(--wb-muted);
+  text-align: center;
+  padding: 40px 16px;
+}
+.wb-task-message-empty h3 {
+  font-size: 14px;
+  font-weight: 500;
+}
 @media (max-width: 900px) {
   .wb-task-goal-layout {
     grid-template-columns: minmax(0, 1fr);

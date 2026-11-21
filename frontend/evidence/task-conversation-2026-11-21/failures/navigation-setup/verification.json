@@ -1,0 +1,25 @@
+{
+  "fixture": true,
+  "checks": [],
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [],
+  "failure": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.wb-task-message-content').filter({ hasText: 'Round one: focus on the boundary of device handoff and preserve unknown costs.' }) to be visible\u001b[22m\n\n    at save (/home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-task-conversation-live.mjs:104:6)\n    at async file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-task-conversation-live.mjs:171:3"
+}

@@ -13,11 +13,16 @@ const mocks = vi.hoisted(() => ({
   runs: [] as Record<string, any>[],
   read: {} as Record<string, any>,
   project: {} as Record<string, any>,
+  turns: {} as Record<string, any>,
   location: {} as Record<string, any>,
   paging: undefined as Record<string, any> | undefined,
   updates: [] as unknown[],
   push: vi.fn(() => true),
   admission: undefined as { current: Record<string, any> } | undefined,
+  compact: false,
+}))
+vi.mock('../src/components/ui/useViewport', () => ({
+  useCompactTaskList: () => mocks.compact,
 }))
 vi.mock('react', async () => {
   const actual = await vi.importActual<typeof import('react')>('react')
@@ -71,6 +76,18 @@ vi.mock('../src/components/ui', () => ({
     createElement('span', null, children),
   AppLoading: ({ label }: { label: string }) =>
     createElement('p', { role: 'status' }, label),
+  AppTextArea: (props: Record<string, any>) =>
+    createElement('textarea', {
+      'aria-label': props.label,
+      value: props.value,
+      readOnly: true,
+    }),
+}))
+vi.mock('../src/components/ui/DraftGuard', () => ({
+  AppDraftGuard: () => null,
+}))
+vi.mock('../src/workbench/useTaskTurns', () => ({
+  useTaskTurns: () => mocks.turns,
 }))
 vi.mock('../src/workbench/useTaskWorkspace', () => ({
   useTaskWorkspace: (args: Record<string, any>) => {
@@ -200,6 +217,7 @@ beforeEach(() => {
   mocks.paging = undefined
   mocks.updates = []
   mocks.admission = undefined
+  mocks.compact = false
   mocks.location = { tab: 'goal' }
   mocks.push.mockReset()
   mocks.push.mockReturnValue(true)
@@ -217,9 +235,33 @@ beforeEach(() => {
     error: undefined,
     retry: vi.fn(),
   }
+  mocks.turns = {
+    remote: false,
+    value: undefined,
+    busy: false,
+    error: undefined,
+    retry: vi.fn(),
+  }
 })
 
 describe('Task workspace composition', () => {
+  it('uses named icon-only Task tabs on narrow screens and keeps all four destinations', () => {
+    mocks.compact = true
+    render()
+    expect(mocks.segments[0].iconOnly).toBe(true)
+    expect(
+      mocks.segments[0].options.map((option: Record<string, any>) => [
+        option.value,
+        option.label,
+        Boolean(option.icon),
+      ]),
+    ).toEqual([
+      ['goal', 'Goal & acceptance', true],
+      ['conversation', 'Conversation', true],
+      ['work', 'Agent work', true],
+      ['review', 'Artifact review', true],
+    ])
+  })
   it('shows exact project/task goals and acceptance as distinct sections without Bootstrap content', () => {
     const html = render()
     expect(html).toContain('data-testid="task-workspace"')

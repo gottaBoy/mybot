@@ -70,6 +70,7 @@ export type Bootstrap = {
     project_query?: boolean
     run_query?: boolean
     task_board?: boolean
+    task_conversation?: boolean
   }
 }
 export type Snapshot = {

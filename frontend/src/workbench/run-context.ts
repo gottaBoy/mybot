@@ -8,7 +8,11 @@ export function isContextChangedError(error: unknown) {
     error instanceof ApiError &&
     error.status === 409 &&
     (error.message === contextChangedDetail ||
-      error.message === 'context_changed')
+      error.message === 'context_changed' ||
+      (typeof error.details === 'object' &&
+        error.details !== null &&
+        (error.details as { code?: unknown }).code ===
+          'task_turn_context_changed'))
   )
 }
 

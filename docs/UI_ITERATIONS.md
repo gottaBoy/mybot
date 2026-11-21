@@ -663,3 +663,24 @@ Agent/成果视图lazy复用原RunWorkspace，保持原图/调用/成果/审查/
 无真实Provider/正式业务写入/外部请求；不再以“主后端尚未加载”作为本批交付状态。
 详见ADR-0021与`frontend/evidence/task-workspace-2026-11-21/README.md`。
 下一批任务内持续会话和固定Workflow版本，设备/连接器仍待办。
+
+## 36. Task会话与下一轮工作
+
+日期：2026-11-21。Task三视图扩为目标/会话/Agent/成果四视图；会话内可保存要求、
+查看真实状态、显式安排下一轮，再直接查看关联Agent和成果。原列表和Task入口复用，
+不为了视觉变化重新生成首页或假目标/进度。
+
+保留单条消息发送范围、原Task与历史快照；草稿、saved、prepared、applied和Run成功
+分别呈现。prepared全Task可见，未知回执保持原请求锁。复核阻止composer有草稿时
+打开另一表单覆盖guard；回执身份/候选不符不得继续execute。
+
+实际390px截图发现四tab标签截断、输入框两个计数。最后改既有AppSegments iconOnly，
+四个完整可访问名称经真实Chrome树核验；输入只保留Unicode计数，超过8000禁止保存。
+同一Astryx树支持三style双mode，不做主题特定页面或vendor内部选择器。
+
+最终1813前端/1055Python/build，24专项/5真实接口/58综合/6主只读，
+91最终fixturePNG无pageerror。实际两条要求关联两Run，丢响应后GET核对不重复，
+第二Run不隐式继承第一消息。脚本unmanaged deep link和async等待错误的失败截图保留，
+见`frontend/evidence/task-conversation-2026-11-21/README.md`与ADR-0022。
+主4180 PID234937已启用，5173桌面/手机真实显示会话；正式原记录不变，无真实模型调用。
+这是一批可见持续工作初版，未宣称用户最终视觉接受、物理手机、自动记忆或Cindy完整能力。

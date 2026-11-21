@@ -158,6 +158,18 @@ CREATE TABLE IF NOT EXISTS conversation_messages (
  created_at TEXT, synced_at TEXT NOT NULL,
  UNIQUE(conversation_id, external_id)
 );
+CREATE TABLE IF NOT EXISTS task_turns (
+ id TEXT PRIMARY KEY, task_id TEXT NOT NULL REFERENCES tasks(id),
+ request_id TEXT NOT NULL UNIQUE, content TEXT NOT NULL, created_at TEXT NOT NULL,
+ state TEXT NOT NULL CHECK(state IN ('saved','prepared','applied')),
+ candidate TEXT, run_id TEXT REFERENCES runs(id),
+ CHECK((state='saved' AND candidate IS NULL AND run_id IS NULL) OR
+       (state='prepared' AND candidate IS NOT NULL AND run_id IS NULL) OR
+       (state='applied' AND candidate IS NOT NULL AND run_id IS NOT NULL))
+);
+CREATE INDEX IF NOT EXISTS task_turns_task_created ON task_turns(task_id,created_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS task_turns_prepared ON task_turns(task_id)
+ WHERE state='prepared';
 """
 
 
@@ -657,12 +669,15 @@ class Store:
 
     def create_run(self, task_id: str, request_id: str, config: dict, context: dict) -> dict:
         with self.transaction() as db:
+            if db.execute("SELECT 1 FROM task_turns WHERE request_id=?", (request_id,)).fetchone():
+                raise ValueError("task_turn_request_conflict")
             existing = decode(db.execute("SELECT * FROM runs WHERE request_id=?", (request_id,)).fetchone())
             if existing:
                 if (existing.get("source_run_id") or existing["task_id"] != task_id or existing["config"] != config
                         or existing["context"].get("hash") != context.get("hash")):
                     raise ValueError("Request ID was already used with different input")
                 return existing
+            self._require_no_task_turn(db, task_id)
             active = db.execute(
                 "SELECT id FROM runs WHERE task_id=? AND status NOT IN ('succeeded','failed','canceled') "
                 "AND NOT EXISTS(SELECT 1 FROM runs child WHERE child.source_run_id=runs.id)",
@@ -676,6 +691,13 @@ class Store:
             self.event(db, "run.queued", {"context_files": context["evidence"], "access": "read_only",
                                        "model_ids": config, "consent": True}, identifier, actor="user")
         return self.get("runs", identifier)
+
+    @staticmethod
+    def _require_no_task_turn(db, task_id):
+        if db.execute(
+            "SELECT 1 FROM task_turns WHERE task_id=? AND state='prepared'", (task_id,),
+        ).fetchone():
+            raise ValueError("task_turn_prepared_pending")
 
     @staticmethod
     def _retry_state(db, identifier):
@@ -758,6 +780,9 @@ class Store:
             if db.execute("SELECT 1 FROM runs WHERE request_id=?", (request_id,)).fetchone():
                 raise ValueError("recovery_intent_request_id_conflict")
             source, facts, preview = self._retry_state(db, source_id)
+            self._require_no_task_turn(db, source["task_id"])
+            if db.execute("SELECT 1 FROM task_turns WHERE request_id=?", (request_id,)).fetchone():
+                raise ValueError("task_turn_request_conflict")
             if snapshot_hash != preview["snapshot_hash"]:
                 raise ValueError("recovery_intent_snapshot_changed")
             resources, candidate_hash, _ = self._recovery_candidate(
@@ -825,6 +850,8 @@ class Store:
             record = self._recovery_intent_row(db, source_id, request_id)
             if record["state"] != "prepared":
                 return record, False
+            source = db.execute("SELECT task_id FROM runs WHERE id=?", (source_id,)).fetchone()
+            self._require_no_task_turn(db, source["task_id"])
             if record["requires_acknowledgement"] and not acknowledge:
                 raise ValueError("retry_replay_confirmation_required")
             db.execute(
@@ -923,8 +950,11 @@ class Store:
             if existing.get("source_run_id") != identifier or existing["context"].get("retry_request_hash") != request_hash:
                 raise ValueError("retry_request_id_conflict")
             return existing
+        if db.execute("SELECT 1 FROM task_turns WHERE request_id=?", (request_id,)).fetchone():
+            raise ValueError("task_turn_request_conflict")
         self._require_no_recovery_intent(db, identifier, own_intent_id)
         source, facts, preview = self._retry_state(db, identifier)
+        self._require_no_task_turn(db, source["task_id"])
         if not preview["allowed"]:
             raise ValueError("retry_source_not_ready")
         if preview["snapshot_hash"] != snapshot_hash:
@@ -1097,6 +1127,7 @@ class Store:
             raise KeyError(identifier)
         if action == "resume":
             self._require_no_recovery_intent(db, identifier, own_intent_id)
+            self._require_no_task_turn(db, row["task_id"])
         src = row["status"]
         if action == "pause" and src in {"queued", "running"}:
             dst = "paused" if src == "queued" else "pause_requested"
