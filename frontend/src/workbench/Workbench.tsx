@@ -25,6 +25,7 @@ import {
   SlidersHorizontal,
   Sun,
   Terminal,
+  Workflow,
   X,
 } from 'lucide-react'
 import {
@@ -99,6 +100,11 @@ const RunWorkspace = lazy(() =>
 const TaskWorkspace = lazy(() =>
   import('./TaskWorkspace').then((module) => ({
     default: module.TaskWorkspace,
+  })),
+)
+const WorkflowPage = lazy(() =>
+  import('./WorkflowPage').then((module) => ({
+    default: module.WorkflowPage,
   })),
 )
 const Overview = lazy(() =>
@@ -473,6 +479,8 @@ export function Workbench() {
                   ? (project?.name ?? t('项目', 'Project'))
                   : route.page === 'models'
                     ? t('模型与资源', 'Models & resources')
+                    : route.page === 'workflows'
+                      ? t('工作流', 'Workflows')
                     : route.page === 'backends'
                       ? t('会话后端', 'Conversation backends')
                       : route.page === 'run'
@@ -522,6 +530,7 @@ export function Workbench() {
             ['inbox', 'inbox', t('待处理', 'Inbox'), Inbox],
             ['projects', 'projects', t('项目', 'Projects'), FolderGit2],
             ['documents', 'documents', t('项目资料', 'Documents'), BookOpen],
+            ['workflows', 'workflows', t('工作流', 'Workflows'), Workflow],
             [
               'models',
               'models',
@@ -893,6 +902,19 @@ export function Workbench() {
                 ) : (
                   <ProjectDocuments data={data} t={t} />
                 )}
+              </Suspense>
+            ) : route.page === 'workflows' ? (
+              <Suspense
+                fallback={
+                  <AppLoading label={t('正在读取工作流', 'Loading workflow')} />
+                }
+              >
+                <WorkflowPage
+                  data={data}
+                  refreshRevision={queryRefreshRevision}
+                  t={t}
+                  locale={locale}
+                />
               </Suspense>
             ) : route.page === 'task' ? (
               <Suspense

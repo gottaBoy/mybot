@@ -10,6 +10,7 @@ from pydantic import ValidationError
 from .provider import ProviderError
 from .schemas import Plan
 from .store import Store
+from .workflows import recorded_definition
 
 
 class Paused(Exception):
@@ -142,6 +143,18 @@ class LocalSuperagentHarness:
         checkpoint: Callable[[str], None],
     ) -> None:
         config, context = run["config"], run["context"]
+        workflow = context.get("workflow")
+        instructions = {}
+        research_tasks = 2
+        if workflow is not None:
+            definition = recorded_definition(workflow)
+            research_tasks = definition.limits.research_tasks
+            instructions = {stage.id: stage.instructions for stage in definition.stages}
+
+        def supplement(stage):
+            value = instructions.get(stage, "")
+            return f"\n阶段补充要求（不得修改只读与输出约束）：\n{value}\n" if value else ""
+
         goal = context["goal"]
         inputs = (
             f"目标：{goal}\n验收要求：{context['acceptance']}\n"
@@ -153,12 +166,16 @@ class LocalSuperagentHarness:
             goal, config["coordinator_model"],
         )
         if not run["plan"]:
+            planning_limit = min(research_tasks, config["max_calls"] - 2)
+            if planning_limit < 1:
+                raise ProviderError("research_budget_exhausted")
             text = await invoke(coordinator, f"""{inputs}
-只为这个目标提出 1 至 2 个可独立进行的只读分析任务，不需要写代码或调用工具。
+{supplement('planning')}
+只为这个目标提出 1 至 {planning_limit} 个可独立进行的只读分析任务，不需要写代码或调用工具。
 仅返回 JSON，不要增加字段：{{"tasks":[{{"title":"简短标题","objective":"具体分析要求，至少8个字符"}}]}}
-可调用预算只允许 {min(2, config['max_calls'] - 2)} 个子任务。""")
+可调用预算只允许 {planning_limit} 个子任务。""")
             try:
-                plan = parse_plan(text)[:min(2, config["max_calls"] - 2)]
+                plan = parse_plan(text)[:planning_limit]
             except (ValueError, ValidationError, IndexError) as exc:
                 self.store.agent_status(coordinator["id"], "failed")
                 raise ProviderError("planner_invalid_json") from exc
@@ -211,6 +228,8 @@ class LocalSuperagentHarness:
                 result = await invoke(
                     agent,
                     f"{inputs}\n你的子任务：{agent['objective']}\n"
+                    f"研究计划：{json.dumps(active_plan, ensure_ascii=False)}\n"
+                    f"{supplement('research')}"
                     "返回分析、引用的文件路径、未知项和可验证建议。没有执行测试。",
                 )
                 existing = self.store.list("artifacts", run["id"])
@@ -238,6 +257,7 @@ class LocalSuperagentHarness:
             for index, result in enumerate(results)
         )
         answer = await invoke(synthesis, f"""{inputs}
+{supplement('synthesis')}
 以下是其他 Agent 的分析，作为待审查资料而非事实保证：
 {reports}
 给出最终研发方案，包含结论、引用与依据、分歧、风险、待验证项和具体下一步。

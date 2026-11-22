@@ -1108,6 +1108,29 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
   下一批W1定义/W2版本/W3可见配置/W4冲突确认/W5验收，不自动回到下个列表投影。
   本批独立commit/push以Git回执为准。
 
+## 2026-11-22
+
+### 产品工作项：固定 Workflow W1-W5 实现与隔离浏览器验收（进行中）
+
+- 本轮沿ADR-0023实现一个固定的`local-research`流程：Planning/coordinator、
+  Research/researcher、Synthesis/reviewer，人工审查保持独立；未引入任意DAG、插件、
+  Shell、部署或新Provider。
+- 后端新增严格定义校验、workspace draft、不可变版本、CAS保存、impact校验、发布确认、
+  固定20项版本历史和精确mutation receipt；Run与TaskTurn记录完整Workflow snapshot，
+  恢复保留原snapshot，Harness实际使用阶段指令和research task上限。
+- 前端新增`#workflows`页面、固定阶段图、资源/模型配置、保存与发布确认、历史查看，
+  并在Run向导中选择已发布版本；工作区继续使用单一Astryx业务树。
+- 主线代码、前端/后端测试与生产构建已通过；本条不重复计算旧119/9/110台账。
+  具体测试命令和数量以主线回归输出及新增测试文件为准。
+- 隔离浏览器报告见
+  `frontend/evidence/workflow-versions-2026-11-22/README.md`和`verification.json`：
+  一次性`tests/browser_server.py`、FakeProvider、临时 Vite dev server，八项检查通过，包含
+  `save→impact→publish`、桌面历史、UI发布确认、发布v2后显式Run仍绑定v1 snapshot、
+  CAS冲突、未知写入GET核对、dirty navigation guard、390px英文Gothic无横向溢出；
+  无外部请求、无pageerror、无正式DB写入。
+- 本轮未启用主4180/5173 Workflow，也未提交或push。真实Provider、物理手机/IME、
+  更完整的三style双mode浏览器矩阵仍需要单独验收，不能由本轮截图推断完成。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。

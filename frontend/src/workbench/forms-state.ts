@@ -25,6 +25,7 @@ export type FormDraft = {
   }
   consent: boolean
   snapshotHash: string
+  workflowVersion?: number | null
 }
 export type FormKind =
   'project' | 'task' | 'model' | 'backend' | 'run' | 'test' | 'check' | 'revoke'
@@ -265,6 +266,7 @@ export function formDraftFingerprint(kind: FormKind, draft: FormDraft) {
       draft.limits,
       draft.consent,
       draft.snapshotHash,
+      draft.workflowVersion ?? null,
     ])
   return JSON.stringify([draft.consent])
 }

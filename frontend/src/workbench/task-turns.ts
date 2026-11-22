@@ -4,6 +4,7 @@ import {
   maxTaskQueryPage,
   stripQueryWhitespace,
 } from './task-query'
+import { parseWorkflowSnapshot, workflowConfig } from './workflows'
 
 export type TurnConfig = {
   coordinator_model: string
@@ -48,7 +49,10 @@ export type TaskTurnPage = {
   order: 'turns-created-v1'
 }
 export type TurnCreate = { request_id: string; content: string }
-export type TurnPreparation = TurnConfig & { context_hash: string }
+export type TurnPreparation = TurnConfig & {
+  context_hash: string
+  workflow_version?: number | null
+}
 export type TurnExecution = { candidate_hash: string; consent: true }
 export type TaskTurnReadError =
   'forbidden' | 'missing' | 'unavailable' | 'timeout' | 'invalid'
@@ -93,6 +97,21 @@ function exactObject(
     Reflect.ownKeys(value).length === keys.length &&
     keys.every((key) => Object.prototype.hasOwnProperty.call(value, key))
   )
+}
+function optionalObject(
+  value: unknown,
+  required: string[],
+  optional: string[],
+): value is Record<string, unknown> {
+  return exactObject(value, [
+    ...required,
+    ...optional.filter(
+      (key) =>
+        value !== null &&
+        typeof value === 'object' &&
+        Object.prototype.hasOwnProperty.call(value, key),
+    ),
+  ])
 }
 const integer = (value: unknown, minimum = 0): value is number =>
   typeof value === 'number' && Number.isSafeInteger(value) && value >= minimum
@@ -141,18 +160,22 @@ export function parseTurnSnapshot(
   expected?: { id: string; content?: string },
 ): TurnSnapshot {
   if (
-    !exactObject(value, [
-      'context_hash',
-      'goal',
-      'acceptance',
-      'notes',
-      'text',
-      'bytes',
-      'evidence',
-      'access',
-      'tools',
-      'supplement',
-    ]) ||
+    !optionalObject(
+      value,
+      [
+        'context_hash',
+        'goal',
+        'acceptance',
+        'notes',
+        'text',
+        'bytes',
+        'evidence',
+        'access',
+        'tools',
+        'supplement',
+      ],
+      ['workflow'],
+    ) ||
     !hash(value.context_hash) ||
     !text(value.goal, 20_000) ||
     !value.goal ||
@@ -191,6 +214,14 @@ export function parseTurnSnapshot(
     if (bytes > 65_536) throw new TaskTurnResponseError()
     return { path: item.path, bytes: item.bytes as number }
   })
+  let workflow: Snapshot['workflow']
+  if (Object.prototype.hasOwnProperty.call(value, 'workflow')) {
+    try {
+      workflow = parseWorkflowSnapshot(value.workflow)
+    } catch {
+      throw new TaskTurnResponseError()
+    }
+  }
   return {
     context_hash: value.context_hash,
     goal: value.goal,
@@ -205,6 +236,7 @@ export function parseTurnSnapshot(
       id: value.supplement.id,
       content: value.supplement.content,
     },
+    ...(workflow ? { workflow } : {}),
   }
 }
 
@@ -249,6 +281,12 @@ export function parseTaskTurn(
         content: value.content,
       }),
     }
+    if (
+      candidate.snapshot.workflow &&
+      JSON.stringify(candidate.config) !==
+        JSON.stringify(workflowConfig(candidate.snapshot.workflow.definition))
+    )
+      throw new TaskTurnResponseError()
   }
   if (
     (value.state === 'saved' &&
@@ -291,24 +329,14 @@ export function assertTaskTurnReceipt(
   )
     throw new TaskTurnResponseError()
   if (pendingPreparation !== undefined) {
-    if (
-      !exactObject(pendingPreparation, [...configKeys, 'context_hash']) ||
-      !hash(pendingPreparation.context_hash)
-    )
-      throw new TaskTurnResponseError()
-    const sentConfig = parseTurnConfig(
-      Object.fromEntries(
-        configKeys.map((key) => [
-          key,
-          pendingPreparation[key as keyof TurnPreparation],
-        ]),
-      ),
-    )
+    const sent = parsePreparation(pendingPreparation)
+    const sentConfig = configFromPreparation(sent)
     if (
       receipt.candidate &&
-      (JSON.stringify(receipt.candidate.config) !== JSON.stringify(sentConfig) ||
-        receipt.candidate.snapshot.context_hash !==
-          pendingPreparation.context_hash)
+      (JSON.stringify(receipt.candidate.config) !==
+        JSON.stringify(sentConfig) ||
+        receipt.candidate.snapshot.context_hash !== sent.context_hash ||
+        !matchesWorkflow(receipt.candidate.snapshot, sent))
     )
       throw new TaskTurnResponseError()
   }
@@ -527,22 +555,13 @@ export async function prepareTaskTurn(
   signal?: AbortSignal,
 ) {
   const path = `${turnPath(taskId, turnId)}/prepare`
-  if (
-    !exactObject(value, [...configKeys, 'context_hash']) ||
-    !hash(value.context_hash)
-  )
-    throw new TaskTurnInputError()
-  let config: TurnConfig
+  let sent: TurnPreparation
   try {
-    config = parseTurnConfig(
-      Object.fromEntries(
-        configKeys.map((key) => [key, value[key as keyof TurnPreparation]]),
-      ),
-    )
+    sent = parsePreparation(value)
   } catch {
     throw new TaskTurnInputError()
   }
-  const sent = { ...config, context_hash: value.context_hash }
+  const config = configFromPreparation(sent)
   const turn = parseTaskTurn(await mutation(path, sent, signal), {
     taskId,
     turnId,
@@ -551,10 +570,51 @@ export async function prepareTaskTurn(
     turn.state === 'saved' ||
     !turn.candidate ||
     turn.candidate.snapshot.context_hash !== sent.context_hash ||
-    JSON.stringify(turn.candidate.config) !== JSON.stringify(config)
+    JSON.stringify(turn.candidate.config) !== JSON.stringify(config) ||
+    !matchesWorkflow(turn.candidate.snapshot, sent)
   )
     throw new TaskTurnResponseError()
   return turn
+}
+
+function configFromPreparation(value: TurnPreparation): TurnConfig {
+  return parseTurnConfig(
+    Object.fromEntries(
+      configKeys.map((key) => [key, value[key as keyof TurnPreparation]]),
+    ),
+  )
+}
+
+function parsePreparation(value: unknown): TurnPreparation {
+  if (
+    !optionalObject(
+      value,
+      [...configKeys, 'context_hash'],
+      ['workflow_version'],
+    ) ||
+    !hash(value.context_hash) ||
+    (Object.prototype.hasOwnProperty.call(value, 'workflow_version') &&
+      value.workflow_version !== null &&
+      !integer(value.workflow_version, 1))
+  )
+    throw new TaskTurnResponseError()
+  const config = configFromPreparation(value as TurnPreparation)
+  return {
+    ...config,
+    context_hash: value.context_hash,
+    ...(Object.prototype.hasOwnProperty.call(value, 'workflow_version')
+      ? { workflow_version: value.workflow_version as number | null }
+      : {}),
+  }
+}
+
+function matchesWorkflow(snapshot: TurnSnapshot, sent: TurnPreparation) {
+  if (Object.prototype.hasOwnProperty.call(sent, 'workflow_version'))
+    return (
+      snapshot.workflow !== undefined &&
+      snapshot.workflow.version === sent.workflow_version
+    )
+  return snapshot.workflow === undefined || snapshot.workflow.version === null
 }
 
 export async function executeTaskTurn(

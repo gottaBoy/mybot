@@ -15,6 +15,7 @@ from .context import snapshot
 from .provider import key_available
 from .store import Store, decode, dump, now, uid
 from .task_query import MAX_PAGE
+from .workflows import MAX_INTEGER, run_workflow
 
 
 TURN_ORDER = "turns-created-v1"
@@ -65,6 +66,7 @@ class TaskTurnPrepare(TurnInput):
     minutes: int = Field(default=10, ge=1, le=30)
     max_output_tokens: int = Field(default=1800, ge=256, le=4096)
     context_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
+    workflow_version: int | None = Field(default=None, ge=1, le=MAX_INTEGER)
 
     @field_validator(*MODEL_FIELDS)
     @classmethod
@@ -260,12 +262,16 @@ class TaskTurnService:
 
     def prepare(self, task_id, turn_id, body: TaskTurnPrepare):
         body = TaskTurnPrepare.model_validate(body.model_dump())
-        config = body.model_dump(exclude={"context_hash"})
+        config = body.model_dump(exclude={"context_hash", "workflow_version"})
         with self.store.transaction() as db:
             row = self.turn(db, task_id, turn_id)
             if row["candidate"] is not None:
                 candidate = json.loads(row["candidate"])
-                if candidate["config"] != config or candidate["snapshot"]["context_hash"] != body.context_hash:
+                if (
+                    candidate["config"] != config
+                    or candidate["snapshot"]["context_hash"] != body.context_hash
+                    or candidate["snapshot"].get("workflow", {}).get("version") != body.workflow_version
+                ):
                     raise TaskTurnError("task_turn_candidate_conflict")
                 return public_turn(row)
             self.require_ready(db, task_id, turn_id)
@@ -273,6 +279,7 @@ class TaskTurnService:
             if selected["context_hash"] != body.context_hash:
                 raise TaskTurnError("task_turn_context_changed")
             models = self.models(db, config)
+            selected = {**selected, "workflow": run_workflow(db, config, body.workflow_version)}
             candidate_hash = hashlib.sha256(json.dumps(
                 [task_id, turn_id, config, selected], sort_keys=True,
                 ensure_ascii=False, separators=(",", ":"),
@@ -284,6 +291,7 @@ class TaskTurnService:
                     "notes": selected["notes"], "text": selected["text"],
                     "evidence": selected["evidence"], "models": models,
                     "hash": selected["context_hash"], "supplement": selected["supplement"],
+                    "workflow": selected["workflow"],
                 },
             }
             db.execute(
@@ -330,11 +338,14 @@ class TaskTurnService:
             if db.execute("SELECT 1 FROM runs WHERE request_id=?", (row["request_id"],)).fetchone():
                 raise TaskTurnError("task_turn_request_conflict")
             run_id = uid()
+            context = candidate["context"]
+            if "workflow" not in context:
+                context = {**context, "workflow": run_workflow(db, candidate["config"])}
             db.execute(
                 "INSERT INTO runs(id,task_id,request_id,status,config,context,created_at)"
                 " VALUES(?,?,?,'queued',?,?,?)",
                 (run_id, task_id, row["request_id"], dump(candidate["config"]),
-                 dump(candidate["context"]), now()),
+                 dump(context), now()),
             )
             db.execute(
                 "UPDATE task_turns SET state='applied',run_id=? WHERE id=? AND state='prepared'",

@@ -1,5 +1,47 @@
 # 下次从这里继续
 
+更新日期：2026-11-22（Asia/Singapore；Workflow W1-W5隔离验收进行中）。
+
+**独立技术议题：车端远控视频方案已记录，尚未实施。**
+见[最终推荐方案与V0-V7落地步骤](docs/REMOTE_VIDEO_ADAPTATION_PLAN.md)。
+用户链路为ROS2 -> RTSP -> ZLM拉流 -> 浏览器WebRTC，GStreamer/ZLM仅知2025年11月版本线索。
+推荐目标保留GStreamer/ZLM、车端控制编码器主动WebRTC上传，配合逐段追踪与本地自适应；
+先核验精确版本/插件/管道并建立基线，再做反馈闭环和对照测试，不直接升级或改车端服务。
+新增硬要求：每段保活、无新帧检测、快速本地通知、单任务重连与新鲜画面恢复确认；
+见方案第6节/V4-R。不能保证网络永不断开，不能把连接存在或SDP成功当作实时画面恢复。
+进一步拆解见[自顶向下可观测性O0-O9](docs/REMOTE_VIDEO_OBSERVABILITY_BREAKDOWN.md)：
+L0业务 -> L1真实拓扑 -> L2分段指标 -> L3证据，S0-S8区分车端、上传、云端/ZLM、
+下行和浏览器，C0/C1单列信令/遥测；定位输出证据等级与下一步，不虚构运营商内部探针。
+持续500/800/1000ms RTT按分段测试连接保持，媒体超龄与断链分开，不以延迟高直接重连。
+按用户指出“有些指标拿不到”修正：配套拆解第2.1-2.4节列A-D可获得性、S0-S8/C0/C1
+难点与最小实施路径。首版围绕M0车端输出/M1可确认ZLM输入/M3浏览器进展，M2逐观看者
+输出与跨机逐帧延迟按缺口补齐；数据缺失时合并区间，现场能力默认unverified。
+配套文档第2.5节进一步核对ROS2订阅回调、GStreamer probe/queue/bus、ZLM接口/重拉与
+浏览器getStats/连接事件。确定的是实现入口，不是现场已交付；ROS frame_id不是逐帧ID，
+queue媒体时长不是实际驻留。ZLM源码观察固定2026年快照，不能外推用户2025年版本。
+这是文档方案，不是已完成现场诊断、部署或萝卜快跑架构结论；不更改下述Workflow主线。
+
+**固定 Workflow W1-W5 当前进展（实现与隔离浏览器验收，尚未本机启用）：**
+先读[ADR-0023](docs/decisions/ADR-0023-fixed-workflow-versions.md)和
+`frontend/evidence/workflow-versions-2026-11-22/README.md`。本轮把现有只读
+LocalSuperagentHarness的Planning→Research→Synthesis做成固定定义、草稿、不可变版本、
+CAS/impact/发布确认、版本历史和精确回执；Run与TaskTurn绑定完整Workflow snapshot，
+旧Run与恢复保留原snapshot，阶段指令和research task上限进入实际Harness。
+前端新增单一`#workflows`页面、固定阶段图、资源/模型配置、保存/发布与历史查看，并在
+Run向导中选择已发布版本。主线代码、测试和生产构建已通过；不要将旧119/9/110计数
+改成新版里程碑。
+
+隔离浏览器报告`verification.json`有八项通过：API save→impact→publish、桌面页面与
+发布历史、UI保存/影响检查/发布确认、发布v2后显式Run仍保留v1 snapshot、CAS冲突保留
+本地候选、写入响应丢失后GET核对、dirty navigation guard、390px英文Gothic无横向溢出；
+`externalRequests=[]`且`pageErrors=[]`。测试服务是一次性
+`tests/browser_server.py` + FakeProvider，前端使用临时 Vite dev server；没有真实Provider、
+费用、正式数据库写入或主4180/5173启用。证据目录保留两张截图。
+
+仍未完成：本机Workflow启用与提交/推送、真实Provider/物理手机/IME、更完整的三style
+双mode浏览器矩阵。下一步先由主线复核这些剩余事实，再单独决定是否做本机启用；不要
+把隔离fixture证据当生产事实。
+
 更新日期：2026-11-21（Asia/Singapore；用户日期11月20日America/New_York，历史条目原日期保留）。仓库：`/home/my/workspace/ainfra/mywork/mybot`。
 
 **最新交付并本机启用（2026-11-21，C1–C6任务会话与下一轮Run初版）：**

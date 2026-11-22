@@ -239,7 +239,8 @@ describe('strict turn identity and snapshot admission', () => {
 
 describe('durable turn receipt reconciliation', () => {
   const prepared = () => parseTaskTurn(turn)
-  const saved = () => parseTaskTurn({ ...turn, state: 'saved', candidate: null })
+  const saved = () =>
+    parseTaskTurn({ ...turn, state: 'saved', candidate: null })
   const applied = () =>
     parseTaskTurn({ ...turn, state: 'applied', run_id: 'run-1' })
   const pending = () => ({ ...config, context_hash: snapshot.context_hash })
@@ -328,9 +329,9 @@ describe('durable turn receipt reconciliation', () => {
         config: { ...config, ...patch },
       },
     }
-    expect(() =>
-      assertTaskTurnReceipt(receipt, saved(), pending()),
-    ).toThrow('task_turn_response_invalid')
+    expect(() => assertTaskTurnReceipt(receipt, saved(), pending())).toThrow(
+      'task_turn_response_invalid',
+    )
   })
   it('rejects a different pending context even if resources match', () => {
     expect(() =>
@@ -372,6 +373,198 @@ function pageFixture(items: unknown[] = [turn]) {
     order: 'turns-created-v1',
   }
 }
+
+const workflow = {
+  workflow_id: 'local-research',
+  version: 2,
+  definition_hash: 'e'.repeat(64),
+  definition: {
+    schema_version: 1,
+    name: 'Published research',
+    harness: 'local-superagent',
+    stages: [
+      {
+        id: 'planning',
+        role: 'coordinator',
+        model_id: config.coordinator_model,
+        instructions: '',
+      },
+      {
+        id: 'research',
+        role: 'researcher',
+        model_id: config.researcher_model,
+        instructions: '',
+      },
+      {
+        id: 'synthesis',
+        role: 'reviewer',
+        model_id: config.reviewer_model,
+        instructions: '',
+      },
+    ],
+    limits: {
+      max_calls: config.max_calls,
+      parallel: config.parallel,
+      minutes: config.minutes,
+      max_output_tokens: config.max_output_tokens,
+      research_tasks: 1,
+    },
+    review: 'human',
+  },
+}
+function workflowTurn(...metadata: [] | [unknown]) {
+  return {
+    ...turn,
+    candidate: {
+      ...turn.candidate,
+      snapshot: {
+        ...snapshot,
+        workflow: metadata.length ? metadata[0] : workflow,
+      },
+    },
+  }
+}
+
+describe('frozen workflow metadata on Task turn candidates', () => {
+  const saved = () =>
+    parseTaskTurn({ ...turn, state: 'saved', candidate: null })
+  const pending = () => ({ ...config, context_hash: snapshot.context_hash })
+  it('preserves true legacy absence without manufacturing a workflow', () => {
+    expect(Object.hasOwn(parseTurnSnapshot(snapshot), 'workflow')).toBe(false)
+    expect(
+      Object.hasOwn(parseTaskTurn(turn).candidate!.snapshot, 'workflow'),
+    ).toBe(false)
+  })
+  it('admits a materialized built-in or an exact frozen published version', () => {
+    expect(parseTaskTurn(workflowTurn()).candidate?.snapshot.workflow).toEqual(
+      workflow,
+    )
+    expect(
+      parseTaskTurn(workflowTurn({ ...workflow, version: null })).candidate
+        ?.snapshot.workflow?.version,
+    ).toBeNull()
+  })
+  it.each([
+    undefined,
+    null,
+    { ...workflow, version: 0 },
+    { ...workflow, unknown: true },
+    {
+      ...workflow,
+      definition: { ...workflow.definition, review: 'automatic' },
+    },
+  ])('fails closed for provided invalid workflow metadata %j', (metadata) => {
+    expect(() => parseTaskTurn(workflowTurn(metadata))).toThrow(
+      'task_turn_response_invalid',
+    )
+  })
+  it('rejects a frozen definition that disagrees with the actual seven Run resources', () => {
+    expect(() =>
+      parseTaskTurn(
+        workflowTurn({
+          ...workflow,
+          definition: {
+            ...workflow.definition,
+            limits: { ...workflow.definition.limits, minutes: 11 },
+          },
+        }),
+      ),
+    ).toThrow('task_turn_response_invalid')
+  })
+  it('binds a lost preparation to the selected published version', () => {
+    expect(
+      assertTaskTurnReceipt(workflowTurn(), saved(), {
+        ...pending(),
+        workflow_version: 2,
+      }).candidate?.snapshot.workflow?.version,
+    ).toBe(2)
+    expect(() =>
+      assertTaskTurnReceipt(workflowTurn(), saved(), {
+        ...pending(),
+        workflow_version: 3,
+      }),
+    ).toThrow()
+    expect(() =>
+      assertTaskTurnReceipt(turn, saved(), {
+        ...pending(),
+        workflow_version: 2,
+      }),
+    ).toThrow()
+  })
+  it('binds explicit built-in selection to recorded null version', () => {
+    const builtin = workflowTurn({ ...workflow, version: null })
+    expect(
+      assertTaskTurnReceipt(builtin, saved(), {
+        ...pending(),
+        workflow_version: null,
+      }).candidate?.snapshot.workflow?.version,
+    ).toBeNull()
+    expect(() =>
+      assertTaskTurnReceipt(workflowTurn(), saved(), {
+        ...pending(),
+        workflow_version: null,
+      }),
+    ).toThrow()
+    expect(() =>
+      assertTaskTurnReceipt(turn, saved(), {
+        ...pending(),
+        workflow_version: null,
+      }),
+    ).toThrow()
+  })
+  it('admits legacy missing selection only for absent or built-in metadata', () => {
+    expect(() => assertTaskTurnReceipt(turn, saved(), pending())).not.toThrow()
+    expect(() =>
+      assertTaskTurnReceipt(
+        workflowTurn({ ...workflow, version: null }),
+        saved(),
+        pending(),
+      ),
+    ).not.toThrow()
+    expect(() =>
+      assertTaskTurnReceipt(workflowTurn(), saved(), pending()),
+    ).toThrow()
+  })
+  it('never rewrites an already prepared workflow to the latest published definition', () => {
+    const known = parseTaskTurn(workflowTurn())
+    expect(() =>
+      assertTaskTurnReceipt(workflowTurn({ ...workflow, version: 3 }), known),
+    ).toThrow()
+  })
+  it('keeps workflow selection outside the seven resource config fields', async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValue(new Response(JSON.stringify(workflowTurn())))
+    vi.stubGlobal('fetch', fetch)
+    const value = await prepareTaskTurn('task-a', turn.id, {
+      ...pending(),
+      workflow_version: 2,
+    })
+    expect(JSON.parse(fetch.mock.calls[0][1].body)).toEqual({
+      ...pending(),
+      workflow_version: 2,
+    })
+    expect(Object.hasOwn(value.candidate!.config, 'workflow_version')).toBe(
+      false,
+    )
+    expect(value.candidate?.snapshot.workflow?.version).toBe(2)
+  })
+  it.each([undefined, 0, -1, 1.5, '2', true])(
+    'rejects provided invalid version %j before any POST',
+    async (selected) => {
+      const fetch = vi.fn()
+      vi.stubGlobal('fetch', fetch)
+      await expect(
+        prepareTaskTurn('task-a', turn.id, {
+          ...pending(),
+          workflow_version: selected,
+        } as never),
+      ).rejects.toThrow('task_turn_input_invalid')
+      expect(fetch).not.toHaveBeenCalled()
+    },
+  )
+})
+
 describe('bounded turn page metadata', () => {
   it('preserves server order with no browser text/order evaluation', () => {
     const saved = {

@@ -170,6 +170,19 @@ CREATE TABLE IF NOT EXISTS task_turns (
 CREATE INDEX IF NOT EXISTS task_turns_task_created ON task_turns(task_id,created_at DESC);
 CREATE UNIQUE INDEX IF NOT EXISTS task_turns_prepared ON task_turns(task_id)
  WHERE state='prepared';
+CREATE TABLE IF NOT EXISTS workflow_drafts (
+ workflow_id TEXT PRIMARY KEY, revision INTEGER NOT NULL CHECK(revision>=1),
+ definition TEXT NOT NULL, definition_hash TEXT NOT NULL, updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS workflow_versions (
+ workflow_id TEXT NOT NULL, version INTEGER NOT NULL CHECK(version>=1),
+ definition_hash TEXT NOT NULL, definition TEXT NOT NULL, created_at TEXT NOT NULL,
+ PRIMARY KEY(workflow_id,version), UNIQUE(workflow_id,definition_hash)
+);
+CREATE TABLE IF NOT EXISTS workflow_operations (
+ request_id TEXT PRIMARY KEY, kind TEXT NOT NULL CHECK(kind IN ('save','publish')),
+ candidate_hash TEXT NOT NULL, receipt TEXT NOT NULL, created_at TEXT NOT NULL
+);
 """
 
 
@@ -181,6 +194,8 @@ class Store:
         self.lock = threading.RLock()
         with self.transaction() as db:
             db.executescript(SCHEMA)
+            from .workflows import initialize_workflow
+            initialize_workflow(db)
             columns = {row["name"] for row in db.execute("PRAGMA table_info(models)").fetchall()}
             if "kind" not in columns:
                 db.execute("ALTER TABLE models ADD COLUMN kind TEXT NOT NULL DEFAULT 'chat_completions'")
@@ -667,14 +682,16 @@ class Store:
                 self.event(db, "backend.revoked", {"read_only": True}, entity_id=identifier, actor="user")
             return decode(db.execute("SELECT * FROM backend_connections WHERE id=?", (identifier,)).fetchone())
 
-    def create_run(self, task_id: str, request_id: str, config: dict, context: dict) -> dict:
+    def create_run(self, task_id: str, request_id: str, config: dict, context: dict,
+                   workflow_version=None) -> dict:
         with self.transaction() as db:
             if db.execute("SELECT 1 FROM task_turns WHERE request_id=?", (request_id,)).fetchone():
                 raise ValueError("task_turn_request_conflict")
             existing = decode(db.execute("SELECT * FROM runs WHERE request_id=?", (request_id,)).fetchone())
             if existing:
                 if (existing.get("source_run_id") or existing["task_id"] != task_id or existing["config"] != config
-                        or existing["context"].get("hash") != context.get("hash")):
+                        or existing["context"].get("hash") != context.get("hash")
+                        or existing["context"].get("workflow", {}).get("version") != workflow_version):
                     raise ValueError("Request ID was already used with different input")
                 return existing
             self._require_no_task_turn(db, task_id)
@@ -685,6 +702,8 @@ class Store:
             ).fetchone()
             if active:
                 raise ValueError("This task already has an unfinished run")
+            from .workflows import run_workflow
+            context = {**context, "workflow": run_workflow(db, config, workflow_version)}
             identifier = uid()
             db.execute("INSERT INTO runs(id,task_id,request_id,status,config,context,created_at) VALUES(?,?,?,'queued',?,?,?)",
                        (identifier, task_id, request_id, dump(config), dump(context), now()))

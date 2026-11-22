@@ -229,6 +229,7 @@ def test_restart_marks_interrupted_requires_acknowledgement(fixture):
     config.pop("consent")
     config.pop("request_id")
     config.pop("context_hash")
+    config.update(max_calls=4, parallel=2, minutes=10, max_output_tokens=1800)
     run = store.create_run(task["id"], "restart-request", config, {"evidence": []})
     store.claim()
     store.recover()

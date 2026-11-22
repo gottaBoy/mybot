@@ -59,7 +59,7 @@ const shortcut = {
 describe('global command source', () => {
   it('builds navigation without accessing Bootstrap domain arrays', () => {
     const commands = buildWorkbenchNavigationCommands(english)
-    expect(commands).toHaveLength(10)
+    expect(commands).toHaveLength(11)
     expect(commands.every((item) => item.id.startsWith('nav:'))).toBe(true)
     expect(commands.map((item) => item.href)).toContain('#workbench')
   })
@@ -96,6 +96,7 @@ describe('global command source', () => {
       '#hierarchy',
       '#documents',
       '#models',
+      '#workflows',
       '#backends',
       '#login',
       '#templates',

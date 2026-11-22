@@ -865,3 +865,30 @@ git -C /tmp/mybot-upstream-astryx rev-parse HEAD
 - T：1683前端/996Python/build、37专项/58综合/6主入口、73最终PNG；
   真fixture Task→Arrange→FakeRun→review与主真实数据GET-only已验，见ADR-0021及evidence。
   不等于Cindy接力、通用Workflow编辑、真实模型/真机认证或用户视觉接受。
+
+## 38. 车端远控视频的独立方案记录
+
+- 用户现状：ROS2 -> RTSP -> ZLM主动拉流 -> 浏览器WebRTC；GStreamer/ZLM仅知
+  2025年11月版本线索，未提供精确版本、commit或管道。
+- 上游身份：GStreamer官方核心/rswebrtc/WHIP客户端/queue文档与1.26发布说明，
+  `ZLMediaKit/ZLMediaKit`官方HTTP API Wiki，RFC3550/8836、W3C WebRTC统计及curl手册。
+- E1已查阅路径、官方来源和适用限制见
+  [远控视频最终推荐方案](REMOTE_VIDEO_ADAPTATION_PLAN.md)第10节。
+  未检出指定commit、未审计历史源码、未复制源码、未连接车辆或部署服务；无E2/E3证据。
+- 建议保留现有组件，验证车端可控编码器与WebRTC主动上传、分段统计、帧关联和本地闭环。
+  当前文档能力不等于2025年构建能力，推拉方式不等同实际传输和拥塞机制。
+- 下一步V0精确版本/插件/编码器/拓扑盘点，随后V1-V7预算、基线、反馈、对照和受控切换。
+  另按用户要求新增第6节/V4-R逐连接保活、通知和恢复；W3C WebRTC状态语义属规范证据，
+  不等于2025年ZLM/GStreamer组合已经支持ICE restart或可靠自动重连。
+  自顶向下分段与O0-O9待办见
+  [可观测性拆解](REMOTE_VIDEO_OBSERVABILITY_BREAKDOWN.md)；补读Linux官方接口统计、
+  timestamping、ss/tc-netem手册和RFC7675，仅作采集/验证设计，未操作现场网卡或故障注入。
+  针对取数可行性补读GStreamer官方pad probe设计和ZLM当前API样例：
+  API名、在线标记及静态fps不能替代实际媒体进展，2025年构建需逐字段实测；
+  配套拆解第2.1-2.4节区分接口复用、应用埋点、专门适配和不可控网络边界。
+  第2.5节新增组件能力核对：ROS2官方jazzy订阅示例、Header/Image消息定义和Topic Statistics
+  文档（分支未固定commit）；GStreamer bus/probe/queue官方文档；浏览器W3C统计/状态。
+  ZLM代表源码仅检查`src/Player/PlayerProxy.cpp`，固定commit
+  `52c38f8aaddbed0991366ad2aa6917bc4147256e`（2026-11-19），观察失败/关闭回调与重拉调度。
+  这是有限源码观察，不是2025年构建能力证据；未clone、复制源码、部署或执行上游测试。
+  本条不改变mybot产品路线或台账，不声称已经解决现场卡顿或获知萝卜快跑生产实现。

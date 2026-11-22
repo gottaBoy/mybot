@@ -19,6 +19,7 @@ import {
   AppCheckbox,
   AppDialog,
   AppInput,
+  AppLoading,
   AppNumber,
   AppSelect,
   AppTextArea,
@@ -73,6 +74,7 @@ import { readModelTest, startModelTest } from './model-test-request'
 import { ProjectTaskPicker } from './ProjectTaskPicker'
 import { validateProjectSelection } from './project-selection'
 import { useProjectReferences } from './useProjectReferences'
+import { useRunWorkflow } from './useRunWorkflow'
 
 export type FormState =
   | { kind: 'project' }
@@ -161,6 +163,13 @@ export function WorkbenchForm({
   const [turnUncertain, setTurnUncertain] = useState(false)
   const [checkingTurn, setCheckingTurn] = useState(false)
   const turnLocked = Boolean(turn?.candidate || turnUncertain)
+  const workflowEnabled =
+    state.kind === 'run' && data.capabilities.workflow_versions === true
+  const workflow = useRunWorkflow({
+    enabled: workflowEnabled,
+    locked: turnLocked,
+    initial: state.kind === 'run' ? state.turn?.candidate?.snapshot.workflow : undefined,
+  })
   useEffect(() => {
     if (state.kind !== 'run' || !state.turn?.candidate) return
     const config = state.turn.candidate.config
@@ -220,6 +229,7 @@ export function WorkbenchForm({
     limits,
     consent,
     snapshotHash: runSnapshot?.context_hash ?? '',
+    workflowVersion: workflow.version,
   }
   const fingerprint = formDraftFingerprint(state.kind, draft)
   const latestFingerprint = useRef(fingerprint)
@@ -353,6 +363,7 @@ export function WorkbenchForm({
     if (state.kind === 'test' && modelTest.phase !== 'ready') return
     if (state.kind === 'run' && contextChanged) return
     if (state.kind === 'run' && turnUncertain) return
+    if (state.kind === 'run' && workflow.blocked) return
     const validation = validateFormDraft(
       state.kind,
       draft,
@@ -476,6 +487,7 @@ export function WorkbenchForm({
                 ...routing,
                 ...limits,
                 context_hash: (runSnapshot ?? state.snapshot).context_hash,
+                ...(workflowEnabled ? { workflow_version: workflow.version } : {}),
               }
               pendingPreparation.current = preparation
               preparedTurn = await prepareTaskTurn(
@@ -522,6 +534,7 @@ export function WorkbenchForm({
           consent: true,
           context_hash: (runSnapshot ?? state.snapshot).context_hash,
           request_id: requestId,
+          ...(workflowEnabled ? { workflow_version: workflow.version } : {}),
         })
         await onSaved()
         saved.current = true
@@ -688,6 +701,7 @@ export function WorkbenchForm({
           max_output_tokens: config.max_output_tokens,
         })
         setRunSnapshot(current.candidate.snapshot)
+        workflow.restore(current.candidate.snapshot.workflow)
       }
       if (current.state === 'applied' && current.run_id) {
         await onSaved()
@@ -991,7 +1005,7 @@ export function WorkbenchForm({
   } else if (state.kind === 'run') {
     const snapshot = runSnapshot ?? state.snapshot
     submitLabel = t('确认并开始运行', 'Confirm & start run')
-    disabled = contextChanged || turnUncertain
+    disabled = contextChanged || turnUncertain || workflow.blocked
     const used = data.models.filter((item) =>
       Object.values(routing).includes(item.id),
     )
@@ -1083,6 +1097,59 @@ export function WorkbenchForm({
           className="wb-wizard-section"
           inert={turnLocked || undefined}
         >
+          {workflowEnabled && (
+            <div className="wb-workflow-run-binding">
+              <AppSelect
+                label={t('工作流版本', 'Workflow version')}
+                value={workflow.version === null ? 'builtin' : String(workflow.version)}
+                options={[
+                  { value: 'builtin', label: t('内置流程 · 本次配置', 'Built-in flow · run configuration') },
+                  ...workflow.versions.map((item) => ({
+                    value: String(item.version),
+                    label: `v${item.version} · ${item.definition.name}`,
+                  })),
+                  ...(workflow.version !== null &&
+                  !workflow.versions.some((item) => item.version === workflow.version)
+                    ? [{ value: String(workflow.version), label: `v${workflow.version} · ${workflow.definition?.name ?? ''}` }]
+                    : []),
+                ]}
+                disabled={turnLocked || workflow.busy || Boolean(workflow.error)}
+                onChange={(value) => {
+                  const selected = workflow.choose(value)
+                  if (!selected) return
+                  if (selected.config) {
+                    const config = selected.config
+                    setRouting({
+                      coordinator_model: config.coordinator_model,
+                      researcher_model: config.researcher_model,
+                      reviewer_model: config.reviewer_model,
+                    })
+                    setLimits({
+                      max_calls: config.max_calls,
+                      parallel: config.parallel,
+                      minutes: config.minutes,
+                      max_output_tokens: config.max_output_tokens,
+                    })
+                  }
+                  setConsent(false)
+                  setFieldErrors({})
+                }}
+              />
+              {workflow.busy && <AppLoading label={t('正在读取发布版本', 'Loading published versions')} />}
+              {workflow.error && (
+                <div className="wb-error" role="alert">
+                  <p>{workflow.error}</p>
+                  <AppButton label={t('重试读取版本', 'Retry versions')} icon={<RefreshCw size={15} />} onClick={workflow.retry} />
+                </div>
+              )}
+              {workflow.definition && (
+                <p className="wb-hint">
+                  {workflow.definition.name} · {t('研究任务上限', 'Research task limit')}: {workflow.definition.limits.research_tasks}
+                </p>
+              )}
+            </div>
+          )}
+          <div inert={workflow.version !== null || undefined}>
           {!data.models.length && (
             <p className="wb-error">
               {t(
@@ -1193,6 +1260,7 @@ export function WorkbenchForm({
               )}
             </p>
           )}
+          </div>
         </div>
         <div hidden={step !== 2} className="wb-wizard-section">
           <div className="wb-send-targets">
@@ -1206,6 +1274,16 @@ export function WorkbenchForm({
           <dl className="wb-details">
             <dt>{t('任务', 'Task')}</dt>
             <dd>{state.task.title}</dd>
+            {workflowEnabled && (
+              <>
+                <dt>{t('工作流', 'Workflow')}</dt>
+                <dd>
+                  {workflow.version === null
+                    ? t('内置流程 · 本次配置', 'Built-in flow · run configuration')
+                    : `v${workflow.version} · ${workflow.definition?.name ?? ''}`}
+                </dd>
+              </>
+            )}
             <dt>{t('文件', 'Files')}</dt>
             <dd>{snapshot.evidence.length}</dd>
             <dt>{t('新增调用上限', 'Call budget')}</dt>

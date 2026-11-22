@@ -3,6 +3,7 @@ from __future__ import annotations
 import fcntl
 import hashlib
 import ipaddress
+import re
 import secrets
 import shutil
 import time
@@ -47,6 +48,7 @@ from .workspace_reads import (
     WorkspaceReadError, parse_workspace_counts, parse_workspace_search,
     read_workspace_counts, read_workspace_search,
 )
+from .workflows import MAX_INTEGER, WorkflowError, WorkflowPublish, WorkflowSave, WorkflowService
 from .store import Store
 
 
@@ -57,6 +59,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     model_tests = ModelTestService(store, engine.provider, settings.workspace)
     backends = BackendService(store, backend_adapter)
     task_turns = TaskTurnService(store, settings.workspace)
+    workflows = WorkflowService(store)
     sessions = {}
     login_attempts = {}
     root = Path(__file__).resolve().parents[1]
@@ -81,6 +84,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     app.state.backends = backends
     app.state.model_tests = model_tests
     app.state.task_turns = task_turns
+    app.state.workflows = workflows
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=list(settings.allowed_hosts))
 
     def loopback(request):
@@ -175,6 +179,10 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     async def task_turn_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
 
+    @app.exception_handler(WorkflowError)
+    async def workflow_error(request, exc):
+        return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
+
     @app.exception_handler(WorkspaceReadError)
     async def workspace_read_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
@@ -253,6 +261,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "run_query": True,
                                  "task_detail": True,
                                  "task_conversation": True,
+                                 "workflow_versions": True,
                                  "workspace_counts": True,
                                  "workspace_search": True,
                                  "project_references": True,
@@ -440,6 +449,53 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
         store.set_setting("default_model_id", model["id"])
         return {"model_id": model["id"], "name": model["name"], "note": "保存默认模型不发起请求"}
 
+    def workflow_parameters(request, allowed=()):
+        if any(
+            key not in allowed or len(request.query_params.getlist(key)) != 1
+            for key in request.query_params
+        ):
+            raise WorkflowError("workflow_parameters_invalid", 422)
+
+    @app.get("/api/workflows/local-research")
+    def workflow_read(request: Request):
+        workflow_parameters(request)
+        return workflows.read()
+
+    @app.get("/api/workflows/local-research/versions")
+    def workflow_versions(request: Request, page: int = Query(1, ge=1, le=MAX_PAGE)):
+        workflow_parameters(request, {"page"})
+        return workflows.versions(page)
+
+    @app.get("/api/workflows/local-research/versions/{version}")
+    def workflow_version(version: str, request: Request):
+        workflow_parameters(request)
+        if not re.fullmatch(r"[1-9][0-9]{0,15}", version):
+            raise WorkflowError("workflow_version_invalid", 422)
+        return workflows.version(int(version))
+
+    @app.post("/api/workflows/local-research/draft")
+    def workflow_save(body: WorkflowSave, request: Request):
+        workflow_parameters(request)
+        return workflows.save(body)
+
+    @app.get("/api/workflows/local-research/impact")
+    def workflow_impact(
+        request: Request, revision: int = Query(..., ge=1, le=MAX_INTEGER),
+        definition_hash: str = Query(..., pattern=r"^[0-9a-f]{64}$"),
+    ):
+        workflow_parameters(request, {"revision", "definition_hash"})
+        return workflows.impact(revision, definition_hash)
+
+    @app.post("/api/workflows/local-research/publish")
+    def workflow_publish(body: WorkflowPublish, request: Request):
+        workflow_parameters(request)
+        return workflows.publish(body)
+
+    @app.get("/api/workflows/local-research/operations/{request_id}")
+    def workflow_operation(request_id: str, request: Request):
+        workflow_parameters(request)
+        return workflows.operation(request_id)
+
     @app.post("/api/tasks", status_code=201)
     async def task_create(body: TaskCreate):
         project = store.get("projects", body.project_id)
@@ -524,7 +580,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
             raise HTTPException(422, "Confirm sending the exact selected context to the configured models")
         task = store.get("tasks", identifier)
         project = store.get("projects", task["project_id"])
-        config = body.model_dump(exclude={"consent", "request_id", "context_hash"})
+        config = body.model_dump(exclude={"consent", "request_id", "context_hash", "workflow_version"})
         models = {}
         for field in ("coordinator_model", "researcher_model", "reviewer_model"):
             model = store.get("models", config[field])
@@ -541,7 +597,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                    "goal": task["goal"], "acceptance": task["acceptance"], "models": models,
                    "hash": body.context_hash}
         try:
-            return store.create_run(identifier, body.request_id, config, context)
+            return store.create_run(identifier, body.request_id, config, context, body.workflow_version)
         except ValueError as exc:
             raise HTTPException(409, str(exc)) from exc
 

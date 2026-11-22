@@ -1,4 +1,5 @@
 import type { ModelTestReceipt } from './model-test-state'
+import type { WorkflowSnapshot } from './workflows'
 
 export type Project = {
   id: string
@@ -71,6 +72,7 @@ export type Bootstrap = {
     run_query?: boolean
     task_board?: boolean
     task_conversation?: boolean
+    workflow_versions?: boolean
   }
 }
 export type Snapshot = {
@@ -81,6 +83,7 @@ export type Snapshot = {
   text: string
   bytes: number
   evidence: Array<{ path: string; bytes: number }>
+  workflow?: WorkflowSnapshot
 }
 export type Call = {
   id: string
@@ -106,7 +109,10 @@ export type Artifact = {
 export type RunDetail = {
   run: Run & {
     config: { max_calls: number }
-    context: { evidence: Array<{ path: string; bytes: number }> }
+    context: {
+      evidence: Array<{ path: string; bytes: number }>
+      workflow?: WorkflowSnapshot
+    }
   }
   task: Task
   project: Project

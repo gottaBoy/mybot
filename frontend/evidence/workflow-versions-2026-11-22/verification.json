@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-11-22T04:44:15.514Z",
+  "fixture": "Disposable browser_server.py + FakeProvider",
+  "base": "http://127.0.0.1:5178/",
+  "externalRequests": [],
+  "pageErrors": [],
+  "checks": [
+    "api-save-impact-publish",
+    "desktop-page-and-published-history",
+    "ui-save-impact-consent-publish",
+    "explicit-run-keeps-v1-snapshot-after-v2",
+    "cas-conflict-preserves-local-candidate",
+    "unknown-write-reconciles-by-get",
+    "dirty-navigation-guard",
+    "mobile-en-gothic-no-horizontal-overflow"
+  ]
+}

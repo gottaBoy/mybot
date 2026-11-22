@@ -173,6 +173,7 @@ export function routeFromHash(hash: string) {
       'hierarchy',
       'login',
       'documents',
+      'workflows',
     ].includes(page)
   )
     return { page, id: '' }

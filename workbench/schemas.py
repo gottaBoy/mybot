@@ -139,6 +139,7 @@ class RunCreate(Input):
     consent: bool = False
     request_id: str = Field(min_length=8, max_length=100)
     context_hash: str = Field(pattern="^[0-9a-f]{64}$")
+    workflow_version: int | None = Field(default=None, ge=1, le=9007199254740991, strict=True)
 
 
 class Resume(Input):
