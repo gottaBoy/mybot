@@ -18,6 +18,24 @@ UI 的 WUI 编号是交叉整改视图，执行包是实施组织方式，均可
 
 ## 当前执行包
 
+### 2026-11-23 单Task设备配对与接续初版
+
+| 工作 / 分工 | 本批结果 | 边界 |
+| --- | --- | --- |
+| D1/D2 backend | 初版完成 | 4新表、哈希secret/HttpOnlycookie、一次配对/到期/撤销、精确ledger |
+| D3权限 backend + client | 边界完成 | task_read/message_save；其他API拒绝；跨tabcookie变更不写错Task |
+| D4 client + backend | 限定初版完成 | scope50事件/有界snapshot、unknown原ID/GET、断线Refresh不重放 |
+| Owner/paired UI + root | 初版完成 | Task入口、目录/确认/码掩码、独立配对端/真实消息/成果，中英与同一Astryx树 |
+| D5 browser + root | 本地完成所列范围 | 2052前端/1178Python/build、13/58/6浏览器、76PNG；主4180 PID1104938 |
+| D3b 委托执行 | 待办 | 独立执行grant、费用确认、CAS/控制冲突，不能继承owner令牌 |
+| D4b 工作位置与未决请求 | 待办 | 精确Task/Run选择恢复、更广回执接续，不静默传输本地草稿 |
+| D5b 远程/真机 | 待办 | 可信HTTPS/令牌/网络配置、真实手机/平板/Safari/IME |
+| 飞书/语雀/邮箱等连接器 | 后续待办 | 每个渠道有身份/scope/去重/审批/回执，不因配对自动授权 |
+
+[ADR-0024](decisions/ADR-0024-scoped-device-continuation.md)；
+[真实fixture/失败/主启用证据](../frontend/evidence/devices-2026-11-23/README.md)。
+未配置外网/隧道/执行迁移，无真实Provider。D1–D5只关闭所列子范围，原119/9/110不变。
+
 ### 2026-11-23 固定Workflow W1–W5收尾与本机恢复
 
 | 工作 / 分工 | 本批结果 | 交付边界 |

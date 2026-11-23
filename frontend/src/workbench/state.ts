@@ -174,6 +174,7 @@ export function routeFromHash(hash: string) {
       'login',
       'documents',
       'workflows',
+      'devices',
     ].includes(page)
   )
     return { page, id: '' }

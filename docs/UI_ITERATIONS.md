@@ -705,3 +705,26 @@ GET核对后确认只新增1版本，没有重发。改变主题保留dirty候�
 主4180 PID3459239和5173实际加载；原业务行不变，默认草稿未绑定/未发布。
 详见`frontend/evidence/workflow-versions-2026-11-23/README.md`及ADR-0023。
 不宣称用户最终视觉接受、真机/真实模型认证、任意DAG或设备控制完成。
+
+## 38. 任务范围的设备接续
+
+日期：2026-11-23。Task增加“在其他设备继续”，主工作台设备页按Task/邀请/已配对目录组织，
+从fresh精确Task进入授权确认。配对码默认掩码、只在内存、明确复制、关闭清除。
+独立`#pair`不装载主工作台业务数据，只呈现被授权Task、最近Run/报告、补充要求；
+设备名称、状态、到期/撤销均取真实API，无online装饰或模型执行占位。
+
+配对身份只授予查看与补充，主工作台保留Run开始/控制的明确确认。
+设备消息映射同一Task会话，丢响应只核对原请求；断线明确stale，Refresh仅GET，
+撤销清内容。另一标签页更换cookie后，旧表单由expected-device-id阻断并重新读取身份。
+界面不把reload404或网络失败当作成功/空列表，不将配对端伪装为完整管理壳。
+
+两独立browsercontext真实HTTP/SQLite证明创建/claim/save/revoke丢响应后的恢复、
+消息owner可见、FakeProvider Run/报告可读、越权拒绝、撤销后无内容。
+Neutral/Zira/Y2K双mode、owner/paired两surface、中文/英文390和长名称共12布局，
+实际PNG检查无重叠/逐字挤压，document overflow全0；既有主题/Token树保持。
+2052前端/1178Python/build，13/58/6浏览器，76最终fixturePNG无pageerror/外部HTTP；
+required标记定位和sending时提前unroute的脚本失败保留，未保存敏感码截图。
+
+主4180 PID1104938与5173启用且原业务行不变。配对端不能自动调用模型；
+真正远程网络/HTTPS/物理手机、委托执行和进程迁移仍未实现。
+证据`frontend/evidence/devices-2026-11-23/README.md`及ADR-0024，未声称用户最终视觉接受。

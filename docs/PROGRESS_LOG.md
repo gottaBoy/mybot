@@ -1171,6 +1171,50 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
 - 原119/9/110不变，W1–W5只关闭固定初版。下一批D1–D5设备身份/配对/控制权/断线接续，
   再飞书/语雀/邮箱等；prepared撤销、自动记忆、任意DAG等仍独立未完。本批commit/push以Git回执为准。
 
+### 2026-11-23 产品工作项：单Task设备配对与接续初版
+
+- 基线5ca3cc3已push/干净。用户继续；先冻结ADR-0024与最小授权，backend/client/UI三Agent
+  分工，root接App/导航/Task入口、fixture schema、双browser/综合/主启用和记录。
+  D1/D2及D3权限边界/D4有界读取/D5浏览器部分落代码，不将设备配对当执行控制完成。
+- 4新表device_pairings/devices/device_operations/device_messages；32字节secret哈希，
+  10min一次邀请、30day设备会话、HttpOnly/SameSiteStrict、精确pair/revoke回执/CAS。
+  原TaskTurn save抽同事务helper，设备active/revoke/expiry检查与消息写原子。
+  cookie存在包括invalid/revoked也不回退loopbackowner；设备仅task_read/message_save，
+  ownerBootstrap/配置/文件/Run与恢复/审查API拒绝，secret验证错误不回显Pydantic input。
+- Task入口#devices?task=ID，freshTask后明确scope/consent；配对码掩码/显式copy/close，
+  不进入URL/偏好/事件/回执/日志/证据，GETreceipt无法恢复已丢失的secret。
+  独立#pair无ownerBootstrap，只有授权Task/最新Run/报告/20消息及Unicode补充输入。
+  网络失败stale、显式Refresh只GET；scope50事件按Task SQL过滤且不出payload/伪online。
+- 创建/claim/save/revoke丢响应均原ID/GET核对，无自动POST。reload无原文继续unknown，
+  不能凭404编造终止或换新ID。补跨tabcookie更换的X-Workbench-Device-Id意图绑定：
+  消息POST/receipt在同事务/read校验，不把旧草稿写到新Task；identity变更清私有并重读。
+  修初始session失败当未配对、invalidDTO保留旧context、Refresh被自身busy取消等边界。
+- 新增46后端、94前端（50client/17portal/27管理），属于总数不相加。最终2052前端
+  （68文件）/1178Python/typecheck/build通过；13专项/15PNG、58综合/61PNG、6主只读，
+  共77最终浏览器/76fixturePNG。owner+paired两surface、三style双mode共12组geometry0overflow，
+  中英390/长名称与实际报告截图已看，无最终pageerror/外部HTTP。
+- 专项fresh fixture.kZEYWU为2Task/1邀请/1device撤销/3消息/1ownerFakeProviderRun，
+  两独立context（desktop/mobile），paired只见授权Task，其他API403，撤销scope读写401。
+  实际写后故意丢响应再核对，未重复POST；报告来自FakeProvider，断线期间owner新增消息后
+  Refresh GET补齐。综合独立fresh.AFZ9gC为FakeProvider/MockTransport，无真实Provider或费用。
+- 保留required标签exactlocator失败、脚本sending期间提前unroute的routehandled错误文本
+  （该进程未生成JSON，不伪造）。旧commandcount两项更新新设备合法目的地后全过。
+  没有降低产品权限/校验、删旧预算恢复检查或保存secret截图来消除失败。
+- 主4180原PID3459239空闲，identity/cwd/env内存核对、在线一致backup/私有副本迁移/
+  原表原列摘要比较；再检查、SIGTERM/锁释放/停服backup后同命令/cwd/env启动PID1104938。
+  原1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event和Workflow等原行不变；
+  新4设备表均0行。主5173桌面/中文手机GET-only6项通过，浏览器后原行仍相同。
+  无正式配对/消息/模型、凭证库/兄弟读取/外网部署；私有备份
+  `.runtime/backups/before-devices-20261123T143812Z/`700、DB/log600，不进Git，不热覆盖回退。
+- 主4180/5173保持运行；临时4187/4188/5176/5177停止。证据`frontend/evidence/devices-2026-11-23/`。
+  保留httpx/chunk警告，appJS195.89/gzip62.68kB、CSS39.15/7.39，
+  lazyDevices JS21.82/7.80 CSS3.74/0.89、PairPortalJS20.30/7.14 CSS2.10/0.65；
+  非实际transfer或整站性能，Bootstrap仍全量，无依赖升级，原119/9/110不变。
+- local no-token仍信任localhost，人工清cookie后适用原owner规则，不是多用户ACL；
+  未改监听/TLS/私网/隧道，127.0.0.1不是手机网络地址。D3b委托执行、D4b工作位置/
+  更广回执、D5b HTTPS与物理设备/Safari/IME仍待；Rust节点/进程迁移/连接器未交付。
+  下一步按产品任务限定范围推进，不自动给paired模型执行权限。本批commit/push以Git回执为准。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。
@@ -1178,6 +1222,7 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
 ## 当前路线引用
 
 当前交付顺序以 [PRODUCT_GOALS_CURRENT.md](PRODUCT_GOALS_CURRENT.md) 为准：
-Task工作区、选定消息持续工作和固定Workflow版本初版已交付，接下来是D1–D5设备接续。
+Task工作区、选定消息、固定Workflow及Task范围设备接续初版已交付，
+接下来是D3b/D4b/D5b剩余控制/位置/远程真机范围，再连接器。
 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)保留阶段架构与能力边界；
 OpenMausBot执行采用、Cindy/Headscale/IM/代码执行仍有各自未完成范围，不覆盖当前产品优先级。

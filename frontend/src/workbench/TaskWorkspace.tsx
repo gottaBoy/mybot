@@ -10,6 +10,7 @@ import {
   GitBranch,
   ListChecks,
   MessageSquare,
+  MonitorSmartphone,
   Play,
   RefreshCw,
   Save,
@@ -334,6 +335,19 @@ export function TaskWorkspace({
           </div>
         </div>
         <div className="wb-task-heading-actions">
+          {data.capabilities.device_continuation === true && (
+            <AppButton
+              label={t('在其他设备继续', 'Continue on another device')}
+              icon={<MonitorSmartphone size={16} />}
+              tone="ghost"
+              href={`#devices?task=${encodeURIComponent(taskId)}`}
+              disabled={
+                !canNavigate() ||
+                composerLocked ||
+                Boolean(location.pendingRequestId)
+              }
+            />
+          )}
           <AppButton
             label={t('刷新任务', 'Refresh task')}
             icon={<RefreshCw size={16} />}

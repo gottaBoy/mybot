@@ -1,0 +1,11 @@
+PASS Owner explicitly authorizes one Task; invitation does not create a device, preview context or Run
+node:internal/process/promises:394
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+route.abort: Route is already handled!
+    at /home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-devices.mjs:178:17 {
+  name: 'Error'
+}
+
+Node.js v24.21.0

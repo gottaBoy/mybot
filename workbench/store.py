@@ -183,6 +183,29 @@ CREATE TABLE IF NOT EXISTS workflow_operations (
  request_id TEXT PRIMARY KEY, kind TEXT NOT NULL CHECK(kind IN ('save','publish')),
  candidate_hash TEXT NOT NULL, receipt TEXT NOT NULL, created_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS device_pairings (
+ id TEXT PRIMARY KEY, task_id TEXT NOT NULL REFERENCES tasks(id), label TEXT NOT NULL,
+ secret_hash TEXT NOT NULL, created_at TEXT NOT NULL, expires_at TEXT NOT NULL,
+ device_id TEXT UNIQUE REFERENCES devices(id)
+);
+CREATE TABLE IF NOT EXISTS devices (
+ id TEXT PRIMARY KEY, name TEXT NOT NULL, task_id TEXT NOT NULL REFERENCES tasks(id),
+ pairing_id TEXT NOT NULL UNIQUE REFERENCES device_pairings(id),
+ claim_request_id TEXT NOT NULL UNIQUE, claim_hash TEXT NOT NULL,
+ token_hash TEXT NOT NULL UNIQUE, created_at TEXT NOT NULL, expires_at TEXT NOT NULL,
+ revoked_at TEXT, revision INTEGER NOT NULL CHECK(revision IN (1,2)),
+ CHECK((revision=1 AND revoked_at IS NULL) OR (revision=2 AND revoked_at IS NOT NULL))
+);
+CREATE TABLE IF NOT EXISTS device_operations (
+ request_id TEXT PRIMARY KEY, kind TEXT NOT NULL CHECK(kind IN ('pair','revoke')),
+ candidate_hash TEXT NOT NULL, receipt TEXT NOT NULL, created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS device_messages (
+ request_id TEXT PRIMARY KEY, device_id TEXT NOT NULL REFERENCES devices(id),
+ turn_id TEXT NOT NULL UNIQUE REFERENCES task_turns(id), created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS devices_created ON devices(created_at DESC);
+CREATE INDEX IF NOT EXISTS device_messages_device ON device_messages(device_id);
 """
 
 

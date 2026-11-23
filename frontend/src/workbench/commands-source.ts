@@ -20,6 +20,7 @@ export function buildWorkbenchNavigationCommands(t: Copy): WorkbenchCommand[] {
     ['documents', t('项目资料', 'Documents')],
     ['models', t('模型与资源', 'Models & resources')],
     ['workflows', t('工作流', 'Workflows')],
+    ['devices', t('设备接续', 'Device continuation')],
     ['backends', t('会话后端', 'Conversation backends')],
     ['login', t('登录与会话', 'Sign-in & session')],
     ['templates', t('组件实验室', 'Component lab')],

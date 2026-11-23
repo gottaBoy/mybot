@@ -6,8 +6,9 @@ Read `CONTINUE.md` before making assumptions about the project. Then read the la
 Use `docs/PRODUCT_GOALS_CURRENT.md` for product delivery priorities. A completed
 query/pagination slice is not completion of the goal/task/Agent/outcome workflow.
 The initial Task workspace, selected-message continuation and fixed Workflow
-versions are delivered in ADR-0021/0022/0023. Prioritize the device-continuation
-tasks in PRODUCT_GOALS_CURRENT next, rather than another data projection.
+versions are delivered in ADR-0021/0022/0023. Task-scoped device pairing/reading/
+supplement saving is delivered in ADR-0024. Continue the remaining D3b/D4b/D5b
+tasks in PRODUCT_GOALS_CURRENT, rather than another data projection.
 Distinguish local activation from isolated tests; Task messages are not implicit
 model memory, and a fixed pipeline is not an arbitrary DAG.
 For frontend work, also read `docs/ASTRYX_TEMPLATE_INTEGRATION.md` and
@@ -419,6 +420,23 @@ product patterns, not replacing Astryx. Apply these rules to mybot:
   built-in execution. Global new-item forms must consult the shared dirty/busy
   guard before replacing another editor's blocker. Check name widths and row
   heights as well as document overflow for long version hashes.
+- Device continuation (ADR-0024) grants one exact Task and only `task_read`/
+  `message_save`. A device cookie, including invalid/revoked, must never fall back
+  to owner authority. PairPortal must not consume owner Bootstrap or expose
+  model/config/file/Run-control APIs. Model execution requires separate explicit
+  owner consent and is not inherited from device pairing.
+  Keep raw pairing/device secrets out of URLs, preference storage, receipts,
+  events, logs and browser evidence; store hashes only, use HttpOnly cookies.
+  Secret-bearing validation errors must not echo Pydantic input.
+  Pair/revoke/claim/message unknown outcomes reconcile exact IDs; no automatic
+  POST replay. Message POST/receipt GET require expected device ID, checked with
+  current cookie identity in the same transaction/read snapshot, so another tab
+  cannot route an old Task draft into a replacement scope.
+  Device events filter Task membership in SQL and contain no payload; cursor
+  reset is GET-only snapshot recovery. Reads never fabricate heartbeat/online
+  status. Network stale and revoked identity are distinct; revoke clears private
+  content/actions. Local no-token mode still trusts localhost, and no remote
+  network/TLS or physical-device capability follows merely from responsive UI.
 - Scope editors to object ID plus baseline revision/hash and draft. Validation,
   impact analysis and consent must bind the exact saved candidate and dependencies;
   changes invalidate them. Dirty/unknown/sample definitions must not reach dangerous

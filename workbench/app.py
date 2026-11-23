@@ -11,6 +11,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query, Request, Response
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
@@ -19,6 +20,10 @@ from .config import Settings
 from .backend import BackendError
 from .backend_service import BackendService
 from .context import ContextError, snapshot, validate_directory
+from .devices import (
+    DEVICE_COOKIE, DEVICE_SECONDS, DeviceClaim, DeviceError, DeviceInput,
+    DeviceRevoke, DeviceService, PairingCreate,
+)
 from .engine import Engine
 from .harness import LocalSuperagentHarness
 from .model_test_service import ModelTestService
@@ -60,8 +65,10 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     backends = BackendService(store, backend_adapter)
     task_turns = TaskTurnService(store, settings.workspace)
     workflows = WorkflowService(store)
+    devices = DeviceService(store, task_turns)
     sessions = {}
     login_attempts = {}
+    claim_attempts = {}
     root = Path(__file__).resolve().parents[1]
 
     @asynccontextmanager
@@ -85,6 +92,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     app.state.model_tests = model_tests
     app.state.task_turns = task_turns
     app.state.workflows = workflows
+    app.state.devices = devices
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=list(settings.allowed_hosts))
 
     def loopback(request):
@@ -94,6 +102,8 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
             return request.client.host == "testclient"
 
     def authorized(request):
+        if DEVICE_COOKIE in request.cookies:
+            return False
         if not settings.access_token:
             return loopback(request)
         session = request.cookies.get("workbench_session", "")
@@ -106,7 +116,20 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
         if request.url.path.startswith("/api/"):
             if request.headers.get("sec-fetch-site") == "cross-site":
                 return JSONResponse({"detail": "Cross-site access denied"}, status_code=403)
-            if request.url.path not in {"/api/auth", "/api/auth/state"} and not authorized(request):
+            public_paths = {"/api/auth", "/api/auth/state", "/api/device/claim",
+                            "/api/device/session", "/api/device/logout"}
+            device_paths = {"/api/device/task", "/api/device/events", "/api/device/messages"}
+            is_device_path = (
+                request.url.path in device_paths
+                or re.fullmatch(r"/api/device/messages/requests/[^/]+", request.url.path) is not None
+            )
+            if DEVICE_COOKIE in request.cookies and not (
+                request.url.path in public_paths | {"/api/logout"} or is_device_path
+            ):
+                return JSONResponse({"detail": {"code": "device_scope_forbidden"}}, status_code=403)
+            if request.url.path not in public_paths and not is_device_path and not (
+                DEVICE_COOKIE in request.cookies and request.url.path == "/api/logout"
+            ) and not authorized(request):
                 return JSONResponse({"detail": "Authentication required"}, status_code=401)
             if request.method not in {"GET", "HEAD", "OPTIONS"}:
                 origin = request.headers.get("origin")
@@ -130,6 +153,18 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                     chunks.append(chunk)
                 # Starlette reuses cached request bytes for downstream schema parsing.
                 request._body = b"".join(chunks)
+                if request.url.path == "/api/device/claim":
+                    address = request.client.host
+                    clock = time.monotonic()
+                    attempts = [stamp for stamp in claim_attempts.get(address, []) if clock - stamp < 60]
+                    if len(attempts) >= 8:
+                        return JSONResponse({"detail": {"code": "device_claim_rate_limited"}}, status_code=429)
+                    # Bound memory for addresses with no recent activity.
+                    if len(claim_attempts) > 2048:
+                        for key in list(claim_attempts):
+                            if not claim_attempts[key] or clock - claim_attempts[key][-1] >= 60:
+                                claim_attempts.pop(key, None)
+                    claim_attempts[address] = attempts + [clock]
         response = await call_next(request)
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["Referrer-Policy"] = "no-referrer"
@@ -183,6 +218,18 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     async def workflow_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
 
+    @app.exception_handler(DeviceError)
+    async def device_error(request, exc):
+        return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_error(request, exc):
+        if request.url.path.startswith(("/api/device/", "/api/devices")):
+            # Pairing/session secrets must not be echoed by Pydantic's input field.
+            return JSONResponse({"detail": {"code": "device_input_invalid"}}, status_code=422)
+        from fastapi.exception_handlers import request_validation_exception_handler
+        return await request_validation_exception_handler(request, exc)
+
     @app.exception_handler(WorkspaceReadError)
     async def workspace_read_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
@@ -198,7 +245,8 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     @app.get("/api/auth/state")
     async def auth_state(request: Request):
         return {"authenticated": authorized(request), "required": bool(settings.access_token),
-                "mode": "token" if settings.access_token else "local"}
+                "mode": "device" if DEVICE_COOKIE in request.cookies else (
+                    "token" if settings.access_token else "local")}
 
     @app.post("/api/auth")
     async def login(body: Login, request: Request, response: Response):
@@ -213,6 +261,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
         sessions[hashlib.sha256(session.encode()).hexdigest()] = time.time() + 43200
         response.set_cookie("workbench_session", session, httponly=True, secure=settings.secure_cookie,
                             samesite="strict", max_age=43200)
+        response.delete_cookie(DEVICE_COOKIE)
         return {"authenticated": True}
 
     @app.post("/api/logout")
@@ -220,6 +269,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
         session = request.cookies.get("workbench_session", "")
         sessions.pop(hashlib.sha256(session.encode()).hexdigest(), None)
         response.delete_cookie("workbench_session")
+        response.delete_cookie(DEVICE_COOKIE)
         return {"ok": True}
 
     @app.get("/healthz")
@@ -262,12 +312,92 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "task_detail": True,
                                  "task_conversation": True,
                                  "workflow_versions": True,
+                                 "device_continuation": True,
                                  "workspace_counts": True,
                                  "workspace_search": True,
                                  "project_references": True,
                                  "project_detail": True,
                                  "project_query": True,
                                  "harness": LocalSuperagentHarness.capabilities()}}
+
+    def device_parameters(request, allowed=()):
+        if any(
+            key not in allowed or len(request.query_params.getlist(key)) != 1
+            for key in request.query_params
+        ):
+            raise DeviceError("device_parameters_invalid", 422)
+
+    @app.get("/api/devices")
+    def device_list(request: Request, page: int = Query(1, ge=1, le=MAX_PAGE)):
+        device_parameters(request, {"page"})
+        return devices.list(page)
+
+    @app.post("/api/devices/pairings")
+    def device_pair(body: PairingCreate, request: Request):
+        device_parameters(request)
+        return devices.pair(body)
+
+    @app.get("/api/devices/pairings/{pairing_id}")
+    def device_pair_read(pairing_id: str, request: Request):
+        device_parameters(request)
+        return devices.pairing(pairing_id)
+
+    @app.post("/api/devices/{identifier}/revoke")
+    def device_revoke(identifier: str, body: DeviceRevoke, request: Request):
+        device_parameters(request)
+        return devices.revoke(identifier, body)
+
+    @app.get("/api/devices/operations/{request_id}")
+    def device_operation(request_id: str, request: Request):
+        device_parameters(request)
+        return devices.operation(request_id)
+
+    @app.post("/api/device/claim")
+    def device_claim(body: DeviceClaim, request: Request, response: Response):
+        device_parameters(request)
+        device = devices.claim(body)
+        response.set_cookie(
+            DEVICE_COOKIE, body.device_secret, httponly=True, secure=settings.secure_cookie,
+            samesite="strict", max_age=DEVICE_SECONDS,
+        )
+        return device
+
+    @app.get("/api/device/session")
+    def device_session(request: Request):
+        device_parameters(request)
+        return devices.session(request.cookies.get(DEVICE_COOKIE, ""))
+
+    @app.post("/api/device/logout")
+    def device_logout(body: DeviceInput, request: Request, response: Response):
+        device_parameters(request)
+        response.delete_cookie(DEVICE_COOKIE)
+        return {"ok": True}
+
+    @app.get("/api/device/task")
+    def device_task(request: Request):
+        device_parameters(request)
+        return devices.task(request.cookies.get(DEVICE_COOKIE, ""))
+
+    @app.get("/api/device/events")
+    def device_events(request: Request, after: int = Query(..., ge=0, le=(1 << 53) - 1)):
+        device_parameters(request, {"after"})
+        return devices.events(request.cookies.get(DEVICE_COOKIE, ""), after)
+
+    @app.post("/api/device/messages")
+    def device_message(body: TaskTurnCreate, request: Request):
+        device_parameters(request)
+        return devices.save_message(
+            request.cookies.get(DEVICE_COOKIE, ""), body,
+            request.headers.get("x-workbench-device-id"),
+        )
+
+    @app.get("/api/device/messages/requests/{request_id}")
+    def device_message_receipt(request_id: str, request: Request):
+        device_parameters(request)
+        return devices.message_receipt(
+            request.cookies.get(DEVICE_COOKIE, ""), request_id,
+            request.headers.get("x-workbench-device-id"),
+        )
 
     @app.get("/api/projects/query")
     def project_query(

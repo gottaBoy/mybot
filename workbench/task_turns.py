@@ -170,29 +170,33 @@ class TaskTurnService:
     def save(self, task_id, body: TaskTurnCreate):
         body = TaskTurnCreate.model_validate(body.model_dump())
         with self.store.transaction() as db:
-            self.task(db, task_id)
-            existing = db.execute(
-                "SELECT * FROM task_turns WHERE request_id=?", (body.request_id,),
-            ).fetchone()
-            if existing is not None:
-                if existing["task_id"] != task_id or existing["content"] != body.content:
-                    raise TaskTurnError("task_turn_request_conflict")
-                return public_turn(existing)
-            if db.execute("SELECT 1 FROM runs WHERE request_id=?", (body.request_id,)).fetchone() or db.execute(
-                "SELECT 1 FROM recovery_intents WHERE request_id=?", (body.request_id,),
-            ).fetchone():
+            return self.save_in_transaction(db, task_id, body)
+
+    def save_in_transaction(self, db, task_id, body: TaskTurnCreate, actor="user"):
+        """Share atomic message persistence with scoped, revocable device grants."""
+        self.task(db, task_id)
+        existing = db.execute(
+            "SELECT * FROM task_turns WHERE request_id=?", (body.request_id,),
+        ).fetchone()
+        if existing is not None:
+            if existing["task_id"] != task_id or existing["content"] != body.content:
                 raise TaskTurnError("task_turn_request_conflict")
-            turn_id = uid()
-            db.execute(
-                "INSERT INTO task_turns(id,task_id,request_id,content,created_at,state)"
-                " VALUES(?,?,?,?,?,'saved')",
-                (turn_id, task_id, body.request_id, body.content, now()),
-            )
-            self.store.event(db, "task.turn.saved", {
-                "task_id": task_id, "turn_id": turn_id, "request_id": body.request_id,
-                "execution_authorized": False,
-            }, entity_id=turn_id, actor="user")
-            return public_turn(self.turn(db, task_id, turn_id))
+            return public_turn(existing)
+        if db.execute("SELECT 1 FROM runs WHERE request_id=?", (body.request_id,)).fetchone() or db.execute(
+            "SELECT 1 FROM recovery_intents WHERE request_id=?", (body.request_id,),
+        ).fetchone():
+            raise TaskTurnError("task_turn_request_conflict")
+        turn_id = uid()
+        db.execute(
+            "INSERT INTO task_turns(id,task_id,request_id,content,created_at,state)"
+            " VALUES(?,?,?,?,?,'saved')",
+            (turn_id, task_id, body.request_id, body.content, now()),
+        )
+        self.store.event(db, "task.turn.saved", {
+            "task_id": task_id, "turn_id": turn_id, "request_id": body.request_id,
+            "execution_authorized": False,
+        }, entity_id=turn_id, actor=actor)
+        return public_turn(self.turn(db, task_id, turn_id))
 
     def snapshot(self, db, row):
         task = self.task(db, row["task_id"])

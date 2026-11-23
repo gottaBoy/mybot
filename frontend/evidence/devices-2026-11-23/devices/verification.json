@@ -1,0 +1,230 @@
+{
+  "fixture": true,
+  "checks": [
+    "Owner recovers a lost invitation-creation response by its exact receipt while the original code remains only in memory",
+    "Owner explicitly authorizes one Task; invitation does not create a device, preview context or Run",
+    "Second isolated browser receives an HttpOnly scoped identity and only the granted Task snapshot",
+    "Lost claim response is reconciled through the exact cookie-backed session without repeating the claim POST",
+    "A paired cookie cannot inherit local-owner authority, read other Tasks or invoke model/control/config endpoints",
+    "The paired device saves a real immutable requirement in the owner Task conversation without creating a Run",
+    "A lost save response resolves through the exact original receipt without another message POST",
+    "The companion observes the owner-started FakeProvider Run and report through its bounded Task projection",
+    "The cookie survives reload and GET-only event/snapshot reconciliation catches up after a simulated disconnect",
+    "One scoped Task tree renders three styles in both modes on desktop and Chinese/English390px without writes or overflow",
+    "A lost revocation response resolves by the exact operation receipt without a duplicate revoke",
+    "Owner revocation clears private companion content and denies subsequent reads/writes without deleting saved messages",
+    "Owner device management retains real revoked records and long localized names across three styles and both modes"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST",
+      "width": 1440
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST",
+      "width": 1440
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST",
+      "width": 1440
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST",
+      "width": 1440
+    },
+    {
+      "path": "/api/devices/pairings",
+      "method": "POST",
+      "width": 1440
+    },
+    {
+      "path": "/api/device/claim",
+      "method": "POST",
+      "width": 390
+    },
+    {
+      "path": "/api/models",
+      "method": "POST",
+      "width": 390
+    },
+    {
+      "path": "/api/tasks/c66a979eaf0848a8a180a399512ed94c/runs",
+      "method": "POST",
+      "width": 390
+    },
+    {
+      "path": "/api/device/messages",
+      "method": "POST",
+      "width": 390
+    },
+    {
+      "path": "/api/device/messages",
+      "method": "POST",
+      "width": 390
+    },
+    {
+      "path": "/api/models",
+      "method": "POST",
+      "width": 1440
+    },
+    {
+      "path": "/api/tasks/37f6ebb87de74aae9b1e1c284684abe0/preview",
+      "method": "POST",
+      "width": 1440
+    },
+    {
+      "path": "/api/tasks/37f6ebb87de74aae9b1e1c284684abe0/runs",
+      "method": "POST",
+      "width": 1440
+    },
+    {
+      "path": "/api/tasks/37f6ebb87de74aae9b1e1c284684abe0/turns",
+      "method": "POST",
+      "width": 1440
+    },
+    {
+      "path": "/api/devices/0dc941f1cca6411187b4655bae961763/revoke",
+      "method": "POST",
+      "width": 1440
+    },
+    {
+      "path": "/api/device/messages",
+      "method": "POST",
+      "width": 390
+    }
+  ],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "width": 1440,
+      "locale": "en",
+      "overflow": 0,
+      "color": "rgb(0, 0, 0)",
+      "background": "rgb(255, 255, 255)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "neutral",
+      "mode": "dark",
+      "width": 390,
+      "locale": "zh",
+      "overflow": 0,
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(28, 31, 34)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "zira",
+      "mode": "light",
+      "width": 1440,
+      "locale": "zh",
+      "overflow": 0,
+      "color": "rgb(23, 43, 77)",
+      "background": "rgb(255, 255, 255)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+    },
+    {
+      "style": "zira",
+      "mode": "dark",
+      "width": 390,
+      "locale": "en",
+      "overflow": 0,
+      "color": "rgb(230, 233, 239)",
+      "background": "rgb(22, 26, 34)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+    },
+    {
+      "style": "y2k",
+      "mode": "light",
+      "width": 1440,
+      "locale": "en",
+      "overflow": 0,
+      "color": "rgb(45, 36, 27)",
+      "background": "rgb(255, 255, 255)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "y2k",
+      "mode": "dark",
+      "width": 390,
+      "locale": "zh",
+      "overflow": 0,
+      "color": "rgb(237, 239, 252)",
+      "background": "rgb(22, 24, 43)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "surface": "owner",
+      "style": "neutral",
+      "mode": "light",
+      "width": 1440,
+      "locale": "en",
+      "overflow": 0,
+      "color": "rgb(0, 0, 0)",
+      "background": "rgb(255, 255, 255)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "surface": "owner",
+      "style": "neutral",
+      "mode": "dark",
+      "width": 390,
+      "locale": "zh",
+      "overflow": 0,
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(28, 31, 34)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "surface": "owner",
+      "style": "zira",
+      "mode": "light",
+      "width": 1440,
+      "locale": "zh",
+      "overflow": 0,
+      "color": "rgb(23, 43, 77)",
+      "background": "rgb(255, 255, 255)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+    },
+    {
+      "surface": "owner",
+      "style": "zira",
+      "mode": "dark",
+      "width": 390,
+      "locale": "en",
+      "overflow": 0,
+      "color": "rgb(230, 233, 239)",
+      "background": "rgb(22, 26, 34)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+    },
+    {
+      "surface": "owner",
+      "style": "y2k",
+      "mode": "light",
+      "width": 1440,
+      "locale": "en",
+      "overflow": 0,
+      "color": "rgb(45, 36, 27)",
+      "background": "rgb(255, 255, 255)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "surface": "owner",
+      "style": "y2k",
+      "mode": "dark",
+      "width": 390,
+      "locale": "zh",
+      "overflow": 0,
+      "color": "rgb(237, 239, 252)",
+      "background": "rgb(22, 24, 43)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    }
+  ]
+}

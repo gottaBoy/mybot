@@ -1,5 +1,48 @@
 # 下次从这里继续
 
+更新日期：2026-11-23（Asia/Singapore；任务范围设备接续初版已启用）。
+
+**最新交付：D1/D2与限定D3/D4/D5设备接续。**
+基线5ca3cc3已push/干净工作树。先读
+[ADR-0024](docs/decisions/ADR-0024-scoped-device-continuation.md)、
+[最终证据](frontend/evidence/devices-2026-11-23/README.md)和PRODUCT_GOALS_CURRENT。
+backend/client/UI三Agent分工，root接App/导航/Task入口/fixture/验收/启用/记录。
+Task“在其他设备继续”进入#devices?task=ID，fresh Task确认后创建10min一次性邀请，
+#pair独立入口输入code/name换HttpOnly/SameSiteStrict设备cookie，30day到期、owner可撤销。
+固定一Task+task_read/message_save，只看目标/验收/最近Run/报告/最近20消息与保存补充。
+无ownerBootstrap/配置/文件上下文/模型或Run控制权限，不渲染假设备/在线/进度。
+scope50事件增量+有界snapshot，失败明确stale、显式Refresh只GET，未知写精确回执/不自动重放。
+配对/设备secret32随机字节，只内存/HttpOnlycookie与DB hash，不进URL/storage/events/回执。
+新device4表，TaskTurn save共享同事务helper，撤销/过期检查与消息写原子；原Task/Run不改。
+cookie即使invalid/revoked也不得fallbacklocalhostowner；message POST/receipt GET强制
+X-Workbench-Device-Id防另tab换cookie把旧草稿写错Task，identity变更清旧私有/重新读会话。
+本机no-token仍信任localhost，人工清cookie仍适用原本机owner规则，不是多用户ACL。
+未改监听/TLS/隧道，127.0.0.1不能当手机网络地址；远程生产需要显式配置可信HTTPS/token。
+
+最终2052前端（68文件）/1178Python/typecheck/build通过；新增94前端/46后端。
+专项13/15PNG（创建/claim/save/revoke丢响应、双context消息/真实FakeRun/断线/撤销/12布局），
+综合58/61PNG，主只读6，共77最终浏览器/76PNG，无pageerror/外部HTTP。
+Neutral/Zira/Y2K双mode、owner和paired两surface、中英390/长设备名截图已检查。
+专项fresh fixture.kZEYWU为2Task/1邀请/1设备后撤销/3消息/1owner启动FakeProvider Run；
+独立综合.AFZ9gC为FakeProvider/MockTransport，无真实Provider/费用。
+保存消息不执行；paired用其他Task/模型/Run/Workflow/管理API均403，撤销scope读写401。
+保留required标签匹配与route尚在途被脚本unroute的失败，不伪造缺失JSON或保存secret截图。
+
+主4180原PID3459239空闲，命令/cwd/env内存核对，在线一致备份/私有副本Store迁移/
+原表原列摘要检查，SIGTERM/锁释放/停服备份后同命令/cwd/env启动PID1104938，
+device_continuation=true。原1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event、
+Workflow等原行不变，4设备表0行；主5173桌面/中文手机6项GET-only后再次原行相同。
+私有备份`.runtime/backups/before-devices-20261123T143812Z/`700、DB/log600，不进Git；
+无正式配对/消息/Run、凭证库/兄弟读取/外网部署，不热覆盖回退。旧PID脚本不可重复。
+主4180/5173保持运行；临时4187/4188/5176/5177已停止。httpx和chunk警告保留，
+Bootstrap仍全量，无依赖升级；原119/9/110不变。本批commit/push以Git回执为准。
+
+下一批**D3b委托执行授权/D4b工作位置与未决请求接续/D5b HTTPS与真实设备验收**仍待；
+设备首版没有执行控制租约、进程迁移、全历史同步或物理手机认证。
+不因手机能保存补充就赋予真实模型调用权限；实际远程网络或真实模型测试需其明确范围。
+随后连接器按飞书入站→语雀只读→邮箱草稿→钉钉/微信，Rust执行节点仍独立后续。
+下方W1–W5与视频议题保留历史，不重新搭建已完成页面或自动回到列表投影。
+
 更新日期：2026-11-23（Asia/Singapore；固定Workflow初版已验收、本机启用）。
 
 **最新交付：W1–W5固定Workflow与本机服务恢复。**

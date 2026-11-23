@@ -73,6 +73,7 @@ export type Bootstrap = {
     task_board?: boolean
     task_conversation?: boolean
     workflow_versions?: boolean
+    device_continuation?: boolean
   }
 }
 export type Snapshot = {

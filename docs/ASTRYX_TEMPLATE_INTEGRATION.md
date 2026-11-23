@@ -438,3 +438,21 @@ prepared撤销、自动会话记忆、Workflow版本、设备接续和连接器�
 六组合实际色/字体/圆角、名称宽/行高均验证。阶段指令与研究任务数由后端实际消费，
 旧Run明确未记录。证据见`frontend/evidence/workflow-versions-2026-11-23/README.md`。
 主4180/5173已恢复启用，无正式发布/模型请求；原119/9/110不变。
+
+## 27. 设备管理与独立任务接续入口
+
+2026-11-23，沿shell导航、settings/表单确认、work-item-detail和ai-chat模式适配，
+继续既有Astryx0.7.13与项目wrapper，不生成/复制另一份模板或引入设备厂商UI。
+
+| 模式 | 产品采用 | 权限/事实边界 |
+| --- | --- | --- |
+| Task action / Button | 精确Task进入设备授权，fresh读取后确认范围 | 导航不是创建邀请或启动模型 |
+| Input/Checkbox/Dialog | 一次性配对、掩码内存码、显式复制/关闭与撤销确认 | 码不进URL/storage/证据，未知回执不伪成功 |
+| Badge / 有界目录 | 真实设备ID/Task/scope/到期/撤销、20页范围 | 没有假online/设备健康/控制租约 |
+| 独立PairPortal / AppTheme | 只看授权Task/最近Run/report/20消息与保存补充，三style双mode | 不挂ownerBootstrap，不因配对给模型/Run权限 |
+| 同源TextArea / 事件读取 | Unicode计数、同ID核对、GET恢复、手机纵向 | 不自动重发、不是全量历史/执行迁移 |
+
+2052前端/1178Python/build，13专项/58综合/6主只读，76最终fixturePNG；
+owner/paired两surface的12stylemode/中英390/长名均验，document overflow0。
+见ADR-0024及`frontend/evidence/devices-2026-11-23/README.md`。
+主4180/5173已启用，正式4设备表空；HTTPS/真机、委托执行控制仍待，119计数不变。

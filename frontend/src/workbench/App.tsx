@@ -17,6 +17,9 @@ const PreviewRunner = lazy(() =>
     default: module.PreviewRunner,
   })),
 )
+const PairPortal = lazy(() =>
+  import('./PairPortal').then((module) => ({ default: module.PairPortal })),
+)
 
 function currentRoute() {
   const hash = window.location.hash.slice(1)
@@ -38,6 +41,8 @@ export function App() {
   let page
   if (new URLSearchParams(window.location.search).get('preview') === '1') {
     page = <PreviewRunner />
+  } else if (route === 'pair') {
+    page = <PairPortal />
   } else if (route === 'templates') {
     page = (
       <TemplatesPage

@@ -17,6 +17,7 @@ import {
   LogOut,
   Menu,
   Moon,
+  MonitorSmartphone,
   Network,
   Plus,
   RefreshCw,
@@ -107,6 +108,9 @@ const WorkflowPage = lazy(() =>
   import('./WorkflowPage').then((module) => ({
     default: module.WorkflowPage,
   })),
+)
+const DevicesPage = lazy(() =>
+  import('./DevicesPage').then((module) => ({ default: module.DevicesPage })),
 )
 const Overview = lazy(() =>
   import('./WorkspacePages').then((module) => ({ default: module.Overview })),
@@ -491,15 +495,17 @@ export function Workbench() {
                     ? t('模型与资源', 'Models & resources')
                     : route.page === 'workflows'
                       ? t('工作流', 'Workflows')
-                      : route.page === 'backends'
-                        ? t('会话后端', 'Conversation backends')
-                        : route.page === 'run'
-                          ? t('运行工作区', 'Run workspace')
-                          : route.page === 'task'
-                            ? t('任务工作区', 'Task workspace')
-                            : route.page === 'missing'
-                              ? t('页面不存在', 'Page not found')
-                              : t('工作台', 'Workbench')
+                      : route.page === 'devices'
+                        ? t('设备接续', 'Device continuation')
+                        : route.page === 'backends'
+                          ? t('会话后端', 'Conversation backends')
+                          : route.page === 'run'
+                            ? t('运行工作区', 'Run workspace')
+                            : route.page === 'task'
+                              ? t('任务工作区', 'Task workspace')
+                              : route.page === 'missing'
+                                ? t('页面不存在', 'Page not found')
+                                : t('工作台', 'Workbench')
   useEffect(() => {
     document.title = `${pageTitle} · mybot`
   }, [pageTitle])
@@ -541,6 +547,12 @@ export function Workbench() {
             ['projects', 'projects', t('项目', 'Projects'), FolderGit2],
             ['documents', 'documents', t('项目资料', 'Documents'), BookOpen],
             ['workflows', 'workflows', t('工作流', 'Workflows'), Workflow],
+            [
+              'devices',
+              'devices',
+              t('设备接续', 'Device continuation'),
+              MonitorSmartphone,
+            ],
             [
               'models',
               'models',
@@ -929,6 +941,19 @@ export function Workbench() {
                 ) : (
                   <ProjectDocuments data={data} t={t} />
                 )}
+              </Suspense>
+            ) : route.page === 'devices' ? (
+              <Suspense
+                fallback={
+                  <AppLoading label={t('正在读取设备', 'Loading devices')} />
+                }
+              >
+                <DevicesPage
+                  data={data}
+                  refreshRevision={queryRefreshRevision}
+                  t={t}
+                  locale={locale}
+                />
               </Suspense>
             ) : route.page === 'workflows' ? (
               <Suspense

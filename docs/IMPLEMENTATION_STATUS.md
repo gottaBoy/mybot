@@ -2,7 +2,16 @@
 
 更新日期：2026-11-23。
 
-**当前交付：固定Workflow W1–W5初版（ADR-0023）。** `#workflows`提供固定阶段、
+**当前交付：单Task设备配对/接续初版（ADR-0024）。** `#devices`或Task入口创建一次性邀请，
+独立`#pair`持久设备cookie只授予Task查看和补充消息保存，主工作台可撤销。
+scope事件/有界快照与精确回执恢复，不自动重放POST；模型/Run/配置仍拒绝，
+跨标签页更换cookie不能把旧草稿写到另一Task。
+2052前端/1178Python/build，13专项/58综合/6主只读，76最终fixturePNG；
+主4180 PID1104938、5173已启用，原业务行不变、4个设备表为空，无真实Provider。
+见[证据](../frontend/evidence/devices-2026-11-23/README.md)。
+委托执行控制、HTTPS/远程网络、真实手机和执行迁移仍未实现，不能宣布完整Cindy能力。
+
+**上一批：固定Workflow W1–W5初版（ADR-0023）。** `#workflows`提供固定阶段、
 模型/补充指令/资源、草稿保存/影响检查/发布确认、不可变版本历史。普通Run和TaskTurn
 均可分页选择发布版本并冻结完整快照；旧Run不补造。人工审查与模型Synthesis独立。
 1958前端/1132Python/typecheck/build；生产21专项/58综合/6主只读通过，70最终fixturePNG。

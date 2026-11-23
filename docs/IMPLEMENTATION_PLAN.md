@@ -19,6 +19,10 @@ PRODUCT_GOALS_CURRENT的W1–W5进入Phase5固定Workflow定义/版本，不自�
 下一产品主线为PRODUCT_GOALS_CURRENT的D1–D5设备接续，再连接器；
 任意DAG、长期Agent、真实账号和工具执行仍保留各自门槛。
 
+2026-11-23后续交付：ADR-0024完成单Task浏览器配对/到期/撤销及有界读取/补充消息接续。
+只授权task_read/message_save，不继承owner执行权。接下来D3b委托执行、D4b工作位置/
+未决请求、D5b HTTPS/真实设备仍分别待办；没有配置远程入口或自动调用模型。
+
 工作项状态以 [WORK_ITEMS.md](WORK_ITEMS.md) 为单一清单：原编号 119 项，完成 9 项，
 未完全完成 110 项。阶段下列的是交付范围，不重复累加为额外工作项。
 
