@@ -815,6 +815,28 @@ describe('task turn HTTP requests', () => {
     await rejected
     expect(fetch).toHaveBeenCalledTimes(1)
   })
+  it('retains an unknown outcome when an aborted execution returns a late receipt', async () => {
+    vi.useFakeTimers()
+    let complete!: (value: Response) => void
+    const fetch = vi.fn().mockImplementation(
+      () =>
+        new Promise<Response>((resolve) => {
+          complete = resolve
+        }),
+    )
+    vi.stubGlobal('fetch', fetch)
+    const pending = executeTaskTurn('task-a', turn.id, {
+      candidate_hash: turn.candidate.candidate_hash,
+      consent: true,
+    })
+    const rejected = expect(pending).rejects.toMatchObject({
+      name: 'AbortError',
+    })
+    await vi.advanceTimersByTimeAsync(15_000)
+    complete(response({ ...turn, state: 'applied', run_id: 'run-1' }))
+    await rejected
+    expect(fetch).toHaveBeenCalledTimes(1)
+  })
   it('rejects invalid mutation candidates before making HTTP requests', async () => {
     const fetch = vi.fn()
     vi.stubGlobal('fetch', fetch)

@@ -419,3 +419,22 @@ Astryx0.7.13和项目wrapper；本批未新复制上游源码或引入第二业�
 见ADR-0022及`frontend/evidence/task-conversation-2026-11-21/README.md`；
 主4180已受控启用PID234937，5173实际使用，不把fixture当正式数据。
 prepared撤销、自动会话记忆、Workflow版本、设备接续和连接器仍未完成，119计数不变。
+
+## 26. 固定Workflow配置、发布与历史
+
+2026-11-23，沿work-item-detail属性编辑、form-wizard确认、table历史及canvas-editor
+的阶段关系组织原则，适配单个固定流程。没有新复制模板源码或引入第二组件库，
+不是任意DAG画布。React19/Astryx0.7.13与项目wrapper、语义token保持。
+
+| 模式 | 本地采用 | 事实边界 |
+| --- | --- | --- |
+| 固定阶段关系 / Button | 三模型阶段与独立人工审查，选择阶段显示输入/输出/属性 | 不伪造节点执行或拖动改状态 |
+| Input/Select/Number/TextArea | 真实草稿的模型/指令/五项限制，CAS保存 | 保存不调用模型，未知字段拒绝而非丢失 |
+| Dialog/Checkbox | 精确impact/revision/hash、独立发布确认与operation核对 | 发布不代表Run完成或连接测试 |
+| 历史分页 / Button | 20项版本页、只读历史；Run向导可选页外旧版本 | 不用最新定义覆盖旧Run，不把首20当全量 |
+| 同一主题树 / CSS | 三style双mode、手机有界历史列/长hash省略 | overflow0不等于文字未被挤压 |
+
+1958前端/1132Python/build，21专项/58综合/6主只读、70最终PNG；
+六组合实际色/字体/圆角、名称宽/行高均验证。阶段指令与研究任务数由后端实际消费，
+旧Run明确未记录。证据见`frontend/evidence/workflow-versions-2026-11-23/README.md`。
+主4180/5173已恢复启用，无正式发布/模型请求；原119/9/110不变。

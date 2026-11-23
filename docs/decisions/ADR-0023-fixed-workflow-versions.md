@@ -1,7 +1,7 @@
 # ADR-0023: Fixed Workflow Drafts, Versions And Run Snapshots
 
 - Date: 2026-11-21, Asia/Singapore
-- Status: Accepted; implementation in progress
+- Status: Accepted; fixed-workflow first slice verified and locally activated on 2026-11-23
 - Product work: W1–W5
 
 ## Scope
@@ -117,3 +117,25 @@ old snapshot preservation and themes. Use isolated FakeProvider only.
 Local activation uses fresh identity/idle/consistent backup/rehearsal/original-row
 comparison, as previous slices. No credential-store reads or paid model requests.
 Original119/9/110 counts stay unchanged. Runtime evidence follows implementation.
+
+## Verification And Local Recovery
+
+Final1958 frontend tests,1132 Python tests,typecheck/build passed.
+Production browser21 Workflow checks include older-version paging, ordinary/TaskTurn
+execution of selectedv1 after22 publications, exact save/publish receipt recovery,
+dirty/global-form protection and three styles/both modes. Existing workbench58
+and primaryGET-only6 passed;70 final fixture PNGs, no final pageerrors/externalHTTP.
+
+Review fixed explicitnull snapshot admission, late cancelled responses, publication
+definition hashing, selected-version capability loss, save/history race and mobile
+hash-column starvation. Source-presence and tested behavior remain separate.
+
+After server restart both primary services were stopped. Idle/worker-lock checks,
+consistent stopped backup, private migration rehearsal and original-row digest
+comparison preceded restoration of4180 PID3459239 and5173. Original business rows
+are unchanged after primary browser checks; new state has only one unbound draft,
+no published version or operation. No realProvider/model test or credential-store read.
+
+Evidence and retained test/visual failures:
+`frontend/evidence/workflow-versions-2026-11-23/README.md`.
+11月22日的8项dev-server检查为历史证据，不代表当前启用或覆盖全部矩阵。

@@ -1,0 +1,832 @@
+{
+  "generatedAt": "2026-11-23T02:56:04.624Z",
+  "fixture": "Disposable browser_server.py + FakeProvider",
+  "base": "http://127.0.0.1:5176/",
+  "externalRequests": [],
+  "pageErrors": [],
+  "checks": [
+    "api-save-impact-publish",
+    "desktop-page-and-published-history",
+    "ui-save-impact-consent-publish",
+    "explicit-run-keeps-v1-snapshot-after-v2",
+    "Run wizard pages older versions and freezes selected v1 after22 published versions",
+    "Task conversation resource wizard also freezes selected published v1 through prepare and execute",
+    "Workflow history pages and previews immutable v1 without changing the saved draft",
+    "Global New task cannot replace a dirty Workflow navigation guard",
+    "Live Astryx theme change preserves unsaved Workflow definition without a write",
+    "cas-conflict-preserves-local-candidate",
+    "unknown-write-reconciles-by-get",
+    "Global New task cannot bypass an unresolved Workflow publication",
+    "Lost publication survives reload and reconciles the original ledger by GET without publishing again",
+    "dirty-navigation-guard",
+    "mobile-en-gothic-no-horizontal-overflow",
+    "neutral/light/1440/zh: Workflow configuration renders without overflow or writes",
+    "neutral/dark/390/en: Workflow configuration renders without overflow or writes",
+    "zira/light/1440/en: Workflow configuration renders without overflow or writes",
+    "zira/dark/390/zh: Workflow configuration renders without overflow or writes",
+    "y2k/light/1440/zh: Workflow configuration renders without overflow or writes",
+    "y2k/dark/390/en: Workflow configuration renders without overflow or writes"
+  ],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/634bb3711dfd46e7b4f6dbb19cc92e5c/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/634bb3711dfd46e7b4f6dbb19cc92e5c/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/634bb3711dfd46e7b4f6dbb19cc92e5c/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/634bb3711dfd46e7b4f6dbb19cc92e5c/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/634bb3711dfd46e7b4f6dbb19cc92e5c/turns",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/634bb3711dfd46e7b4f6dbb19cc92e5c/turns/c522660fea8947ca8a6160027ffcc86f/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/634bb3711dfd46e7b4f6dbb19cc92e5c/turns/c522660fea8947ca8a6160027ffcc86f/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/634bb3711dfd46e7b4f6dbb19cc92e5c/turns/c522660fea8947ca8a6160027ffcc86f/execute",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    }
+  ],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "width": 1440,
+      "locale": "zh",
+      "overflow": 0,
+      "color": "rgb(0, 0, 0)",
+      "background": "rgb(255, 255, 255)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "radius": "0px",
+      "historyGeometry": [
+        {
+          "height": 53,
+          "nameWidth": 712.3125
+        },
+        {
+          "height": 53,
+          "nameWidth": 712.3125
+        },
+        {
+          "height": 53,
+          "nameWidth": 712.3125
+        },
+        {
+          "height": 53,
+          "nameWidth": 712.3125
+        },
+        {
+          "height": 53,
+          "nameWidth": 712.3125
+        },
+        {
+          "height": 53,
+          "nameWidth": 712.3125
+        },
+        {
+          "height": 53,
+          "nameWidth": 712.3125
+        },
+        {
+          "height": 53,
+          "nameWidth": 712.3125
+        },
+        {
+          "height": 53,
+          "nameWidth": 712.3125
+        },
+        {
+          "height": 53,
+          "nameWidth": 712.3125
+        },
+        {
+          "height": 53,
+          "nameWidth": 712.3125
+        },
+        {
+          "height": 53,
+          "nameWidth": 712.3125
+        },
+        {
+          "height": 53,
+          "nameWidth": 713.34375
+        },
+        {
+          "height": 53,
+          "nameWidth": 712.3125
+        },
+        {
+          "height": 53,
+          "nameWidth": 720.09375
+        },
+        {
+          "height": 53,
+          "nameWidth": 720.09375
+        },
+        {
+          "height": 53,
+          "nameWidth": 720.09375
+        },
+        {
+          "height": 53,
+          "nameWidth": 720.09375
+        },
+        {
+          "height": 53,
+          "nameWidth": 720.09375
+        },
+        {
+          "height": 53,
+          "nameWidth": 720.09375
+        }
+      ]
+    },
+    {
+      "style": "neutral",
+      "mode": "dark",
+      "width": 390,
+      "locale": "en",
+      "overflow": 0,
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(28, 31, 34)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "radius": "0px",
+      "historyGeometry": [
+        {
+          "height": 84,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        }
+      ]
+    },
+    {
+      "style": "zira",
+      "mode": "light",
+      "width": 1440,
+      "locale": "en",
+      "overflow": 0,
+      "color": "rgb(23, 43, 77)",
+      "background": "rgb(255, 255, 255)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif",
+      "radius": "0px",
+      "historyGeometry": [
+        {
+          "height": 53,
+          "nameWidth": 631.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 631.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 631.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 631.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 631.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 631.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 631.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 631.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 631.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 631.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 631.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 631.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 631.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 631.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 640.328125
+        },
+        {
+          "height": 53,
+          "nameWidth": 640.328125
+        },
+        {
+          "height": 53,
+          "nameWidth": 640.328125
+        },
+        {
+          "height": 53,
+          "nameWidth": 640.328125
+        },
+        {
+          "height": 53,
+          "nameWidth": 640.328125
+        },
+        {
+          "height": 53,
+          "nameWidth": 640.328125
+        }
+      ]
+    },
+    {
+      "style": "zira",
+      "mode": "dark",
+      "width": 390,
+      "locale": "zh",
+      "overflow": 0,
+      "color": "rgb(230, 233, 239)",
+      "background": "rgb(22, 26, 34)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif",
+      "radius": "0px",
+      "historyGeometry": [
+        {
+          "height": 84,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        }
+      ]
+    },
+    {
+      "style": "y2k",
+      "mode": "light",
+      "width": 1440,
+      "locale": "zh",
+      "overflow": 0,
+      "color": "rgb(45, 36, 27)",
+      "background": "rgb(255, 255, 255)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "radius": "0px",
+      "historyGeometry": [
+        {
+          "height": 53,
+          "nameWidth": 682.53125
+        },
+        {
+          "height": 53,
+          "nameWidth": 682.53125
+        },
+        {
+          "height": 53,
+          "nameWidth": 682.53125
+        },
+        {
+          "height": 53,
+          "nameWidth": 682.53125
+        },
+        {
+          "height": 53,
+          "nameWidth": 682.53125
+        },
+        {
+          "height": 53,
+          "nameWidth": 682.53125
+        },
+        {
+          "height": 53,
+          "nameWidth": 682.53125
+        },
+        {
+          "height": 53,
+          "nameWidth": 682.53125
+        },
+        {
+          "height": 53,
+          "nameWidth": 682.53125
+        },
+        {
+          "height": 53,
+          "nameWidth": 682.53125
+        },
+        {
+          "height": 53,
+          "nameWidth": 682.53125
+        },
+        {
+          "height": 53,
+          "nameWidth": 682.53125
+        },
+        {
+          "height": 53,
+          "nameWidth": 683.71875
+        },
+        {
+          "height": 53,
+          "nameWidth": 682.53125
+        },
+        {
+          "height": 53,
+          "nameWidth": 691.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 691.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 691.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 691.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 691.421875
+        },
+        {
+          "height": 53,
+          "nameWidth": 691.421875
+        }
+      ]
+    },
+    {
+      "style": "y2k",
+      "mode": "dark",
+      "width": 390,
+      "locale": "en",
+      "overflow": 0,
+      "color": "rgb(237, 239, 252)",
+      "background": "rgb(22, 24, 43)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "radius": "0px",
+      "historyGeometry": [
+        {
+          "height": 84,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        },
+        {
+          "height": 77,
+          "nameWidth": 171
+        }
+      ]
+    }
+  ]
+}

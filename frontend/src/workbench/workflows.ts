@@ -513,14 +513,18 @@ function sortedJson(value: unknown): string {
   )
 }
 
-export async function workflowCommandHash(value: WorkflowCommand) {
-  const command = parseCommand(value)
-  const { kind, request_id: _requestId, ...body } = command
-  const bytes = new TextEncoder().encode(sortedJson([kind, body]))
+async function fingerprint(value: unknown) {
+  const bytes = new TextEncoder().encode(sortedJson(value))
   const digest = await crypto.subtle.digest('SHA-256', bytes)
   return Array.from(new Uint8Array(digest), (byte) =>
     byte.toString(16).padStart(2, '0'),
   ).join('')
+}
+
+export async function workflowCommandHash(value: WorkflowCommand) {
+  const command = parseCommand(value)
+  const { kind, request_id: _requestId, ...body } = command
+  return fingerprint([kind, body])
 }
 
 export async function assertWorkflowReceipt(
@@ -542,7 +546,10 @@ export async function assertWorkflowReceipt(
     )
       throw new WorkflowResponseError()
   } else if (command.kind === 'publish' && receipt.kind === 'publish') {
-    if (receipt.result.definition_hash !== command.definition_hash)
+    if (
+      receipt.result.definition_hash !== command.definition_hash ||
+      (await fingerprint(receipt.result.definition)) !== command.definition_hash
+    )
       throw new WorkflowResponseError()
   } else {
     throw new WorkflowResponseError()
@@ -561,7 +568,13 @@ async function request(
   else signal?.addEventListener('abort', abort, { once: true })
   const timer = setTimeout(() => controller.abort(), 15_000)
   try {
-    return await api<unknown>(path, { ...options, signal: controller.signal })
+    controller.signal.throwIfAborted()
+    const value = await api<unknown>(path, {
+      ...options,
+      signal: controller.signal,
+    })
+    controller.signal.throwIfAborted()
+    return value
   } finally {
     clearTimeout(timer)
     signal?.removeEventListener('abort', abort)

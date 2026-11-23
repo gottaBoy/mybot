@@ -564,18 +564,84 @@ def test_actual_harness_honors_all_three_instructions_and_research_task_limit(wo
         assert "不能声称测试通过或代码已经修改" in provider.requests[2][1][-1]["content"]
 
 
-def test_invalid_recorded_workflow_cannot_reach_a_provider(workflow_case):
+@pytest.mark.parametrize("invalid", ["null", "hash", "unknown", "unbound-model"])
+def test_invalid_recorded_workflow_cannot_reach_a_provider(workflow_case, invalid):
     client, app, provider, _, _, model, task = workflow_case
     response = post(client, f"/api/tasks/{task['id']}/runs", run_body(model))
     run = response.json()
     context = run["context"]
-    context["workflow"]["definition_hash"] = "0" * 64
+    if invalid == "null":
+        context["workflow"] = None
+    elif invalid == "hash":
+        context["workflow"]["definition_hash"] = "0" * 64
+    elif invalid == "unknown":
+        context["workflow"]["definition"]["stages"][0]["tools"] = ["shell"]
+        context["workflow"]["definition_hash"] = fingerprint(context["workflow"]["definition"])
+    else:
+        context["workflow"]["definition"]["stages"][0]["model_id"] = None
+        context["workflow"]["definition_hash"] = fingerprint(context["workflow"]["definition"])
     with app.state.store.transaction() as db:
         db.execute("UPDATE runs SET context=? WHERE id=?", (json.dumps(context), run["id"]))
     with TestClient(app) as worker:
         failed = wait_status(worker, run["id"], {"succeeded", "failed"})
         assert failed["run"]["status"] == "failed"
         assert failed["calls"] == [] and provider.requests == []
+
+
+def test_legacy_missing_workflow_executes_without_backfilling_a_version(workflow_case):
+    client, app, provider, _, _, model, task = workflow_case
+    response = post(client, f"/api/tasks/{task['id']}/runs", run_body(model))
+    run = response.json()
+    context = {key: value for key, value in run["context"].items() if key != "workflow"}
+    with app.state.store.transaction() as db:
+        db.execute("UPDATE runs SET context=? WHERE id=?", (json.dumps(context), run["id"]))
+    with TestClient(app) as worker:
+        completed = wait_status(worker, run["id"], {"succeeded", "failed"})
+        assert completed["run"]["status"] == "succeeded"
+        assert "workflow" not in completed["run"]["context"]
+        assert len(provider.requests) == len(completed["calls"]) == 4
+
+
+def test_recovery_executes_frozen_instructions_with_explicit_current_model_bindings(workflow_case):
+    client, app, provider, _, _, model, task = workflow_case
+    value = definition(model)
+    value["limits"]["research_tasks"] = 1
+    marker = "FROZEN_WORKFLOW_RECOVERY_INSTRUCTION"
+    for stage in value["stages"]:
+        stage["instructions"] = marker
+    published(client, value)
+    source = post(client, f"/api/tasks/{task['id']}/runs", run_body(model, workflow_version=1)).json()
+    app.state.store.finish_run(source["id"], "failed", "synthetic_before_call_failure")
+    replacement = post(client, "/api/models", {
+        "name": "Recovery binding", "endpoint": "http://127.0.0.1:9999/v1", "model": "recovery-model",
+    }).json()
+    newer = definition(model, name="New publication")
+    for stage in newer["stages"]:
+        stage["instructions"] = "NEW_VERSION_MUST_NOT_REPLACE_OLD_INSTRUCTIONS"
+    published(client, newer, "newer-recovery")
+    preview = client.get(f"/api/runs/{source['id']}/retry-preview").json()
+    response = post(client, f"/api/runs/{source['id']}/retry", {
+        **preview["defaults"], "max_calls": 5,
+        "coordinator_model": replacement["id"],
+        "researcher_model": replacement["id"],
+        "reviewer_model": replacement["id"],
+        "request_id": "workflow-recovery-explicit-bindings",
+        "snapshot_hash": preview["snapshot_hash"],
+        "consent": True, "acknowledge_replay": True,
+    })
+    assert response.status_code == 201, response.text
+    child = response.json()
+    with TestClient(app) as worker:
+        completed = wait_status(worker, child["id"], {"succeeded", "failed"})
+        assert completed["run"]["status"] == "succeeded"
+        assert completed["run"]["context"]["workflow"] == source["context"]["workflow"]
+        assert len(completed["run"]["plan"]) == 1
+        assert len(completed["calls"]) == len(provider.requests) == 3
+        for requested_model, messages in provider.requests:
+            assert requested_model == replacement["model"]
+            assert marker in messages[-1]["content"]
+            assert "NEW_VERSION_MUST_NOT_REPLACE_OLD_INSTRUCTIONS" not in messages[-1]["content"]
+        assert app.state.store.get("runs", source["id"])["context"] == source["context"]
 
 
 def test_workflow_api_auth_csrf_and_no_provider_calls_without_run(workflow_case):

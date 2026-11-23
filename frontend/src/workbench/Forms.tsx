@@ -9,6 +9,8 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
+  ChevronLeft,
+  ChevronRight,
   RefreshCw,
   Save,
   ShieldCheck,
@@ -168,7 +170,10 @@ export function WorkbenchForm({
   const workflow = useRunWorkflow({
     enabled: workflowEnabled,
     locked: turnLocked,
-    initial: state.kind === 'run' ? state.turn?.candidate?.snapshot.workflow : undefined,
+    initial:
+      state.kind === 'run'
+        ? state.turn?.candidate?.snapshot.workflow
+        : undefined,
   })
   useEffect(() => {
     if (state.kind !== 'run' || !state.turn?.candidate) return
@@ -487,7 +492,9 @@ export function WorkbenchForm({
                 ...routing,
                 ...limits,
                 context_hash: (runSnapshot ?? state.snapshot).context_hash,
-                ...(workflowEnabled ? { workflow_version: workflow.version } : {}),
+                ...(workflowEnabled
+                  ? { workflow_version: workflow.version }
+                  : {}),
               }
               pendingPreparation.current = preparation
               preparedTurn = await prepareTaskTurn(
@@ -1020,6 +1027,14 @@ export function WorkbenchForm({
             )}
           </span>
         </div>
+        {!workflowEnabled && workflow.blocked && (
+          <p role="alert" className="wb-error">
+            {t(
+              '当前服务未提供已选工作流版本所需能力，执行已暂停。请恢复连接后重新核对。',
+              'This server cannot execute the selected workflow version. Execution is paused; restore the connection and review again.',
+            )}
+          </p>
+        )}
         {turn && (
           <div
             className={turnUncertain ? 'wb-error' : 'wb-notice'}
@@ -1101,19 +1116,38 @@ export function WorkbenchForm({
             <div className="wb-workflow-run-binding">
               <AppSelect
                 label={t('工作流版本', 'Workflow version')}
-                value={workflow.version === null ? 'builtin' : String(workflow.version)}
+                value={
+                  workflow.version === null
+                    ? 'builtin'
+                    : String(workflow.version)
+                }
                 options={[
-                  { value: 'builtin', label: t('内置流程 · 本次配置', 'Built-in flow · run configuration') },
+                  {
+                    value: 'builtin',
+                    label: t(
+                      '内置流程 · 本次配置',
+                      'Built-in flow · run configuration',
+                    ),
+                  },
                   ...workflow.versions.map((item) => ({
                     value: String(item.version),
                     label: `v${item.version} · ${item.definition.name}`,
                   })),
                   ...(workflow.version !== null &&
-                  !workflow.versions.some((item) => item.version === workflow.version)
-                    ? [{ value: String(workflow.version), label: `v${workflow.version} · ${workflow.definition?.name ?? ''}` }]
+                  !workflow.versions.some(
+                    (item) => item.version === workflow.version,
+                  )
+                    ? [
+                        {
+                          value: String(workflow.version),
+                          label: `v${workflow.version} · ${workflow.definition?.name ?? ''}`,
+                        },
+                      ]
                     : []),
                 ]}
-                disabled={turnLocked || workflow.busy || Boolean(workflow.error)}
+                disabled={
+                  turnLocked || workflow.busy || Boolean(workflow.error)
+                }
                 onChange={(value) => {
                   const selected = workflow.choose(value)
                   if (!selected) return
@@ -1135,131 +1169,178 @@ export function WorkbenchForm({
                   setFieldErrors({})
                 }}
               />
-              {workflow.busy && <AppLoading label={t('正在读取发布版本', 'Loading published versions')} />}
+              {workflow.busy && (
+                <AppLoading
+                  label={t('正在读取发布版本', 'Loading published versions')}
+                />
+              )}
+              {!turnLocked && workflow.total !== undefined && (
+                <div
+                  className="wb-inline"
+                  data-testid="run-workflow-version-pages"
+                >
+                  <span className="wb-muted">
+                    {t('发布版本', 'Published versions')} {workflow.page} /{' '}
+                    {workflow.totalPages}
+                    {' · '}
+                    {workflow.total} {t('项', 'total')}
+                  </span>
+                  <AppButton
+                    label={t('上一页工作流版本', 'Previous workflow versions')}
+                    icon={<ChevronLeft size={15} />}
+                    iconOnly
+                    tone="ghost"
+                    disabled={
+                      workflow.busy ||
+                      Boolean(workflow.error) ||
+                      workflow.page <= 1
+                    }
+                    onClick={() => workflow.changePage(workflow.page - 1)}
+                  />
+                  <AppButton
+                    label={t('下一页工作流版本', 'Next workflow versions')}
+                    icon={<ChevronRight size={15} />}
+                    iconOnly
+                    tone="ghost"
+                    disabled={
+                      workflow.busy ||
+                      Boolean(workflow.error) ||
+                      !workflow.hasMore
+                    }
+                    onClick={() => workflow.changePage(workflow.page + 1)}
+                  />
+                </div>
+              )}
               {workflow.error && (
                 <div className="wb-error" role="alert">
                   <p>{workflow.error}</p>
-                  <AppButton label={t('重试读取版本', 'Retry versions')} icon={<RefreshCw size={15} />} onClick={workflow.retry} />
+                  <AppButton
+                    label={t('重试读取版本', 'Retry versions')}
+                    icon={<RefreshCw size={15} />}
+                    onClick={workflow.retry}
+                  />
                 </div>
               )}
               {workflow.definition && (
                 <p className="wb-hint">
-                  {workflow.definition.name} · {t('研究任务上限', 'Research task limit')}: {workflow.definition.limits.research_tasks}
+                  {workflow.definition.name} ·{' '}
+                  {t('研究任务上限', 'Research task limit')}:{' '}
+                  {workflow.definition.limits.research_tasks}
                 </p>
               )}
             </div>
           )}
           <div inert={workflow.version !== null || undefined}>
-          {!data.models.length && (
-            <p className="wb-error">
-              {t(
-                '请先保存模型配置，任务已保留。',
-                'Add a model configuration first. Your task is saved.',
-              )}{' '}
-              <a href="#models">{t('前往模型设置', 'Open model settings')}</a>
-            </p>
-          )}
-          {(
-            [
-              ['coordinator_model', t('规划', 'Planning')],
-              ['researcher_model', t('研究', 'Research')],
-              ['reviewer_model', t('汇总', 'Synthesis')],
-            ] as const
-          ).map(([key, label]) => (
-            <div key={key}>
+            {!data.models.length && (
+              <p className="wb-error">
+                {t(
+                  '请先保存模型配置，任务已保留。',
+                  'Add a model configuration first. Your task is saved.',
+                )}{' '}
+                <a href="#models">{t('前往模型设置', 'Open model settings')}</a>
+              </p>
+            )}
+            {(
+              [
+                ['coordinator_model', t('规划', 'Planning')],
+                ['researcher_model', t('研究', 'Research')],
+                ['reviewer_model', t('汇总', 'Synthesis')],
+              ] as const
+            ).map(([key, label]) => (
+              <div key={key}>
+                {fieldBlock(
+                  key,
+                  <AppSelect
+                    label={label}
+                    value={routing[key]}
+                    options={data.models.map((item) => ({
+                      value: item.id,
+                      label: `${item.name} · ${item.model}`,
+                    }))}
+                    onChange={(value) => {
+                      setRouting({ ...routing, [key]: value })
+                      clearFieldError(key)
+                      setConsent(false)
+                    }}
+                  />,
+                )}
+              </div>
+            ))}
+            <div className="wb-form-grid">
               {fieldBlock(
-                key,
-                <AppSelect
-                  label={label}
-                  value={routing[key]}
-                  options={data.models.map((item) => ({
-                    value: item.id,
-                    label: `${item.name} · ${item.model}`,
-                  }))}
+                'max_calls',
+                <AppNumber
+                  label={t('调用总上限', 'Call budget')}
+                  value={limits.max_calls}
                   onChange={(value) => {
-                    setRouting({ ...routing, [key]: value })
-                    clearFieldError(key)
+                    clearFieldError('max_calls')
                     setConsent(false)
+                    setLimits({ ...limits, max_calls: value })
                   }}
+                  status={fieldStatus('max_calls')}
+                  min={3}
+                  max={8}
                 />,
+                true,
+              )}
+              {fieldBlock(
+                'parallel',
+                <AppNumber
+                  label={t('研究并行上限', 'Research concurrency')}
+                  value={limits.parallel}
+                  onChange={(value) => {
+                    clearFieldError('parallel')
+                    setConsent(false)
+                    setLimits({ ...limits, parallel: value })
+                  }}
+                  status={fieldStatus('parallel')}
+                  min={1}
+                  max={2}
+                />,
+                true,
+              )}
+              {fieldBlock(
+                'minutes',
+                <AppNumber
+                  label={t('运行时限（分钟）', 'Time limit (min)')}
+                  value={limits.minutes}
+                  onChange={(value) => {
+                    clearFieldError('minutes')
+                    setConsent(false)
+                    setLimits({ ...limits, minutes: value })
+                  }}
+                  status={fieldStatus('minutes')}
+                  min={1}
+                  max={30}
+                />,
+                true,
+              )}
+              {fieldBlock(
+                'max_output_tokens',
+                <AppNumber
+                  label={t('每次输出 Token 上限', 'Output tokens per call')}
+                  value={limits.max_output_tokens}
+                  onChange={(value) => {
+                    clearFieldError('max_output_tokens')
+                    setConsent(false)
+                    setLimits({ ...limits, max_output_tokens: value })
+                  }}
+                  status={fieldStatus('max_output_tokens')}
+                  min={256}
+                  max={4096}
+                  step={1}
+                />,
+                true,
               )}
             </div>
-          ))}
-          <div className="wb-form-grid">
-            {fieldBlock(
-              'max_calls',
-              <AppNumber
-                label={t('调用总上限', 'Call budget')}
-                value={limits.max_calls}
-                onChange={(value) => {
-                  clearFieldError('max_calls')
-                  setConsent(false)
-                  setLimits({ ...limits, max_calls: value })
-                }}
-                status={fieldStatus('max_calls')}
-                min={3}
-                max={8}
-              />,
-              true,
+            {used.some((item) => item.kind === 'codex_cli') && (
+              <p className="wb-hint">
+                {t(
+                  'Codex CLI 实际单通道执行；输出 Token 不是 CLI 硬限制，底层工具隔离尚未完整验收。',
+                  'Codex CLI runs in a single channel. Output tokens are not a CLI hard ceiling; underlying tool isolation is not fully verified.',
+                )}
+              </p>
             )}
-            {fieldBlock(
-              'parallel',
-              <AppNumber
-                label={t('研究并行上限', 'Research concurrency')}
-                value={limits.parallel}
-                onChange={(value) => {
-                  clearFieldError('parallel')
-                  setConsent(false)
-                  setLimits({ ...limits, parallel: value })
-                }}
-                status={fieldStatus('parallel')}
-                min={1}
-                max={2}
-              />,
-              true,
-            )}
-            {fieldBlock(
-              'minutes',
-              <AppNumber
-                label={t('运行时限（分钟）', 'Time limit (min)')}
-                value={limits.minutes}
-                onChange={(value) => {
-                  clearFieldError('minutes')
-                  setConsent(false)
-                  setLimits({ ...limits, minutes: value })
-                }}
-                status={fieldStatus('minutes')}
-                min={1}
-                max={30}
-              />,
-              true,
-            )}
-            {fieldBlock(
-              'max_output_tokens',
-              <AppNumber
-                label={t('每次输出 Token 上限', 'Output tokens per call')}
-                value={limits.max_output_tokens}
-                onChange={(value) => {
-                  clearFieldError('max_output_tokens')
-                  setConsent(false)
-                  setLimits({ ...limits, max_output_tokens: value })
-                }}
-                status={fieldStatus('max_output_tokens')}
-                min={256}
-                max={4096}
-                step={1}
-              />,
-              true,
-            )}
-          </div>
-          {used.some((item) => item.kind === 'codex_cli') && (
-            <p className="wb-hint">
-              {t(
-                'Codex CLI 实际单通道执行；输出 Token 不是 CLI 硬限制，底层工具隔离尚未完整验收。',
-                'Codex CLI runs in a single channel. Output tokens are not a CLI hard ceiling; underlying tool isolation is not fully verified.',
-              )}
-            </p>
-          )}
           </div>
         </div>
         <div hidden={step !== 2} className="wb-wizard-section">
@@ -1279,7 +1360,10 @@ export function WorkbenchForm({
                 <dt>{t('工作流', 'Workflow')}</dt>
                 <dd>
                   {workflow.version === null
-                    ? t('内置流程 · 本次配置', 'Built-in flow · run configuration')
+                    ? t(
+                        '内置流程 · 本次配置',
+                        'Built-in flow · run configuration',
+                      )
                     : `v${workflow.version} · ${workflow.definition?.name ?? ''}`}
                 </dd>
               </>

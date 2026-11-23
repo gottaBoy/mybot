@@ -231,6 +231,7 @@
   font-size: 13px;
 }
 .wb-workflow-history-list code {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -291,8 +292,12 @@
     gap: 16px 24px;
   }
   .wb-workflow-history-list li {
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 6px 12px;
+  }
+  .wb-workflow-history-list li > button {
+    justify-self: start;
+    max-width: 100%;
   }
 }
 @media (max-width: 480px) {

@@ -1131,6 +1131,46 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
 - 本轮未启用主4180/5173 Workflow，也未提交或push。真实Provider、物理手机/IME、
   更完整的三style双mode浏览器矩阵仍需要单独验收，不能由本轮截图推断完成。
 
+### 2026-11-23 产品工作项：W1–W5固定Workflow交付与重启恢复
+
+- 从0cf2c99已push/干净工作树恢复；11月22日的实现已提交，不把旧“尚未提交”当现状。
+  T3重启后主4180/5173均停止，取消的前端启动已恢复。先读CONTINUE/ADR-0023与实际代码，
+  backend/client/UI三个Agent完成各自修复和测试，root负责整合/浏览器/主服务/记录。
+- 固定定义、CAS草稿、impact/发布确认、不可变版本、operation ledger与Run/TaskTurn绑定
+  在前批已有，本轮补完成W1–W5产品闭环；模型Synthesis与人工Review独立，指令和
+  research_tasks进真实Harness。仍是单个local-research，不是任意DAG或新工具权限。
+- backend修复workflow:null逃逸，新增损坏快照零调用、legacy不回填和恢复新资源保旧定义；
+  client补分页/旧选项与迟到阻断、实际pubdefinition hash、cap丢失不能降builtin。
+  UI修save确认后历史请求永久busy；root补Run版本展示/strict元数据、Forms分页与缺cap提示、
+  新建Task/Project共享dirty/busy准入，避免覆盖未知写入guard。
+- 手机长hash挤压名称真实缺陷在截图中发现：overflow0但名称0px、行高819px。
+  修为有界两列、hash可缩小；最终手机名称171px/最大行高84px，六布局均无document overflow。
+  这不是新主题分支，仍Astryx wrapper与同一业务树，没有新依赖或源复制。
+- 最终1958前端（65文件）/1132Python/typecheck/build通过，保留既有httpx弃用与大chunk警告。
+  最后CSS修正后生产再验：Workflow21/9PNG、综合58/61PNG、主GET-only6，共85项/70最终PNG，
+  无最终pageerror/外部HTTP；Neutral/Zira/Y2K双mode、中英390、另Gothic手机及实际计算值。
+- 专项fixture.AvwQtP从空业务库开始发布23版本；验证页外v1、普通UI与TaskTurnUI
+  prepare/execute均冻结v1，即使latest已22。3个Run用FakeProvider，原Task/旧Run不改。
+  save/publish响应故意在真实写后丢失；pub reload后精确GETledger，只新增1版本、无重发POST。
+  独立综合fixture.VKfj6t使用FakeProvider/MockTransport，无真实费用/账号。
+- 保留脚本dialog忙时变alertdialog导致过早断言、旧mock继承新cap却未提供GET的失败；
+  分别改等待真实form卸载、独立legacyfixture明确false。生产advertised失败仍阻断，
+  没有降低产品校验或删旧模型/预算/恢复断言。视觉反例单独归档。
+- 主恢复前验证当前Settings workspace/data/auth模式匹配原记录、无queued/active Run/Call/
+  modeltest/未决恢复/preparedturn，取得worker lock；一致停服backup→副本Store迁移→
+  原表原列逐行摘要比对→复核空闲后启动4180 PID3459239，5173已200。
+  原1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event及其他原行不变；
+  新workflow_drafts1（未绑定默认草稿）/versions0/operations0，不自动发布或调用已有模型。
+- 桌面/中文手机主入口6项GET-only读取默认Workflow与原Run未记录版本状态，浏览器后再比对原行
+  相同。无正式写入/截图/正文导出；私有`.runtime/backups/before-workflow-20261123T020755Z/`
+  700、DB/log600，不进Git。原进程环境已消失，使用验证过的当前Settings而非声称继承；
+  不读凭证库/兄弟数据、不热覆盖回退。临时4187/4188/5176/5177已停，主4180/5173保留。
+- 证据`frontend/evidence/workflow-versions-2026-11-23/`；构建app JS194.95/gzip62.28kB、
+  CSS39.15/7.39，lazyWorkflow JS25.02/8.66、CSS6.07/1.32。不是初始transfer或整站提速，
+  Bootstrap仍全量；真实Provider、物理手机/IME、Safari和长期能力未认证。
+- 原119/9/110不变，W1–W5只关闭固定初版。下一批D1–D5设备身份/配对/控制权/断线接续，
+  再飞书/语雀/邮箱等；prepared撤销、自动记忆、任意DAG等仍独立未完。本批commit/push以Git回执为准。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。
@@ -1138,6 +1178,6 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
 ## 当前路线引用
 
 当前交付顺序以 [PRODUCT_GOALS_CURRENT.md](PRODUCT_GOALS_CURRENT.md) 为准：
-Task工作区和选定消息持续工作初版已交付，接下来是固定Workflow定义/版本。
+Task工作区、选定消息持续工作和固定Workflow版本初版已交付，接下来是D1–D5设备接续。
 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)保留阶段架构与能力边界；
 OpenMausBot执行采用、Cindy/Headscale/IM/代码执行仍有各自未完成范围，不覆盖当前产品优先级。

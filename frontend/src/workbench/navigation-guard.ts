@@ -382,6 +382,10 @@ export function createNavigationHistoryController(
       notify()
     },
     pending: () => pending,
+    canOpenForm: () => {
+      const protectedState = state()
+      return !protectedState.dirty && !protectedState.busy
+    },
   }
 }
 
@@ -546,6 +550,9 @@ export function cancelWorkbenchNavigation() {
 }
 export function refreshWorkbenchNavigationBlocker() {
   browserController?.refresh()
+}
+export function canOpenWorkbenchForm() {
+  return browserController?.canOpenForm() ?? true
 }
 export function resetWorkbenchNavigation() {
   browserController?.reset()

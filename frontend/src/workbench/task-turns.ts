@@ -474,11 +474,14 @@ async function mutation(path: string, body: unknown, signal?: AbortSignal) {
   else signal?.addEventListener('abort', abort, { once: true })
   const timer = setTimeout(() => controller.abort(), 15_000)
   try {
-    return await api<unknown>(path, {
+    controller.signal.throwIfAborted()
+    const value = await api<unknown>(path, {
       method: 'POST',
       body: JSON.stringify(body),
       signal: controller.signal,
     })
+    controller.signal.throwIfAborted()
+    return value
   } finally {
     clearTimeout(timer)
     signal?.removeEventListener('abort', abort)

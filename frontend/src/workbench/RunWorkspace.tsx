@@ -29,6 +29,7 @@ import { AppMarkdown } from '../components/ui/Markdown'
 import { AppAvatarGroup } from '../components/ui/Avatars'
 import { ApiError, api, post, type Artifact, type RunDetail } from './api'
 import { resolveCallSelection } from './call-selection'
+import { recordedRunWorkflow } from './run-workflow'
 import { pushWorkbenchNavigation } from './navigation-guard'
 import {
   activeStatuses,
@@ -112,13 +113,22 @@ export function RunWorkspace({
             : 'The run does not belong to this task.',
         )
       }
+      try {
+        recordedRunWorkflow(next.run.context)
+      } catch (reason) {
+        setDetail(null)
+        throw reason
+      }
       if (!controller.signal.aborted) {
         setDetail(next)
         setError('')
       }
     } catch (reason) {
       if (!controller.signal.aborted) {
-        if (reason instanceof ApiError && [401, 403, 404].includes(reason.status))
+        if (
+          reason instanceof ApiError &&
+          [401, 403, 404].includes(reason.status)
+        )
           setDetail(null)
         setError(reason instanceof Error ? reason.message : String(reason))
       }
@@ -187,6 +197,7 @@ export function RunWorkspace({
     )
   const { run, task, project, agents, calls, artifacts, events, harness } =
     detail
+  const recordedWorkflow = recordedRunWorkflow(run.context)
   const callSelection = resolveCallSelection(callId, calls)
   const artifact =
     artifacts.find((item) => item.id === artifactId) ??
@@ -394,6 +405,32 @@ export function RunWorkspace({
             </>
           )}
         </div>
+      </div>
+      <div
+        className="wb-run-workflow-binding"
+        data-testid="run-workflow-binding"
+      >
+        <GitBranch size={16} />
+        {recordedWorkflow ? (
+          <>
+            <AppBadge tone="neutral">
+              {recordedWorkflow.version === null
+                ? t('内置流程快照', 'Built-in workflow snapshot')
+                : `Workflow v${recordedWorkflow.version}`}
+            </AppBadge>
+            <details className="wb-disclosure">
+              <summary>{recordedWorkflow.definition.name}</summary>
+              <pre>{JSON.stringify(recordedWorkflow, null, 2)}</pre>
+            </details>
+          </>
+        ) : (
+          <span className="wb-muted">
+            {t(
+              '此历史运行未记录工作流版本',
+              'Workflow version was not recorded for this historical run',
+            )}
+          </span>
+        )}
       </div>
       <div className="wb-run-axes">
         <div>

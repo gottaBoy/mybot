@@ -546,6 +546,7 @@ export function WorkflowPage({
         ),
       });
       setReadRevision((value) => value + 1);
+      setHistoryRevision((value) => value + 1);
     } else {
       setBundle((before) =>
         before ? { ...before, published: receipt.result } : before,

@@ -88,6 +88,7 @@ import { clearModelTests } from './model-test-state'
 import { clearListContinuityCache } from './list-continuity'
 import {
   allowWorkbenchNavigation,
+  canOpenWorkbenchForm,
   readWorkbenchNavigationKind,
   pushWorkbenchNavigation,
   resetWorkbenchNavigation,
@@ -178,6 +179,7 @@ export function Workbench() {
   const [preferenceTab, setPreferenceTab] = useState('appearance')
   const [commands, setCommands] = useState(false)
   const [form, setForm] = useState<FormState | null>(null)
+  const [formBlocked, setFormBlocked] = useState(false)
   const initialListLocation = readListLocation(location.href)
   const [query, setQuery] = useState(initialListLocation.query ?? '')
   const [filter, setFilter] = useState<Filter>(
@@ -436,7 +438,7 @@ export function Workbench() {
   }
   const newTask = () => {
     if (data)
-      setForm(
+      openGlobalForm(
         data.capabilities.project_references === true || data.projects.length
           ? {
               kind: 'task',
@@ -444,6 +446,14 @@ export function Workbench() {
             }
           : { kind: 'project' },
       )
+  }
+  const openGlobalForm = (next: FormState) => {
+    if (!canOpenWorkbenchForm()) {
+      setFormBlocked(true)
+      return
+    }
+    setFormBlocked(false)
+    setForm(next)
   }
   const active = workspaceCounts.remote
     ? workspaceCounts.value?.run_counts.active
@@ -481,15 +491,15 @@ export function Workbench() {
                     ? t('模型与资源', 'Models & resources')
                     : route.page === 'workflows'
                       ? t('工作流', 'Workflows')
-                    : route.page === 'backends'
-                      ? t('会话后端', 'Conversation backends')
-                      : route.page === 'run'
-                        ? t('运行工作区', 'Run workspace')
-                        : route.page === 'task'
-                          ? t('任务工作区', 'Task workspace')
-                          : route.page === 'missing'
-                            ? t('页面不存在', 'Page not found')
-                            : t('工作台', 'Workbench')
+                      : route.page === 'backends'
+                        ? t('会话后端', 'Conversation backends')
+                        : route.page === 'run'
+                          ? t('运行工作区', 'Run workspace')
+                          : route.page === 'task'
+                            ? t('任务工作区', 'Task workspace')
+                            : route.page === 'missing'
+                              ? t('页面不存在', 'Page not found')
+                              : t('工作台', 'Workbench')
   useEffect(() => {
     document.title = `${pageTitle} · mybot`
   }, [pageTitle])
@@ -593,7 +603,7 @@ export function Workbench() {
             disabled={!data}
             onClick={() => {
               setMenu(false)
-              setForm({ kind: 'project' })
+              openGlobalForm({ kind: 'project' })
             }}
           />
         </div>
@@ -801,6 +811,23 @@ export function Workbench() {
                   label={t('重试连接', 'Reconnect')}
                   size="sm"
                   onClick={() => void refresh()}
+                />
+              </div>
+            )}
+            {formBlocked && (
+              <div className="wb-error wb-banner" role="alert">
+                <span>
+                  {t(
+                    '当前页面有未保存内容或待核对请求，请先处理后再新建。',
+                    'This page has unsaved content or an unresolved request. Resolve it before creating another item.',
+                  )}
+                </span>
+                <AppButton
+                  label={t('关闭提示', 'Dismiss')}
+                  icon={<X size={15} />}
+                  iconOnly
+                  tone="ghost"
+                  onClick={() => setFormBlocked(false)}
                 />
               </div>
             )}

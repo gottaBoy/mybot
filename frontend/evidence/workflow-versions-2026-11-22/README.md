@@ -2,6 +2,10 @@
 
 日期：2026-11-22。合同：[ADR-0023](../../../docs/decisions/ADR-0023-fixed-workflow-versions.md)。
 
+历史快照说明（2026-11-23）：下文是11月22日检查时的状态。实现已在`0cf2c99`提交push，
+后续修复、生产构建矩阵与本机启用见[最终交付](../workflow-versions-2026-11-23/README.md)。
+下文“尚未提交/启用”不代表当前状态。
+
 这是固定 `local-research` Workflow W1-W5 的隔离浏览器验收记录。服务由一次性
 `tests/browser_server.py` 启动，使用 `FakeProvider`；前端通过临时 Vite dev server 运行。
 没有指向主 4180/5173，没有读取正式数据库，没有真实 Provider 请求、费用或外部

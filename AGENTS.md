@@ -5,10 +5,11 @@
 Read `CONTINUE.md` before making assumptions about the project. Then read the latest ADR referenced there and the document relevant to the requested work.
 Use `docs/PRODUCT_GOALS_CURRENT.md` for product delivery priorities. A completed
 query/pagination slice is not completion of the goal/task/Agent/outcome workflow.
-The initial Task workspace and persistent selected-message continuation are delivered
-in ADR-0021/0022. Prioritize fixed Workflow definitions and versions next, rather than
-automatically choosing the next data projection. Distinguish local activation from
-isolated tests; Task messages are not implicit model memory.
+The initial Task workspace, selected-message continuation and fixed Workflow
+versions are delivered in ADR-0021/0022/0023. Prioritize the device-continuation
+tasks in PRODUCT_GOALS_CURRENT next, rather than another data projection.
+Distinguish local activation from isolated tests; Task messages are not implicit
+model memory, and a fixed pipeline is not an arbitrary DAG.
 For frontend work, also read `docs/ASTRYX_TEMPLATE_INTEGRATION.md` and
 `docs/UI_ITERATIONS.md`. For Zira-derived work, read `docs/ZIRA_FRONTEND_STUDY.md`
 and `docs/REA_ZIRA_LAYOUT.md`; the 625-file structural index is not runtime evidence.
@@ -407,6 +408,17 @@ product patterns, not replacing Astryx. Apply these rules to mybot:
 - Workflow edits, saved drafts, immutable published versions and running snapshots
   are separate. Refetch/theme switches must not overwrite dirty edits; publishing/
   reloading requires explicit scope and conflict handling.
+- Fixed Workflow (ADR-0023) requires explicit `workflow_versions`. Bind publication
+  to exact saved revision/hash/impact and dependency identities; reconcile unknown
+  writes by original operation receipt. Publish does not execute a model.
+  Run and TaskTurn snapshots retain full definitions; absent historical metadata
+  stays absent, while present malformed/null metadata must fail before execution.
+  Recovery resources may override bindings without rewriting the source definition.
+  Published-version selection is bounded and paged; keep selected off-page versions
+  and block stale options. Capability loss cannot turn a selected version into
+  built-in execution. Global new-item forms must consult the shared dirty/busy
+  guard before replacing another editor's blocker. Check name widths and row
+  heights as well as document overflow for long version hashes.
 - Scope editors to object ID plus baseline revision/hash and draft. Validation,
   impact analysis and consent must bind the exact saved candidate and dependencies;
   changes invalidate them. Dirty/unknown/sample definitions must not reach dangerous

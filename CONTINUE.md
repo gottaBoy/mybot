@@ -1,5 +1,47 @@
 # 下次从这里继续
 
+更新日期：2026-11-23（Asia/Singapore；固定Workflow初版已验收、本机启用）。
+
+**最新交付：W1–W5固定Workflow与本机服务恢复。**
+基线`0cf2c99`已push，恢复时工作树干净、4180/5173均停止。先读
+[ADR-0023](docs/decisions/ADR-0023-fixed-workflow-versions.md)、
+[最终证据](frontend/evidence/workflow-versions-2026-11-23/README.md)和PRODUCT_GOALS_CURRENT。
+此前11月22日的“尚未提交/启用”只属于当时快照，代码后来已在0cf2c99提交；
+本轮修复/生产验收/本机恢复另行记录，不重复实现或运行旧Agent。
+
+backend/client/UI三个Agent复核并修复，root负责Forms/Run展示/共享guard/浏览器/启用记录。
+已有`#workflows`固定Planning→Research→Synthesis、独立人工审查、阶段模型/指令/资源、
+CAS草稿/impact/明确发布/不可变版本/20项历史；普通和TaskTurn资源向导均可分页选旧版本。
+阶段指令与research_tasks真正进入Harness，恢复保留原snapshot而资源覆盖仍独立。
+本轮补Run版本/完整快照展示，旧Run明确未记录，不用最新版本补造。
+修复显式workflow:null绕过验证、版本picker只有首20、取消后迟到响应、pub回执内容hash、
+cap丢失静默降builtin、保存后历史busy竞态、global新建覆盖dirty/unknown guard。
+手机历史长hash曾挤压名称到0宽，截图识别后改有界列；最终名称171px/最大行高84px。
+无新依赖/真实Provider/执行权限，仍单个固定只读工作流，不是任意DAG或长期Agent。
+
+最终1958前端（65文件）/1132Python/typecheck/build通过，保留httpx与大chunk警告。
+生产Workflow21/9PNG、综合58/61PNG、主GET-only6，共85项/70最终fixturePNG；
+三style双mode/390中英/旧v1跨22发布/TaskTurn绑定/冲突/丢save与pub响应均验，
+最终pageerror和外部HTTP0。脚本dialog→alertdialog误判、旧mock误宣cap及手机视觉反例保留。
+最终fixture.AvwQtP与独立综合.VKfj6t都只用FakeProvider/MockTransport；物理手机/真实IME、
+Safari、真实模型完整链未认证。原119/9/110保持，不当新里程碑完成率。
+
+5173已恢复；主4180从停服状态完成空闲/锁检查、一致备份、副本Store迁移、
+原表原列摘要对比后启动PID3459239，workspace/data/auth模式匹配原配置。
+原1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event及其他原行未变，
+workflow_drafts1（未绑定默认草稿）/versions0/operations0；未自动选模型/发布/执行。
+主桌面/中文手机6项只读通过，浏览器后原行再次相同，未导出正式正文或截图。
+私有备份`.runtime/backups/before-workflow-20261123T020755Z/`700、DB/log600；
+旧进程已不存在，没有读取凭证库或声称继承其环境。回退不能热覆盖。
+主4180/5173保持运行，临时4187/4188/5176/5177已停止。
+本轮commit/push以Git实际回执为准。
+
+下一产品任务：**D1–D5设备接续初版**，先定义身份/配对/撤销/控制权/断线事实，
+再做同一Task接续；不把两个浏览器看同一页当设备控制完成。
+后续连接器按飞书入站、语雀只读、邮箱草稿、钉钉/微信顺序。
+Workflow更多对象/任意DAG、自动记忆、工具执行及prepared撤销仍有独立未完范围，
+不为继续推进自动调用真实账号/模型。下方远控视频保持独立文档议题，未实施。
+
 更新日期：2026-11-22（Asia/Singapore；Workflow W1-W5隔离验收进行中）。
 
 **独立技术议题：车端远控视频方案已记录，尚未实施。**

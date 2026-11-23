@@ -55,10 +55,13 @@ const definition: WorkflowDefinition = {
   },
   review: 'human',
 }
+// Python hashlib over UTF-8 json.dumps(sort_keys=True, separators=(',', ':')).
+const definitionHash =
+  '618f4c7ae9bcf677b9039b1ed124615a9da6afd010e2b2cec146459934966bdf'
 const version = {
   workflow_id: 'local-research',
   version: 1,
-  definition_hash: 'a'.repeat(64),
+  definition_hash: definitionHash,
   definition,
   created_at: '2026-11-21T00:00:00Z',
 }
@@ -67,14 +70,14 @@ const bundle = {
   workflow_id: 'local-research',
   revision: 1,
   definition,
-  definition_hash: 'a'.repeat(64),
+  definition_hash: definitionHash,
   updated_at: '2026-11-21T00:00:00Z',
   published: null,
 }
 const impact = {
   workflow_id: 'local-research',
   revision: 1,
-  definition_hash: 'a'.repeat(64),
+  definition_hash: definitionHash,
   impact_hash: 'b'.repeat(64),
   model_ids: ['model-a', 'model-b'],
   active_runs: 2,
@@ -400,6 +403,29 @@ describe('immutable workflow operation receipts', () => {
       ),
     ).rejects.toThrow()
   })
+  it('rejects a changed published definition even if its claimed hash is unchanged', async () => {
+    const command = publishCommand()
+    const value = await receipt(command)
+    await expect(
+      assertWorkflowReceipt(
+        {
+          ...value,
+          result: {
+            ...version,
+            definition: {
+              ...definition,
+              stages: definition.stages.map((stage, index) =>
+                index === 0
+                  ? { ...stage, instructions: 'Changed after consent' }
+                  : stage,
+              ),
+            },
+          },
+        },
+        command,
+      ),
+    ).rejects.toThrow('workflow_response_invalid')
+  })
 })
 
 describe('workflow HTTP boundaries', () => {
@@ -530,6 +556,43 @@ describe('workflow HTTP boundaries', () => {
     controller.abort()
     await rejected
     expect(fetch).toHaveBeenCalledTimes(1)
+  })
+  it.each(['read', 'write'] as const)(
+    'discards a late %s success after its deadline even if transport ignores abort',
+    async (kind) => {
+      const command = saveCommand()
+      if (command.kind !== 'save') throw new Error('fixture')
+      const value = await receipt(command)
+      const { kind: _kind, ...body } = command
+      vi.useFakeTimers()
+      let complete!: (value: Response) => void
+      const fetch = vi.fn().mockImplementation(
+        () =>
+          new Promise<Response>((resolve) => {
+            complete = resolve
+          }),
+      )
+      vi.stubGlobal('fetch', fetch)
+      const waiting =
+        kind === 'read' ? fetchWorkflow() : saveWorkflowDraft(body)
+      const rejected = expect(waiting).rejects.toMatchObject({
+        name: 'AbortError',
+      })
+      await vi.advanceTimersByTimeAsync(15_000)
+      complete(response(kind === 'read' ? bundle : value))
+      await rejected
+      expect(fetch).toHaveBeenCalledTimes(1)
+    },
+  )
+  it('does not send a request with an already aborted caller signal', async () => {
+    const controller = new AbortController()
+    controller.abort()
+    const fetch = vi.fn()
+    vi.stubGlobal('fetch', fetch)
+    await expect(fetchWorkflow(controller.signal)).rejects.toMatchObject({
+      name: 'AbortError',
+    })
+    expect(fetch).not.toHaveBeenCalled()
   })
   it('rejects invalid candidate arguments without any HTTP request', async () => {
     const fetch = vi.fn()

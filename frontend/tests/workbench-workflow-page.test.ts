@@ -533,6 +533,32 @@ describe("fixed workflow UI", () => {
     expect(html).toContain("Draft revision 8 saved");
   });
 
+  it("restarts a pending history read after a save invalidates its generation", async () => {
+    const pendingHistory = deferred<unknown>();
+    mocks.versions.mockReturnValueOnce(pendingHistory.promise);
+    await settle();
+    expect(button("Refresh version history").disabled).toBe(true);
+    await change("Workflow name", "Saved while history is loading");
+    await click("Save draft");
+    expect(mocks.versions).toHaveBeenCalledTimes(2);
+    expect(button("Refresh version history").disabled).toBe(false);
+    expect(html).toContain("No versions have been published.");
+    pendingHistory.resolve({
+      schema_version: 1,
+      workflow_id: "local-research",
+      items: [version],
+      total: 1,
+      requested_page: 1,
+      page: 1,
+      page_size: 20,
+      total_pages: 1,
+      has_more: false,
+    });
+    await settle();
+    expect(button("View version v3")).toBeUndefined();
+    expect(button("Refresh version history").disabled).toBe(false);
+  });
+
   it("checks the exact saved candidate and requires explicit publication consent", async () => {
     await settle();
     await click("Check publication impact");

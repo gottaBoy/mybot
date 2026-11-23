@@ -143,11 +143,10 @@ class LocalSuperagentHarness:
         checkpoint: Callable[[str], None],
     ) -> None:
         config, context = run["config"], run["context"]
-        workflow = context.get("workflow")
         instructions = {}
         research_tasks = 2
-        if workflow is not None:
-            definition = recorded_definition(workflow)
+        if "workflow" in context:
+            definition = recorded_definition(context["workflow"])
             research_tasks = definition.limits.research_tasks
             instructions = {stage.id: stage.instructions for stage in definition.stages}
 

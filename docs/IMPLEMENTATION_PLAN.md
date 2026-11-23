@@ -14,6 +14,11 @@
 已本机启用；不是Phase4全部长期Agent或自动会话记忆完成。接下来按
 PRODUCT_GOALS_CURRENT的W1–W5进入Phase5固定Workflow定义/版本，不自动扩大执行权限。
 
+2026-11-23交付：ADR-0023完成W1–W5固定Workflow初版，并受控恢复本机4180/5173。
+草稿/发布版本/Run快照分离，普通和消息Run可选历史版本，人工审查独立。
+下一产品主线为PRODUCT_GOALS_CURRENT的D1–D5设备接续，再连接器；
+任意DAG、长期Agent、真实账号和工具执行仍保留各自门槛。
+
 工作项状态以 [WORK_ITEMS.md](WORK_ITEMS.md) 为单一清单：原编号 119 项，完成 9 项，
 未完全完成 110 项。阶段下列的是交付范围，不重复累加为额外工作项。
 

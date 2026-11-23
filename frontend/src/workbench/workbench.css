@@ -1516,3 +1516,20 @@
   padding: 6px 2px;
   min-height: 150px;
 }
+.wb-run-workflow-binding {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+  padding: 8px 0 16px;
+  font-size: 12px;
+}
+.wb-run-workflow-binding > details {
+  min-width: 0;
+  flex: 1;
+}
+.wb-run-workflow-binding pre {
+  max-height: 320px;
+  overflow: auto;
+}

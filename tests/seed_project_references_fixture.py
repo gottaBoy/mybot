@@ -44,14 +44,25 @@ def seed(directory: str):
                 "recovery_intents", "backend_connections", "conversation_refs",
                 "conversation_messages",
                 "task_turns",
+                "workflow_drafts", "workflow_versions", "workflow_operations",
             }
             if tables != required:
                 raise ValueError("The fixture schema does not match the expected workbench")
             if any(
                 db.execute(f'SELECT COUNT(*) FROM "{table}"').fetchone()[0]
-                for table in sorted(required)
+                for table in sorted(required - {"workflow_drafts"})
             ):
                 raise ValueError("The disposable fixture must contain no business records")
+            from workbench.workflows import builtin_definition, fingerprint
+            draft_rows = db.execute(
+                "SELECT revision,definition,definition_hash FROM workflow_drafts"
+            ).fetchall()
+            if (
+                len(draft_rows) != 1 or draft_rows[0][0] != 1
+                or json.loads(draft_rows[0][1]) != builtin_definition()
+                or draft_rows[0][2] != fingerprint(builtin_definition())
+            ):
+                raise ValueError("The fixture must retain only the initial unconfigured workflow draft")
             for index in range(45):
                 project = f"reference-project-{index:03}"
                 db.execute("INSERT INTO projects VALUES(?,?,?,?,?,?)", (

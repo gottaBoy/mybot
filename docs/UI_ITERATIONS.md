@@ -684,3 +684,24 @@ Agent/成果视图lazy复用原RunWorkspace，保持原图/调用/成果/审查/
 见`frontend/evidence/task-conversation-2026-11-21/README.md`与ADR-0022。
 主4180 PID234937已启用，5173桌面/手机真实显示会话；正式原记录不变，无真实模型调用。
 这是一批可见持续工作初版，未宣称用户最终视觉接受、物理手机、自动记忆或Cindy完整能力。
+
+## 37. Workflow可见交付与手机历史列宽
+
+日期：2026-11-23。新增的`#workflows`在基线0cf2c99已落代码，本批补完成生产验收与
+本机恢复。固定阶段在上、属性与资源在中、真实历史在下，保存与检查发布在页头。
+草稿、published、Run snapshot分别有事实来源；普通Run与TaskTurn向导均支持翻页选旧版本。
+Run直接显示记录的版本和完整定义，旧Run不填最新值。
+
+三Agent补齐损坏snapshot拒绝、回执内容hash、版本分页/过期候选、能力丢失与save/history
+竞态，root阻止全局新建覆盖其他编辑器guard。真实丢publish响应后reload保留request，
+GET核对后确认只新增1版本，没有重发。改变主题保留dirty候选，不发写请求。
+
+首轮六布局虽然document overflow0，人工检查实际PNG发现手机历史名称被长hash挤成逐字行。
+测得名称0px、行高819px；修为有界两列并允许hash缩小。最终中文/英文390名称171px、
+行高<=84px，不再以“无横向溢出”单独宣布排版完成。视觉反例与脚本role/cap失败均留存。
+
+最终1958前端/1132Python/build，生产21专项/58综合/6主只读，70最终fixturePNG，
+三style双mode、色/字体/圆角与行宽几何已验，无pageerror/外部HTTP。
+主4180 PID3459239和5173实际加载；原业务行不变，默认草稿未绑定/未发布。
+详见`frontend/evidence/workflow-versions-2026-11-23/README.md`及ADR-0023。
+不宣称用户最终视觉接受、真机/真实模型认证、任意DAG或设备控制完成。

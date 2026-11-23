@@ -1,0 +1,242 @@
+{
+  "generatedAt": "2026-11-23T02:38:11.426Z",
+  "fixture": "Disposable browser_server.py + FakeProvider",
+  "base": "http://127.0.0.1:5176/",
+  "externalRequests": [],
+  "pageErrors": [],
+  "checks": [
+    "api-save-impact-publish",
+    "desktop-page-and-published-history",
+    "ui-save-impact-consent-publish",
+    "explicit-run-keeps-v1-snapshot-after-v2",
+    "Run wizard pages older versions and freezes selected v1 after22 published versions"
+  ],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/425b7d16e8cf49cfb80092dfbe713807/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/425b7d16e8cf49cfb80092dfbe713807/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/draft",
+      "method": "POST"
+    },
+    {
+      "path": "/api/workflows/local-research/publish",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/425b7d16e8cf49cfb80092dfbe713807/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/425b7d16e8cf49cfb80092dfbe713807/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/425b7d16e8cf49cfb80092dfbe713807/turns",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/425b7d16e8cf49cfb80092dfbe713807/turns/4de02628c7e945cfb3d1275b09234f12/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/425b7d16e8cf49cfb80092dfbe713807/turns/4de02628c7e945cfb3d1275b09234f12/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/425b7d16e8cf49cfb80092dfbe713807/turns/4de02628c7e945cfb3d1275b09234f12/execute",
+      "method": "POST"
+    }
+  ],
+  "geometry": [],
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'prepared'\n- 'applied'\n\n    at file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-workflow-browser.mjs:322:10"
+}
