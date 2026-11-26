@@ -1,5 +1,168 @@
 # 下次从这里继续
 
+更新日期：2026-11-26（Asia/Singapore；明确前轮成果引用已验收、本机启用）。
+
+**继续核心研发交付，不默认返回设备/连接器。** 先读
+[ADR-0028](docs/decisions/ADR-0028-explicit-prior-artifact-context.md)、
+PRODUCT_GOALS_CURRENT与[本批证据](frontend/evidence/core-continuation-2026-11-26/README.md)。
+此前ADR-0025/0026/0027未提交修改均保留，本轮用户要求与本批一起提交并push；
+具体Git回执以提交/远端记录为准，不能把下方历史“未提交”当当前结果。
+
+任务会话保存消息→安排下一轮→显式选同Task已结束Run的报告/Diff/测试结果→核对正文/
+来源/hash→模型资源与新consent。目录20项元数据页；限3项/单32KiB/共64KiB，
+空/超大不可选，跨Task/未结束/变更hash均拒绝。候选选择和已核对输入分开，未核对阻止
+前进并保护dirty导航；prepare冻结到原candidate/Run context，不新增表或自动历史。
+Run上下文显示原来源/正文；device grant只增加引用数量，不开放正文或文件权限。
+丢prepare/execute响应只GET原Turn，不重复启动；已知引用拒绝退回资料选择。
+这是下一研究Run的只读输入，不是自动应用旧patch到coding副本或模型长期记忆。
+
+全量2217前端/76文件、1245Python、typecheck/生产build通过；后补设备引用用例后
+17Python专项与191前端相关合同再验通过（没有伪称一次1246项全量）。
+最终coding10/15PNG，refs7/9PNG，综合58/61PNG，主GET-only10，共85浏览器检查、
+85最终fixturePNG。最终fresh.XhArHf先真实4测试failure2→failure1→pass4、
+1Run/2注入响应，再选Diff2+test2进入下一研究Run，1prepare/1execute/4Fake调用，
+精确正文/来源保留。原文件不变，patch只git apply --check；无真实付费/Codex验收。
+保留tab/重复入口/偏好init/pending-route脚本反例，最终独立重跑；notice挤列已修复。
+httpx与chunk警告、Bootstrap全量和119/9/110保持。
+
+主4180原空闲PID940971经identity/cwd/env内存核验、一致backup/私有Store演练/原表原列
+比对、SIGTERM与锁释放，同command/cwd/env启动PID2393603，主5173保持。
+task_artifact_references=true；10只读后原行再次相同，TaskTurns/coding_jobs/设备/授权空。
+原1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event及Workflow原行不变。
+私有备份`.runtime/backups/before-devices-20261126T012355Z/`700/DBlog600，不进Git；
+无正式消息/引用/模型/测试、正文截图/环境/原摘要导出，旧PID脚本不可重跑，不热覆盖回退。
+主4180/5173保留；临时4187/4188/5176/5177已停止。
+
+下一核心：**更多runtime/测试profile、任务分解与依赖、coding从旧patch继续的副本基线/
+冲突/确认**。已有明确成果引用不要重复做；设备与连接器仍保留独立待办。
+提交与push完成后从干净工作树和最新Git记录继续；不得自动调用正式模型。
+
+更新日期：2026-11-25（America/New_York；核心研发执行首版已验收、本机启用）。
+
+**用户已明确同意补充核心能力：隔离副本改代码、执行明确允许的测试、交付Diff与证据。**
+该授权取代下方“尚未获授权”的历史判断，范围见AGENTS.md和
+[ADR-0027](docs/decisions/ADR-0027-isolated-coding-delivery.md)。
+当前优先核心研发闭环，不再自动选设备/连接器。研发执行新路径与原只读研究并存，
+模型仍只返回严格JSON文件替换，不给模型Shell；只改显式writable路径，测试文件不可修改。
+新coding_jobs保存prepared/applied/discarded，原Task/Run/Agent/Call/Artifact/Event复用；
+同Task并发/原ID/未知结果/显式discard有独立合同，不能借研究恢复或设备grant执行。
+实际Python unittest受Landlock/libseccomp/资源与时限约束，namespace探测在本机失败，
+未降级宿主裸跑。隔离探测的外部读取/修改/网络/fork/metadata全部被拒绝。
+
+代码与定向验收已完成：真实失败基线→修改仍失败→第二轮修复后通过，
+实际日志/退出码/测试数/argv/Diff为独立Artifacts。2197前端/75文件、
+1229Python与21项核心定向/typecheck/build已通过。
+专项10/15PNG已通过，含复制mybot schemas.py路径控制字符需求，4个不变测试
+failure2→failure1→pass4、原文件不改、丢prepare/execute响应原GET、patch导出/git apply --check。
+两端是同一owner业务树的候选/结果，三style双mode/英文1440/中文390；模型响应用受控
+fixture注入，修改/测试/隔离都真实，不宣称真实Codex或付费验收。
+综合58/61PNG与主GET-only8通过，共76项/76最终fixturePNG；
+定向再验含IPC共享内存拒绝，保留artifact视图定位/旧阶段映射及sticky整页截图反例。
+主4180原空闲PID425660经identity/cwd/env内存核验、一致backup/副本Store建表演练/
+原表原列摘要、SIGTERM/锁释放/停服backup，同command/cwd/env启动PID859094，
+随后按同一流程从859094对齐到940971（显式模块名支持，无schema变化），
+isolated_coding=true。主5173入口已加载，最终8只读后再比对原行相同，coding_jobs0；
+原1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event、设备/授权空表和Workflow原行不变。
+私有备份`before-devices-20261125T150027Z`和最终`before-devices-20261125T152945Z`
+在`.runtime/backups/`，700/DBlog600，不进Git，
+无正式正文/截图/环境/hash导出；无正式代码候选、测试或模型调用，旧PID脚本不可重跑。
+主4180/5173保留且HTTP200，临时4187/4188/5176/5177已确认停止。
+证据`frontend/evidence/coding-core-2026-11-25/README.md`与actual.patch/真实测试JSON；
+未提交/push，也未应用样例patch到原schemas.py。httpx/chunk警告、Bootstrap全量和119/9/110保持。
+下一批核心：更多运行时/测试profile、可核查任务分解/依赖、显式引用前轮成果；
+不是任意Shell/DAG/长期自动记忆/自动提交部署完成，不自动回到设备或连接器。
+
+更新日期：2026-11-25（America/New_York；用户反馈“感觉像玩具”，先重新确认核心交付）。
+
+**最新用户反馈优先于下方设备待办顺序。**
+用户尚未明确是界面体验还是工作能力的问题，不能把反馈当成新执行权限。
+本轮只读复核发现：harness.py仍为固定规划/研究/汇总、主要输出文本报告；
+task_turns.py只发送原Task资料与选中一条消息，不延续上轮成果；
+provider.py的Codex路径仍隔离read-only，未提供研发修改/测试交付链。
+此前配对/授权/历史接续交付保持，但不再默认选择D4b/D5b作为下一批。
+建议先用一个真实研发需求确定产品验收，再选择核心能力切片。
+隔离工作区修改代码/运行测试是建议方向，尚未获授权；AGENTS.md的
+“No shell execution, code writes”产品边界仍有效。不能自动启动模型、修改目标仓库、
+运行产品内测试执行器或扩大权限；也不能把现有测试数量当成业务价值证明。
+此反馈只更新记录和下一步决策，没有更改产品代码、服务或原台账计数。
+
+更新日期：2026-11-25（America/New_York；D3b一次执行委托已实现、本机启用）。
+
+**最新交付：精确prepared下一轮的一次设备委托。**
+先读[ADR-0026](docs/decisions/ADR-0026-single-use-device-execution.md)、
+[本批证据](frontend/evidence/device-execution-2026-11-25/README.md)和PRODUCT_GOALS_CURRENT。
+55fd4d9仍是提交基线；上批D4b历史位置和本批D3b修改都尚未提交/push，勿覆盖dirty树。
+Task会话选单条补充→资源向导末步选“仅准备”→确认冻结、不调用模型；
+Task prepared入口可到设备页，选真实设备“执行委托”，确认精确候选/模型/资源/资料数量。
+授权最多10min且不晚于设备到期，配对端运行视图/概览再次确认后启动同一候选，
+只入队一次，applied不代表模型成功/费用结清。原pair scope仍task_read/message_save，
+不是通用执行租约；source正文/路径/endpoint/key_env不进入设备授权摘要。
+
+新增device_execution_grants与device_execution_operations，原表不改；
+owner授权/撤销与精确回执、device有界当前/指定grant GET和execute，
+active cookie+Device header、candidate、到期/撤销、模型与Task冲突在同事务消费/入队。
+抽TaskTurn transaction helper复用原检查；owner先执行显示superseded，
+owner/device竞争及撤销/execute竞争均只有一个合法结果。错误设备/Task不能借用grant。
+owner executionOperation与paired deviceExecute保存原ID；未知/无原文reload只GET，
+404不解锁/不自动POST；无效执行回执也保留原锁。配置/刷新撤回consent。
+Codex摘要保留实际单通道与输出Token非CLI硬限制说明。
+
+最终2147前端（72文件）/1208Python/typecheck/生产build通过；新增48前端/17后端。
+专项9/12PNG、综合58/61PNG、主GET-only8已验，共75项/73最终fixturePNG；
+双browser真实FakeProvider完成1Run、丢grant/execute响应原GET核对、UI撤销拒绝旧确认，
+三style双mode/桌面英文/390中文，最终pageerror/外部HTTP0。
+保留busy dialog→alertdialog等待误判和preview停止两个脚本/环境失败。
+
+主4180空闲原PID1303596，identity/cwd/env仅内存核验/继承；
+一致backup、副本Store演练、原表原列摘要、SIGTERM/锁释放/停服backup后
+同命令/cwd/env启动PID425660，device_execution_delegation=true。5173保持可用。
+私有备份`.runtime/backups/before-devices-20261125T121621Z/`700/DBlog600；
+8只读后再比对原行相同，仍1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event，
+4设备表及2执行表0行，Workflow草稿1/version0/op0。
+无正式配对/消息/授权/Provider调用，无正文/环境/原hash导出，不热覆盖回退。
+旧PID绑定脚本不能重跑；主4180/5173均HTTP200，临时4187/4188/5176/5177已确认停止。
+
+下一步**D4b跨设备草稿/更广未决candidate接续、D5b可信HTTPS/物理设备**，
+D3b通用暂停/取消/恢复/控制租约也仍是独立未完范围；本批只关闭一次精确启动。
+之后连接器飞书入站→语雀只读→邮箱草稿→钉钉/微信；未配置TLS/外网或执行节点迁移。
+原119/9/110与Bootstrap全量不变；下方D3b“待办”由本条关闭上述子范围。
+
+更新日期：2026-11-24（America/Los_Angeles；历史Run与显式阅读位置接续已本机启用）。
+
+**最新交付：D4b历史Run/阅读位置子切片。**
+起始55fd4d9已push/工作树干净；先读
+[ADR-0025](docs/decisions/ADR-0025-scoped-run-continuation.md)、
+[证据与失败](frontend/evidence/device-history-2026-11-24/README.md)和PRODUCT_GOALS_CURRENT。
+沿既有配对授权，Task新增“复制设备接续链接”；只复制精确Task/视图/选中Run的URL，
+不创建邀请、携带secret/草稿/consent或授权执行。另一浏览器仍需该Task有效配对。
+配对端新增五视图、20项Run历史分页、选中旧Run的有界报告；页外Run选择与刷新独立，
+失败/不存在不换成latest，跨Task链接隐藏内容并显式回授权概览。
+同Task切视图保留composer内存，unknown发送锁导航/同ID GET核对，stamp保留阅读位置。
+
+新增GET /api/device/runs与/{id}，同query-only快照校验cookie和
+X-Workbench-Device-Id，明确device_run_history/run_history能力；撤销/过期401、
+身份变更409、跨Task或缺Run404。固定task_read/message_save，无新表/迁移/执行权限。
+最终2099前端（70文件）/1191Python/typecheck/build通过；新增47前端/13后端，
+专项10/6PNG、综合58/61PNG和主GET-only6通过，共74项/67最终fixturePNG。
+Neutral/Zira/Y2K双mode、1440英文/390中文、页外报告优先可见已截图检查；
+保留Astryx radio定位、fixture进程停止及request计数脚本失败，无真实Provider。
+
+主4180从空闲PID1104938受控更新为PID1303596：身份/cwd/env核对、在线一致备份、
+私有副本Store演练/原表原列摘要、SIGTERM/锁释放/停服备份，同命令/cwd/env启动。
+私有备份`.runtime/backups/before-devices-20261124T170717Z/`700、DB/log600；
+主5173恢复，桌面英文/中文390共6项GET-only通过，浏览器后再次原行相同。
+仍1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event，
+4设备表0行，Workflow草稿1/versions0/operations0；无正式配对/消息/模型请求，
+无正文/截图/环境导出，不热覆盖回退，旧PID绑定脚本不能再运行。
+主4180/5173保持运行且HTTP200；临时4187/5176已确认停止。
+httpx与chunk警告、Bootstrap全量、原119/9/110不变；本批未提交/push。
+
+下一步仍为**D3b委托执行授权、D4b跨设备草稿/更广未决请求接续、
+D5b可信HTTPS与物理设备验收**，再按飞书入站→语雀只读→邮箱草稿→钉钉/微信推进。
+本批位置通过显式URL携带，不是服务端bookmark、草稿迁移、执行进程接力或真机认证。
+不要重复实施已完成的Task/会话/固定Workflow/初版配对，也不自动回到下个列表投影。
+下方条目保留各时点事实；旧“D4b全部待办”由本条细化。
+
 更新日期：2026-11-23（Asia/Singapore；任务范围设备接续初版已启用）。
 
 **最新交付：D1/D2与限定D3/D4/D5设备接续。**

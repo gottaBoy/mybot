@@ -7,8 +7,12 @@ Use `docs/PRODUCT_GOALS_CURRENT.md` for product delivery priorities. A completed
 query/pagination slice is not completion of the goal/task/Agent/outcome workflow.
 The initial Task workspace, selected-message continuation and fixed Workflow
 versions are delivered in ADR-0021/0022/0023. Task-scoped device pairing/reading/
-supplement saving is delivered in ADR-0024. Continue the remaining D3b/D4b/D5b
-tasks in PRODUCT_GOALS_CURRENT, rather than another data projection.
+supplement saving is delivered in ADR-0024, history in ADR-0025 and single-use
+delegation in ADR-0026. On 2026-11-25 the user prioritized core R&D delivery over
+further device work and authorized isolated code changes and explicitly allowed
+test commands. Follow PRODUCT_GOALS_CURRENT and ADR-0027 for that bounded slice.
+ADR-0028 adds explicit same-Task artifact references to the next research Run;
+prepared snapshots freeze the selected bodies, not implicit history or patch application.
 Distinguish local activation from isolated tests; Task messages are not implicit
 model memory, and a fixed pipeline is not an arbitrary DAG.
 For frontend work, also read `docs/ASTRYX_TEMPLATE_INTEGRATION.md` and
@@ -30,7 +34,11 @@ iteration may still be uncommitted.
 - Current phase: implementation authorized by the user on 2026-11-04.
 - First slice: single-user, read-only project research, persistent runs/events, model routing and responsive Web UI.
 - Preserve the static review artifacts. The working application lives separately in `workbench/` and `web/`.
-- No shell execution, code writes, deployment, automatic paid calls or sibling credentials. Providers run only when the user explicitly starts/tests a configured connection.
+- Read-only research remains the default. On 2026-11-25 the user authorized adding
+  isolated workspace code changes and explicitly allowed test commands, with Diff
+  and actual test evidence. This does not authorize modifying the original project,
+  arbitrary shell commands, deployment, automatic paid calls or sibling credentials.
+  Providers run only when the user explicitly starts/tests a configured connection.
 - Preserve the distinction between accepted requirements, proposed designs, source observations, and tested behavior.
 
 ## UI

@@ -1,0 +1,38 @@
+{
+  "checks": [
+    "Saved continuation opens a bounded reference picker without a new Run or model call",
+    "Advertised catalog failure stays an explicit error and refresh uses the real GET",
+    "Keyboard and pointer selection require an exact-content preview before advancing"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/e8ac7b625d58480c836d8326072dafee/turns",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/e8ac7b625d58480c836d8326072dafee/turns/260f34f475e147f38ba8ebff6966bf34/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/e8ac7b625d58480c836d8326072dafee/turns/260f34f475e147f38ba8ebff6966bf34/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/e8ac7b625d58480c836d8326072dafee/turns/260f34f475e147f38ba8ebff6966bf34/prepare",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "reference-selection-desktop.png",
+    "reference-preview-desktop.png",
+    "failure.png"
+  ],
+  "geometry": [],
+  "failure": "Error: locator.click: Error: strict mode violation: getByRole('button', { name: 'Continue prepared run', exact: true }) resolved to 2 elements:\n    1) <button type=\"button\" data-size=\"md\" data-elevation=\"none\" data-variant=\"secondary\" data-astryx-pressable=\"\" class=\"astryx-button x1k57tk5 x1vidyx5 x1t137rt x1jhp3zv xx47ajj x16bblx1 x1wfwxd8 x13aywxo x1n2onr6 x3nfvp2 x6s0dn4 xl56j7k x1txdalj xce4md1 xrrkdod xc342km xng3xce x1jxw6zd xjb2p0i xcr08ib x1kq96og x1e4wzip xuxw1ft xeuugli x193iq5w x1ypdohk x16khyan xrafxwg xuedmi6 x12w9bfk xlr8y92 x11l75t8 x11z29ks xli5ek3 xem8lmn xogcwkh x1t1ddl7 xziyay6 xz2mauf x1l7afqf x14e4jsf x6su2wr xif6eam x1ocadqd x1…>…</button> aka getByRole('button', { name: 'Continue prepared run' }).first()\n    2) <button type=\"button\" data-size=\"md\" data-elevation=\"none\" data-variant=\"secondary\" data-astryx-pressable=\"\" class=\"astryx-button x1k57tk5 x1vidyx5 x1t137rt x1jhp3zv xx47ajj x16bblx1 x1wfwxd8 x13aywxo x1n2onr6 x3nfvp2 x6s0dn4 xl56j7k x1txdalj xce4md1 xrrkdod xc342km xng3xce x1jxw6zd xjb2p0i xcr08ib x1kq96og x1e4wzip xuxw1ft xeuugli x193iq5w x1ypdohk x16khyan xrafxwg xuedmi6 x12w9bfk xlr8y92 x11l75t8 x11z29ks xli5ek3 xem8lmn xogcwkh x1t1ddl7 xziyay6 xz2mauf x1l7afqf x14e4jsf x6su2wr xif6eam x1ocadqd x1…>…</button> aka getByTestId('task-conversation').getByRole('button', { name: 'Continue prepared run' })\n\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Continue prepared run', exact: true })\u001b[22m\n"
+}

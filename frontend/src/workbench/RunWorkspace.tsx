@@ -30,6 +30,10 @@ import { AppAvatarGroup } from '../components/ui/Avatars'
 import { ApiError, api, post, type Artifact, type RunDetail } from './api'
 import { resolveCallSelection } from './call-selection'
 import { recordedRunWorkflow } from './run-workflow'
+import { parseCodingTest, type CodingTest } from './coding'
+import './coding-results.css'
+import { runStageTitle } from './run-stages'
+import { parseArtifactSources } from './task-artifacts'
 import { pushWorkbenchNavigation } from './navigation-guard'
 import {
   activeStatuses,
@@ -115,6 +119,8 @@ export function RunWorkspace({
       }
       try {
         recordedRunWorkflow(next.run.context)
+        if (next.run.context.artifacts !== undefined)
+          parseArtifactSources(next.run.context.artifacts, next.task.id)
       } catch (reason) {
         setDetail(null)
         throw reason
@@ -197,11 +203,32 @@ export function RunWorkspace({
     )
   const { run, task, project, agents, calls, artifacts, events, harness } =
     detail
+  const coding = run.context.mode === 'coding-v1'
+  let latestTest: CodingTest | undefined
+  let selectedTest: CodingTest | undefined
+  let testError = false
+  if (coding) {
+    try {
+      const results = artifacts
+        .filter((item) => item.kind === 'test_result')
+        .map((item) => parseCodingTest(item.content))
+      latestTest = results.sort((a, b) => b.round - a.round)[0]
+    } catch {
+      testError = true
+    }
+  }
   const recordedWorkflow = recordedRunWorkflow(run.context)
   const callSelection = resolveCallSelection(callId, calls)
   const artifact =
     artifacts.find((item) => item.id === artifactId) ??
     preferredArtifact(artifacts)
+  if (artifact?.kind === 'test_result') {
+    try {
+      selectedTest = parseCodingTest(artifact.content)
+    } catch {
+      testError = true
+    }
+  }
   const summary = usageSummary(calls)
   const report = preferredArtifact(artifacts)
   const decisionText = (value: string) =>
@@ -236,7 +263,55 @@ export function RunWorkspace({
         </div>
         <h2>{artifact.title}</h2>
         <p className="wb-hint">{when(artifact.created_at)}</p>
-        <AppMarkdown>{artifact.content}</AppMarkdown>
+        {artifact.kind === 'diff' ? (
+          <pre className="wb-coding-log" tabIndex={0} data-testid="coding-diff">
+            {artifact.content}
+          </pre>
+        ) : artifact.kind === 'test_result' ? (
+          selectedTest ? (
+            <>
+              <dl className="wb-details">
+                <dt>{t('测试结果', 'Test result')}</dt>
+                <dd>
+                  {selectedTest.passed
+                    ? t('通过', 'Passed')
+                    : t('未通过', 'Did not pass')}
+                </dd>
+                <dt>{t('实际测试数', 'Tests run')}</dt>
+                <dd>{selectedTest.tests_run}</dd>
+                <dt>{t('退出码', 'Exit code')}</dt>
+                <dd>{selectedTest.exit_code}</dd>
+                <dt>{t('实际命令参数', 'Actual command arguments')}</dt>
+                <dd>
+                  <code className="wb-wrap">
+                    {JSON.stringify(selectedTest.command)}
+                  </code>
+                </dd>
+                <dt>{t('耗时', 'Duration')}</dt>
+                <dd>{selectedTest.duration_ms} ms</dd>
+                <dt>{t('轮次', 'Attempt')}</dt>
+                <dd>
+                  {selectedTest.round === 0
+                    ? t('原始基线', 'Original baseline')
+                    : selectedTest.round}
+                </dd>
+              </dl>
+              <pre
+                className="wb-coding-log"
+                tabIndex={0}
+                data-testid="coding-test-output"
+              >
+                {selectedTest.output}
+              </pre>
+            </>
+          ) : (
+            <p role="alert" className="wb-error">
+              {t('测试证据无法验证。', 'Test evidence could not be verified.')}
+            </p>
+          )
+        ) : (
+          <AppMarkdown>{artifact.content}</AppMarkdown>
+        )}
       </article>
       <div className="wb-artifact-actions">
         <AppButton
@@ -325,7 +400,7 @@ export function RunWorkspace({
             busy={refreshing}
             onClick={() => void refresh()}
           />
-          {['queued', 'running'].includes(run.status) && (
+          {!coding && ['queued', 'running'].includes(run.status) && (
             <AppButton
               label={t('暂停', 'Pause')}
               icon={<Pause size={16} />}
@@ -351,59 +426,61 @@ export function RunWorkspace({
               }}
             />
           )}
-          {!['failed', 'paused', 'interrupted', 'canceled'].includes(
-            run.status,
-          ) && (
-            <AppButton
-              label={t('恢复请求记录', 'Recovery request history')}
-              icon={<RotateCcw size={15} />}
-              disabled={!!busy}
-              onClick={() => {
-                setRecoveryMode('retry')
-                setRecoveryOpen(true)
-              }}
-            />
-          )}
-          {['failed', 'paused', 'interrupted', 'canceled'].includes(
-            run.status,
-          ) && (
-            <>
+          {!coding &&
+            !['failed', 'paused', 'interrupted', 'canceled'].includes(
+              run.status,
+            ) && (
               <AppButton
-                label={
-                  recoveryUncertain
-                    ? t('核对恢复请求', 'Check recovery request')
-                    : t('重试与资源', 'Retry & resources')
-                }
+                label={t('恢复请求记录', 'Recovery request history')}
                 icon={<RotateCcw size={15} />}
                 disabled={!!busy}
                 onClick={() => {
-                  if (!recoveryUncertain) setRecoveryMode('retry')
+                  setRecoveryMode('retry')
                   setRecoveryOpen(true)
                 }}
               />
-              {run.status === 'paused' &&
-                !detail.retry_runs.length &&
-                !recoveryUncertain && (
-                  <AppButton
-                    label={t('继续运行', 'Resume')}
-                    icon={<ArrowRight size={15} />}
-                    disabled={!!busy}
-                    onClick={() => {
-                      setRecoveryMode('resume')
-                      setRecoveryOpen(true)
-                    }}
-                  />
-                )}
-              <AppButton
-                label={t('旧版：重试与资源', 'Classic: retry & resources')}
-                icon={<ExternalLink size={15} />}
-                tone="ghost"
-                href={`${legacyUrl}/#run/${run.id}`}
-                target="_blank"
-                rel="noreferrer"
-              />
-            </>
-          )}
+            )}
+          {!coding &&
+            ['failed', 'paused', 'interrupted', 'canceled'].includes(
+              run.status,
+            ) && (
+              <>
+                <AppButton
+                  label={
+                    recoveryUncertain
+                      ? t('核对恢复请求', 'Check recovery request')
+                      : t('重试与资源', 'Retry & resources')
+                  }
+                  icon={<RotateCcw size={15} />}
+                  disabled={!!busy}
+                  onClick={() => {
+                    if (!recoveryUncertain) setRecoveryMode('retry')
+                    setRecoveryOpen(true)
+                  }}
+                />
+                {run.status === 'paused' &&
+                  !detail.retry_runs.length &&
+                  !recoveryUncertain && (
+                    <AppButton
+                      label={t('继续运行', 'Resume')}
+                      icon={<ArrowRight size={15} />}
+                      disabled={!!busy}
+                      onClick={() => {
+                        setRecoveryMode('resume')
+                        setRecoveryOpen(true)
+                      }}
+                    />
+                  )}
+                <AppButton
+                  label={t('旧版：重试与资源', 'Classic: retry & resources')}
+                  icon={<ExternalLink size={15} />}
+                  tone="ghost"
+                  href={`${legacyUrl}/#run/${run.id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                />
+              </>
+            )}
         </div>
       </div>
       <div
@@ -411,7 +488,11 @@ export function RunWorkspace({
         data-testid="run-workflow-binding"
       >
         <GitBranch size={16} />
-        {recordedWorkflow ? (
+        {coding ? (
+          <AppBadge tone="neutral">
+            {t('隔离实现与测试', 'Isolated implementation & tests')}
+          </AppBadge>
+        ) : recordedWorkflow ? (
           <>
             <AppBadge tone="neutral">
               {recordedWorkflow.version === null
@@ -439,7 +520,15 @@ export function RunWorkspace({
         </div>
         <div>
           <small>{t('测试', 'Tests')}</small>
-          <span>{t('未执行', 'Not run')}</span>
+          <span data-testid="run-test-state">
+            {testError
+              ? t('证据无效', 'Invalid evidence')
+              : latestTest
+                ? latestTest.passed
+                  ? t('通过', 'Passed')
+                  : t('未通过', 'Did not pass')
+                : t('未执行', 'Not run')}
+          </span>
         </div>
         <div>
           <small>{t('人工审查', 'Human review')}</small>
@@ -512,13 +601,7 @@ export function RunWorkspace({
             </span>
             <div>
               <div className="wb-stage-title">
-                <strong>
-                  {[
-                    t('规划', 'Planning'),
-                    t('研究', 'Research'),
-                    t('汇总', 'Synthesis'),
-                  ][index] ?? stage.title}
-                </strong>
+                <strong>{runStageTitle(stage, t)}</strong>
                 {badge(stage.status)}
               </div>
               <small>
@@ -624,11 +707,28 @@ export function RunWorkspace({
                   <code>{item.path}</code> · {item.bytes} bytes
                 </p>
               ))}
+              {run.context.artifacts?.map((item) => (
+                <details className="wb-disclosure" key={item.id}>
+                  <summary>
+                    {t('引用成果', 'Referenced artifact')} · {item.title}
+                  </summary>
+                  <p>
+                    Run <code>{item.run_id}</code> · <code>{item.id}</code>
+                  </p>
+                  <code className="wb-wrap">SHA-256 {item.sha256}</code>
+                  <pre className="wb-wrap">{item.content}</pre>
+                </details>
+              ))}
               <p>
-                {t(
-                  '工作台为只读研究模式；底层 CLI 工具隔离不等于已完整验收。',
-                  'Workbench uses read-only research mode; this is not full verification of underlying CLI tool isolation.',
-                )}
+                {coding
+                  ? t(
+                      '修改只发生在隔离副本；实际测试日志与Diff独立保存，原项目未写入。',
+                      'Changes stay in an isolated copy. Actual test logs and Diff are retained; the original project is unchanged.',
+                    )
+                  : t(
+                      '工作台为只读研究模式；底层 CLI 工具隔离不等于已完整验收。',
+                      'Workbench uses read-only research mode; this is not full verification of underlying CLI tool isolation.',
+                    )}
               </p>
             </details>
             {[...agents].reverse().map((agent) => (
@@ -643,7 +743,11 @@ export function RunWorkspace({
                         ? 'Super-agent'
                         : agent.role === 'reviewer'
                           ? t('汇总 Agent', 'Synthesis agent')
-                          : t('研究 Agent', 'Research agent')}
+                          : agent.role === 'implementer'
+                            ? t('实现 Agent', 'Implementation agent')
+                            : agent.role === 'validator'
+                              ? t('本地测试', 'Local tests')
+                              : t('研究 Agent', 'Research agent')}
                     </strong>
                     {badge(agent.status)}
                     {agent.source_agent_id && (
@@ -876,7 +980,13 @@ function downloadArtifact(artifact: Artifact) {
   )
   const link = document.createElement('a')
   link.href = url
-  link.download = `mybot-${artifact.id.slice(0, 12)}.md`
+  const extension =
+    artifact.kind === 'diff'
+      ? 'patch'
+      : artifact.kind === 'test_result'
+        ? 'json'
+        : 'md'
+  link.download = `mybot-${artifact.id.slice(0, 12)}.${extension}`
   link.click()
   window.setTimeout(() => URL.revokeObjectURL(url), 1000)
 }

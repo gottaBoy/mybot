@@ -11,6 +11,7 @@ import {
 import { AppBadge, AppButton, AppSelect } from '../components/ui'
 import type { RunDetail } from './api'
 import { statusText, statusTone, type Copy } from './state'
+import { runStageTitle } from './run-stages'
 
 export function RunGraph({
   detail,
@@ -24,27 +25,27 @@ export function RunGraph({
   onArtifact: (id: string) => void
 }) {
   const [selected, setSelected] = useState(
-    detail.harness.stages.find(
-      (stage) => stage.status === 'failed' || stage.status === 'running',
-    )?.key ?? detail.harness.stages[0]?.key,
+    (detail.run.context.mode === 'coding-v1'
+      ? (detail.harness.stages.find((stage) => stage.status === 'running')
+          ?.key ?? detail.harness.stages.at(-1)?.key)
+      : detail.harness.stages.find(
+          (stage) => stage.status === 'failed' || stage.status === 'running',
+        )?.key) ?? detail.harness.stages[0]?.key,
   )
   const [zoom, setZoom] = useState(100)
   const stage =
     detail.harness.stages.find((stage) => stage.key === selected) ??
     detail.harness.stages[0]
-  const stageNames = [
-    t('规划', 'Planning'),
-    t('研究', 'Research'),
-    t('汇总', 'Synthesis'),
-  ]
-  const members = detail.agents.filter(
-    (agent) =>
-      agent.role ===
-      {
-        planning: 'coordinator',
-        research: 'researcher',
-        synthesis: 'reviewer',
-      }[stage?.key ?? ''],
+  const stageNames = detail.harness.stages.map((item) => runStageTitle(item, t))
+  const members = detail.agents.filter((agent) =>
+    stage?.agent_ids
+      ? stage.agent_ids.includes(agent.id)
+      : agent.role ===
+        {
+          planning: 'coordinator',
+          research: 'researcher',
+          synthesis: 'reviewer',
+        }[stage?.key ?? ''],
   )
   const outputs = detail.artifacts.filter((artifact) =>
     members.some((agent) => agent.id === artifact.agent_id),
@@ -58,7 +59,14 @@ export function RunGraph({
         <div className="wb-inline">
           <GitBranch size={16} />
           <strong>{t('工作图', 'Work graph')}</strong>
-          <AppBadge>{t('固定流程 · 只读', 'Fixed flow · Read only')}</AppBadge>
+          <AppBadge>
+            {detail.run.context.mode === 'coding-v1'
+              ? t(
+                  '实现与验证 · 只读视图',
+                  'Implementation & tests · Read-only view',
+                )
+              : t('固定流程 · 只读', 'Fixed flow · Read only')}
+          </AppBadge>
         </div>
         <div className="wb-inline">
           <AppButton
@@ -111,11 +119,17 @@ export function RunGraph({
         >
           <div
             className="wb-graph-canvas"
-            style={{ width: (850 * zoom) / 100, height: (370 * zoom) / 100 }}
+            style={{
+              width:
+                (Math.max(850, detail.harness.stages.length * 280) * zoom) /
+                100,
+              height: (370 * zoom) / 100,
+            }}
           >
             <div
               className="wb-graph-nodes"
               style={{
+                width: Math.max(850, detail.harness.stages.length * 280),
                 transform: `scale(${zoom / 100})`,
                 transformOrigin: 'top left',
               }}

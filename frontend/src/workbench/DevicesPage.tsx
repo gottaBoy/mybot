@@ -46,6 +46,7 @@ import { fetchTaskDetail } from './task-detail'
 import { isTaskReadIdentifier } from './task-query'
 import { taskWorkspaceHref } from './task-workspace-location'
 import './devices-page.css'
+import { OwnerDeviceExecution } from './DeviceExecution'
 
 type Operation =
   | { phase: 'idle' }
@@ -60,6 +61,8 @@ type Grant = { task: Task; label: string; fingerprint: string }
 export function readDevicesLocation(href: string): {
   taskId?: string
   requestId?: string
+  executionDevice?: string
+  executionOperation?: string
   error?: boolean
 } {
   try {
@@ -67,9 +70,19 @@ export function readDevicesLocation(href: string): {
     const params = new URLSearchParams(url.hash.split('?')[1] ?? '')
     const tasks = params.getAll('task')
     const requests = params.getAll('deviceRequest')
+    const executionDevices = params.getAll('executionDevice')
+    const executionOperations = params.getAll('executionOperation')
     if (
       tasks.length > 1 ||
       requests.length > 1 ||
+      executionDevices.length > 1 ||
+      executionOperations.length > 1 ||
+      (executionDevices.length === 1 &&
+        !isTaskReadIdentifier(executionDevices[0])) ||
+      (executionOperations.length === 1 &&
+        (!executionDevices.length ||
+          !/^[A-Za-z0-9_-]{8,100}$/.test(executionOperations[0]))) ||
+      (executionDevices.length > 0 && requests.length > 0) ||
       (tasks.length === 1 && !isTaskReadIdentifier(tasks[0])) ||
       (requests.length === 1 && !/^[A-Za-z0-9_-]{8,100}$/.test(requests[0]))
     )
@@ -77,6 +90,12 @@ export function readDevicesLocation(href: string): {
     return {
       ...(tasks.length ? { taskId: tasks[0] } : {}),
       ...(requests.length ? { requestId: requests[0] } : {}),
+      ...(executionDevices.length
+        ? { executionDevice: executionDevices[0] }
+        : {}),
+      ...(executionOperations.length
+        ? { executionOperation: executionOperations[0] }
+        : {}),
     }
   } catch {
     return { error: true }
@@ -143,6 +162,9 @@ export function DevicesPage({
   const [notice, setNotice] = useState<Notice>()
   const [discard, setDiscard] = useState(false)
   const [copying, setCopying] = useState(false)
+  const [executionDevice, setExecutionDevice] = useState(
+    location.executionDevice,
+  )
   const root = useRef<HTMLElement>(null)
   const retryTrigger = useRef<HTMLButtonElement>(null)
   const pageFocus = useRef<
@@ -164,7 +186,10 @@ export function DevicesPage({
   const fingerprint = JSON.stringify([data.workspace, taskId, label])
   const latestFingerprint = useRef(fingerprint)
   latestFingerprint.current = fingerprint
-  const locked = operation.phase !== 'idle' || Boolean(location.error)
+  const locked =
+    operation.phase !== 'idle' ||
+    Boolean(location.error) ||
+    Boolean(executionDevice)
   const dirty = Boolean(label || taskId !== initialTask.current || code)
   const guardState = useRef({ dirty: false, busy: false })
   guardState.current = { dirty, busy: locked || validating || copying }
@@ -193,6 +218,7 @@ export function DevicesPage({
     mutationRequest.current?.abort()
     validationRequest.current?.abort()
     setDirectory(undefined)
+    setExecutionDevice(undefined)
     setReadBusy(false)
     setGrant(undefined)
     setSelectedDevice(undefined)
@@ -756,6 +782,24 @@ export function DevicesPage({
   }
   const when = (value: string) =>
     new Date(value).toLocaleString(locale === 'zh' ? 'zh-CN' : 'en-US')
+  const stampExecution = (deviceId?: string, operationId?: string) => {
+    const query = new URLSearchParams(
+      window.location.href.split('#')[1]?.split('?')[1] ?? '',
+    )
+    query.delete('executionDevice')
+    query.delete('executionOperation')
+    if (deviceId) query.set('executionDevice', deviceId)
+    if (operationId) query.set('executionOperation', operationId)
+    internalNavigation.current = true
+    try {
+      return pushWorkbenchNavigation(
+        `#devices${query.size ? `?${query}` : ''}`,
+        { replace: true },
+      )
+    } finally {
+      internalNavigation.current = false
+    }
+  }
 
   return (
     <section ref={root} className="wb-devices-page" data-testid="devices-page">
@@ -1110,6 +1154,33 @@ export function DevicesPage({
                           {t('到期', 'Expires')}: {when(device.expires_at)}
                         </time>
                       </div>
+                      {data.capabilities.device_execution_delegation ===
+                        true && (
+                        <AppButton
+                          label={t('执行委托', 'Execution delegation')}
+                          icon={<ShieldCheck size={16} />}
+                          tone="ghost"
+                          disabled={
+                            !admission.current.ready ||
+                            validating ||
+                            state !== 'authorized'
+                          }
+                          onClick={() => {
+                            if (
+                              !admission.current.ready ||
+                              operationBusy.current ||
+                              data.capabilities.device_execution_delegation !==
+                                true ||
+                              admission.current.devices.get(device.id) !==
+                                JSON.stringify(device) ||
+                              deviceAccessState(device) !== 'authorized'
+                            )
+                              return
+                            if (stampExecution(device.id))
+                              setExecutionDevice(device.id)
+                          }}
+                        />
+                      )}
                       <AppButton
                         label={t('撤销设备', 'Revoke device')}
                         icon={<ShieldX size={16} />}
@@ -1180,6 +1251,28 @@ export function DevicesPage({
           </div>
         )}
       </section>
+      {executionDevice &&
+        data.capabilities.device_execution_delegation === true && (
+          <OwnerDeviceExecution
+            key={executionDevice}
+            deviceId={executionDevice}
+            operationId={location.executionOperation}
+            t={t}
+            stamp={(id) => stampExecution(executionDevice, id)}
+            close={() => {
+              if (stampExecution()) setExecutionDevice(undefined)
+            }}
+          />
+        )}
+      {executionDevice &&
+        data.capabilities.device_execution_delegation !== true && (
+          <p role="alert" className="wb-error">
+            {t(
+              '当前服务未提供执行委托，原请求保持锁定。',
+              'This server does not provide execution delegation. The original request remains locked.',
+            )}
+          </p>
+        )}
       {grant && (
         <AppDialog
           title={t('授权任务设备', 'Authorize task device')}

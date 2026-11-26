@@ -1,0 +1,13 @@
+{
+  "checks": [],
+  "errors": [],
+  "external": [],
+  "geometry": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    }
+  ],
+  "failure": "Error: page.evaluate: SyntaxError: Failed to execute 'json' on 'Response': Unexpected end of JSON input\n    at eval (eval at evaluate (:290:30), <anonymous>:11:62)\n    at async <anonymous>:316:30"
+}

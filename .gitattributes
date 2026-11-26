@@ -1,0 +1,4 @@
+# Preserve generated patch context and captured test-log line endings verbatim.
+frontend/evidence/**/actual.patch whitespace=-blank-at-eol,-blank-at-eof
+frontend/evidence/**/frontend-tests.txt whitespace=-blank-at-eof
+frontend/evidence/**/mybot-artifacts-frontend.txt whitespace=-blank-at-eof

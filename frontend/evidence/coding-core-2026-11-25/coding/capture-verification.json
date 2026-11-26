@@ -1,0 +1,24 @@
+{
+  "fixture": true,
+  "additional_business_writes": [],
+  "captures": [
+    {
+      "name": "actual-patch-desktop.png",
+      "scroll_before": 0,
+      "scroll_after": 0,
+      "header_top": 0
+    },
+    {
+      "name": "actual-tests-desktop.png",
+      "scroll_before": 0,
+      "scroll_after": 0,
+      "header_top": 0
+    },
+    {
+      "name": "graph-implementation-desktop.png",
+      "scroll_before": 0,
+      "scroll_after": 0,
+      "header_top": 0
+    }
+  ]
+}

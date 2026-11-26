@@ -669,7 +669,11 @@ export function Workbench() {
         </a>
         <div className="wb-scope">
           <ShieldCheck size={16} />
-          <span>{t('只读研究', 'Read-only research')}</span>
+          <span>
+            {data?.capabilities.isolated_coding === true
+              ? t('受控研发', 'Controlled R&D')
+              : t('只读研究', 'Read-only research')}
+          </span>
         </div>
       </div>
     </>

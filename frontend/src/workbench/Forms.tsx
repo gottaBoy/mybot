@@ -77,6 +77,8 @@ import { ProjectTaskPicker } from './ProjectTaskPicker'
 import { validateProjectSelection } from './project-selection'
 import { useProjectReferences } from './useProjectReferences'
 import { useRunWorkflow } from './useRunWorkflow'
+import { TaskArtifactPicker } from './TaskArtifactPicker'
+import { artifactRefs } from './task-artifacts'
 
 export type FormState =
   | { kind: 'project' }
@@ -163,6 +165,7 @@ export function WorkbenchForm({
     state.kind === 'run' ? state.turn : undefined,
   )
   const [turnUncertain, setTurnUncertain] = useState(false)
+  const [prepareOnly, setPrepareOnly] = useState(false)
   const [checkingTurn, setCheckingTurn] = useState(false)
   const turnLocked = Boolean(turn?.candidate || turnUncertain)
   const workflowEnabled =
@@ -194,6 +197,11 @@ export function WorkbenchForm({
   const [runSnapshot, setRunSnapshot] = useState(
     state.kind === 'run' ? state.snapshot : undefined,
   )
+  const [artifactSelectionPending, setArtifactSelectionPending] =
+    useState(false)
+  const referencesUnsupported =
+    Boolean(runSnapshot?.artifacts?.length) &&
+    data.capabilities.task_artifact_references !== true
   const [contextChanged, setContextChanged] = useState(false)
   const [rechecking, setRechecking] = useState(false)
   // Kept stable across network errors, so explicit re-submit cannot enqueue a duplicate Run.
@@ -245,7 +253,8 @@ export function WorkbenchForm({
     (fingerprint !== initialFingerprint.current ||
       (state.kind === 'test' &&
         ['running', 'unknown'].includes(modelTest.phase)) ||
-      turnUncertain)
+      turnUncertain ||
+      artifactSelectionPending)
   const guardState = useRef({ dirty, busy })
   guardState.current = { dirty, busy }
   function setFormBusy(value: boolean) {
@@ -369,6 +378,13 @@ export function WorkbenchForm({
     if (state.kind === 'run' && contextChanged) return
     if (state.kind === 'run' && turnUncertain) return
     if (state.kind === 'run' && workflow.blocked) return
+    if (
+      state.kind === 'run' &&
+      (artifactSelectionPending || referencesUnsupported)
+    )
+      return
+    if (prepareOnly && data.capabilities.device_execution_delegation !== true)
+      return
     const validation = validateFormDraft(
       state.kind,
       draft,
@@ -492,6 +508,13 @@ export function WorkbenchForm({
                 ...routing,
                 ...limits,
                 context_hash: (runSnapshot ?? state.snapshot).context_hash,
+                ...((runSnapshot ?? state.snapshot).artifacts?.length
+                  ? {
+                      artifact_refs: artifactRefs(
+                        (runSnapshot ?? state.snapshot).artifacts,
+                      ),
+                    }
+                  : {}),
                 ...(workflowEnabled
                   ? { workflow_version: workflow.version }
                   : {}),
@@ -509,6 +532,13 @@ export function WorkbenchForm({
             }
             if (!preparedTurn.candidate)
               throw new Error('task_turn_preparation_missing')
+            if (prepareOnly) {
+              await onSaved()
+              saved.current = true
+              confirmWorkbenchNavigation()
+              onClose()
+              return
+            }
             setTurnUncertain(true)
             const applied = await executeTaskTurn(state.task.id, turn.id, {
               candidate_hash: preparedTurn.candidate.candidate_hash,
@@ -525,6 +555,27 @@ export function WorkbenchForm({
             onClose()
             return
           } catch (reason) {
+            if (
+              reason instanceof ApiError &&
+              [404, 409, 422].includes(reason.status) &&
+              reason.details &&
+              typeof reason.details === 'object' &&
+              [
+                'task_artifact_changed',
+                'task_artifact_unavailable',
+                'task_artifact_too_large',
+              ].includes(String((reason.details as { code?: unknown }).code))
+            ) {
+              setTurnUncertain(false)
+              pendingPreparation.current = null
+              setStep(0)
+              throw new Error(
+                t(
+                  '引用成果已变化或不可用，请刷新成果并重新选择、核对。',
+                  'A referenced artifact changed or is unavailable. Refresh, reselect and review it.',
+                ),
+              )
+            }
             // A rejected HTTP response is confirmed; transport/invalid receipt
             // remains locked until the exact durable turn can be read.
             if (
@@ -644,7 +695,12 @@ export function WorkbenchForm({
     try {
       if (turnLocked) return
       const snapshot = turn
-        ? await previewTaskTurn(state.task.id, turn.id)
+        ? await previewTaskTurn(
+            state.task.id,
+            turn.id,
+            undefined,
+            artifactRefs((runSnapshot ?? state.snapshot).artifacts),
+          )
         : await post<Snapshot>(`/tasks/${state.task.id}/preview`)
       const next = recheckedRunContext(
         {
@@ -1011,8 +1067,16 @@ export function WorkbenchForm({
     )
   } else if (state.kind === 'run') {
     const snapshot = runSnapshot ?? state.snapshot
-    submitLabel = t('确认并开始运行', 'Confirm & start run')
-    disabled = contextChanged || turnUncertain || workflow.blocked
+    submitLabel = prepareOnly
+      ? t('确认并准备下一轮', 'Confirm & prepare next run')
+      : t('确认并开始运行', 'Confirm & start run')
+    disabled =
+      contextChanged ||
+      turnUncertain ||
+      workflow.blocked ||
+      artifactSelectionPending ||
+      referencesUnsupported ||
+      (prepareOnly && data.capabilities.device_execution_delegation !== true)
     const used = data.models.filter((item) =>
       Object.values(routing).includes(item.id),
     )
@@ -1022,8 +1086,8 @@ export function WorkbenchForm({
           <ShieldCheck size={18} />
           <span>
             {t(
-              '只读研究 · 工作台未提供 Shell、代码写入或部署入口',
-              'Read-only research · Workbench exposes no shell, code-write or deployment controls',
+              '本次为只读研究，不修改代码或执行测试。',
+              'This run is read-only research. It does not change code or execute tests.',
             )}
           </span>
         </div>
@@ -1037,7 +1101,7 @@ export function WorkbenchForm({
         )}
         {turn && (
           <div
-            className={turnUncertain ? 'wb-error' : 'wb-notice'}
+            className={`wb-turn-context ${turnUncertain ? 'wb-error' : 'wb-notice'}`}
             role="status"
           >
             <strong>
@@ -1087,6 +1151,31 @@ export function WorkbenchForm({
         <div hidden={step !== 0} className="wb-wizard-section">
           <strong>{state.task.title}</strong>
           <p className="wb-muted">{state.task.goal}</p>
+          {referencesUnsupported && (
+            <p role="alert" className="wb-error">
+              {t(
+                '服务未提供本轮引用成果所需能力，请恢复连接后核对。',
+                'This server cannot admit the selected artifact references. Restore the connection and review again.',
+              )}
+            </p>
+          )}
+          {turn && data.capabilities.task_artifact_references === true && (
+            <TaskArtifactPicker
+              taskId={state.task.id}
+              turnId={turn.id}
+              turnContent={turn.content}
+              snapshot={snapshot}
+              locked={turnLocked || busy}
+              t={t}
+              onBlockedChange={setArtifactSelectionPending}
+              onApplied={(next) => {
+                setRunSnapshot(next)
+                setConsent(false)
+                setContextChanged(false)
+                clearFieldError('context_hash')
+              }}
+            />
+          )}
           {fieldBlock(
             'context_hash',
             <details className="wb-disclosure" open>
@@ -1344,6 +1433,29 @@ export function WorkbenchForm({
           </div>
         </div>
         <div hidden={step !== 2} className="wb-wizard-section">
+          {turn && data.capabilities.device_execution_delegation === true && (
+            <AppSelect
+              label={t('本次安排', 'Run arrangement')}
+              value={prepareOnly ? 'prepare' : 'start'}
+              onChange={(value) => {
+                setPrepareOnly(value === 'prepare')
+                setConsent(false)
+              }}
+              options={[
+                {
+                  value: 'start',
+                  label: t('确认后立即启动', 'Start after confirmation'),
+                },
+                {
+                  value: 'prepare',
+                  label: t(
+                    '仅准备，稍后委托设备或继续确认',
+                    'Prepare only; delegate or confirm later',
+                  ),
+                },
+              ]}
+            />
+          )}
           <div className="wb-send-targets">
             <small>{t('发送目标', 'Send to')}</small>
             {used.map((item) => (
@@ -1370,6 +1482,8 @@ export function WorkbenchForm({
             )}
             <dt>{t('文件', 'Files')}</dt>
             <dd>{snapshot.evidence.length}</dd>
+            <dt>{t('引用成果', 'Referenced artifacts')}</dt>
+            <dd>{snapshot.artifacts?.length ?? 0}</dd>
             <dt>{t('新增调用上限', 'Call budget')}</dt>
             <dd>{limits.max_calls}</dd>
             <dt>{t('研究并行上限', 'Research concurrency')}</dt>
@@ -1384,10 +1498,17 @@ export function WorkbenchForm({
           {fieldBlock(
             'consent',
             <AppCheckbox
-              label={t(
-                '我确认将上述资料发送给所选模型，可能产生费用。金额未知不等于免费。',
-                'I consent to sending this context to the selected models. Charges may apply; unknown cost is not free.',
-              )}
+              label={
+                prepareOnly
+                  ? t(
+                      '我确认冻结上述资料与资源，暂不调用模型。',
+                      'I confirm freezing this context and these resources without calling a model.',
+                    )
+                  : t(
+                      '我确认将上述资料发送给所选模型，可能产生费用。金额未知不等于免费。',
+                      'I consent to sending this context to the selected models. Charges may apply; unknown cost is not free.',
+                    )
+              }
               value={consent}
               onChange={(value) => {
                 clearFieldError('consent')

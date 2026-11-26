@@ -1,5 +1,7 @@
 """Disposable browser test service. Never imported by the production application."""
 import asyncio
+import json
+import shutil
 import sys
 from pathlib import Path
 
@@ -19,6 +21,17 @@ class BrowserProvider(FakeProvider):
         self.review_failed = False
 
     async def complete(self, model, messages, max_tokens):
+        if model["model"] == "coding-fixture":
+            request = json.loads(messages[-1]["content"])
+            source = next(file["content"] for file in request["files"] if file["path"] == "workbench/schemas.py")
+            extra = r'"\n" in value or ' if request["round"] == 1 else "any(ord(char) < 32 for char in value) or "
+            source = source.replace("if " + (r'"\n" in value or ' if request["round"] > 1 else "") + r'"\\" in value or ', "if " + extra + r'"\\" in value or ', 1)
+            return {
+                "text": json.dumps({"summary": "拒绝路径控制字符，保留普通路径和中文路径。", "changes": [
+                    {"path": "workbench/schemas.py", "content": source},
+                ]}), "model": model["model"], "input_tokens": 100, "output_tokens": 100,
+                "truncated": False,
+            }
         if "pause-cancel-fixture" in messages[-1]["content"]:
             await asyncio.sleep(0.8)
         if ("resource-retry-fixture" in messages[-1]["content"]
@@ -37,6 +50,14 @@ root = Path(sys.argv[1])
 workspace = root / "workspace"
 workspace.mkdir(parents=True)
 (workspace / "README.md").write_text("# Browser test repository\nExplicit context fixture.", encoding="utf-8")
+if len(sys.argv) > 4 and sys.argv[4] == "coding":
+    if root.parent != Path("/tmp") or not root.name.startswith("mybot-astryx-workbench.") or root.is_symlink():
+        raise ValueError("Coding browser input requires an explicit disposable fixture")
+    repository = Path(__file__).resolve().parents[1]
+    (workspace / "workbench").mkdir()
+    for name in ("__init__.py", "schemas.py", "saved_views.py"):
+        shutil.copyfile(repository / "workbench" / name, workspace / "workbench" / name)
+    shutil.copyfile(repository / "tests/fixtures/coding_relative_path_case.py", workspace / "test_relative_path.py")
 settings = Settings(root / "data", workspace, poll_interval=0.01,
                     access_token=sys.argv[3] if len(sys.argv) > 3 else "")
 

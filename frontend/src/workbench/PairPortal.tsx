@@ -9,6 +9,10 @@ import {
   ShieldCheck,
   Smartphone,
   Sun,
+  ListChecks,
+  MessageSquare,
+  Workflow,
+  FileCheck2,
 } from 'lucide-react'
 import {
   AppBadge,
@@ -17,6 +21,7 @@ import {
   AppInput,
   AppLoading,
   AppSelect,
+  AppSegments,
   AppTextArea,
   AppTheme,
 } from '../components/ui'
@@ -48,11 +53,20 @@ import {
   type PairedTask,
 } from './devices'
 import {
+  allowWorkbenchNavigation,
   cancelWorkbenchNavigation,
   confirmWorkbenchNavigation,
   pushWorkbenchNavigation,
   registerWorkbenchNavigationBlocker,
+  WORKBENCH_NAVIGATION_EVENT,
 } from './navigation-guard'
+import { PairedRunHistory } from './PairedRunHistory'
+import { PairedDeviceExecution } from './DeviceExecution'
+import {
+  pairedWorkspaceHref,
+  readPairedLocation,
+  type PairedLocation,
+} from './pair-location'
 import {
   readPreference,
   savePreference,
@@ -76,17 +90,32 @@ type PendingMessage = {
 }
 type Feedback = { tone: 'info' | 'error'; text: string }
 
-export function readPairPortalLocation(href: string) {
+export function readPairPortalLocation(href: string): {
+  error?: boolean
+  claimId?: string
+  sendId?: string
+  executeId?: string
+} {
   const query = href.split('#')[1]?.split('?')[1] ?? ''
   const params = new URLSearchParams(query)
   const claims = params.getAll('deviceClaim'),
-    sends = params.getAll('deviceSend')
+    sends = params.getAll('deviceSend'),
+    executes = params.getAll('deviceExecute')
   const valid = (values: string[]) =>
     values.length <= 1 &&
     (!values.length || /^[A-Za-z0-9_-]{8,100}$/.test(values[0]))
-  if (!valid(claims) || !valid(sends) || (claims.length && sends.length))
+  if (
+    !valid(claims) ||
+    !valid(sends) ||
+    !valid(executes) ||
+    [claims, sends, executes].filter((values) => values.length).length > 1
+  )
     return { error: true }
-  return { claimId: claims[0], sendId: sends[0] }
+  return {
+    claimId: claims[0],
+    sendId: sends[0],
+    ...(executes[0] ? { executeId: executes[0] } : {}),
+  }
 }
 export function portalReceiptMatchesDevice(current: Device, expected: Device) {
   return (
@@ -125,7 +154,13 @@ export function PairPortal() {
     typeof window === 'undefined' ? '' : window.location.href,
   )
   const [device, setDevice] = useState<Device | null>()
+  const [position, setPosition] = useState(() =>
+    readPairedLocation(
+      typeof window === 'undefined' ? '' : window.location.href,
+    ),
+  )
   const [snapshot, setSnapshot] = useState<PairedTask>()
+  const [executionLock, setExecutionLock] = useState(false)
   const [sessionBusy, setSessionBusy] = useState(true)
   const [sessionFailed, setSessionFailed] = useState(false)
   const [sessionRevision, setSessionRevision] = useState(0)
@@ -160,6 +195,8 @@ export function PairPortal() {
   const operation = useRef(false)
   const cursor = useRef(0)
   const deviceState = useRef(device)
+  const positionState = useRef(position)
+  positionState.current = position
   const claimState = useRef(claim)
   const messageState = useRef(message)
   const internalNavigation = useRef(false)
@@ -169,8 +206,25 @@ export function PairPortal() {
   claimState.current = claim
   messageState.current = message
   const dirty = Boolean(draft || (!device && (code || name)))
+  const scopeMismatch = Boolean(
+    position.taskId && device && position.taskId !== device.task_id,
+  )
+  const positionInvalid = Boolean(
+    position.error ||
+    scopeMismatch ||
+    (snapshot &&
+      snapshot.run_history !== true &&
+      (position.runId || position.view !== 'overview' || position.page !== 1)),
+  )
   const locked = Boolean(
-    claim || message || checking || leaving || location.error,
+    claim ||
+    message ||
+    checking ||
+    leaving ||
+    location.error ||
+    positionInvalid ||
+    executionLock ||
+    Boolean(location.executeId),
   )
   const guard = useRef({ dirty, busy: locked })
   guard.current = { dirty, busy: locked }
@@ -195,6 +249,14 @@ export function PairPortal() {
     }
   }, [])
   useEffect(() => {
+    const change = (event: Event) => {
+      if (allowWorkbenchNavigation(event))
+        setPosition(readPairedLocation(window.location.href))
+    }
+    window.addEventListener(WORKBENCH_NAVIGATION_EVENT, change)
+    return () => window.removeEventListener(WORKBENCH_NAVIGATION_EVENT, change)
+  }, [])
+  useEffect(() => {
     if (!dirty && !locked) return
     const unregister = registerWorkbenchNavigationBlocker({
       getState: () =>
@@ -215,10 +277,18 @@ export function PairPortal() {
       window.removeEventListener('beforeunload', unload)
     }
   }, [dirty, locked])
-  function stamp(next: { claimId?: string; sendId?: string } = {}) {
-    const query = new URLSearchParams()
+  function stamp(
+    next: { claimId?: string; sendId?: string; executeId?: string } = {},
+  ) {
+    const query = new URLSearchParams(
+      window.location.href.split('#')[1]?.split('?')[1] ?? '',
+    )
+    query.delete('deviceClaim')
+    query.delete('deviceSend')
+    query.delete('deviceExecute')
     if (next.claimId) query.set('deviceClaim', next.claimId)
     if (next.sendId) query.set('deviceSend', next.sendId)
+    if (next.executeId) query.set('deviceExecute', next.executeId)
     internalNavigation.current = true
     try {
       return pushWorkbenchNavigation(`#pair${query.size ? `?${query}` : ''}`, {
@@ -246,6 +316,7 @@ export function PairPortal() {
     setSessionFailed(false)
     setSyncFailed(false)
     setLastSync('')
+    setExecutionLock(false)
     stamp()
     setFeedback({
       tone: 'error',
@@ -582,6 +653,9 @@ export function PairPortal() {
       !snapshot ||
       syncFailed ||
       readBusy ||
+      positionInvalid ||
+      executionLock ||
+      location.executeId ||
       operation.current ||
       (!command && messageState.current)
     )
@@ -733,6 +807,30 @@ export function PairPortal() {
   }
   const when = (value: string) =>
     new Date(value).toLocaleString(locale === 'zh' ? 'zh-CN' : 'en-US')
+  function navigatePosition(next: Partial<PairedLocation>) {
+    const expected = deviceState.current
+    if (
+      !expected ||
+      guard.current.busy ||
+      operation.current ||
+      readBusyState.current ||
+      syncFailed ||
+      positionState.current !== position
+    )
+      return
+    internalNavigation.current = true
+    try {
+      const target = { ...position, ...next }
+      if (
+        pushWorkbenchNavigation(pairedWorkspaceHref(expected.task_id, target))
+      )
+        setPosition({ ...target, taskId: expected.task_id })
+    } finally {
+      internalNavigation.current = false
+    }
+  }
+  const show = (view: string) =>
+    position.view === 'overview' || position.view === view
   return (
     <AppTheme
       mode={mode}
@@ -789,6 +887,42 @@ export function PairPortal() {
               )}
             </p>
           )}
+          {positionInvalid && (
+            <p className="wb-error" role="alert">
+              {scopeMismatch
+                ? t(
+                    '接续链接不属于当前授权任务，未显示任务内容。',
+                    'This continuation link does not match the authorized task. Task content is hidden.',
+                  )
+                : t(
+                    '接续位置无效或当前服务不支持此位置。',
+                    'This continuation position is invalid or unsupported by this server.',
+                  )}
+            </p>
+          )}
+          {positionInvalid && device && !claim && !message && (
+            <AppButton
+              label={t('打开授权任务概览', 'Open authorized task overview')}
+              icon={<RefreshCw size={16} />}
+              onClick={() => {
+                if (operation.current) return
+                internalNavigation.current = true
+                try {
+                  if (
+                    pushWorkbenchNavigation(pairedWorkspaceHref(device.task_id))
+                  ) {
+                    setPosition({
+                      taskId: device.task_id,
+                      view: 'overview',
+                      page: 1,
+                    })
+                  }
+                } finally {
+                  internalNavigation.current = false
+                }
+              }}
+            />
+          )}
           {feedback && (
             <p
               className={feedback.tone === 'error' ? 'wb-error' : 'wb-notice'}
@@ -822,7 +956,8 @@ export function PairPortal() {
                     {t('任务接续', 'Task continuation')}
                   </AppBadge>
                   <h1>
-                    {snapshot?.task.title ?? t('正在读取任务', 'Loading task')}
+                    {(!positionInvalid && snapshot?.task.title) ||
+                      t('任务接续', 'Task continuation')}
                   </h1>
                   <span className="wb-muted">{device.name}</span>
                 </div>
@@ -840,16 +975,27 @@ export function PairPortal() {
                     iconOnly
                     tone="ghost"
                     onClick={() => setLeaveOpen(true)}
-                    disabled={Boolean(message || claim || leaving)}
+                    disabled={Boolean(
+                      message ||
+                      claim ||
+                      leaving ||
+                      executionLock ||
+                      location.executeId,
+                    )}
                   />
                 </div>
               </div>
               <p className="wb-pair-boundary">
                 <ShieldCheck size={16} />
-                {t(
-                  '仅限此任务的查看与补充要求。运行和配置由主工作台确认。',
-                  'View and supplement this task only. Runs and configuration require workbench confirmation.',
-                )}
+                {snapshot?.execution_delegation === true
+                  ? t(
+                      '基础权限为查看与补充要求。一次执行需要主工作台单独授权并在此确认。',
+                      'Base access permits reading and messages. A single execution requires a separate workbench grant and confirmation here.',
+                    )
+                  : t(
+                      '仅限此任务的查看与补充要求。运行和配置由主工作台确认。',
+                      'View and supplement this task only. Runs and configuration require workbench confirmation.',
+                    )}
               </p>
               {lastSync && (
                 <p className="wb-pair-sync">
@@ -859,51 +1005,162 @@ export function PairPortal() {
                   : {when(lastSync)}
                 </p>
               )}
-              {snapshot ? (
+              {snapshot && !positionInvalid ? (
                 <>
-                  <section className="wb-pair-section">
-                    <h2>{t('目标与验收', 'Goal & acceptance')}</h2>
-                    <p className="wb-pair-prose">{snapshot.task.goal}</p>
-                    {snapshot.task.acceptance && (
-                      <p className="wb-pair-prose wb-muted">
-                        {snapshot.task.acceptance}
+                  {snapshot.run_history === true && (
+                    <nav className="wb-pair-views">
+                      <AppSegments
+                        label={t('接续视图', 'Continuation view')}
+                        value={position.view}
+                        onChange={(value) =>
+                          navigatePosition({
+                            view: value as PairedLocation['view'],
+                          })
+                        }
+                        options={[
+                          {
+                            value: 'overview',
+                            label: t('概览', 'Overview'),
+                            icon: <Smartphone size={15} />,
+                          },
+                          {
+                            value: 'goal',
+                            label: t('目标', 'Goal'),
+                            icon: <ListChecks size={15} />,
+                          },
+                          {
+                            value: 'conversation',
+                            label: t('会话', 'Conversation'),
+                            icon: <MessageSquare size={15} />,
+                          },
+                          {
+                            value: 'work',
+                            label: t('运行', 'Runs'),
+                            icon: <Workflow size={15} />,
+                          },
+                          {
+                            value: 'review',
+                            label: t('成果', 'Reports'),
+                            icon: <FileCheck2 size={15} />,
+                          },
+                        ]}
+                        iconOnly
+                      />
+                    </nav>
+                  )}
+                  {snapshot.execution_delegation === true &&
+                    (position.view === 'overview' ||
+                      position.view === 'work' ||
+                      location.executeId) && (
+                      <PairedDeviceExecution
+                        key={device.id}
+                        device={device}
+                        revision={snapshot.cursor}
+                        pendingId={location.executeId}
+                        blocked={Boolean(
+                          claim ||
+                          message ||
+                          checking ||
+                          leaving ||
+                          readBusy ||
+                          syncFailed ||
+                          positionInvalid,
+                        )}
+                        t={t}
+                        stamp={(id) => stamp(id ? { executeId: id } : {})}
+                        lock={setExecutionLock}
+                        failure={(reason) => {
+                          if (identityChanged(reason)) scopeChanged()
+                          else if (reason instanceof DeviceResponseError)
+                            invalidProjection()
+                          else unavailable()
+                        }}
+                      />
+                    )}
+                  {location.executeId &&
+                    snapshot.execution_delegation !== true && (
+                      <p role="alert" className="wb-error">
+                        {t(
+                          '当前服务未提供原执行授权的核对能力。',
+                          'This server cannot reconcile the original execution grant.',
+                        )}
                       </p>
                     )}
-                  </section>
-                  <section className="wb-pair-section">
-                    <h2>{t('最近运行', 'Latest run')}</h2>
-                    {snapshot.latest_run ? (
-                      <div className="wb-pair-actions">
-                        <AppBadge tone={statusTone(snapshot.latest_run.status)}>
-                          {statusText(snapshot.latest_run.status, t)}
-                        </AppBadge>
-                        <code>{snapshot.latest_run.id}</code>
-                        <time>{when(snapshot.latest_run.created_at)}</time>
-                      </div>
-                    ) : (
-                      <p className="wb-muted">{t('尚无运行', 'No runs yet')}</p>
-                    )}
-                  </section>
-                  {snapshot.report && (
+                  {show('goal') && (
                     <section className="wb-pair-section">
-                      <h2>{snapshot.report.title}</h2>
-                      <AppBadge tone={statusTone(snapshot.report.decision)}>
-                        {snapshot.report.decision === 'pending'
-                          ? t('待人工审查', 'Awaiting human review')
-                          : statusText(snapshot.report.decision, t)}
-                      </AppBadge>
-                      <p className="wb-pair-prose">{snapshot.report.content}</p>
-                      {snapshot.report.truncated && (
-                        <p className="wb-hint">
-                          {t(
-                            '成果正文已截断，请在主工作台查看完整内容。',
-                            'Report content was truncated. Open the workbench for the complete report.',
-                          )}
+                      <h2>{t('目标与验收', 'Goal & acceptance')}</h2>
+                      <p className="wb-pair-prose">{snapshot.task.goal}</p>
+                      {snapshot.task.acceptance && (
+                        <p className="wb-pair-prose wb-muted">
+                          {snapshot.task.acceptance}
                         </p>
                       )}
                     </section>
                   )}
-                  <section className="wb-pair-section">
+                  {show('work') && (
+                    <section className="wb-pair-section">
+                      <h2>{t('最近运行', 'Latest run')}</h2>
+                      {snapshot.latest_run ? (
+                        <div className="wb-pair-actions">
+                          <AppBadge
+                            tone={statusTone(snapshot.latest_run.status)}
+                          >
+                            {statusText(snapshot.latest_run.status, t)}
+                          </AppBadge>
+                          <code>{snapshot.latest_run.id}</code>
+                          <time>{when(snapshot.latest_run.created_at)}</time>
+                        </div>
+                      ) : (
+                        <p className="wb-muted">
+                          {t('尚无运行', 'No runs yet')}
+                        </p>
+                      )}
+                    </section>
+                  )}
+                  {snapshot.report &&
+                    position.view === 'overview' &&
+                    !position.runId && (
+                      <section className="wb-pair-section">
+                        <h2>{snapshot.report.title}</h2>
+                        <AppBadge tone={statusTone(snapshot.report.decision)}>
+                          {snapshot.report.decision === 'pending'
+                            ? t('待人工审查', 'Awaiting human review')
+                            : statusText(snapshot.report.decision, t)}
+                        </AppBadge>
+                        <p className="wb-pair-prose">
+                          {snapshot.report.content}
+                        </p>
+                        {snapshot.report.truncated && (
+                          <p className="wb-hint">
+                            {t(
+                              '成果正文已截断，请在主工作台查看完整内容。',
+                              'Report content was truncated. Open the workbench for the complete report.',
+                            )}
+                          </p>
+                        )}
+                      </section>
+                    )}
+                  {snapshot.run_history === true &&
+                    (show('work') || show('review')) && (
+                      <PairedRunHistory
+                        device={device}
+                        location={position}
+                        revision={snapshot.cursor}
+                        disabled={locked || readBusy || syncFailed}
+                        t={t}
+                        navigate={navigatePosition}
+                        onScopeFailure={(reason) => {
+                          if (identityChanged(reason)) scopeChanged()
+                          else if (reason instanceof DeviceResponseError)
+                            invalidProjection()
+                          else unavailable()
+                        }}
+                      />
+                    )}
+                  <section
+                    className="wb-pair-section"
+                    hidden={!show('conversation')}
+                  >
                     <h2>{t('补充要求', 'Supplemental requirements')}</h2>
                     <AppTextArea
                       label={t('补充要求', 'Supplemental requirements')}
@@ -930,6 +1187,9 @@ export function PairPortal() {
                           syncFailed ||
                           readBusy ||
                           location.error ||
+                          positionInvalid ||
+                          executionLock ||
+                          Boolean(location.executeId) ||
                           !draft.trim() ||
                           [...draft.trim()].length > 8000,
                         )}

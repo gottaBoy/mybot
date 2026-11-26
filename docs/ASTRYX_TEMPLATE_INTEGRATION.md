@@ -3,6 +3,10 @@
 日期：2026-11-13。依据：用户逐条指定的 20 个模板、基础组件与“一套代码多种样式”要求。
 保留 ADR-0006 的渐进迁移边界，不改变 Provider、设备权限或认证协议。
 
+2026-11-26采用映射增量：form-wizard/work-item-detail的现有mybot适配增加
+前轮成果选择、正文核对、冻结与Run来源；复用AppCheckbox/AppButton与语义Token，
+没有重生成模板、升级Astryx或另建主题页面。见ADR-0028及本批浏览器证据。
+
 ## 1. 一套产品，不是 20 个演示站
 
 | 选定模板 | 产品落点 | 真实边界 |
@@ -456,3 +460,72 @@ prepared撤销、自动会话记忆、Workflow版本、设备接续和连接器�
 owner/paired两surface的12stylemode/中英390/长名均验，document overflow0。
 见ADR-0024及`frontend/evidence/devices-2026-11-23/README.md`。
 主4180/5173已启用，正式4设备表空；HTTPS/真机、委托执行控制仍待，119计数不变。
+
+## 28. 历史Run与显式阅读位置接续
+
+2026-11-24，沿work-item-detail、table历史和既有ai-chat接续入口，保持React19、
+Astryx0.7.13、项目wrapper和同一业务树；没有新通用组件、模板副本或第三方源复制。
+
+| 模式 | 本地采用 | 事实边界 |
+| --- | --- | --- |
+| Task action / AppButton | 复制精确Task/视图/选中Run链接，Clipboard结果明确 | 复制不配对、不携带secret/草稿/费用consent |
+| AppSegments / 语义布局 | 配对端概览/目标/会话/运行/成果，同Task切换保留内存草稿 | 单一页面树，不把切换当执行/跨设备草稿同步 |
+| AppButton / AppBadge / 分页 | 固定20项真实历史、页外Run选择/精确报告，GET重试与focus保护 | 不展示配置/文件/Agent控制，不用latest补缺失旧Run |
+| AppTheme / 共享tokens | Neutral/Zira/Y2K双mode、1440英文与390中文、报告优先可见 | 截图是fixture，不是真机或远程HTTPS认证 |
+
+2099前端/1191Python/typecheck/build通过，专项10/6PNG、综合58/61PNG、
+主入口GET-only6；最终证据见
+`frontend/evidence/device-history-2026-11-24/README.md`。
+配对端历史组件只在相关视图与明确cap时挂载；错误Task隐藏内容，unknown发送继续原ID核对。
+主4180/5173已启用，原业务行与4空设备表保持；D3b/D4b更广/D5b仍开放，119计数不变。
+
+## 29. 一次执行委托与双端确认
+
+2026-11-25，沿form-wizard末步、settings设备目录、work-item-detail属性与确认模式，
+保持Astryx0.7.13、项目wrapper/共享tokens和同一业务树，无新增通用组件或vendor源码。
+
+| 模式 | 产品采用 | 真实边界 |
+| --- | --- | --- |
+| form-wizard / AppSelect | 最后一步明确“立即启动”或“仅准备”，改方式清consent | prepare不调用模型，不凭prepared自动执行 |
+| 设备目录 / AppButton / AppDialog | 真实设备的精确候选/模型/资源摘要，owner一次grant与撤销 | 不把pair scope扩成通用执行，busy/unknown不能关闭换请求 |
+| AppCheckbox / AppBadge | 配对端二次确认、authorized/applied/revoked/expired/superseded事实 | applied是入队，不是模型成功/费用结清 |
+| ExecutionFacts领域组件 | 两端同份有界摘要，资料数量/bytes/hash、阶段模型/限制 | 不显示文件正文/路径/endpoint/key_env；Codex输出非硬限制另说明 |
+| 同源页面与主题 | owner/paired三style双mode，1440英文/390中文；模态内部滚动 | 双browser不是真机、HTTPS或Safari认证 |
+
+生产专项9/12PNG、综合58/61PNG、主入口8只读通过；最终代码测试与构建见
+`frontend/evidence/device-execution-2026-11-25/README.md`。
+owner准备/授权和paired执行均是独立明确动作，丢响应只原ID核对；没有展示假进度或在线。
+主4180/5173已启用，原记录不变/新授权表空；通用控制、D4b更广、D5b仍开放，119计数不变。
+
+## 30. 核心研发实现与真实测试
+
+2026-11-25用户授权隔离修改/明确测试，保持React19/Astryx0.7.13和项目wrapper。
+沿form-wizard、work-item-detail、canvas阶段/检查器与shell模式接到同一Task/Run树，
+没有新增通用UI、vendor副本、第二主题或按样式复制页面。
+
+| 模式 | 本地采用 | 事实边界 |
+| --- | --- | --- |
+| Task action / Button | 研发实现入口与独立prepared候选GET | 不以点击入口调用模型 |
+| Dialog/Input/Select/Number/Checkbox | 精确文件/writable/不变tests、模型与资源确认 | pristine关闭不多问；unknown锁原ID，prepared重开新确认 |
+| work-item-detail / stage graph | baseline/implement/test逐轮事实、顺序与Agent成员 | 不把coding前3阶段冒充规划/研究/汇总 |
+| 原Artifact区 / pre | 真实Diff、测试数/退出码/argv/输出，patch/JSON导出 | 报告或人工接受不等于代码应用/合并 |
+| 共享tokens / AppTheme | 候选/结果两surface、三style双mode/1440英文/390中文 | 非真机或用户视觉满意度认证 |
+
+2197前端/1229Python/21核心定向/build；10专项/58综合/8主只读、76最终fixturePNG通过。
+见`frontend/evidence/coding-core-2026-11-25/README.md`；成果图只读归一滚动重拍，保留反例。
+主4180/5173已加载，原记录不变/coding_jobs0，无正式模型/测试自动调用。
+仅显式文件/Python unittest首版；更多runtime/任务分解/成果上下文仍待，119计数不变。
+
+## 31. 明确引用前轮成果
+
+2026-11-26沿用原form-wizard/work-item-detail适配与Astryx0.7.13：
+AppCheckbox选择候选，AppButton核对正文/来源，原向导确认模型和发送；不复制模板页面。
+引用候选未核对时阻止前进，dirty状态复用原导航保护，冻结后只读重开。
+Run同一业务树展示原来源与正文，语义Token统一，未新增通用组件或vendor依赖。
+turn context专用纵向排版修复原notice挤列，没有新主题分支。
+
+最终coding10/refs7/综合58/主GET-only10，共85浏览器、85最终fixturePNG；
+三style双mode/中英/390与reduced motion的真实画面见
+`frontend/evidence/core-continuation-2026-11-26/README.md`。
+2217前端、1245Python与17后补专项/build通过，保留原警告。
+主4180/5173已启用且原数据不变；只是下一研究Run的明确输入，没有自动应用旧patch。

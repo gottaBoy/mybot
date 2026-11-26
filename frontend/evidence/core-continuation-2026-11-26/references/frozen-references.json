@@ -1,0 +1,24 @@
+[
+  {
+    "id": "bccfba10a81f45829a45037a150961a3",
+    "run_id": "fab0c8f45d8945b7bb768b74b0219215",
+    "task_id": "5e941ca6287e4ab2a0883fdb3f48b1e3",
+    "title": "补丁 Diff · 2",
+    "kind": "diff",
+    "content": "--- a/workbench/schemas.py\n+++ b/workbench/schemas.py\n@@ -17,7 +17,7 @@\n \n def relative_path(value: str) -> str:\n     path = PurePosixPath(value)\n-    if \"\\\\\" in value or \"\\x00\" in value or path.is_absolute() or \"..\" in path.parts:\n+    if any(ord(char) < 32 for char in value) or \"\\\\\" in value or \"\\x00\" in value or path.is_absolute() or \"..\" in path.parts:\n         raise ValueError(\"Use a relative path inside the workspace\")\n     return value\n \n",
+    "created_at": "2026-11-26T01:23:49.955145+00:00",
+    "bytes": 449,
+    "sha256": "0a29b292a2a6450508e6f09c93aee839c3f9ad659f1562e5e3b9d9fc3b6e7dd4"
+  },
+  {
+    "id": "7af72640d2ec4a69865d61bb7fea0c12",
+    "run_id": "fab0c8f45d8945b7bb768b74b0219215",
+    "task_id": "5e941ca6287e4ab2a0883fdb3f48b1e3",
+    "title": "实际测试 · 2",
+    "kind": "test_result",
+    "content": "{\"profile\": \"python-unittest\", \"command\": [\"/home/my/workspace/ainfra/mywork/mybot/.venv/bin/python\", \"-I\", \"-B\", \"/home/my/workspace/ainfra/mywork/mybot/workbench/test_sandbox.py\", \"/tmp/mybot-coding-work-9qko9cto\", \"[\\\"test_relative_path.py\\\"]\"], \"exit_code\": 0, \"duration_ms\": 97, \"output\": \"test_rejects_newline (_mybot_selected_test_0.RelativePathAcceptance.test_rejects_newline) ... ok\\ntest_rejects_tab (_mybot_selected_test_0.RelativePathAcceptance.test_rejects_tab) ... ok\\ntest_retains_localized_source (_mybot_selected_test_0.RelativePathAcceptance.test_retains_localized_source) ... ok\\ntest_retains_ordinary_source (_mybot_selected_test_0.RelativePathAcceptance.test_retains_ordinary_source) ... ok\\n\\n----------------------------------------------------------------------\\nRan 4 tests in 0.000s\\n\\nOK\\n\\nMYBOT_TEST_RESULT={\\\"tests_run\\\": 4, \\\"failures\\\": 0, \\\"errors\\\": 0, \\\"skipped\\\": 0, \\\"success\\\": true}\\n\", \"timed_out\": false, \"truncated\": false, \"tests_run\": 4, \"passed\": true, \"receipt\": {\"tests_run\": 4, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"success\": true}, \"round\": 2, \"test_files\": [\"test_relative_path.py\"]}",
+    "created_at": "2026-11-26T01:23:50.092561+00:00",
+    "bytes": 1138,
+    "sha256": "07ef71a363603bba33c2fd0ce8c7ceec220ef792ec8bc911f4a17f7b23984918"
+  }
+]

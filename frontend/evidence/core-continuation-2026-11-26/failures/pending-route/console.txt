@@ -1,0 +1,15 @@
+PASS Saved continuation opens a bounded reference picker without a new Run or model call
+PASS Advertised catalog failure stays an explicit error and refresh uses the real GET
+PASS Keyboard and pointer selection require an exact-content preview before advancing
+PASS Lost preparation restores the original immutable references by GET after reload
+PASS Frozen patch/test sources render in three styles, both modes, English desktop and Chinese mobile
+node:internal/process/promises:394
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+route.abort: Route is already handled!
+    at /home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-task-artifacts.mjs:305:17 {
+  name: 'Error'
+}
+
+Node.js v24.21.0

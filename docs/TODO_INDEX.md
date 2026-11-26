@@ -1,6 +1,6 @@
 # 全部待办索引
 
-更新：2026-11-23（Asia/Singapore）。本页是集中阅读入口，不替代
+更新：2026-11-26（Asia/Singapore）。本页是集中阅读入口，不替代
 [原工作项台账](WORK_ITEMS.md) 或 [产品 UI 审计](PRODUCT_UI_AUDIT.md)。
 
 **最新研究入口：** 用户提供新的 Issues 截图，要求深度学习后继续。
@@ -17,6 +17,79 @@ UI 的 WUI 编号是交叉整改视图，执行包是实施组织方式，均可
 **不得与 119/110 相加**。本页不因新增测试、截图、文件或执行包调整原台账计数。
 
 ## 当前执行包
+
+### 2026-11-26 显式前轮成果引用
+
+| 工作 | 交付范围 | 剩余范围 |
+| --- | --- | --- |
+| 成果目录/预览 | 同Task已结束Run、20项元数据页、显式3项/单32KiB/总64KiB、hash与正文核对 | 不选全部历史、不跨Task、不截断冒充完整正文 |
+| 下一轮输入 | 复用TaskTurn preview/prepare/execute，冻结来源/正文/内容身份与同一候选 | 仍是下一研究Run，不自动应用patch |
+| 确认/恢复/可追溯 | 候选选择与已核对快照分离、未知同ID/GET、运行查看原来源 | 不新增长期模型记忆 |
+| 更多运行时/测试profile | 待办 | 仍仅ADR-0027的Python unittest |
+| 任务分解/依赖 | 待办 | 真实对象/版本/依赖与验收，不是装饰性计划列表 |
+| coding续用旧patch | 待办 | 需新的副本基线/冲突/不变测试与确认合同 |
+
+[ADR-0028](decisions/ADR-0028-explicit-prior-artifact-context.md)；
+[证据与启用](../frontend/evidence/core-continuation-2026-11-26/README.md)。
+下方“前轮成果引用待办”是前批时点，仅由本条关闭上述子范围；119/9/110不变。
+
+### 2026-11-25 核心研发实现与验证
+
+用户已授权隔离代码修改与明确允许的测试，优先于设备/连接器增量。
+
+| 工作 | 本批状态 | 范围 |
+| --- | --- | --- |
+| R1 输入/候选/权限 | 已实现 | 明确Task文件、writable/不变tests、模型/预算/快照，prepared与原ID |
+| R2 隔离修改 | 已实现并验证 | 严格JSON文件替换、只写临时副本，拒绝越权/改测试 |
+| R3 真实测试/失败修正 | 已实现并验证 | Python unittest、实际命令/退出码/日志/测试数，最多3次模型调用 |
+| R4 成果/UI | 已实现并专项验收 | Diff/逐轮测试/报告、实际阶段与graph成员，patch下载/只检查可应用性 |
+| R5 全面验收/本机启用 | 初版所列范围完成 | 2197前端/1229Python/21核心定向/build；10专项/58综合/8主只读，主PID940971/原记录不变 |
+| 更多运行时/测试profile | 待办 | 依赖准备、项目规模与更广测试命令，不能把unittest首版当通用执行器 |
+| 任务分解/依赖与前轮成果引用 | 后续核心待办 | 显式证据与上下文选择，不自动重发全部历史 |
+| 设备/连接器扩展 | 保留待办 | 不再作为默认下一批 |
+
+[ADR-0027](decisions/ADR-0027-isolated-coding-delivery.md)；
+`frontend/evidence/coding-core-2026-11-25/`。原119/9/110保持；不自动调用正式模型。
+本批落实原081/083/086/087的限定授权与实现；其他runtime/命令/生产验收仍有缺口，
+不据此修改原台账全部范围与历史统计。
+
+### 2026-11-25 D3b一次执行委托
+
+| 工作 | 本批结果 | 交付边界 |
+| --- | --- | --- |
+| E1 准备而不执行 | 已完成 | Task选单条消息、确认资料/资源后仅prepare；准备不调用模型 |
+| E2 owner精确授权 | 已完成 | 一个Device/Task/Turn/candidate，最多10min、独立确认、稳定回执 |
+| E3 device显式启动 | 已完成 | cookie/header/grant/候选/模型/冲突同事务校验、消费和唯一Run入队 |
+| E4 撤销与竞争 | 已完成 | owner/device竞争只一Run，撤销/执行单一结果，owner先执行显示superseded |
+| E5 未知结果/UI | 已完成 | 原operation/grant ID reload GET、404保留锁、三style双mode/中英390 |
+| E6 验收/启用 | 已完成所列范围 | 专项9/综合58/主只读8、73PNG，主4180 PID425660；原数据不变 |
+| D3b通用控制 | 待办 | 暂停/取消/恢复/审查授权与控制租约，不能继承此一次启动grant |
+| D4b更广接续 | 待办 | 跨设备草稿/未决candidate、服务端bookmark |
+| D5b远程/真机 | 待办 | 可信HTTPS、物理手机/平板/Safari/IME |
+| 连接器 | 后续待办 | 飞书→语雀→邮箱→钉钉/微信，各自scope/审批/回执 |
+
+[ADR-0026](decisions/ADR-0026-single-use-device-execution.md)；
+[证据/失败/本机记录](../frontend/evidence/device-execution-2026-11-25/README.md)。
+pair scope仍task_read/message_save；新增2张独立授权表，正式均空。
+仅一次精确启动，不等于通用租约/执行迁移；原119/9/110不变。
+
+### 2026-11-24 D4b历史Run与阅读位置接续
+
+| 工作 | 本批结果 | 边界 |
+| --- | --- | --- |
+| H1 scoped历史合同 | 已完成 | 两个GET、固定20项、精确报告上限20000；同快照核验身份/授权，无新表 |
+| H2 client/URL | 已完成 | Task/Run/视图/页码严格校验、取消迟到/15s、失败不回退latest |
+| H3 owner/paired UI | 已完成 | 显式复制链接、五视图、页外旧Run/报告/刷新；同Task内存草稿保护 |
+| H4 验收/本机启用 | 已完成所列检查 | 2099前端/1191Python/build、专项10/综合58/主只读6、67PNG；主4180 PID1303596 |
+| D4b更广接续 | 待办 | 跨设备持久草稿/未决candidate、服务端bookmark；没有自动同步本地正文 |
+| D3b委托执行 | 待办 | 独立grant/费用确认/控制冲突，仍仅task_read/message_save |
+| D5b远程/真机 | 待办 | 可信HTTPS/网络、物理手机/平板/Safari/IME |
+| 飞书/语雀/邮箱等 | 后续待办 | 独立身份/scope/去重/审批/回执 |
+
+[ADR-0025](decisions/ADR-0025-scoped-run-continuation.md)；
+[验证/失败/本机证据](../frontend/evidence/device-history-2026-11-24/README.md)。
+位置通过URL显式携带，仍需独立配对；链接不创建授权，不携带secret或执行consent。
+原119/9/110不变；下方D4b“待办”是前批时点，本条仅关闭历史阅读位置子范围。
 
 ### 2026-11-23 单Task设备配对与接续初版
 

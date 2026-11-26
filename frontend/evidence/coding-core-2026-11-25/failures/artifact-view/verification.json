@@ -1,0 +1,102 @@
+{
+  "fixture": true,
+  "checks": [
+    "Task opens an exact source/model/test review with no Run or model call",
+    "Lost preparation survives reload by original GET with unchecked execution consent and no duplicate preparation",
+    "Prepared candidate renders in three styles, both modes, desktop English and mobile Chinese",
+    "Real mybot path validation runs fail → partial fix/fail → complete fix/pass, with one execution POST and two bounded model responses",
+    "Original source and immutable tests stay byte-for-byte unchanged",
+    "Run shows actual test success and does not expose incompatible research pause/resume/retry controls"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c2539db8b795419ea716bb0d4893bcff/coding/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c2539db8b795419ea716bb0d4893bcff/coding/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c2539db8b795419ea716bb0d4893bcff/coding/e711ce8a-e55b-4760-b0fd-a4bf0fed6b5a/execute",
+      "method": "POST"
+    }
+  ],
+  "geometry": [
+    {
+      "surface": "candidate",
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "surface": "candidate",
+      "style": "neutral",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "surface": "candidate",
+      "style": "zira",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "surface": "candidate",
+      "style": "zira",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "surface": "candidate",
+      "style": "y2k",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "surface": "candidate",
+      "style": "y2k",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    }
+  ],
+  "screenshots": [
+    "candidate-neutral-light.png",
+    "candidate-neutral-dark.png",
+    "candidate-zira-light.png",
+    "candidate-zira-dark.png",
+    "candidate-y2k-light.png",
+    "candidate-y2k-dark.png"
+  ],
+  "failure": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('combobox', { name: 'Select artifact', exact: true })\u001b[22m\n"
+}

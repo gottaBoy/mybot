@@ -1,0 +1,11 @@
+--- a/workbench/schemas.py
++++ b/workbench/schemas.py
+@@ -17,7 +17,7 @@
+ 
+ def relative_path(value: str) -> str:
+     path = PurePosixPath(value)
+-    if "\\" in value or "\x00" in value or path.is_absolute() or ".." in path.parts:
++    if any(ord(char) < 32 for char in value) or "\\" in value or "\x00" in value or path.is_absolute() or ".." in path.parts:
+         raise ValueError("Use a relative path inside the workspace")
+     return value
+ 

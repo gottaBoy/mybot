@@ -5,12 +5,14 @@ export type TaskWorkspaceLocation = {
   tab: TaskWorkspaceTab
   runId?: string
   pendingRequestId?: string
-  error?: 'tab_invalid' | 'run_invalid' | 'request_invalid'
+  codingRequestId?: string
+  error?: 'tab_invalid' | 'run_invalid' | 'request_invalid' | 'coding_invalid'
 }
 export type TaskWorkspaceDestination = {
   tab?: TaskWorkspaceTab
   runId?: string
   pendingRequestId?: string
+  codingRequestId?: string
 }
 
 export function taskWorkspaceHref(
@@ -24,7 +26,10 @@ export function taskWorkspaceHref(
     (destination.runId !== undefined &&
       !isTaskReadIdentifier(destination.runId)) ||
     (destination.pendingRequestId !== undefined &&
-      !/^[A-Za-z0-9_-]{8,100}$/.test(destination.pendingRequestId))
+      !/^[A-Za-z0-9_-]{8,100}$/.test(destination.pendingRequestId)) ||
+    (destination.codingRequestId !== undefined &&
+      (!/^[A-Za-z0-9_-]{8,100}$/.test(destination.codingRequestId) ||
+        destination.pendingRequestId !== undefined))
   )
     throw new Error('task_workspace_location_invalid')
   const params = new URLSearchParams()
@@ -33,6 +38,8 @@ export function taskWorkspaceHref(
   if (destination.runId !== undefined) params.set('taskRun', destination.runId)
   if (destination.pendingRequestId !== undefined)
     params.set('taskSend', destination.pendingRequestId)
+  if (destination.codingRequestId !== undefined)
+    params.set('codingRequest', destination.codingRequestId)
   return `#task/${encodeURIComponent(taskId)}${params.size ? `?${params}` : ''}`
 }
 
@@ -97,9 +104,23 @@ export function readTaskWorkspaceLocation(href: string): TaskWorkspaceLocation {
       !/^[A-Za-z0-9_-]{8,100}$/.test(pendingRequestId))
   )
     return { tab: selectedTab, error: 'request_invalid' }
+  let coding: string[]
+  try {
+    coding = values('codingRequest')
+  } catch {
+    return { tab: selectedTab, error: 'coding_invalid' }
+  }
+  if (
+    coding.length > 1 ||
+    (coding[0] !== undefined &&
+      (!/^[A-Za-z0-9_-]{8,100}$/.test(coding[0]) ||
+        pendingRequestId !== undefined))
+  )
+    return { tab: selectedTab, error: 'coding_invalid' }
   return {
     tab: selectedTab,
     ...(runId === undefined ? {} : { runId }),
     ...(pendingRequestId === undefined ? {} : { pendingRequestId }),
+    ...(coding[0] === undefined ? {} : { codingRequestId: coding[0] }),
   }
 }

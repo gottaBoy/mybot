@@ -339,7 +339,53 @@ class DeviceService:
                 "schema_version": 1, "device_id": device["id"], "task": dict(task),
                 "latest_run": dict(latest) if latest is not None else None,
                 "messages": {"items": messages, "total": total}, "report": report,
-                "cursor": self.watermark(db, task_id),
+                "cursor": self.watermark(db, task_id), "run_history": True,
+                "execution_delegation": True,
+            }
+
+    def runs(self, token, page=1, expected_device_id=None):
+        if type(page) is not int or not 1 <= page <= MAX_PAGE:
+            raise DeviceError("device_page_invalid", 422)
+        with self.reader() as db:
+            device = self.active(db, token)
+            self.require_identity(device, expected_device_id)
+            total = db.execute(
+                "SELECT COUNT(*) FROM runs WHERE task_id=?", (device["task_id"],),
+            ).fetchone()[0]
+            total_pages = max(1, (total + 19) // 20)
+            current = min(page, total_pages)
+            items = [dict(row) for row in db.execute(
+                "SELECT id,task_id,status,created_at FROM runs WHERE task_id=?"
+                " ORDER BY created_at DESC,rowid ASC LIMIT 20 OFFSET ?",
+                (device["task_id"], (current - 1) * 20),
+            )]
+            return {
+                "schema_version": 1, "device_id": device["id"], "task_id": device["task_id"],
+                "items": items, "total": total, "requested_page": page, "page": current,
+                "page_size": 20, "total_pages": total_pages, "has_more": current < total_pages,
+            }
+
+    def run(self, token, identifier, expected_device_id=None):
+        exact_identifier(identifier)
+        with self.reader() as db:
+            device = self.active(db, token)
+            self.require_identity(device, expected_device_id)
+            run = db.execute(
+                "SELECT id,task_id,status,created_at FROM runs WHERE id=? AND task_id=?",
+                (identifier, device["task_id"]),
+            ).fetchone()
+            if run is None:
+                raise DeviceError("device_run_unavailable", 404)
+            report = db.execute(
+                "SELECT id,run_id,title,content,decision FROM artifacts WHERE run_id=? AND kind='report'"
+                " ORDER BY created_at DESC,rowid ASC LIMIT 1", (identifier,),
+            ).fetchone()
+            if report is not None:
+                report = {**dict(report), "content": report["content"][:20000],
+                          "truncated": len(report["content"]) > 20000}
+            return {
+                "schema_version": 1, "device_id": device["id"], "task_id": device["task_id"],
+                "run": dict(run), "report": report,
             }
 
     def events(self, token, after):

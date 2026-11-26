@@ -1,0 +1,53 @@
+{
+  "fixture": true,
+  "checks": [
+    "Pairing alone still grants no execution; no broader owner APIs"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/devices/pairings",
+      "method": "POST"
+    },
+    {
+      "path": "/api/device/claim",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/25770a72aeb348e48d7819402adecb43/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/25770a72aeb348e48d7819402adecb43/turns",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/25770a72aeb348e48d7819402adecb43/turns/6f65604d91144b47be6961059dbb3025/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/25770a72aeb348e48d7819402adecb43/turns/6f65604d91144b47be6961059dbb3025/prepare",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [],
+  "geometry": [],
+  "failure": "TypeError: Cannot read properties of null (reading 'state')"
+}

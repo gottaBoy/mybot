@@ -1,0 +1,42 @@
+.wb-artifact-references {
+  border-block: 1px solid var(--wb-border);
+  padding-block: 12px;
+  min-width: 0;
+}
+.wb-turn-context.wb-notice,
+.wb-turn-context.wb-error {
+  display: block;
+}
+.wb-turn-context > strong {
+  display: block;
+}
+.wb-artifact-reference-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block: 8px;
+}
+.wb-artifact-reference-tools > div {
+  display: flex;
+  gap: 4px;
+}
+.wb-artifact-reference-option {
+  padding-block: 8px;
+  border-bottom: 1px solid var(--wb-border);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.wb-artifact-reference-option small,
+.wb-artifact-reference-selection span {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--wb-muted);
+}
+.wb-artifact-references pre {
+  max-height: 240px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

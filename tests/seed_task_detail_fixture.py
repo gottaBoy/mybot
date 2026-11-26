@@ -50,6 +50,8 @@ def seed(directory: str):
                 "task_turns",
                 "workflow_drafts", "workflow_versions", "workflow_operations",
                 "device_pairings", "devices", "device_operations", "device_messages",
+                "device_execution_grants", "device_execution_operations",
+                "coding_jobs",
             }
             if tables != required:
                 raise ValueError("The fixture schema does not match the expected workbench")

@@ -16,6 +16,7 @@ import {
   Save,
   SlidersHorizontal,
   Workflow,
+  Link,
 } from 'lucide-react'
 import {
   AppBadge,
@@ -50,11 +51,18 @@ import {
   type TaskTurnPage,
 } from './task-turns'
 import { stripQueryWhitespace } from './task-query'
+import { pairedWorkspaceHref } from './pair-location'
 import './task-workspace.css'
+import { fetchPreparedCoding, type CodingJob } from './coding'
 
 const RunWorkspace = lazy(() =>
   import('./RunWorkspace').then((module) => ({
     default: module.RunWorkspace,
+  })),
+)
+const CodingRunDialog = lazy(() =>
+  import('./CodingRunDialog').then((module) => ({
+    default: module.CodingRunDialog,
   })),
 )
 
@@ -109,6 +117,39 @@ export function TaskWorkspace({
   const location = readTaskWorkspaceLocation(
     typeof window === 'undefined' ? '' : window.location.href,
   )
+  const codingEnabled = data.capabilities.isolated_coding === true
+  const [codingOpen, setCodingOpen] = useState(
+    Boolean(location.codingRequestId),
+  )
+  const [codingVersion, setCodingVersion] = useState(0)
+  const [codingRead, setCodingRead] = useState<{
+    taskId: string
+    job: CodingJob | null
+    error: boolean
+  }>()
+  useEffect(() => {
+    if (!codingEnabled) return
+    const controller = new AbortController()
+    setCodingRead(undefined)
+    void fetchPreparedCoding(taskId, controller.signal)
+      .then((job) => {
+        if (!controller.signal.aborted)
+          setCodingRead({ taskId, job, error: false })
+      })
+      .catch(() => {
+        if (!controller.signal.aborted)
+          setCodingRead({ taskId, job: null, error: true })
+      })
+    return () => controller.abort()
+  }, [taskId, codingEnabled, codingVersion, refreshRevision])
+  const codingBlocked = Boolean(
+    location.codingRequestId ||
+    (codingEnabled &&
+      (!codingRead ||
+        codingRead.taskId !== taskId ||
+        codingRead.error ||
+        codingRead.job)),
+  )
   const tab = location.tab
   const runId = location.runId ?? item?.run?.id
   const [turnPaging, setTurnPaging] = useState({ taskId, page: 1 })
@@ -121,12 +162,17 @@ export function TaskWorkspace({
     enabled: Boolean(item && !read.error),
   })
   const [composerLocked, setComposerLocked] = useState(false)
+  const [copyNotice, setCopyNotice] = useState<{
+    taskId: string
+    error: boolean
+  }>()
   const composerLock = useRef(false)
   const setConversationLock = useCallback((locked: boolean) => {
     composerLock.current = locked
     setComposerLocked(locked)
   }, [])
   const conversationLocked = Boolean(
+    codingBlocked ||
     location.pendingRequestId ||
     (turns.remote &&
       (turns.busy || turns.error || !turns.value || turns.value.prepared)),
@@ -195,6 +241,7 @@ export function TaskWorkspace({
           tab: nextTab,
           runId: nextRun,
           pendingRequestId: location.pendingRequestId,
+          codingRequestId: location.codingRequestId,
         }),
       )
     } finally {
@@ -335,6 +382,73 @@ export function TaskWorkspace({
           </div>
         </div>
         <div className="wb-task-heading-actions">
+          {codingEnabled && (
+            <AppButton
+              label={t('研发实现', 'Implement & validate')}
+              icon={<GitBranch size={16} />}
+              disabled={
+                !canNavigate() ||
+                composerLocked ||
+                preparing ||
+                Boolean(location.pendingRequestId) ||
+                Boolean(location.error) ||
+                turns.busy ||
+                !codingRead ||
+                codingRead.error ||
+                Boolean(turns.value?.prepared) ||
+                !data.models.length
+              }
+              onClick={() => {
+                if (
+                  canNavigate() &&
+                  codingRead &&
+                  !codingRead.error &&
+                  !composerLock.current &&
+                  !preparing &&
+                  !location.pendingRequestId &&
+                  !location.error
+                )
+                  setCodingOpen(true)
+              }}
+            />
+          )}
+          {data.capabilities.device_run_history === true && (
+            <AppButton
+              label={t('复制设备接续链接', 'Copy device continuation link')}
+              icon={<Link size={16} />}
+              tone="ghost"
+              iconOnly
+              disabled={
+                !canNavigate() ||
+                composerLocked ||
+                Boolean(location.pendingRequestId) ||
+                Boolean(location.error)
+              }
+              onClick={async () => {
+                if (
+                  !canNavigate() ||
+                  composerLock.current ||
+                  location.pendingRequestId ||
+                  location.error
+                )
+                  return
+                try {
+                  const href = pairedWorkspaceHref(taskId, {
+                    view: tab,
+                    ...((tab === 'work' || tab === 'review') && runId
+                      ? { runId }
+                      : {}),
+                  })
+                  await navigator.clipboard.writeText(
+                    new URL(href, window.location.href).href,
+                  )
+                  setCopyNotice({ taskId, error: false })
+                } catch {
+                  setCopyNotice({ taskId, error: true })
+                }
+              }}
+            />
+          )}
           {data.capabilities.device_continuation === true && (
             <AppButton
               label={t('在其他设备继续', 'Continue on another device')}
@@ -367,6 +481,81 @@ export function TaskWorkspace({
           />
         </div>
       </header>
+      {codingEnabled &&
+        (codingRead?.error || codingRead?.job || location.codingRequestId) && (
+          <div className="wb-task-prepared-state">
+            <p>
+              {codingRead?.error
+                ? t(
+                    '研发执行状态读取失败，其他执行已暂停。',
+                    'Implementation state could not be read. Other execution is paused.',
+                  )
+                : t(
+                    '研发实现候选已保存，请继续核对原请求。',
+                    'An implementation candidate is saved. Continue checking the original request.',
+                  )}
+            </p>
+            <AppButton
+              label={t('核对研发执行', 'Check implementation')}
+              icon={<RefreshCw size={16} />}
+              onClick={() => {
+                if (codingRead?.error) setCodingVersion((v) => v + 1)
+                else setCodingOpen(true)
+              }}
+            />
+          </div>
+        )}
+      {codingOpen && codingEnabled && (
+        <Suspense
+          fallback={
+            <AppLoading
+              label={t('正在读取实现配置', 'Loading implementation settings')}
+            />
+          }
+        >
+          <CodingRunDialog
+            key={taskId}
+            task={item.task}
+            models={data.models}
+            initial={location.codingRequestId ?? codingRead?.job?.request_id}
+            t={t}
+            onClose={() => {
+              setCodingOpen(false)
+              setCodingVersion((v) => v + 1)
+            }}
+            onStarted={(id) => {
+              setCodingOpen(false)
+              setCodingVersion((v) => v + 1)
+              read.retry()
+              pushWorkbenchNavigation(
+                taskWorkspaceHref(taskId, { tab: 'work', runId: id }),
+                { replace: true },
+              )
+            }}
+          />
+        </Suspense>
+      )}
+      {location.codingRequestId && !codingEnabled && (
+        <p role="alert" className="wb-error">
+          {t(
+            '当前服务无法核对原研发执行，原请求保持锁定。',
+            'This server cannot reconcile the original implementation. The request remains locked.',
+          )}
+        </p>
+      )}
+      {copyNotice?.taskId === taskId && (
+        <p
+          role={copyNotice.error ? 'alert' : 'status'}
+          className={copyNotice.error ? 'wb-error' : 'wb-hint'}
+        >
+          {copyNotice.error
+            ? t('链接复制失败。', 'The link could not be copied.')
+            : t(
+                '接续链接已复制。另一设备仍需此任务的有效配对授权。',
+                'Continuation link copied. The other device still needs active pairing for this task.',
+              )}
+        </p>
+      )}
       {!data.models.length && (
         <div className="wb-task-model-state" role="status">
           <span>{t('尚未配置模型', 'No model configured')}</span>
@@ -415,6 +604,20 @@ export function TaskWorkspace({
                 onOpenPreparedTurn(item.task, preparedTurn)
             }}
           />
+          {data.capabilities.device_execution_delegation === true && (
+            <AppButton
+              label={t('到设备页委托执行', 'Delegate from devices')}
+              icon={<Link size={15} />}
+              href={`#devices?task=${encodeURIComponent(taskId)}`}
+              disabled={
+                read.busy ||
+                turns.busy ||
+                preparing ||
+                composerLocked ||
+                Boolean(location.pendingRequestId)
+              }
+            />
+          )}
         </div>
       )}
       {turns.remote && turns.error && tab !== 'conversation' && (
@@ -513,7 +716,7 @@ export function TaskWorkspace({
               retry={turns.retry}
               pendingRequestId={location.pendingRequestId}
               runId={location.runId}
-              preparing={preparing}
+              preparing={preparing || codingBlocked}
               navigationAllowance={conversationNavigation}
               onComposerLockChange={setConversationLock}
               onPrepareTurn={onPrepareTurn}

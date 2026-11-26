@@ -6,6 +6,8 @@ import time
 from .provider import ChatProvider, ProviderError
 from .harness import LocalSuperagentHarness, Paused, parse_plan
 from .store import Store
+from .coding import CodingHarness, CODING_SYSTEM
+from .coding_runner import PythonTestRunner, CodingError
 
 
 SYSTEM = """你是研发工作台中的受限 AI。仅分析提供的目标与资料。
@@ -24,6 +26,7 @@ class Engine:
         self.current = None
         self.loop_task = None
         self.harness = LocalSuperagentHarness(store)
+        self.coding = CodingHarness(store, PythonTestRunner())
 
     def start(self):
         self.store.recover()
@@ -63,7 +66,7 @@ class Engine:
         if state == "pause_requested":
             raise Paused()
 
-    async def invoke(self, run: dict, agent: dict, prompt: str) -> str:
+    async def invoke(self, run: dict, agent: dict, prompt: str, system=SYSTEM) -> str:
         if agent["status"] == "succeeded" and agent["output"] is not None:
             return agent["output"]
         model = run["context"]["models"][agent["model_id"]]
@@ -81,7 +84,7 @@ class Engine:
                 )
                 async with asyncio.timeout(deadline):
                     result = await self.provider.complete(model, [
-                        {"role": "system", "content": SYSTEM}, {"role": "user", "content": prompt},
+                        {"role": "system", "content": system}, {"role": "user", "content": prompt},
                     ], run["config"]["max_output_tokens"])
             except TimeoutError as exc:
                 raise ProviderError("call_timeout_outcome_unknown", detail={
@@ -118,11 +121,17 @@ class Engine:
     async def execute(self, run: dict):
         try:
             async with asyncio.timeout(run["config"]["minutes"] * 60):
-                await self.harness.execute(
-                    run,
-                    lambda agent, prompt: self.invoke(run, agent, prompt),
-                    self.checkpoint,
-                )
+                if run["context"].get("mode") == "coding-v1":
+                    await self.coding.execute(
+                        run, lambda agent, prompt: self.invoke(run, agent, prompt, CODING_SYSTEM),
+                        self.checkpoint,
+                    )
+                else:
+                    await self.harness.execute(
+                        run,
+                        lambda agent, prompt: self.invoke(run, agent, prompt),
+                        self.checkpoint,
+                    )
                 self.store.finish_run(run["id"], "succeeded")
         except Paused:
             self.store.finish_run(run["id"], "paused")
@@ -135,7 +144,7 @@ class Engine:
         except Exception as exc:
             if isinstance(exc, BaseExceptionGroup):
                 nested = exc.exceptions[0]
-                code = nested.code if isinstance(nested, ProviderError) else "research_failed"
+                code = nested.code if isinstance(nested, (ProviderError, CodingError)) else "research_failed"
             else:
-                code = exc.code if isinstance(exc, ProviderError) else str(exc) if isinstance(exc, ValueError) else "run_execution_error"
+                code = exc.code if isinstance(exc, (ProviderError, CodingError)) else str(exc) if isinstance(exc, ValueError) else "run_execution_error"
             self.store.finish_run(run["id"], "failed", code)

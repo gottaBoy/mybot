@@ -107,6 +107,8 @@ export type PairedTask = {
     truncated: boolean
   } | null
   cursor: number
+  run_history?: boolean
+  execution_delegation?: boolean
 }
 export type DeviceEvents = {
   schema_version: 1
@@ -123,6 +125,26 @@ export type DeviceEvents = {
   next_cursor: number
   watermark: number
   has_more: boolean
+}
+export type DeviceRun = NonNullable<PairedTask['latest_run']>
+export type DeviceRunPage = {
+  schema_version: 1
+  device_id: string
+  task_id: string
+  items: DeviceRun[]
+  total: number
+  requested_page: number
+  page: number
+  page_size: 20
+  total_pages: number
+  has_more: boolean
+}
+export type DeviceRunDetail = {
+  schema_version: 1
+  device_id: string
+  task_id: string
+  run: DeviceRun
+  report: PairedTask['report']
 }
 
 export class DeviceInputError extends Error {
@@ -363,6 +385,12 @@ export function parsePairedTask(
       'messages',
       'report',
       'cursor',
+      ...(value && typeof value === 'object' && 'run_history' in value
+        ? ['run_history']
+        : []),
+      ...(value && typeof value === 'object' && 'execution_delegation' in value
+        ? ['execution_delegation']
+        : []),
     ]) ||
     value.schema_version !== 1 ||
     !isTaskReadIdentifier(value.device_id) ||
@@ -376,6 +404,9 @@ export function parsePairedTask(
     !Array.isArray(value.messages.items) ||
     !integer(value.messages.total) ||
     !integer(value.cursor) ||
+    ('run_history' in value && typeof value.run_history !== 'boolean') ||
+    ('execution_delegation' in value &&
+      typeof value.execution_delegation !== 'boolean') ||
     (expected &&
       (value.device_id !== expected.id || value.task.id !== expected.task_id))
   )
@@ -450,6 +481,12 @@ export function parsePairedTask(
     messages: { items, total: value.messages.total },
     report,
     cursor: value.cursor,
+    ...('run_history' in value
+      ? { run_history: value.run_history as boolean }
+      : {}),
+    ...('execution_delegation' in value
+      ? { execution_delegation: value.execution_delegation as boolean }
+      : {}),
   }
 }
 export function parseDeviceEvents(
@@ -849,4 +886,578 @@ export async function logoutDevice(signal?: AbortSignal) {
   const result = await post('/device/logout', {}, signal)
   if (!own(result, ['ok']) || result.ok !== true)
     throw new DeviceResponseError()
+}
+
+export type ExecutionSummary = {
+  turn_id: string
+  turn_request_id: string
+  candidate_hash: string
+  content: string
+  context_hash: string
+  resources: {
+    max_calls: number
+    parallel: number
+    minutes: number
+    max_output_tokens: number
+  }
+  models: Array<{
+    role: string
+    id: string
+    name: string
+    model: string
+    kind: string
+  }>
+  source_count: number
+  source_bytes: number
+  workflow_version: number | null
+  artifact_count?: number
+}
+export type ExecutionGrant = ExecutionSummary & {
+  id: string
+  device_id: string
+  task_id: string
+  created_at: string
+  expires_at: string
+  revoked_at: string | null
+  revision: 1 | 2
+  state: 'authorized' | 'applied' | 'revoked' | 'expired' | 'superseded'
+  run_id: string | null
+}
+export type OwnerExecution = {
+  schema_version: 1
+  device: Device
+  prepared: ExecutionSummary | null
+  grant: ExecutionGrant | null
+}
+export type ScopedExecution = {
+  schema_version: 1
+  device_id: string
+  task_id: string
+  grant: ExecutionGrant | null
+}
+export type ExecutionCommand =
+  | {
+      kind: 'grant'
+      device_id: string
+      request_id: string
+      turn_id: string
+      candidate_hash: string
+      expected_device_revision: 1
+      consent: true
+    }
+  | {
+      kind: 'revoke'
+      device_id: string
+      grant_id: string
+      request_id: string
+      expected_revision: 1
+      consent: true
+    }
+export type ExecutionReceipt = {
+  request_id: string
+  kind: 'grant' | 'revoke'
+  candidate_hash: string
+  state: 'applied'
+  grant: ExecutionGrant
+}
+const summaryKeys = [
+  'turn_id',
+  'turn_request_id',
+  'candidate_hash',
+  'content',
+  'context_hash',
+  'resources',
+  'models',
+  'source_count',
+  'source_bytes',
+  'workflow_version',
+]
+function executionSummaryKeys(value: unknown) {
+  return [
+    ...summaryKeys,
+    ...(value &&
+    typeof value === 'object' &&
+    Object.prototype.hasOwnProperty.call(value, 'artifact_count')
+      ? ['artifact_count']
+      : []),
+  ]
+}
+function parseExecutionSummary(value: unknown): ExecutionSummary {
+  if (
+    !own(value, executionSummaryKeys(value)) ||
+    !isTaskReadIdentifier(value.turn_id) ||
+    !requestId(value.turn_request_id) ||
+    !hash(value.candidate_hash) ||
+    !hash(value.context_hash) ||
+    !named(value.content, 8000) ||
+    !own(value.resources, [
+      'max_calls',
+      'parallel',
+      'minutes',
+      'max_output_tokens',
+    ]) ||
+    !integer(value.resources.max_calls, 3) ||
+    value.resources.max_calls > 8 ||
+    !integer(value.resources.parallel, 1) ||
+    value.resources.parallel > 2 ||
+    !integer(value.resources.minutes, 1) ||
+    value.resources.minutes > 30 ||
+    !integer(value.resources.max_output_tokens, 256) ||
+    value.resources.max_output_tokens > 4096 ||
+    !integer(value.source_count) ||
+    !integer(value.source_bytes) ||
+    (Object.prototype.hasOwnProperty.call(value, 'artifact_count') &&
+      (!integer(value.artifact_count, 1) || value.artifact_count > 3)) ||
+    (value.workflow_version !== null && !integer(value.workflow_version, 1)) ||
+    !Array.isArray(value.models) ||
+    value.models.length !== 3
+  )
+    throw new DeviceResponseError()
+  for (const [i, model] of value.models.entries())
+    if (
+      !own(model, ['role', 'id', 'name', 'model', 'kind']) ||
+      model.role !==
+        ['coordinator_model', 'researcher_model', 'reviewer_model'][i] ||
+      !isTaskReadIdentifier(model.id) ||
+      !named(model.name, 80) ||
+      !named(model.model, 150) ||
+      !['chat_completions', 'codex_cli'].includes(model.kind as string)
+    )
+      throw new DeviceResponseError()
+  return value as unknown as ExecutionSummary
+}
+export function parseExecutionGrant(
+  value: unknown,
+  device: Pick<Device, 'id' | 'task_id'>,
+): ExecutionGrant {
+  if (
+    !own(value, [
+      ...executionSummaryKeys(value),
+      'id',
+      'device_id',
+      'task_id',
+      'created_at',
+      'expires_at',
+      'revoked_at',
+      'revision',
+      'state',
+      'run_id',
+    ]) ||
+    !requestId(value.id) ||
+    value.device_id !== device.id ||
+    value.task_id !== device.task_id ||
+    !timestamp(value.created_at) ||
+    !timestamp(value.expires_at) ||
+    Date.parse(value.expires_at) <= Date.parse(value.created_at) ||
+    Date.parse(value.expires_at) - Date.parse(value.created_at) > 600000 ||
+    (value.revoked_at !== null && !timestamp(value.revoked_at)) ||
+    value.revision !== (value.revoked_at === null ? 1 : 2) ||
+    !['authorized', 'applied', 'revoked', 'expired', 'superseded'].includes(
+      value.state as string,
+    ) ||
+    (value.state === 'applied'
+      ? !isTaskReadIdentifier(value.run_id)
+      : value.run_id !== null) ||
+    (value.state === 'revoked') !== (value.revoked_at !== null)
+  )
+    throw new DeviceResponseError()
+  parseExecutionSummary(
+    Object.fromEntries(
+      executionSummaryKeys(value).map((key) => [key, value[key]]),
+    ),
+  )
+  return value as unknown as ExecutionGrant
+}
+export function parseOwnerExecution(
+  value: unknown,
+  deviceId: string,
+): OwnerExecution {
+  if (
+    !own(value, ['schema_version', 'device', 'prepared', 'grant']) ||
+    value.schema_version !== 1
+  )
+    throw new DeviceResponseError()
+  const device = parseDevice(value.device)
+  if (device.id !== deviceId) throw new DeviceResponseError()
+  return {
+    schema_version: 1,
+    device,
+    prepared:
+      value.prepared === null ? null : parseExecutionSummary(value.prepared),
+    grant:
+      value.grant === null ? null : parseExecutionGrant(value.grant, device),
+  }
+}
+export function parseScopedExecution(
+  value: unknown,
+  device: Pick<Device, 'id' | 'task_id'>,
+  grantId?: string,
+): ScopedExecution {
+  if (
+    !own(value, ['schema_version', 'device_id', 'task_id', 'grant']) ||
+    value.schema_version !== 1 ||
+    value.device_id !== device.id ||
+    value.task_id !== device.task_id ||
+    (grantId && value.grant === null)
+  )
+    throw new DeviceResponseError()
+  const grant =
+    value.grant === null ? null : parseExecutionGrant(value.grant, device)
+  if (grantId && grant?.id !== grantId) throw new DeviceResponseError()
+  return {
+    schema_version: 1,
+    device_id: device.id,
+    task_id: device.task_id,
+    grant,
+  }
+}
+function validateExecutionCommand(command: ExecutionCommand) {
+  if (
+    !own(
+      command,
+      command.kind === 'grant'
+        ? [
+            'kind',
+            'device_id',
+            'request_id',
+            'turn_id',
+            'candidate_hash',
+            'expected_device_revision',
+            'consent',
+          ]
+        : [
+            'kind',
+            'device_id',
+            'grant_id',
+            'request_id',
+            'expected_revision',
+            'consent',
+          ],
+    ) ||
+    !isTaskReadIdentifier(command.device_id) ||
+    !requestId(command.request_id) ||
+    command.consent !== true ||
+    (command.kind === 'grant'
+      ? !isTaskReadIdentifier(command.turn_id) ||
+        !hash(command.candidate_hash) ||
+        command.expected_device_revision !== 1
+      : command.kind !== 'revoke' ||
+        !requestId(command.grant_id) ||
+        command.expected_revision !== 1)
+  )
+    throw new DeviceInputError()
+}
+export async function executionCommandHash(command: ExecutionCommand) {
+  validateExecutionCommand(command)
+  return sha(canonical(command))
+}
+export async function parseExecutionReceipt(
+  value: unknown,
+  deviceId: string,
+  operationId: string,
+  command?: ExecutionCommand,
+): Promise<ExecutionReceipt> {
+  if (
+    !own(value, ['request_id', 'kind', 'candidate_hash', 'state', 'grant']) ||
+    value.request_id !== operationId ||
+    !['grant', 'revoke'].includes(value.kind as string) ||
+    !hash(value.candidate_hash) ||
+    value.state !== 'applied' ||
+    !value.grant ||
+    typeof value.grant !== 'object' ||
+    !('task_id' in value.grant) ||
+    !isTaskReadIdentifier(value.grant.task_id)
+  )
+    throw new DeviceResponseError()
+  const grant = parseExecutionGrant(value.grant, {
+    id: deviceId,
+    task_id: value.grant.task_id,
+  })
+  if (
+    (value.kind === 'grant' &&
+      (grant.id !== operationId || grant.state !== 'authorized')) ||
+    (value.kind === 'revoke' && grant.state !== 'revoked')
+  )
+    throw new DeviceResponseError()
+  if (
+    command &&
+    (command.device_id !== deviceId ||
+      command.request_id !== operationId ||
+      command.kind !== value.kind ||
+      value.candidate_hash !== (await executionCommandHash(command)) ||
+      (command.kind === 'grant'
+        ? grant.turn_id !== command.turn_id ||
+          grant.candidate_hash !== command.candidate_hash
+        : grant.id !== command.grant_id ||
+          grant.revision !== command.expected_revision + 1))
+  )
+    throw new DeviceResponseError()
+  return { ...value, grant } as ExecutionReceipt
+}
+export async function fetchOwnerExecution(
+  deviceId: string,
+  signal?: AbortSignal,
+) {
+  if (!isTaskReadIdentifier(deviceId)) throw new DeviceInputError()
+  return parseOwnerExecution(
+    await request(
+      `/devices/${encodeURIComponent(deviceId)}/execution`,
+      {},
+      signal,
+    ),
+    deviceId,
+  )
+}
+export async function sendExecutionCommand(
+  command: ExecutionCommand,
+  signal?: AbortSignal,
+) {
+  validateExecutionCommand(command)
+  const { kind, device_id, ...rest } = command
+  const grant_id = kind === 'revoke' ? command.grant_id : undefined
+  const body =
+    kind === 'revoke'
+      ? {
+          request_id: command.request_id,
+          expected_revision: command.expected_revision,
+          consent: true,
+        }
+      : rest
+  const path = `/devices/${encodeURIComponent(device_id)}/execution-grants${grant_id ? `/${encodeURIComponent(grant_id)}/revoke` : ''}`
+  return parseExecutionReceipt(
+    await post(path, body, signal),
+    device_id,
+    command.request_id,
+    command,
+  )
+}
+export async function fetchExecutionOperation(
+  deviceId: string,
+  operationId: string,
+  signal?: AbortSignal,
+  command?: ExecutionCommand,
+) {
+  if (!isTaskReadIdentifier(deviceId) || !requestId(operationId))
+    throw new DeviceInputError()
+  return parseExecutionReceipt(
+    await request(
+      `/devices/${encodeURIComponent(deviceId)}/execution-operations/${encodeURIComponent(operationId)}`,
+      {},
+      signal,
+    ),
+    deviceId,
+    operationId,
+    command,
+  )
+}
+export async function fetchScopedExecution(
+  device: Pick<Device, 'id' | 'task_id'>,
+  grantId?: string,
+  signal?: AbortSignal,
+) {
+  if (
+    !isTaskReadIdentifier(device.id) ||
+    !isTaskReadIdentifier(device.task_id) ||
+    (grantId !== undefined && !requestId(grantId))
+  )
+    throw new DeviceInputError()
+  return parseScopedExecution(
+    await request(
+      `/device/execution-grants${grantId ? `/${encodeURIComponent(grantId)}` : ''}`,
+      {
+        headers: { 'X-Workbench-Device-Id': device.id },
+      },
+      signal,
+    ),
+    device,
+    grantId,
+  )
+}
+export async function executeDeviceGrant(
+  device: Pick<Device, 'id' | 'task_id'>,
+  grant: ExecutionGrant,
+  signal?: AbortSignal,
+) {
+  parseExecutionGrant(grant, device)
+  const result = parseScopedExecution(
+    await post(
+      `/device/execution-grants/${encodeURIComponent(grant.id)}/execute`,
+      {
+        candidate_hash: grant.candidate_hash,
+        consent: true,
+      },
+      signal,
+      { 'X-Workbench-Device-Id': device.id },
+    ),
+    device,
+    grant.id,
+  )
+  if (
+    result.grant?.state !== 'applied' ||
+    executionGrantIdentity(result.grant) !== executionGrantIdentity(grant)
+  )
+    throw new DeviceResponseError()
+  return result
+}
+export function executionGrantIdentity(grant: ExecutionSummary) {
+  return canonical(
+    Object.fromEntries(
+      executionSummaryKeys(grant).map((key) => [
+        key,
+        grant[key as keyof ExecutionSummary],
+      ]),
+    ),
+  )
+}
+
+function parseScopedRun(value: unknown, taskId: string): DeviceRun {
+  if (
+    !own(value, ['id', 'task_id', 'status', 'created_at']) ||
+    !isTaskReadIdentifier(value.id) ||
+    value.task_id !== taskId ||
+    !statuses.includes(value.status as string) ||
+    !timestamp(value.created_at)
+  )
+    throw new DeviceResponseError()
+  return {
+    id: value.id,
+    task_id: taskId,
+    status: value.status as string,
+    created_at: value.created_at,
+  }
+}
+export function parseDeviceRunPage(
+  value: unknown,
+  device: Pick<Device, 'id' | 'task_id'>,
+  requestedPage: number,
+): DeviceRunPage {
+  if (
+    !own(value, [
+      'schema_version',
+      'device_id',
+      'task_id',
+      'items',
+      'total',
+      'requested_page',
+      'page',
+      'page_size',
+      'total_pages',
+      'has_more',
+    ]) ||
+    value.schema_version !== 1 ||
+    value.device_id !== device.id ||
+    value.task_id !== device.task_id ||
+    !Array.isArray(value.items) ||
+    !integer(value.total) ||
+    !integer(value.total_pages, 1) ||
+    value.total_pages !== Math.max(1, Math.ceil(value.total / 20)) ||
+    value.requested_page !== requestedPage ||
+    !integer(requestedPage, 1) ||
+    requestedPage > maxTaskQueryPage ||
+    value.page_size !== 20 ||
+    value.page !== Math.min(requestedPage, value.total_pages) ||
+    value.has_more !== value.page < value.total_pages
+  )
+    throw new DeviceResponseError()
+  const items = value.items.map((item) => parseScopedRun(item, device.task_id))
+  if (
+    items.length !==
+      Math.min(20, value.total - ((value.page as number) - 1) * 20) ||
+    new Set(items.map((item) => item.id)).size !== items.length
+  )
+    throw new DeviceResponseError()
+  return { ...value, items } as DeviceRunPage
+}
+export function parseDeviceRunDetail(
+  value: unknown,
+  device: Pick<Device, 'id' | 'task_id'>,
+  runId: string,
+): DeviceRunDetail {
+  if (
+    !own(value, ['schema_version', 'device_id', 'task_id', 'run', 'report']) ||
+    value.schema_version !== 1 ||
+    value.device_id !== device.id ||
+    value.task_id !== device.task_id
+  )
+    throw new DeviceResponseError()
+  const run = parseScopedRun(value.run, device.task_id)
+  if (run.id !== runId) throw new DeviceResponseError()
+  let report: PairedTask['report'] = null
+  const item = value.report
+  if (item !== null) {
+    if (
+      !own(item, [
+        'id',
+        'run_id',
+        'title',
+        'content',
+        'decision',
+        'truncated',
+      ]) ||
+      !isTaskReadIdentifier(item.id) ||
+      item.run_id !== runId ||
+      !named(item.title, 160) ||
+      !text(item.content, 20000) ||
+      !['pending', 'accepted', 'changes_requested'].includes(
+        item.decision as string,
+      ) ||
+      typeof item.truncated !== 'boolean'
+    )
+      throw new DeviceResponseError()
+    report = { ...item } as NonNullable<PairedTask['report']>
+  }
+  return {
+    schema_version: 1,
+    device_id: device.id,
+    task_id: device.task_id,
+    run,
+    report,
+  }
+}
+export async function fetchDeviceRuns(
+  device: Pick<Device, 'id' | 'task_id'>,
+  page: number,
+  signal?: AbortSignal,
+) {
+  if (
+    !isTaskReadIdentifier(device.id) ||
+    !isTaskReadIdentifier(device.task_id) ||
+    !integer(page, 1) ||
+    page > maxTaskQueryPage
+  )
+    throw new DeviceInputError()
+  return parseDeviceRunPage(
+    await request(
+      `/device/runs?page=${page}`,
+      {
+        headers: { 'X-Workbench-Device-Id': device.id },
+      },
+      signal,
+    ),
+    device,
+    page,
+  )
+}
+export async function fetchDeviceRun(
+  device: Pick<Device, 'id' | 'task_id'>,
+  runId: string,
+  signal?: AbortSignal,
+) {
+  if (
+    !isTaskReadIdentifier(device.id) ||
+    !isTaskReadIdentifier(device.task_id) ||
+    !isTaskReadIdentifier(runId)
+  )
+    throw new DeviceInputError()
+  return parseDeviceRunDetail(
+    await request(
+      `/device/runs/${encodeURIComponent(runId)}`,
+      {
+        headers: { 'X-Workbench-Device-Id': device.id },
+      },
+      signal,
+    ),
+    device,
+    runId,
+  )
 }

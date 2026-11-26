@@ -206,6 +206,29 @@ CREATE TABLE IF NOT EXISTS device_messages (
 );
 CREATE INDEX IF NOT EXISTS devices_created ON devices(created_at DESC);
 CREATE INDEX IF NOT EXISTS device_messages_device ON device_messages(device_id);
+CREATE TABLE IF NOT EXISTS device_execution_grants (
+ id TEXT PRIMARY KEY, device_id TEXT NOT NULL REFERENCES devices(id),
+ task_id TEXT NOT NULL REFERENCES tasks(id), turn_id TEXT NOT NULL REFERENCES task_turns(id),
+ candidate_hash TEXT NOT NULL, summary TEXT NOT NULL,
+ created_at TEXT NOT NULL, expires_at TEXT NOT NULL, revoked_at TEXT,
+ revision INTEGER NOT NULL CHECK(revision IN (1,2)), run_id TEXT REFERENCES runs(id),
+ CHECK((revision=1 AND revoked_at IS NULL) OR (revision=2 AND revoked_at IS NOT NULL)),
+ CHECK(revoked_at IS NULL OR run_id IS NULL)
+);
+CREATE INDEX IF NOT EXISTS device_execution_device ON device_execution_grants(device_id,created_at DESC);
+CREATE INDEX IF NOT EXISTS device_execution_turn ON device_execution_grants(turn_id);
+CREATE TABLE IF NOT EXISTS device_execution_operations (
+ request_id TEXT PRIMARY KEY, kind TEXT NOT NULL CHECK(kind IN ('grant','revoke')),
+ candidate_hash TEXT NOT NULL, receipt TEXT NOT NULL, created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS coding_jobs (
+ request_id TEXT PRIMARY KEY, task_id TEXT NOT NULL REFERENCES tasks(id),
+ candidate_hash TEXT NOT NULL, input_hash TEXT NOT NULL, candidate TEXT NOT NULL,
+ state TEXT NOT NULL CHECK(state IN ('prepared','applied','discarded')),
+ run_id TEXT UNIQUE REFERENCES runs(id), created_at TEXT NOT NULL,
+ CHECK((state='applied' AND run_id IS NOT NULL) OR (state!='applied' AND run_id IS NULL))
+);
+CREATE UNIQUE INDEX IF NOT EXISTS coding_jobs_prepared ON coding_jobs(task_id) WHERE state='prepared';
 """
 
 
@@ -708,6 +731,8 @@ class Store:
     def create_run(self, task_id: str, request_id: str, config: dict, context: dict,
                    workflow_version=None) -> dict:
         with self.transaction() as db:
+            if db.execute("SELECT 1 FROM coding_jobs WHERE request_id=?", (request_id,)).fetchone():
+                raise ValueError("coding_request_conflict")
             if db.execute("SELECT 1 FROM task_turns WHERE request_id=?", (request_id,)).fetchone():
                 raise ValueError("task_turn_request_conflict")
             existing = decode(db.execute("SELECT * FROM runs WHERE request_id=?", (request_id,)).fetchone())
@@ -737,6 +762,10 @@ class Store:
     @staticmethod
     def _require_no_task_turn(db, task_id):
         if db.execute(
+            "SELECT 1 FROM coding_jobs WHERE task_id=? AND state='prepared'", (task_id,),
+        ).fetchone():
+            raise ValueError("coding_prepared_pending")
+        if db.execute(
             "SELECT 1 FROM task_turns WHERE task_id=? AND state='prepared'", (task_id,),
         ).fetchone():
             raise ValueError("task_turn_prepared_pending")
@@ -746,6 +775,8 @@ class Store:
         run = decode(db.execute("SELECT * FROM runs WHERE id=?", (identifier,)).fetchone())
         if run is None:
             raise KeyError(identifier)
+        if run["context"].get("mode") == "coding-v1":
+            raise ValueError("coding_recovery_requires_new_attempt")
         facts = [
             [decode(row) for row in db.execute(f"SELECT * FROM {table} WHERE run_id=?", (identifier,))]
             for table in ("agents", "calls", "artifacts")
@@ -811,6 +842,8 @@ class Store:
     def prepare_recovery_intent(self, source_id, request_id, mode, snapshot_hash, config):
         input_hash = fingerprint([source_id, mode, snapshot_hash, config])
         with self.transaction() as db:
+            if db.execute("SELECT 1 FROM coding_jobs WHERE request_id=?", (request_id,)).fetchone():
+                raise ValueError("coding_request_conflict")
             existing = decode(db.execute(
                 "SELECT * FROM recovery_intents WHERE request_id=?", (request_id,),
             ).fetchone())
@@ -1167,6 +1200,8 @@ class Store:
         row = db.execute("SELECT * FROM runs WHERE id=?", (identifier,)).fetchone()
         if not row:
             raise KeyError(identifier)
+        if json.loads(row["context"]).get("mode") == "coding-v1" and action != "cancel":
+            raise ValueError("coding_control_not_supported")
         if action == "resume":
             self._require_no_recovery_intent(db, identifier, own_intent_id)
             self._require_no_task_turn(db, row["task_id"])

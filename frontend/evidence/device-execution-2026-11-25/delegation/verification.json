@@ -1,0 +1,222 @@
+{
+  "fixture": true,
+  "checks": [
+    "Pairing alone still grants no execution; no broader owner APIs",
+    "Owner resource wizard prepares and freezes one candidate without executing",
+    "Lost owner grant response survives reload and reconciles by exact operation GET without repeated grant or execution",
+    "Device sees the exact candidate limits and model identities without source bodies, paths or credentials",
+    "Both surfaces render three styles in both modes at desktop English and mobile Chinese widths",
+    "Device explicitly executes once; lost response and reload use only the original grant GET, reaching a real FakeProvider report",
+    "Owner execution replay returns the same Run and device still cannot manage models",
+    "Owner revokes an unused grant in the UI; a stale device confirmation cannot queue another Run",
+    "Revoking the device clears grant and Task content; prior Run history remains intact"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/devices/pairings",
+      "method": "POST"
+    },
+    {
+      "path": "/api/device/claim",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/4631fa7ceaa14ed6b75f7675d10f76b2/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/4631fa7ceaa14ed6b75f7675d10f76b2/turns",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/4631fa7ceaa14ed6b75f7675d10f76b2/turns/42ea0f99c3ec4dc2b3ad8753e96871ea/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/4631fa7ceaa14ed6b75f7675d10f76b2/turns/42ea0f99c3ec4dc2b3ad8753e96871ea/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/devices/dde5f27f54404b24a741e8bebd873c33/execution-grants",
+      "method": "POST"
+    },
+    {
+      "path": "/api/device/execution-grants/7b882833-0d97-460d-9bf1-2af6f0d4f1c9/execute",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/4631fa7ceaa14ed6b75f7675d10f76b2/turns/42ea0f99c3ec4dc2b3ad8753e96871ea/execute",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/4631fa7ceaa14ed6b75f7675d10f76b2/turns",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/4631fa7ceaa14ed6b75f7675d10f76b2/turns/eeff67be1e8a4e87b2f9acdc61d1db25/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/4631fa7ceaa14ed6b75f7675d10f76b2/turns/eeff67be1e8a4e87b2f9acdc61d1db25/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/devices/dde5f27f54404b24a741e8bebd873c33/execution-grants",
+      "method": "POST"
+    },
+    {
+      "path": "/api/devices/dde5f27f54404b24a741e8bebd873c33/execution-grants/second-execution-grant/revoke",
+      "method": "POST"
+    },
+    {
+      "path": "/api/device/execution-grants/second-execution-grant/execute",
+      "method": "POST"
+    },
+    {
+      "path": "/api/devices/dde5f27f54404b24a741e8bebd873c33/revoke",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "owner-neutral-light.png",
+    "paired-neutral-light.png",
+    "owner-neutral-dark.png",
+    "paired-neutral-dark.png",
+    "owner-zira-light.png",
+    "paired-zira-light.png",
+    "owner-zira-dark.png",
+    "paired-zira-dark.png",
+    "owner-y2k-light.png",
+    "paired-y2k-light.png",
+    "owner-y2k-dark.png",
+    "paired-y2k-dark.png"
+  ],
+  "geometry": [
+    {
+      "surface": "owner",
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "background": "light-dark(#ffffff, #1c1f22)"
+    },
+    {
+      "surface": "paired",
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "background": "light-dark(#ffffff, #1c1f22)"
+    },
+    {
+      "surface": "owner",
+      "style": "neutral",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "background": "light-dark(#ffffff, #1c1f22)"
+    },
+    {
+      "surface": "paired",
+      "style": "neutral",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "background": "light-dark(#ffffff, #1c1f22)"
+    },
+    {
+      "surface": "owner",
+      "style": "zira",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "background": "light-dark(#ffffff, #161a22)"
+    },
+    {
+      "surface": "paired",
+      "style": "zira",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "background": "light-dark(#ffffff, #161a22)"
+    },
+    {
+      "surface": "owner",
+      "style": "zira",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "background": "light-dark(#ffffff, #161a22)"
+    },
+    {
+      "surface": "paired",
+      "style": "zira",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "background": "light-dark(#ffffff, #161a22)"
+    },
+    {
+      "surface": "owner",
+      "style": "y2k",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "background": "light-dark(#ffffff, #16182b)"
+    },
+    {
+      "surface": "paired",
+      "style": "y2k",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "background": "light-dark(#ffffff, #16182b)"
+    },
+    {
+      "surface": "owner",
+      "style": "y2k",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "background": "light-dark(#ffffff, #16182b)"
+    },
+    {
+      "surface": "paired",
+      "style": "y2k",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "background": "light-dark(#ffffff, #16182b)"
+    }
+  ]
+}

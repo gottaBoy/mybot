@@ -5,6 +5,13 @@ import {
   stripQueryWhitespace,
 } from './task-query'
 import { parseWorkflowSnapshot, workflowConfig } from './workflows'
+import {
+  artifactRefs,
+  parseArtifactSources,
+  parseArtifactRefs,
+  sameArtifactRefs,
+  type ArtifactRef,
+} from './task-artifacts'
 
 export type TurnConfig = {
   coordinator_model: string
@@ -52,6 +59,7 @@ export type TurnCreate = { request_id: string; content: string }
 export type TurnPreparation = TurnConfig & {
   context_hash: string
   workflow_version?: number | null
+  artifact_refs?: ArtifactRef[]
 }
 export type TurnExecution = { candidate_hash: string; consent: true }
 export type TaskTurnReadError =
@@ -174,7 +182,7 @@ export function parseTurnSnapshot(
         'tools',
         'supplement',
       ],
-      ['workflow'],
+      ['workflow', 'artifacts'],
     ) ||
     !hash(value.context_hash) ||
     !text(value.goal, 20_000) ||
@@ -215,6 +223,14 @@ export function parseTurnSnapshot(
     return { path: item.path, bytes: item.bytes as number }
   })
   let workflow: Snapshot['workflow']
+  let artifacts: Snapshot['artifacts']
+  if (Object.prototype.hasOwnProperty.call(value, 'artifacts')) {
+    try {
+      artifacts = parseArtifactSources(value.artifacts)
+    } catch {
+      throw new TaskTurnResponseError()
+    }
+  }
   if (Object.prototype.hasOwnProperty.call(value, 'workflow')) {
     try {
       workflow = parseWorkflowSnapshot(value.workflow)
@@ -237,6 +253,7 @@ export function parseTurnSnapshot(
       content: value.supplement.content,
     },
     ...(workflow ? { workflow } : {}),
+    ...(artifacts ? { artifacts } : {}),
   }
 }
 
@@ -281,6 +298,12 @@ export function parseTaskTurn(
         content: value.content,
       }),
     }
+    if (
+      candidate.snapshot.artifacts?.some(
+        (item) => item.task_id !== value.task_id,
+      )
+    )
+      throw new TaskTurnResponseError()
     if (
       candidate.snapshot.workflow &&
       JSON.stringify(candidate.config) !==
@@ -336,7 +359,11 @@ export function assertTaskTurnReceipt(
       (JSON.stringify(receipt.candidate.config) !==
         JSON.stringify(sentConfig) ||
         receipt.candidate.snapshot.context_hash !== sent.context_hash ||
-        !matchesWorkflow(receipt.candidate.snapshot, sent))
+        !matchesWorkflow(receipt.candidate.snapshot, sent) ||
+        !sameArtifactRefs(
+          artifactRefs(receipt.candidate.snapshot.artifacts),
+          sent.artifact_refs ?? [],
+        ))
     )
       throw new TaskTurnResponseError()
   }
@@ -544,11 +571,25 @@ export async function previewTaskTurn(
   taskId: string,
   turnId: string,
   signal?: AbortSignal,
+  references?: ArtifactRef[],
 ) {
-  return parseTurnSnapshot(
-    await mutation(`${turnPath(taskId, turnId)}/preview`, {}, signal),
+  const refs =
+    references === undefined ? undefined : parseArtifactRefs(references)
+  const result = parseTurnSnapshot(
+    await mutation(
+      `${turnPath(taskId, turnId)}/preview`,
+      refs === undefined ? {} : { artifact_refs: refs },
+      signal,
+    ),
     { id: turnId },
   )
+  if (
+    result.artifacts?.some((item) => item.task_id !== taskId) ||
+    (refs !== undefined &&
+      !sameArtifactRefs(artifactRefs(result.artifacts), refs))
+  )
+    throw new TaskTurnResponseError()
+  return result
 }
 
 export async function prepareTaskTurn(
@@ -574,7 +615,11 @@ export async function prepareTaskTurn(
     !turn.candidate ||
     turn.candidate.snapshot.context_hash !== sent.context_hash ||
     JSON.stringify(turn.candidate.config) !== JSON.stringify(config) ||
-    !matchesWorkflow(turn.candidate.snapshot, sent)
+    !matchesWorkflow(turn.candidate.snapshot, sent) ||
+    !sameArtifactRefs(
+      artifactRefs(turn.candidate.snapshot.artifacts),
+      sent.artifact_refs ?? [],
+    )
   )
     throw new TaskTurnResponseError()
   return turn
@@ -593,7 +638,7 @@ function parsePreparation(value: unknown): TurnPreparation {
     !optionalObject(
       value,
       [...configKeys, 'context_hash'],
-      ['workflow_version'],
+      ['workflow_version', 'artifact_refs'],
     ) ||
     !hash(value.context_hash) ||
     (Object.prototype.hasOwnProperty.call(value, 'workflow_version') &&
@@ -602,9 +647,18 @@ function parsePreparation(value: unknown): TurnPreparation {
   )
     throw new TaskTurnResponseError()
   const config = configFromPreparation(value as TurnPreparation)
+  let references: ArtifactRef[] | undefined
+  if (Object.prototype.hasOwnProperty.call(value, 'artifact_refs')) {
+    try {
+      references = parseArtifactRefs(value.artifact_refs)
+    } catch {
+      throw new TaskTurnResponseError()
+    }
+  }
   return {
     ...config,
     context_hash: value.context_hash,
+    ...(references ? { artifact_refs: references } : {}),
     ...(Object.prototype.hasOwnProperty.call(value, 'workflow_version')
       ? { workflow_version: value.workflow_version as number | null }
       : {}),

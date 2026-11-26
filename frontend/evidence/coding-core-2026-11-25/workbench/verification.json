@@ -1,0 +1,1775 @@
+{
+  "fixture": true,
+  "scenario": "full",
+  "base": "http://127.0.0.1:5177/",
+  "checks": [
+    {
+      "name": "Token login through same-origin proxy; token not persisted",
+      "passed": true
+    },
+    {
+      "name": "Project creation persists through API, without model invocation",
+      "passed": true
+    },
+    {
+      "name": "Task survives refresh; missing model prevents starting a run",
+      "passed": true
+    },
+    {
+      "name": "Local model preset and default selection save without connection tests",
+      "passed": true
+    },
+    {
+      "name": "Model test requires confirmation; Escape restores trigger focus",
+      "passed": true
+    },
+    {
+      "name": "Task workspace uses explicit snapshot consent and budget, starts one fixture Run, stays in Task Agent view and reaches completion",
+      "passed": true
+    },
+    {
+      "name": "Human review persists; call usage and diagnostics are real fixture facts",
+      "passed": true
+    },
+    {
+      "name": "Artifact download and dedicated artifact view work",
+      "passed": true
+    },
+    {
+      "name": "Read-only work graph, inspector, zoom, Agent avatars and real transcript",
+      "passed": true
+    },
+    {
+      "name": "Backend save, explicitly consented MockTransport health check and revoke",
+      "passed": true
+    },
+    {
+      "name": "Task-first list renders one latest-state row per task; optional inspector retains both real fixture runs",
+      "passed": true
+    },
+    {
+      "name": "Run history keeps both attempts with real rows, sorting, column visibility and density",
+      "passed": true
+    },
+    {
+      "name": "Grouped command palette keyboard navigation and persisted project/task/run hierarchy",
+      "passed": true
+    },
+    {
+      "name": "Inbox, documentation, progress and alert rail share persisted business projections",
+      "passed": true
+    },
+    {
+      "name": "Page inventory: 10 routes at 1440/1024/390px and three configuration forms render without overflow or API writes",
+      "passed": true
+    },
+    {
+      "name": "Desktop work list: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Basic query conditions stay draft-only until Search commits one URL transaction",
+      "passed": true
+    },
+    {
+      "name": "Eight styles × two modes: computed tokens differ, preferences persist, keyboard works, no API writes",
+      "passed": true
+    },
+    {
+      "name": "JQL draft and IME Enter do not submit; URL survives refresh/back/view changes and unsupported assignee/currentUser fails closed",
+      "passed": true
+    },
+    {
+      "name": "Search, filters, persisted dark theme and English locale",
+      "passed": true
+    },
+    {
+      "name": "Work list 390px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Task inspector 390px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Projects 390px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Run artifacts 390px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Work list 320px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Task inspector 320px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Projects 320px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Run artifacts 320px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Work list 768px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Task inspector 768px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Projects 768px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Run artifacts 768px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile/tablet task inspector retains history and restores focus; navigation, artifacts and long localized content work",
+      "passed": true
+    },
+    {
+      "name": "Mobile task dialog: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "Dialog keyboard dismissal under reduced motion",
+      "passed": true
+    },
+    {
+      "name": "Workbench layout: aligned scope/page headings, one usable query row, and separate result view controls with Columns at the table upper right",
+      "passed": true
+    },
+    {
+      "name": "Open desktop Inspector survives mobile resize; Escape restores visible mobile title focus, not a hidden desktop trigger",
+      "passed": true
+    },
+    {
+      "name": "Blueprint filter-header collapse reclaims content width and the collapsed rail restores its remembered scope",
+      "passed": true
+    },
+    {
+      "name": "Blueprint scrolling: 45 rows scroll inside the list body while pagination stays near the viewport bottom",
+      "passed": true
+    },
+    {
+      "name": "Dirty JQL survives mode/view/theme changes, while explicit Clear filters removes an uncommitted JQL draft",
+      "passed": true
+    },
+    {
+      "name": "Columns menu hides, restores and resets real optional columns, keeps title required, preserves shared query state and returns keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "Global compact/comfortable/touch density changes real row and shared-control heights without discarding a pending search draft",
+      "passed": true
+    },
+    {
+      "name": "Independent accent tokens change without changing style, density, URL, pending draft or API state",
+      "passed": true
+    },
+    {
+      "name": "Quick find finds a never-run Task beyond the old30 cap and opens its exact goal workspace only after selection",
+      "passed": true
+    },
+    {
+      "name": "Read-only 45-task projection: submitted search and scope/order/page/capacity restore via URL; mobile filters restore focus, global sorting matches mobile, long titles stay compact, and views make no API mutations",
+      "passed": true
+    },
+    {
+      "name": "Read-only document refresh: empty projects adopt the first arriving project, directory search preserves selected content, and removed selection is explicitly unavailable",
+      "passed": true
+    },
+    {
+      "name": "Read-only mobile Inbox opens selected context in a dialog, restores focus, follows refreshed task content and reports a removed task without selecting another",
+      "passed": true
+    },
+    {
+      "name": "Read-only hierarchy search auto-expands matching branches, then restores both expanded and collapsed user choices without remounting or losing input focus",
+      "passed": true
+    },
+    {
+      "name": "Read-only active-run polling updates the same open call dialog with status, usage and errors, then explicitly reports a removed call without API mutations",
+      "passed": true
+    },
+    {
+      "name": "Mocked 409 context conflict revokes consent, requires explicit recheck and fresh consent, preserves resources/request ID, and submits only the new snapshot hash",
+      "passed": true
+    },
+    {
+      "name": "Recovery resource drafts require an explicit discard choice; keeping edits retains values and neither choice executes a control",
+      "passed": true
+    },
+    {
+      "name": "Mocked native retry locks reused models, invalidates consent after edits, requires replay consent, creates a linked run and preserves source facts",
+      "passed": true
+    },
+    {
+      "name": "Durable unknown recovery remains locked across close/reopen and a full reload, with the same exact request ID and GET-only reconciliation",
+      "passed": true
+    },
+    {
+      "name": "Paused resume uses a registered snapshot and exact durable control receipt, retaining original resources and separate execution consent",
+      "passed": true
+    },
+    {
+      "name": "Mocked form validation blocks empty submission, focuses field errors, preserves 422 input and confirms dirty Escape/navigation before discarding",
+      "passed": true
+    },
+    {
+      "name": "Mocked model tests use explicit request IDs and consent, reconcile unknown outcomes by GET only, require new authorization for a new test and restore persisted receipts after reload",
+      "passed": true
+    },
+    {
+      "name": "Cooperative pause and explicitly confirmed cancellation retain prior calls",
+      "passed": true
+    },
+    {
+      "name": "Logout clears cached project and run content",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "writes": [
+    "/api/auth",
+    "/api/projects",
+    "/api/tasks",
+    "/api/models",
+    "/api/settings/default-model",
+    "/api/tasks/b15220aab4bc4332b7cdaafad4867bcd/preview",
+    "/api/tasks/b15220aab4bc4332b7cdaafad4867bcd/runs",
+    "/api/artifacts/91195bd1491e41ccaf9ddf9e54ce1595/decision",
+    "/api/backends",
+    "/api/backends/e1e31761cebd4eabbd7e34ac62efe80e/check",
+    "/api/backends/e1e31761cebd4eabbd7e34ac62efe80e/revoke",
+    "/api/tasks/b15220aab4bc4332b7cdaafad4867bcd/preview",
+    "/api/tasks/b15220aab4bc4332b7cdaafad4867bcd/runs",
+    "/api/tasks",
+    "/api/tasks",
+    "/api/tasks/46447af9dd4d45ac8d1b72438fdae1ee/preview",
+    "/api/tasks/46447af9dd4d45ac8d1b72438fdae1ee/runs",
+    "/api/runs/6cdb01b26e004b7184e8a7c9df290a51/pause",
+    "/api/runs/6cdb01b26e004b7184e8a7c9df290a51/cancel",
+    "/api/logout"
+  ],
+  "screenshots": [
+    "login-desktop.png",
+    "task-goal-desktop.png",
+    "run-desktop-light.png",
+    "work-graph-desktop.png",
+    "task-board-desktop.png",
+    "overview-desktop.png",
+    "audit-overview-1440.png",
+    "audit-workbench-1440.png",
+    "audit-inbox-1440.png",
+    "audit-projects-1440.png",
+    "audit-project-detail-1440.png",
+    "audit-hierarchy-1440.png",
+    "audit-documents-1440.png",
+    "audit-models-1440.png",
+    "audit-backends-1440.png",
+    "audit-run-1440.png",
+    "audit-overview-1024.png",
+    "audit-workbench-1024.png",
+    "audit-inbox-1024.png",
+    "audit-projects-1024.png",
+    "audit-project-detail-1024.png",
+    "audit-hierarchy-1024.png",
+    "audit-documents-1024.png",
+    "audit-models-1024.png",
+    "audit-backends-1024.png",
+    "audit-run-1024.png",
+    "audit-overview-390.png",
+    "audit-workbench-390.png",
+    "audit-inbox-390.png",
+    "audit-projects-390.png",
+    "audit-project-detail-390.png",
+    "audit-hierarchy-390.png",
+    "audit-documents-390.png",
+    "audit-models-390.png",
+    "audit-backends-390.png",
+    "audit-run-390.png",
+    "audit-form-projects.png",
+    "audit-form-models.png",
+    "audit-form-backends.png",
+    "work-desktop-light.png",
+    "work-zira-light.png",
+    "work-zira-dark.png",
+    "work-matcha-dark.png",
+    "work-desktop-dark.png",
+    "task-inspector-390-dark.png",
+    "run-390-dark.png",
+    "task-inspector-320-dark.png",
+    "run-320-dark.png",
+    "task-inspector-768-dark.png",
+    "run-768-dark.png",
+    "task-mobile-dark.png",
+    "layout-full-shell-columns-desktop.png",
+    "pagination-mobile-sort-390.png",
+    "columns-menu-full-shell-desktop.png",
+    "filters-mobile-390.png",
+    "pagination-45-readonly.png",
+    "search-list-45-desktop.png",
+    "documents-selected-filtered-readonly.png",
+    "call-selected-missing-readonly.png",
+    "recovery-retry-desktop.png",
+    "recovery-retry-mobile.png"
+  ],
+  "initialScriptResources": [
+    "http://127.0.0.1:5177/assets/app-CLokkP5w.js",
+    "http://127.0.0.1:5177/assets/react-vendor-BJeFkKaq.js",
+    "http://127.0.0.1:5177/assets/playground--Fl4SqJx.js",
+    "http://127.0.0.1:5177/assets/FocusedWorkbench-g_GqnRat.js",
+    "http://127.0.0.1:5177/assets/DataTable-C_2Ddrxg.js",
+    "http://127.0.0.1:5177/assets/useTableTreeState-DjQycjXD.js",
+    "http://127.0.0.1:5177/assets/Table-jHRXsUL_.js",
+    "http://127.0.0.1:5177/assets/useScrollableArea-DQKcXg9r.js",
+    "http://127.0.0.1:5177/assets/scrollKeyboardDelegation-cJJ94mD6.js",
+    "http://127.0.0.1:5177/assets/scrollGeometry-B7jAdN05.js",
+    "http://127.0.0.1:5177/assets/MenuBottomSheetActionList-BChwgiD2.js",
+    "http://127.0.0.1:5177/assets/List-mw8PbsCe.js",
+    "http://127.0.0.1:5177/assets/listLayoutUpdates-C5C9HDS2.js",
+    "http://127.0.0.1:5177/assets/animatedLayout-DxQq1BAq.js",
+    "http://127.0.0.1:5177/assets/LayoutChangeSnapshot-CWqOmSUx.js",
+    "http://127.0.0.1:5177/assets/ListItem-D6m4xuYt.js",
+    "http://127.0.0.1:5177/assets/menuItemRoles-Dx6Khe-i.js",
+    "http://127.0.0.1:5177/assets/useMenuDrillIn-8AWmfV66.js",
+    "http://127.0.0.1:5177/assets/useMenuHover-DJRU__eU.js",
+    "http://127.0.0.1:5177/assets/clampInlineSize-C6G3hOHP.js",
+    "http://127.0.0.1:5177/assets/EmptyState-BFA6rG27.js",
+    "http://127.0.0.1:5177/assets/useTableSortableState-Bvor6QiI.js",
+    "http://127.0.0.1:5177/assets/useTableSortable-ew-tXBq8.js",
+    "http://127.0.0.1:5177/assets/ComponentIcon-DWTSg0Ts.js",
+    "http://127.0.0.1:5177/assets/useIcon-CkjxZU05.js",
+    "http://127.0.0.1:5177/assets/accessibleName-C1nHDYs1.js",
+    "http://127.0.0.1:5177/assets/DropdownMenu-DOH3fdY0.js",
+    "http://127.0.0.1:5177/assets/menuTouchAction.stylex-Bjo3-Llu.js",
+    "http://127.0.0.1:5177/assets/DropdownMenuRadioItem-ilSyMkq4.js",
+    "http://127.0.0.1:5177/assets/DropdownMenuGroup-D2NzLVSL.js",
+    "http://127.0.0.1:5177/assets/rotate-ccw-x7bWBtev.js",
+    "http://127.0.0.1:5177/assets/table-2-hfFHD5ar.js",
+    "http://127.0.0.1:5177/assets/MultiSelector-DTSpbTEr.js",
+    "http://127.0.0.1:5177/assets/trash-2-CGyM1XEB.js",
+    "http://127.0.0.1:5177/assets/copy-Cj711nt7.js",
+    "http://127.0.0.1:5177/assets/download-DwwnRbfR.js",
+    "http://127.0.0.1:5177/assets/task-detail-DdWsA-sq.js",
+    "http://127.0.0.1:5177/assets/file-search-C_a-gA4N.js",
+    "http://127.0.0.1:5177/assets/history-BMuFqMbb.js",
+    "http://127.0.0.1:5177/assets/circle-alert-Bfht9X1u.js",
+    "http://127.0.0.1:5177/assets/circle-check-DSMJI8yt.js"
+  ],
+  "pageAudit": [
+    {
+      "page": "overview",
+      "width": 1440,
+      "title": "工作总览 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "workbench",
+      "width": 1440,
+      "title": "工作台 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "inbox",
+      "width": 1440,
+      "title": "待处理 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "projects",
+      "width": 1440,
+      "title": "项目 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "project-detail",
+      "width": 1440,
+      "title": "mybot 研发协作 · 隔离验收 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "hierarchy",
+      "width": 1440,
+      "title": "项目层级 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "documents",
+      "width": 1440,
+      "title": "项目资料 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "models",
+      "width": 1440,
+      "title": "模型与资源 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "backends",
+      "width": 1440,
+      "title": "会话后端 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "run",
+      "width": 1440,
+      "title": "运行工作区 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "overview",
+      "width": 1024,
+      "title": "工作总览 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "workbench",
+      "width": 1024,
+      "title": "工作台 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "inbox",
+      "width": 1024,
+      "title": "待处理 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "projects",
+      "width": 1024,
+      "title": "项目 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "project-detail",
+      "width": 1024,
+      "title": "mybot 研发协作 · 隔离验收 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "hierarchy",
+      "width": 1024,
+      "title": "项目层级 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "documents",
+      "width": 1024,
+      "title": "项目资料 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "models",
+      "width": 1024,
+      "title": "模型与资源 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "backends",
+      "width": 1024,
+      "title": "会话后端 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "run",
+      "width": 1024,
+      "title": "运行工作区 · mybot",
+      "viewportWidth": 1024,
+      "scrollWidth": 1024,
+      "h1Count": 1
+    },
+    {
+      "page": "overview",
+      "width": 390,
+      "title": "工作总览 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "workbench",
+      "width": 390,
+      "title": "工作台 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "inbox",
+      "width": 390,
+      "title": "待处理 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "projects",
+      "width": 390,
+      "title": "项目 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "project-detail",
+      "width": 390,
+      "title": "mybot 研发协作 · 隔离验收 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "hierarchy",
+      "width": 390,
+      "title": "项目层级 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "documents",
+      "width": 390,
+      "title": "项目资料 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "models",
+      "width": 390,
+      "title": "模型与资源 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "backends",
+      "width": 390,
+      "title": "会话后端 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    },
+    {
+      "page": "run",
+      "width": 390,
+      "title": "运行工作区 · mybot",
+      "viewportWidth": 390,
+      "scrollWidth": 390,
+      "h1Count": 1
+    }
+  ],
+  "productStyles": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(0, 0, 0)",
+      "radius": "8px",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "neutral",
+      "mode": "dark",
+      "background": "rgb(28, 31, 34)",
+      "color": "rgb(255, 255, 255)",
+      "radius": "8px",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "zira",
+      "mode": "light",
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(23, 43, 77)",
+      "radius": "8px",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+    },
+    {
+      "style": "zira",
+      "mode": "dark",
+      "background": "rgb(22, 26, 34)",
+      "color": "rgb(230, 233, 239)",
+      "radius": "8px",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+    },
+    {
+      "style": "gothic",
+      "mode": "light",
+      "background": "rgb(16, 19, 20)",
+      "color": "rgb(232, 241, 246)",
+      "radius": "4px",
+      "font": "Fustat, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "gothic",
+      "mode": "dark",
+      "background": "rgb(16, 19, 20)",
+      "color": "rgb(232, 241, 246)",
+      "radius": "4px",
+      "font": "Fustat, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "matcha",
+      "mode": "light",
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(62, 72, 29)",
+      "radius": "8px",
+      "font": "\"Playwrite US Trad\", Georgia, \"Times New Roman\", Times, serif"
+    },
+    {
+      "style": "matcha",
+      "mode": "dark",
+      "background": "rgb(26, 28, 20)",
+      "color": "rgb(192, 203, 169)",
+      "radius": "8px",
+      "font": "\"Playwrite US Trad\", Georgia, \"Times New Roman\", Times, serif"
+    },
+    {
+      "style": "stone",
+      "mode": "light",
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(37, 37, 42)",
+      "radius": "8px",
+      "font": "Montserrat, Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "stone",
+      "mode": "dark",
+      "background": "rgb(27, 27, 33)",
+      "color": "rgb(240, 240, 249)",
+      "radius": "8px",
+      "font": "Montserrat, Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "butter",
+      "mode": "light",
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(29, 28, 17)",
+      "radius": "8px",
+      "font": "Outfit, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "butter",
+      "mode": "dark",
+      "background": "rgb(46, 33, 23)",
+      "color": "rgb(243, 242, 226)",
+      "radius": "8px",
+      "font": "Outfit, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "chocolate",
+      "mode": "light",
+      "background": "rgb(255, 252, 247)",
+      "color": "rgb(74, 53, 32)",
+      "radius": "8px",
+      "font": "Fraunces, Georgia, \"Times New Roman\", Times, serif"
+    },
+    {
+      "style": "chocolate",
+      "mode": "dark",
+      "background": "rgb(28, 22, 16)",
+      "color": "rgb(237, 228, 212)",
+      "radius": "8px",
+      "font": "Fraunces, Georgia, \"Times New Roman\", Times, serif"
+    },
+    {
+      "style": "y2k",
+      "mode": "light",
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(45, 36, 27)",
+      "radius": "8px",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "y2k",
+      "mode": "dark",
+      "background": "rgb(22, 24, 43)",
+      "color": "rgb(237, 239, 252)",
+      "radius": "8px",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    }
+  ],
+  "paginationProjection": {
+    "synthetic": true,
+    "readOnly": true,
+    "taskCount": 45,
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      }
+    ],
+    "layout": {
+      "display": "grid",
+      "topbar": {
+        "x": 208,
+        "y": 0,
+        "width": 1232,
+        "height": 56,
+        "bottom": 56,
+        "right": 1440
+      },
+      "scope": {
+        "x": 208,
+        "y": 56,
+        "width": 208,
+        "height": 944,
+        "bottom": 1000,
+        "right": 416
+      },
+      "heading": {
+        "x": 416,
+        "y": 56,
+        "width": 1024,
+        "height": 80.796875,
+        "bottom": 136.796875,
+        "right": 1440
+      },
+      "workspace": {
+        "x": 416,
+        "y": 56,
+        "width": 1024,
+        "height": 944,
+        "bottom": 1000,
+        "right": 1440
+      },
+      "queryControlBoxes": [
+        {
+          "x": 473,
+          "y": 154.796875,
+          "width": 442.3125,
+          "height": 20
+        },
+        {
+          "x": 945.3125,
+          "y": 154.796875,
+          "width": 74,
+          "height": 20
+        },
+        {
+          "x": 1077.3125,
+          "y": 154.796875,
+          "width": 74,
+          "height": 20
+        },
+        {
+          "x": 1200.3125,
+          "y": 152.796875,
+          "width": 80,
+          "height": 24
+        },
+        {
+          "x": 1282.3125,
+          "y": 152.796875,
+          "width": 49.6875,
+          "height": 24
+        },
+        {
+          "x": 1344,
+          "y": 148.796875,
+          "width": 32,
+          "height": 32
+        }
+      ],
+      "resultControlBoxes": [
+        {
+          "x": 444,
+          "y": 205.796875,
+          "width": 100,
+          "height": 24
+        },
+        {
+          "x": 546,
+          "y": 205.796875,
+          "width": 72,
+          "height": 24
+        },
+        {
+          "x": 620,
+          "y": 205.796875,
+          "width": 100,
+          "height": 24
+        },
+        {
+          "x": 1302,
+          "y": 201.796875,
+          "width": 114,
+          "height": 32
+        }
+      ]
+    },
+    "scrollLayout": {
+      "before": {
+        "viewport": 1000,
+        "documentTop": 0,
+        "documentHeight": 1000,
+        "clientHeight": 708,
+        "scrollHeight": 2062,
+        "overflowY": "auto",
+        "bodyBottom": 951,
+        "footerTop": 951,
+        "footerBottom": 1000
+      },
+      "after": {
+        "documentTop": 0,
+        "footerBottom": 1000
+      }
+    },
+    "densityControls": [
+      {
+        "density": "comfortable",
+        "rowHeight": 45,
+        "controlHeights": {
+          "input": 32,
+          "project": 32,
+          "status": 32,
+          "submit": 32,
+          "columns": 32,
+          "queryMode": 32,
+          "views": 32
+        },
+        "optionHeights": {
+          "basic": 24,
+          "jql": 24,
+          "tasks": 24,
+          "board": 24,
+          "runs": 24
+        }
+      },
+      {
+        "density": "compact",
+        "rowHeight": 37,
+        "controlHeights": {
+          "input": 28,
+          "project": 28,
+          "status": 28,
+          "submit": 28,
+          "columns": 28,
+          "queryMode": 28,
+          "views": 28
+        },
+        "optionHeights": {
+          "basic": 20,
+          "jql": 20,
+          "tasks": 20,
+          "board": 20,
+          "runs": 20
+        }
+      },
+      {
+        "density": "touch",
+        "rowHeight": 53,
+        "controlHeights": {
+          "input": 40,
+          "project": 40,
+          "status": 40,
+          "submit": 40,
+          "columns": 40,
+          "queryMode": 40,
+          "views": 40
+        },
+        "optionHeights": {
+          "basic": 32,
+          "jql": 32,
+          "tasks": 32,
+          "board": 32,
+          "runs": 32
+        }
+      }
+    ],
+    "accent": {
+      "before": "light-dark(#3568e8, #5b87f5)",
+      "after": "light-dark(#0f766e, #5eead4)"
+    }
+  },
+  "selectionRefreshProjection": {
+    "synthetic": true,
+    "readOnly": true,
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/api/auth/state",
+        "callPhase": "running"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap",
+        "callPhase": "running"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state",
+        "callPhase": "running"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap",
+        "callPhase": "running"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state",
+        "callPhase": "running"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap",
+        "callPhase": "running"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state",
+        "callPhase": "running"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap",
+        "callPhase": "running"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state",
+        "callPhase": "running"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap",
+        "callPhase": "running"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state",
+        "callPhase": "running"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap",
+        "callPhase": "running"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state",
+        "callPhase": "running"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap",
+        "callPhase": "running"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-call-poll-projection",
+        "callPhase": "running"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-call-poll-projection",
+        "callPhase": "succeeded"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-call-poll-projection",
+        "callPhase": "failed"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-call-poll-projection",
+        "callPhase": "missing"
+      }
+    ],
+    "callPhases": [
+      {
+        "id": "b6a42f0aacfa4727979fc3f0dfa726f9",
+        "run_id": "c2d90e11d5264e58a6c308c2aa7905da",
+        "agent_id": "91cbd5491a2e43798f1bd2bb9e8f4ca8",
+        "model_id": "b98e36afc72444a5a948b9a4ac9624f4",
+        "attempt": 1,
+        "status": "succeeded",
+        "requested_model": "fixture-only",
+        "returned_model": "fixture-only",
+        "input_tokens": 101,
+        "output_tokens": 202,
+        "duration_ms": 1234,
+        "error": null,
+        "error_detail": {},
+        "started_at": "2026-11-25T14:52:07.541752+00:00",
+        "ended_at": "2026-11-25T14:52:07.714999+00:00"
+      },
+      {
+        "id": "b6a42f0aacfa4727979fc3f0dfa726f9",
+        "run_id": "c2d90e11d5264e58a6c308c2aa7905da",
+        "agent_id": "91cbd5491a2e43798f1bd2bb9e8f4ca8",
+        "model_id": "b98e36afc72444a5a948b9a4ac9624f4",
+        "attempt": 1,
+        "status": "failed",
+        "requested_model": "fixture-only",
+        "returned_model": "fixture-only",
+        "input_tokens": 303,
+        "output_tokens": 404,
+        "duration_ms": 1234,
+        "error": "readonly_projection_failure",
+        "error_detail": {
+          "fixture": true,
+          "diagnostic": "refreshed-call-error"
+        },
+        "started_at": "2026-11-25T14:52:07.541752+00:00",
+        "ended_at": "2026-11-25T14:52:07.714999+00:00"
+      }
+    ]
+  },
+  "contextConflictProjection": {
+    "synthetic": true,
+    "backendMutation": false,
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/project-references"
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspace/counts"
+      },
+      {
+        "method": "GET",
+        "path": "/api/project-references"
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspace/counts"
+      },
+      {
+        "method": "POST",
+        "path": "/api/tasks/b15220aab4bc4332b7cdaafad4867bcd/preview"
+      },
+      {
+        "method": "POST",
+        "path": "/api/tasks/b15220aab4bc4332b7cdaafad4867bcd/runs"
+      },
+      {
+        "method": "POST",
+        "path": "/api/tasks/b15220aab4bc4332b7cdaafad4867bcd/preview"
+      },
+      {
+        "method": "POST",
+        "path": "/api/tasks/b15220aab4bc4332b7cdaafad4867bcd/runs"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      }
+    ],
+    "submissions": [
+      {
+        "coordinator_model": "b98e36afc72444a5a948b9a4ac9624f4",
+        "researcher_model": "b98e36afc72444a5a948b9a4ac9624f4",
+        "reviewer_model": "b98e36afc72444a5a948b9a4ac9624f4",
+        "max_calls": 3,
+        "parallel": 2,
+        "minutes": 10,
+        "max_output_tokens": 1800,
+        "consent": true,
+        "context_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "request_id": "610cf10d-9bbf-48e0-9fe6-5126ba87a9d8"
+      },
+      {
+        "coordinator_model": "b98e36afc72444a5a948b9a4ac9624f4",
+        "researcher_model": "b98e36afc72444a5a948b9a4ac9624f4",
+        "reviewer_model": "b98e36afc72444a5a948b9a4ac9624f4",
+        "max_calls": 3,
+        "parallel": 2,
+        "minutes": 10,
+        "max_output_tokens": 1800,
+        "consent": true,
+        "context_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "request_id": "610cf10d-9bbf-48e0-9fe6-5126ba87a9d8"
+      }
+    ]
+  },
+  "recoveryProjection": {
+    "synthetic": true,
+    "backendMutation": false,
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/project-references"
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspace/counts"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source/retry-preview"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source/recovery-intents"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source/retry-preview"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source/recovery-intents"
+      },
+      {
+        "method": "POST",
+        "path": "/api/runs/readonly-recovery-source/recovery-intents"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source/retry-preview"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source/recovery-intents"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source/retry-preview"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source/recovery-intents"
+      },
+      {
+        "method": "POST",
+        "path": "/api/runs/readonly-recovery-source/recovery-intents/37ba2881-d61e-495e-9857-54efe52cb8f7/abandon"
+      },
+      {
+        "method": "POST",
+        "path": "/api/runs/readonly-recovery-source/recovery-intents"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/project-references"
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspace/counts"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source/retry-preview"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source/recovery-intents"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source/retry-preview"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-source/recovery-intents"
+      },
+      {
+        "method": "GET",
+        "path": "/api/project-references"
+      },
+      {
+        "method": "POST",
+        "path": "/api/runs/readonly-recovery-source/recovery-intents/a07ff18a-32eb-4a4e-a2e6-4ced1958a7bb/execute"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-child"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-unknown"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-unknown"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-unknown/retry-preview"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-unknown/recovery-intents"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-unknown"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-unknown/retry-preview"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-unknown/recovery-intents"
+      },
+      {
+        "method": "POST",
+        "path": "/api/runs/readonly-recovery-unknown/recovery-intents"
+      },
+      {
+        "method": "POST",
+        "path": "/api/runs/readonly-recovery-unknown/recovery-intents/ccc86f8d-8d6f-41d1-b0ba-a6d93a8c8aa3/execute"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-unknown"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-unknown/retry-preview"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-unknown/recovery-intents"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-unknown/recovery-intents/ccc86f8d-8d6f-41d1-b0ba-a6d93a8c8aa3"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/project-references"
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspace/counts"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-unknown"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-unknown"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-unknown/retry-preview"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-unknown/recovery-intents"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-paused"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-paused"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-paused/retry-preview"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-paused/recovery-intents"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-paused"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-paused/retry-preview"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/runs/readonly-recovery-paused/recovery-intents"
+      },
+      {
+        "method": "POST",
+        "path": "/api/runs/readonly-recovery-paused/recovery-intents"
+      },
+      {
+        "method": "POST",
+        "path": "/api/runs/readonly-recovery-paused/recovery-intents/e25a56b6-ef89-4fe4-b1cd-8653de0d731f/execute"
+      }
+    ],
+    "submissions": [
+      {
+        "coordinator_model": "b98e36afc72444a5a948b9a4ac9624f4",
+        "researcher_model": "b98e36afc72444a5a948b9a4ac9624f4",
+        "reviewer_model": "b98e36afc72444a5a948b9a4ac9624f4",
+        "max_calls": 3,
+        "parallel": 1,
+        "minutes": 10,
+        "max_output_tokens": 1800,
+        "call_timeout_seconds": 120,
+        "consent": true,
+        "acknowledge_replay": true,
+        "request_id": "a07ff18a-32eb-4a4e-a2e6-4ced1958a7bb",
+        "snapshot_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      },
+      {
+        "coordinator_model": "b98e36afc72444a5a948b9a4ac9624f4",
+        "researcher_model": "b98e36afc72444a5a948b9a4ac9624f4",
+        "reviewer_model": "b98e36afc72444a5a948b9a4ac9624f4",
+        "max_calls": 2,
+        "parallel": 1,
+        "minutes": 10,
+        "max_output_tokens": 1800,
+        "call_timeout_seconds": 120,
+        "consent": true,
+        "acknowledge_replay": true,
+        "request_id": "ccc86f8d-8d6f-41d1-b0ba-a6d93a8c8aa3",
+        "snapshot_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      }
+    ],
+    "resumes": [
+      {
+        "consent": true,
+        "acknowledge_replay": false
+      }
+    ],
+    "registered": [
+      {
+        "request_id": "37ba2881-d61e-495e-9857-54efe52cb8f7",
+        "source_run_id": "readonly-recovery-source",
+        "mode": "retry",
+        "snapshot_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "candidate_hash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "config": {
+          "coordinator_model": "b98e36afc72444a5a948b9a4ac9624f4",
+          "researcher_model": "b98e36afc72444a5a948b9a4ac9624f4",
+          "reviewer_model": "b98e36afc72444a5a948b9a4ac9624f4",
+          "max_calls": 2,
+          "parallel": 1,
+          "minutes": 10,
+          "max_output_tokens": 1800,
+          "call_timeout_seconds": 120
+        },
+        "state": "prepared",
+        "target_run_id": null,
+        "error_code": null,
+        "requires_acknowledgement": true,
+        "outcome_unknown": false,
+        "created_at": "2026-11-25T14:53:14.639Z",
+        "updated_at": "2026-11-25T14:53:14.639Z",
+        "settled_at": null
+      },
+      {
+        "request_id": "a07ff18a-32eb-4a4e-a2e6-4ced1958a7bb",
+        "source_run_id": "readonly-recovery-source",
+        "mode": "retry",
+        "snapshot_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "candidate_hash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "config": {
+          "coordinator_model": "b98e36afc72444a5a948b9a4ac9624f4",
+          "researcher_model": "b98e36afc72444a5a948b9a4ac9624f4",
+          "reviewer_model": "b98e36afc72444a5a948b9a4ac9624f4",
+          "max_calls": 3,
+          "parallel": 1,
+          "minutes": 10,
+          "max_output_tokens": 1800,
+          "call_timeout_seconds": 120
+        },
+        "state": "prepared",
+        "target_run_id": null,
+        "error_code": null,
+        "requires_acknowledgement": true,
+        "outcome_unknown": false,
+        "created_at": "2026-11-25T14:53:15.001Z",
+        "updated_at": "2026-11-25T14:53:15.001Z",
+        "settled_at": null
+      },
+      {
+        "request_id": "ccc86f8d-8d6f-41d1-b0ba-a6d93a8c8aa3",
+        "source_run_id": "readonly-recovery-unknown",
+        "mode": "retry",
+        "snapshot_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "candidate_hash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "config": {
+          "coordinator_model": "b98e36afc72444a5a948b9a4ac9624f4",
+          "researcher_model": "b98e36afc72444a5a948b9a4ac9624f4",
+          "reviewer_model": "b98e36afc72444a5a948b9a4ac9624f4",
+          "max_calls": 2,
+          "parallel": 1,
+          "minutes": 10,
+          "max_output_tokens": 1800,
+          "call_timeout_seconds": 120
+        },
+        "state": "prepared",
+        "target_run_id": null,
+        "error_code": null,
+        "requires_acknowledgement": true,
+        "outcome_unknown": false,
+        "created_at": "2026-11-25T14:53:17.330Z",
+        "updated_at": "2026-11-25T14:53:17.330Z",
+        "settled_at": null
+      },
+      {
+        "request_id": "e25a56b6-ef89-4fe4-b1cd-8653de0d731f",
+        "source_run_id": "readonly-recovery-paused",
+        "mode": "resume",
+        "snapshot_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "candidate_hash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "config": {
+          "coordinator_model": "b98e36afc72444a5a948b9a4ac9624f4",
+          "researcher_model": "b98e36afc72444a5a948b9a4ac9624f4",
+          "reviewer_model": "b98e36afc72444a5a948b9a4ac9624f4",
+          "max_calls": 4,
+          "parallel": 1,
+          "minutes": 10,
+          "max_output_tokens": 1800,
+          "call_timeout_seconds": 120
+        },
+        "state": "prepared",
+        "target_run_id": null,
+        "error_code": null,
+        "requires_acknowledgement": false,
+        "outcome_unknown": false,
+        "created_at": "2026-11-25T14:53:19.463Z",
+        "updated_at": "2026-11-25T14:53:19.463Z",
+        "settled_at": null
+      }
+    ],
+    "abandoned": [
+      "37ba2881-d61e-495e-9857-54efe52cb8f7"
+    ]
+  },
+  "formsAndModelTestsProjection": {
+    "synthetic": true,
+    "backendMutation": false,
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/project-references"
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspace/counts"
+      },
+      {
+        "method": "GET",
+        "path": "/api/projects/query"
+      },
+      {
+        "method": "POST",
+        "path": "/api/projects"
+      },
+      {
+        "method": "POST",
+        "path": "/api/models/readonly-model-test-lifecycle/test"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/project-references"
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspace/counts"
+      },
+      {
+        "method": "GET",
+        "path": "/api/models/readonly-model-test-lifecycle/tests/435fa676-a1b5-4daa-ace0-01ff2c9c6d7f"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/project-references"
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspace/counts"
+      },
+      {
+        "method": "POST",
+        "path": "/api/models/readonly-model-test-lifecycle/test"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/project-references"
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspace/counts"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/state"
+      },
+      {
+        "method": "GET",
+        "path": "/api/bootstrap"
+      },
+      {
+        "method": "GET",
+        "path": "/api/project-references"
+      },
+      {
+        "method": "GET",
+        "path": "/api/workspace/counts"
+      }
+    ],
+    "testBodies": [
+      {
+        "request_id": "435fa676-a1b5-4daa-ace0-01ff2c9c6d7f",
+        "consent": true
+      },
+      {
+        "request_id": "9bd0b3d3-0198-405e-bede-1019a05a58ae",
+        "consent": true
+      }
+    ]
+  }
+}

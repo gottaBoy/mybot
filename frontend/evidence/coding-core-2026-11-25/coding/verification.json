@@ -1,0 +1,194 @@
+{
+  "fixture": true,
+  "checks": [
+    "Task opens an exact source/model/test review with no Run or model call",
+    "Lost preparation survives reload by original GET with unchecked execution consent and no duplicate preparation",
+    "Prepared candidate renders in three styles, both modes, desktop English and mobile Chinese",
+    "Real mybot path validation runs fail → partial fix/fail → complete fix/pass, with one execution POST and two bounded model responses",
+    "Original source and immutable tests stay byte-for-byte unchanged",
+    "Run shows actual test success and does not expose incompatible research pause/resume/retry controls",
+    "Work graph binds actual implementation and test stages to their real Agents and artifacts",
+    "Actual source Diff is readable and exports as a patch",
+    "Actual test output, command arguments and exit evidence display and export as the original JSON",
+    "Real Run, implementation attempts, test states and artifacts render across all six style/mode layouts"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/ff9298e1b90d4839ad57edb64fcf554f/coding/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/ff9298e1b90d4839ad57edb64fcf554f/coding/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/ff9298e1b90d4839ad57edb64fcf554f/coding/6ea04f26-67a1-4e74-9616-57325e674e5c/execute",
+      "method": "POST"
+    }
+  ],
+  "geometry": [
+    {
+      "surface": "candidate",
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "surface": "candidate",
+      "style": "neutral",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "surface": "candidate",
+      "style": "zira",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "surface": "candidate",
+      "style": "zira",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "surface": "candidate",
+      "style": "y2k",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "surface": "candidate",
+      "style": "y2k",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "surface": "result",
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "surface": "result",
+      "style": "neutral",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "surface": "result",
+      "style": "zira",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "surface": "result",
+      "style": "zira",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "surface": "result",
+      "style": "y2k",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "surface": "result",
+      "style": "y2k",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    }
+  ],
+  "screenshots": [
+    "candidate-neutral-light.png",
+    "candidate-neutral-dark.png",
+    "candidate-zira-light.png",
+    "candidate-zira-dark.png",
+    "candidate-y2k-light.png",
+    "candidate-y2k-dark.png",
+    "graph-implementation-desktop.png",
+    "actual-patch-desktop.png",
+    "actual-tests-desktop.png",
+    "result-neutral-light.png",
+    "result-neutral-dark.png",
+    "result-zira-light.png",
+    "result-zira-dark.png",
+    "result-y2k-light.png",
+    "result-y2k-dark.png"
+  ],
+  "actual": {
+    "task_id": "ff9298e1b90d4839ad57edb64fcf554f",
+    "run_id": "024429f5decb472489540bf764ffbafc",
+    "status": "succeeded",
+    "model_calls": 2,
+    "test_attempts": [
+      {
+        "round": 0,
+        "tests_run": 4,
+        "exit_code": 1,
+        "failures": 2,
+        "errors": 0,
+        "passed": false
+      },
+      {
+        "round": 1,
+        "tests_run": 4,
+        "exit_code": 1,
+        "failures": 1,
+        "errors": 0,
+        "passed": false
+      },
+      {
+        "round": 2,
+        "tests_run": 4,
+        "exit_code": 0,
+        "failures": 0,
+        "errors": 0,
+        "passed": true
+      }
+    ]
+  }
+}

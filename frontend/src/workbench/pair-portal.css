@@ -93,6 +93,14 @@
   overflow-wrap: anywhere;
   font-size: 12px;
 }
+.wb-pair-views { margin-top: 20px; }
+.wb-pair-runs { list-style: none; padding: 0; margin: 0 0 16px; max-height: 360px; overflow-y: auto; overscroll-behavior: contain; }
+.wb-pair-runs li { display: flex; align-items: center; gap: 8px; padding: 5px 0; min-width: 0; }
+.wb-pair-runs li > button { min-width: 0; max-width: 80%; overflow-wrap: anywhere; }
+.wb-pair-selected-run { border-top: 1px solid var(--wb-border); padding-top: 16px; margin-top: 20px; }
+.wb-pair-selected-run h3 { font-size: 14px; overflow-wrap: anywhere; }
+.wb-pair-history { display: flex; flex-direction: column; }
+.wb-pair-selected-run { order: -1; margin-top: 0; margin-bottom: 24px; border-top: 0; padding-top: 0; }
 .wb-pair-composer-actions {
   justify-content: space-between;
   font-size: 12px;

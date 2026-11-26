@@ -892,3 +892,22 @@ git -C /tmp/mybot-upstream-astryx rev-parse HEAD
   `52c38f8aaddbed0991366ad2aa6917bc4147256e`（2026-11-19），观察失败/关闭回调与重拉调度。
   这是有限源码观察，不是2025年构建能力证据；未clone、复制源码、部署或执行上游测试。
   本条不改变mybot产品路线或台账，不声称已经解决现场卡顿或获知萝卜快跑生产实现。
+
+## 39. 核心实现/测试执行的本机隔离接口
+
+- 2026-11-25用户授权隔离代码修改与明确测试；合同为ADR-0027。
+- 观察来源：本机Linux6.17.0-1032-nvidia/aarch64、`/usr/include/linux/landlock.h`
+  的ruleset/path-beneath属性、文件访问位与已注明限制；实际ABI探测返回7。
+  已安装`libseccomp2 2.5.5-1ubuntu3.1`通过公开C ABI加载，没有复制库或上游源码；
+  本机包版本不是上游仓库commit，本批未检出/构建内核或libseccomp源码。
+- `bubblewrap0.9.0`实际namespace探测先因loopback RTM_NEWADDR失败、再因uid-map权限失败。
+  不把安装了bwrap当隔离可用，也没有因此允许宿主裸跑。
+- 本地适配：标准Python subprocess + Landlock读白名单 + libseccomp拒绝网络/进程/宿主
+  元数据修改相关调用，no_new_privs、CPU/内存/FD/输出/墙钟上限、进程组回收。
+  只允许解释器/运行库/显式副本读取；运行测试时副本也只读。模型只给结构化文件内容，
+  可信父进程负责在临时目录写入，不赋予模型命令工具。
+- 实测：外部canary读取/副本改写/socket/fork/外部chmod均被拒绝；测试可读取副本并运行，
+  超时/大输出实际终止，没有有效回执/零测试/全skip不能通过。
+  证据`frontend/evidence/coding-core-2026-11-25/`和`tests/test_coding.py`。
+- 这是Linux本机受限进程，不是VM、通用Shell沙箱或完整安全审计；没有认证Windows/macOS、
+  新ABI、其他内核、第三方测试插件/服务/容器，也不证明不存在内核或侧信道风险。

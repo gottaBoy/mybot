@@ -1,0 +1,127 @@
+{
+  "checks": [
+    "Saved continuation opens a bounded reference picker without a new Run or model call",
+    "Advertised catalog failure stays an explicit error and refresh uses the real GET",
+    "Keyboard and pointer selection require an exact-content preview before advancing",
+    "Lost preparation restores the original immutable references by GET after reload",
+    "Frozen patch/test sources render in three styles, both modes, English desktop and Chinese mobile",
+    "Lost execution reconciles the same Run; one POST and four fixture calls use the frozen context",
+    "Result view preserves original artifact IDs, hashes, bodies and source Run provenance"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/5e941ca6287e4ab2a0883fdb3f48b1e3/turns",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/5e941ca6287e4ab2a0883fdb3f48b1e3/turns/4503bc564f9d4de59767111199d87ac7/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/5e941ca6287e4ab2a0883fdb3f48b1e3/turns/4503bc564f9d4de59767111199d87ac7/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/5e941ca6287e4ab2a0883fdb3f48b1e3/turns/4503bc564f9d4de59767111199d87ac7/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/5e941ca6287e4ab2a0883fdb3f48b1e3/turns/4503bc564f9d4de59767111199d87ac7/execute",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "reference-selection-desktop.png",
+    "reference-preview-desktop.png",
+    "frozen-references-neutral-light.png",
+    "frozen-references-neutral-dark.png",
+    "frozen-references-zira-light.png",
+    "frozen-references-zira-dark.png",
+    "frozen-references-y2k-light.png",
+    "frozen-references-y2k-dark.png",
+    "continuation-run-provenance.png"
+  ],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "style": "neutral",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "style": "zira",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "style": "zira",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "style": "y2k",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "style": "y2k",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    }
+  ],
+  "actual": {
+    "task_id": "5e941ca6287e4ab2a0883fdb3f48b1e3",
+    "source_run_id": "fab0c8f45d8945b7bb768b74b0219215",
+    "run_id": "7005487c67d54cee91e2ff8101d6141a",
+    "status": "succeeded",
+    "calls": 4,
+    "references": [
+      {
+        "id": "bccfba10a81f45829a45037a150961a3",
+        "run_id": "fab0c8f45d8945b7bb768b74b0219215",
+        "task_id": "5e941ca6287e4ab2a0883fdb3f48b1e3",
+        "title": "补丁 Diff · 2",
+        "kind": "diff",
+        "created_at": "2026-11-26T01:23:49.955145+00:00",
+        "bytes": 449,
+        "sha256": "0a29b292a2a6450508e6f09c93aee839c3f9ad659f1562e5e3b9d9fc3b6e7dd4"
+      },
+      {
+        "id": "7af72640d2ec4a69865d61bb7fea0c12",
+        "run_id": "fab0c8f45d8945b7bb768b74b0219215",
+        "task_id": "5e941ca6287e4ab2a0883fdb3f48b1e3",
+        "title": "实际测试 · 2",
+        "kind": "test_result",
+        "created_at": "2026-11-26T01:23:50.092561+00:00",
+        "bytes": 1138,
+        "sha256": "07ef71a363603bba33c2fd0ce8c7ceec220ef792ec8bc911f4a17f7b23984918"
+      }
+    ]
+  }
+}

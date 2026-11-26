@@ -1,0 +1,24 @@
+{
+  "checks": [
+    "Exact historical report restored from a scoped URL; latest report never substituted",
+    "History paging and selected off-page Run survive reload independently"
+  ],
+  "errors": [],
+  "external": [],
+  "geometry": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/devices/pairings",
+      "method": "POST"
+    },
+    {
+      "path": "/api/device/claim",
+      "method": "POST"
+    }
+  ],
+  "failure": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Conversation', exact: true })\u001b[22m\n"
+}

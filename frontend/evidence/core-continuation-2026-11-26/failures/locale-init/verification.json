@@ -1,0 +1,52 @@
+{
+  "checks": [
+    "Saved continuation opens a bounded reference picker without a new Run or model call",
+    "Advertised catalog failure stays an explicit error and refresh uses the real GET",
+    "Keyboard and pointer selection require an exact-content preview before advancing",
+    "Lost preparation restores the original immutable references by GET after reload"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/ddcb8c055b0a4e0e86c7773e5c417ce3/turns",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/ddcb8c055b0a4e0e86c7773e5c417ce3/turns/ab09d9bbb0014059b6a846e6490963a2/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/ddcb8c055b0a4e0e86c7773e5c417ce3/turns/ab09d9bbb0014059b6a846e6490963a2/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/ddcb8c055b0a4e0e86c7773e5c417ce3/turns/ab09d9bbb0014059b6a846e6490963a2/prepare",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "reference-selection-desktop.png",
+    "reference-preview-desktop.png",
+    "frozen-references-neutral-light.png",
+    "failure.png"
+  ],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    }
+  ],
+  "failure": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('task-conversation').getByRole('button', { name: '继续确认下一轮', exact: true })\u001b[22m\n"
+}

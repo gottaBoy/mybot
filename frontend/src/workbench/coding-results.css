@@ -1,0 +1,13 @@
+.wb-coding-log {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 560px;
+  overflow: auto;
+  font-family: var(--wb-mono, monospace);
+  font-size: 12px;
+  line-height: 1.6;
+  padding: 12px;
+  background: var(--wb-side);
+  border: 1px solid var(--wb-border);
+  border-radius: 4px;
+}

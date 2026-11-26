@@ -308,7 +308,8 @@ def test_scoped_task_snapshot_is_bounded_minimal_and_read_only(device_case):
         )
     before = {table: rows(store, table) for table in ("events", "devices", "task_turns")}
     result = companion.get("/api/device/task").json()
-    assert set(result) == {"schema_version", "device_id", "task", "latest_run", "messages", "report", "cursor"}
+    assert set(result) == {"schema_version", "device_id", "task", "latest_run", "messages", "report", "cursor", "run_history", "execution_delegation"}
+    assert result["run_history"] is True
     assert result["device_id"] == device["id"]
     assert result["task"] == {key: task[key] for key in ("id", "title", "goal", "acceptance")}
     assert set(result["latest_run"]) == {"id", "task_id", "status", "created_at"}

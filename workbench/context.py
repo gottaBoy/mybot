@@ -34,9 +34,16 @@ def validate_directory(workspace: Path, relative: str) -> None:
 
 def snapshot(workspace: Path, project: dict, files: list[str]) -> tuple[str, list[dict]]:
     """Open explicit text files with no-follow descriptors, never crawl a repository."""
+    records = snapshot_files(workspace, project, files)
+    return "\n\n".join(
+        f"FILE {record['path']}\n{record['content']}\nEND FILE" for record in records
+    ), [{"path": record["path"], "bytes": record["bytes"]} for record in records]
+
+
+def snapshot_files(workspace: Path, project: dict, files: list[str]) -> list[dict]:
+    """Keep the exact bytes available to the isolated coding snapshot."""
     validate_directory(workspace, project["directory"])
-    sections = []
-    evidence = []
+    records = []
     size = 0
     for name in files:
         relative_path(name)
@@ -74,6 +81,5 @@ def snapshot(workspace: Path, project: dict, files: list[str]) -> tuple[str, lis
         size += len(raw)
         if size > 65536:
             raise ContextError("Selected file context exceeds 64 KiB")
-        sections.append(f"FILE {name}\n{text}\nEND FILE")
-        evidence.append({"path": name, "bytes": len(raw)})
-    return "\n\n".join(sections), evidence
+        records.append({"path": name, "content": text, "bytes": len(raw)})
+    return records

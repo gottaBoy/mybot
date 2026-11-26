@@ -20,10 +20,13 @@ from .config import Settings
 from .backend import BackendError
 from .backend_service import BackendService
 from .context import ContextError, snapshot, validate_directory
+from .coding import CodingConfig, CodingExecute, CodingPrepare, CodingService, CodingHarness
+from .coding_runner import CodingError
 from .devices import (
     DEVICE_COOKIE, DEVICE_SECONDS, DeviceClaim, DeviceError, DeviceInput,
     DeviceRevoke, DeviceService, PairingCreate,
 )
+from .device_execution import DeviceExecutionService, ExecutionGrantCreate, ExecutionGrantRevoke
 from .engine import Engine
 from .harness import LocalSuperagentHarness
 from .model_test_service import ModelTestService
@@ -47,7 +50,7 @@ from .task_board import EMPTY_PAGES, TaskBoardError, parse_task_board, read_task
 from .task_detail import TaskDetailError, parse_task_detail, read_task_detail
 from .task_query import EMPTY_QUERY, MAX_PAGE, TaskQueryError, parse_task_query, read_task_page
 from .task_turns import (
-    TaskTurnCreate, TaskTurnError, TaskTurnExecute, TaskTurnPrepare, TaskTurnService, TurnInput,
+    TaskTurnCreate, TaskTurnError, TaskTurnExecute, TaskTurnPrepare, TaskTurnPreview, TaskTurnService, TurnInput,
 )
 from .workspace_reads import (
     WorkspaceReadError, parse_workspace_counts, parse_workspace_search,
@@ -66,6 +69,8 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     task_turns = TaskTurnService(store, settings.workspace)
     workflows = WorkflowService(store)
     devices = DeviceService(store, task_turns)
+    device_execution = DeviceExecutionService(devices)
+    coding = CodingService(store, settings.workspace)
     sessions = {}
     login_attempts = {}
     claim_attempts = {}
@@ -93,6 +98,8 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     app.state.task_turns = task_turns
     app.state.workflows = workflows
     app.state.devices = devices
+    app.state.device_execution = device_execution
+    app.state.coding = coding
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=list(settings.allowed_hosts))
 
     def loopback(request):
@@ -118,10 +125,13 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                 return JSONResponse({"detail": "Cross-site access denied"}, status_code=403)
             public_paths = {"/api/auth", "/api/auth/state", "/api/device/claim",
                             "/api/device/session", "/api/device/logout"}
-            device_paths = {"/api/device/task", "/api/device/events", "/api/device/messages"}
+            device_paths = {"/api/device/task", "/api/device/events", "/api/device/messages",
+                            "/api/device/runs", "/api/device/execution-grants"}
             is_device_path = (
                 request.url.path in device_paths
                 or re.fullmatch(r"/api/device/messages/requests/[^/]+", request.url.path) is not None
+                or re.fullmatch(r"/api/device/runs/[^/]+", request.url.path) is not None
+                or re.fullmatch(r"/api/device/execution-grants/[^/]+(?:/execute)?", request.url.path) is not None
             )
             if DEVICE_COOKIE in request.cookies and not (
                 request.url.path in public_paths | {"/api/logout"} or is_device_path
@@ -184,6 +194,10 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     @app.exception_handler(ContextError)
     async def context_error(request, exc):
         return JSONResponse({"detail": str(exc)}, status_code=422)
+
+    @app.exception_handler(CodingError)
+    async def coding_error(request, exc):
+        return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
 
     @app.exception_handler(BackendError)
     async def backend_error(request, exc):
@@ -313,6 +327,10 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "task_conversation": True,
                                  "workflow_versions": True,
                                  "device_continuation": True,
+                                 "device_run_history": True,
+                                 "device_execution_delegation": True,
+                                 "isolated_coding": True,
+                                 "task_artifact_references": True,
                                  "workspace_counts": True,
                                  "workspace_search": True,
                                  "project_references": True,
@@ -352,6 +370,26 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
         device_parameters(request)
         return devices.operation(request_id)
 
+    @app.get("/api/devices/{device_id}/execution")
+    def owner_execution(device_id: str, request: Request):
+        device_parameters(request)
+        return device_execution.owner(device_id)
+
+    @app.post("/api/devices/{device_id}/execution-grants")
+    def owner_execution_grant(device_id: str, body: ExecutionGrantCreate, request: Request):
+        device_parameters(request)
+        return device_execution.create(device_id, body)
+
+    @app.post("/api/devices/{device_id}/execution-grants/{grant_id}/revoke")
+    def owner_execution_revoke(device_id: str, grant_id: str, body: ExecutionGrantRevoke, request: Request):
+        device_parameters(request)
+        return device_execution.revoke(device_id, grant_id, body)
+
+    @app.get("/api/devices/{device_id}/execution-operations/{request_id}")
+    def owner_execution_operation(device_id: str, request_id: str, request: Request):
+        device_parameters(request)
+        return device_execution.operation(device_id, request_id)
+
     @app.post("/api/device/claim")
     def device_claim(body: DeviceClaim, request: Request, response: Response):
         device_parameters(request)
@@ -382,6 +420,43 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     def device_events(request: Request, after: int = Query(..., ge=0, le=(1 << 53) - 1)):
         device_parameters(request, {"after"})
         return devices.events(request.cookies.get(DEVICE_COOKIE, ""), after)
+
+    @app.get("/api/device/runs")
+    def device_runs(request: Request, page: int = Query(1, ge=1, le=MAX_PAGE)):
+        device_parameters(request, {"page"})
+        return devices.runs(
+            request.cookies.get(DEVICE_COOKIE, ""), page,
+            request.headers.get("x-workbench-device-id"),
+        )
+
+    @app.get("/api/device/runs/{identifier}")
+    def device_run(identifier: str, request: Request):
+        device_parameters(request)
+        return devices.run(
+            request.cookies.get(DEVICE_COOKIE, ""), identifier,
+            request.headers.get("x-workbench-device-id"),
+        )
+
+    @app.get("/api/device/execution-grants")
+    def device_execution_current(request: Request):
+        device_parameters(request)
+        return device_execution.read(
+            request.cookies.get(DEVICE_COOKIE, ""), request.headers.get("x-workbench-device-id"),
+        )
+
+    @app.get("/api/device/execution-grants/{grant_id}")
+    def device_execution_read(grant_id: str, request: Request):
+        device_parameters(request)
+        return device_execution.read(
+            request.cookies.get(DEVICE_COOKIE, ""), request.headers.get("x-workbench-device-id"), grant_id,
+        )
+
+    @app.post("/api/device/execution-grants/{grant_id}/execute")
+    def device_execution_execute(grant_id: str, body: TaskTurnExecute, request: Request):
+        device_parameters(request)
+        return device_execution.execute(
+            request.cookies.get(DEVICE_COOKIE, ""), request.headers.get("x-workbench-device-id"), grant_id, body,
+        )
 
     @app.post("/api/device/messages")
     def device_message(body: TaskTurnCreate, request: Request):
@@ -642,6 +717,45 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                 "access": "read_only", "tools": [],
                 "context_hash": hashlib.sha256(json_bytes(task, project, text)).hexdigest()}
 
+    def coding_parameters(request):
+        if request.query_params:
+            raise CodingError("coding_parameters_invalid", 422)
+
+    @app.post("/api/tasks/{identifier}/coding/preview")
+    async def coding_preview(identifier: str, body: CodingConfig, request: Request):
+        coding_parameters(request)
+        await engine.coding.runner.probe()
+        return coding.preview(identifier, body)
+
+    @app.post("/api/tasks/{identifier}/coding/prepare")
+    async def coding_prepare(identifier: str, body: CodingPrepare, request: Request):
+        coding_parameters(request)
+        await engine.coding.runner.probe()
+        return coding.prepare(identifier, body)
+
+    @app.get("/api/tasks/{identifier}/coding")
+    def coding_prepared(identifier: str, request: Request):
+        coding_parameters(request)
+        return coding.read(identifier)
+
+    @app.get("/api/tasks/{identifier}/coding/{request_id}")
+    def coding_read(identifier: str, request_id: str, request: Request):
+        coding_parameters(request)
+        return coding.read(identifier, request_id)
+
+    @app.post("/api/tasks/{identifier}/coding/{request_id}/execute")
+    async def coding_execute(identifier: str, request_id: str, body: CodingExecute, request: Request):
+        coding_parameters(request)
+        await engine.coding.runner.probe()
+        return coding.execute(identifier, request_id, body)
+
+    @app.post("/api/tasks/{identifier}/coding/{request_id}/discard")
+    def coding_discard(identifier: str, request_id: str, body: CodingExecute, request: Request):
+        coding_parameters(request)
+        if not body.consent:
+            raise CodingError("coding_discard_consent_required", 422)
+        return coding.discard(identifier, request_id, body)
+
     @app.get("/api/tasks/{identifier}/turns")
     def task_turn_list(identifier: str, request: Request, page: int = Query(1, ge=1, le=MAX_PAGE)):
         if any(
@@ -669,11 +783,20 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
             raise TaskTurnError("task_turn_parameters_invalid", 422)
         return task_turns.read(identifier, turn_id)
 
+    @app.get("/api/tasks/{identifier}/artifacts")
+    def task_artifacts(identifier: str, request: Request, page: int = Query(1, ge=1, le=MAX_PAGE)):
+        if any(
+            key != "page" or len(request.query_params.getlist(key)) != 1
+            for key in request.query_params
+        ):
+            raise TaskTurnError("task_turn_parameters_invalid", 422)
+        return task_turns.artifacts(identifier, page)
+
     @app.post("/api/tasks/{identifier}/turns/{turn_id}/preview")
-    def task_turn_preview(identifier: str, turn_id: str, body: TurnInput, request: Request):
+    def task_turn_preview(identifier: str, turn_id: str, body: TaskTurnPreview, request: Request):
         if request.query_params:
             raise TaskTurnError("task_turn_parameters_invalid", 422)
-        return task_turns.preview(identifier, turn_id)
+        return task_turns.preview(identifier, turn_id, body.artifact_refs)
 
     @app.post("/api/tasks/{identifier}/turns/{turn_id}/prepare")
     def task_turn_prepare(identifier: str, turn_id: str, body: TaskTurnPrepare, request: Request):
@@ -760,7 +883,8 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
         return {"run": run, "task": task, "project": store.get("projects", task["project_id"]),
                 "agents": agents, "calls": calls, "artifacts": artifacts, "events": events,
                 "retry_runs": store.retry_children(identifier),
-                "harness": LocalSuperagentHarness.describe(run, agents, calls, artifacts, events)}
+                "harness": (CodingHarness if run["context"].get("mode") == "coding-v1"
+                            else LocalSuperagentHarness).describe(run, agents, calls, artifacts, events)}
 
     @app.get("/api/runs/{identifier}/events")
     async def run_events(identifier: str, after: int = 0):
@@ -805,10 +929,14 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
 
     @app.get("/api/runs/{identifier}/retry-preview")
     async def run_retry_preview(identifier: str):
+        if store.get("runs", identifier)["context"].get("mode") == "coding-v1":
+            raise HTTPException(409, "coding_recovery_requires_new_attempt")
         return store.retry_preview(identifier)
 
     @app.post("/api/runs/{identifier}/retry", status_code=201)
     async def run_retry(identifier: str, body: RunRetry):
+        if store.get("runs", identifier)["context"].get("mode") == "coding-v1":
+            raise HTTPException(409, "coding_recovery_requires_new_attempt")
         if not body.consent:
             raise HTTPException(422, "retry_send_confirmation_required")
         preview = store.retry_preview(identifier)

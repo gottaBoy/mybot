@@ -1,0 +1,86 @@
+{
+  "checks": [
+    "Owner copies an exact read-position link without creating an invitation or granting execution",
+    "Exact historical report restored from a scoped URL; latest report never substituted",
+    "History paging and selected off-page Run survive reload independently",
+    "Same-Task draft survives view changes; unknown save blocks navigation and reconciles by original GET",
+    "Managed Back/Forward restores paired position without a second save",
+    "Wrong-Task link hides content and returns only to explicitly authorized Task",
+    "Missing selected Run fails explicitly without falling back to latest",
+    "Advertised detail failure hides uncertain report and recovers only by explicit GET retry",
+    "Three styles in both modes; desktop/mobile, English/Chinese and off-page selected report",
+    "Historical reads respect Task boundary; execution forbidden; revocation clears private content"
+  ],
+  "errors": [],
+  "external": [],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "width": 1440,
+      "documentWidth": 1440,
+      "background": "light-dark(#ffffff, #1c1f22)"
+    },
+    {
+      "style": "neutral",
+      "mode": "dark",
+      "width": 390,
+      "documentWidth": 390,
+      "background": "light-dark(#ffffff, #1c1f22)"
+    },
+    {
+      "style": "zira",
+      "mode": "light",
+      "width": 1440,
+      "documentWidth": 1440,
+      "background": "light-dark(#ffffff, #161a22)"
+    },
+    {
+      "style": "zira",
+      "mode": "dark",
+      "width": 390,
+      "documentWidth": 390,
+      "background": "light-dark(#ffffff, #161a22)"
+    },
+    {
+      "style": "y2k",
+      "mode": "light",
+      "width": 1440,
+      "documentWidth": 1440,
+      "background": "light-dark(#ffffff, #16182b)"
+    },
+    {
+      "style": "y2k",
+      "mode": "dark",
+      "width": 390,
+      "documentWidth": 390,
+      "background": "light-dark(#ffffff, #16182b)"
+    }
+  ],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/devices/pairings",
+      "method": "POST"
+    },
+    {
+      "path": "/api/device/claim",
+      "method": "POST"
+    },
+    {
+      "path": "/api/device/messages",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/reference-task-000-0/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/devices/d293f07bed3d49189a6b7ba1c378086e/revoke",
+      "method": "POST"
+    }
+  ]
+}

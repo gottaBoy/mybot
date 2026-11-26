@@ -188,7 +188,7 @@ async function verifyContextConflict(sourceDetail, bootstrap) {
     if (url.pathname === '/api/bootstrap' && request.method() === 'GET')
       return route.fulfill({
         status: 200,
-        json: { ...bootstrap, capabilities: { ...bootstrap.capabilities, task_query: false, task_detail: false, workflow_versions: false }, projects: [project], tasks: [task], runs: [] },
+        json: { ...bootstrap, capabilities: { ...bootstrap.capabilities, task_query: false, task_detail: false, workflow_versions: false, isolated_coding: false }, projects: [project], tasks: [task], runs: [] },
       })
     if (url.pathname === `/api/tasks/${task.id}/preview` && request.method() === 'POST') {
       previewCount++
@@ -374,7 +374,7 @@ async function verifyRecoveryWorkflow(sourceDetail, bootstrap) {
     if (url.pathname === '/api/bootstrap' && request.method() === 'GET')
       return route.fulfill({
         status: 200,
-        json: { ...bootstrap, capabilities: { ...bootstrap.capabilities, task_query: false, task_detail: false, workflow_versions: false }, projects: [source.project], tasks: [source.task], runs: [source.run] },
+        json: { ...bootstrap, capabilities: { ...bootstrap.capabilities, task_query: false, task_detail: false, workflow_versions: false, isolated_coding: false }, projects: [source.project], tasks: [source.task], runs: [source.run] },
       })
     if (request.method() === 'GET') {
       for (const id of [sourceId, childId, pausedId, unknownId]) {
@@ -650,7 +650,7 @@ async function verifyFormsAndModelReceipts(bootstrap) {
     if (url.pathname === '/api/bootstrap' && request.method() === 'GET')
       return route.fulfill({
         status: 200,
-        json: { ...bootstrap, capabilities: { ...bootstrap.capabilities, task_query: false, task_detail: false, workflow_versions: false }, tasks: [], runs: [], models: [model], default_model_id: model.id },
+        json: { ...bootstrap, capabilities: { ...bootstrap.capabilities, task_query: false, task_detail: false, workflow_versions: false, isolated_coding: false }, tasks: [], runs: [], models: [model], default_model_id: model.id },
       })
     if (url.pathname === '/api/projects' && request.method() === 'POST') {
       projectPosts++

@@ -30,6 +30,7 @@ const mocks = vi.hoisted(() => ({
   push: vi.fn(),
   cancel: vi.fn(),
   confirm: vi.fn(),
+  histories: [] as Record<string, any>[],
 }))
 vi.mock('react', async () => ({
   ...(await vi.importActual<typeof import('react')>('react')),
@@ -87,6 +88,7 @@ vi.mock('../src/components/ui', () => {
     AppInput: field('input'),
     AppTextArea: field('textarea'),
     AppSelect: field('select'),
+    AppSegments: field('select'),
     AppButton: (props: any) => {
       mocks.buttons.push(props)
       return createElement(
@@ -107,7 +109,19 @@ vi.mock('../src/components/ui/DraftGuard', () => ({
     return createElement('div', { role: 'dialog' }, props.title)
   },
 }))
+vi.mock('../src/workbench/PairedRunHistory', () => ({
+  PairedRunHistory: (props: any) => {
+    mocks.histories.push(props)
+    return createElement(
+      'p',
+      null,
+      `History selection: ${props.location.runId ?? 'none'}`,
+    )
+  },
+}))
 vi.mock('../src/workbench/navigation-guard', () => ({
+  WORKBENCH_NAVIGATION_EVENT: 'mybot:navigation',
+  allowWorkbenchNavigation: () => true,
   registerWorkbenchNavigationBlocker: (props: any) => {
     mocks.guard = props
     return () => {
@@ -175,6 +189,7 @@ function render() {
   mocks.buttons = []
   mocks.fields = []
   mocks.discard = undefined
+  mocks.histories = []
   markup = renderToStaticMarkup(createElement(PairPortal))
   for (const effect of mocks.pending.splice(0)) effect()
   return markup
@@ -271,6 +286,55 @@ describe('PairPortal URL and immutable device identity', () => {
   })
 })
 describe('PairPortal scoped workflow', () => {
+  it('keeps an exact historical location across pairing and same-Task draft navigation', async () => {
+    window.location.href =
+      'http://localhost/#pair?task=task-1&view=review&run=old-run'
+    mocks.fetchSession.mockResolvedValue({ schema_version: 1, device })
+    mocks.fetchTask.mockResolvedValue({ ...task(), run_history: true })
+    render()
+    await settle()
+    expect(mocks.histories[0].location.runId).toBe('old-run')
+    expect(markup).not.toContain('Verifiable output.')
+    field('Supplemental requirements').onChange('Keep this draft')
+    render()
+    field('Continuation view').onChange('conversation')
+    render()
+    expect(field('Supplemental requirements').value).toBe('Keep this draft')
+    expect(window.location.href).toContain('run=old-run')
+    expect(mocks.save).not.toHaveBeenCalled()
+  })
+  it('hides a mismatched Task location and allows explicit return to granted Task', async () => {
+    window.location.href =
+      'http://localhost/#pair?task=another-task&view=review&run=old-run'
+    mocks.fetchSession.mockResolvedValue({ schema_version: 1, device })
+    mocks.fetchTask.mockResolvedValue({ ...task(), run_history: true })
+    render()
+    await settle()
+    expect(markup).toContain('does not match the authorized task')
+    expect(markup).not.toContain('Verifiable output.')
+    expect(mocks.histories).toHaveLength(0)
+    button('Open authorized task overview').onClick()
+    render()
+    expect(window.location.href).toBe('http://localhost/#pair?task=task-1')
+    expect(mocks.histories).toHaveLength(1)
+  })
+  it('preserves exact read position while reconciling an unknown message after reload', async () => {
+    window.location.href =
+      'http://localhost/#pair?task=task-1&view=conversation&run=old-run&deviceSend=original-send-id'
+    mocks.fetchSession.mockResolvedValue({ schema_version: 1, device })
+    mocks.fetchTask.mockResolvedValue({ ...task(), run_history: true })
+    mocks.receipt.mockResolvedValue({})
+    render()
+    await settle()
+    expect(button('Save requirement').disabled).toBe(true)
+    field('Continuation view').onChange('goal')
+    expect(window.location.href).toContain('view=conversation')
+    await button('Check save receipt').onClick()
+    await settle()
+    expect(window.location.href).toContain('run=old-run')
+    expect(window.location.href).not.toContain('deviceSend')
+    expect(mocks.save).not.toHaveBeenCalled()
+  })
   it('reads only the device session before showing pairing and stores appearance only', async () => {
     render()
     await settle()

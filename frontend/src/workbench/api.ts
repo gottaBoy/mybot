@@ -1,5 +1,6 @@
 import type { ModelTestReceipt } from './model-test-state'
 import type { WorkflowSnapshot } from './workflows'
+import type { ArtifactSource } from './task-artifacts'
 
 export type Project = {
   id: string
@@ -74,6 +75,10 @@ export type Bootstrap = {
     task_conversation?: boolean
     workflow_versions?: boolean
     device_continuation?: boolean
+    device_run_history?: boolean
+    device_execution_delegation?: boolean
+    isolated_coding?: boolean
+    task_artifact_references?: boolean
   }
 }
 export type Snapshot = {
@@ -85,6 +90,7 @@ export type Snapshot = {
   bytes: number
   evidence: Array<{ path: string; bytes: number }>
   workflow?: WorkflowSnapshot
+  artifacts?: ArtifactSource[]
 }
 export type Call = {
   id: string
@@ -111,8 +117,10 @@ export type RunDetail = {
   run: Run & {
     config: { max_calls: number }
     context: {
+      mode?: string
       evidence: Array<{ path: string; bytes: number }>
       workflow?: WorkflowSnapshot
+      artifacts?: ArtifactSource[]
     }
   }
   task: Task
@@ -146,6 +154,7 @@ export type RunDetail = {
       agent_count: number
       call_count: number
       artifact_count: number
+      agent_ids?: string[]
     }>
     parallel_limit: number
   }

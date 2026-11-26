@@ -1,0 +1,89 @@
+[
+  {
+    "profile": "python-unittest",
+    "command": [
+      "/home/my/workspace/ainfra/mywork/mybot/.venv/bin/python",
+      "-I",
+      "-B",
+      "/home/my/workspace/ainfra/mywork/mybot/workbench/test_sandbox.py",
+      "/tmp/mybot-coding-work-9qko9cto",
+      "[\"test_relative_path.py\"]"
+    ],
+    "exit_code": 1,
+    "duration_ms": 93,
+    "output": "test_rejects_newline (_mybot_selected_test_0.RelativePathAcceptance.test_rejects_newline) ... FAIL\ntest_rejects_tab (_mybot_selected_test_0.RelativePathAcceptance.test_rejects_tab) ... FAIL\ntest_retains_localized_source (_mybot_selected_test_0.RelativePathAcceptance.test_retains_localized_source) ... ok\ntest_retains_ordinary_source (_mybot_selected_test_0.RelativePathAcceptance.test_retains_ordinary_source) ... ok\n\n======================================================================\nFAIL: test_rejects_newline (_mybot_selected_test_0.RelativePathAcceptance.test_rejects_newline)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/mybot-coding-work-9qko9cto/test_relative_path.py\", line 9, in test_rejects_newline\n    with self.assertRaises(ValueError):\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_rejects_tab (_mybot_selected_test_0.RelativePathAcceptance.test_rejects_tab)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/mybot-coding-work-9qko9cto/test_relative_path.py\", line 13, in test_rejects_tab\n    with self.assertRaises(ValueError):\nAssertionError: ValueError not raised\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nFAILED (failures=2)\n\nMYBOT_TEST_RESULT={\"tests_run\": 4, \"failures\": 2, \"errors\": 0, \"skipped\": 0, \"success\": false}\n",
+    "timed_out": false,
+    "truncated": false,
+    "tests_run": 4,
+    "passed": false,
+    "receipt": {
+      "tests_run": 4,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0,
+      "success": false
+    },
+    "round": 0,
+    "test_files": [
+      "test_relative_path.py"
+    ]
+  },
+  {
+    "profile": "python-unittest",
+    "command": [
+      "/home/my/workspace/ainfra/mywork/mybot/.venv/bin/python",
+      "-I",
+      "-B",
+      "/home/my/workspace/ainfra/mywork/mybot/workbench/test_sandbox.py",
+      "/tmp/mybot-coding-work-9qko9cto",
+      "[\"test_relative_path.py\"]"
+    ],
+    "exit_code": 1,
+    "duration_ms": 94,
+    "output": "test_rejects_newline (_mybot_selected_test_0.RelativePathAcceptance.test_rejects_newline) ... ok\ntest_rejects_tab (_mybot_selected_test_0.RelativePathAcceptance.test_rejects_tab) ... FAIL\ntest_retains_localized_source (_mybot_selected_test_0.RelativePathAcceptance.test_retains_localized_source) ... ok\ntest_retains_ordinary_source (_mybot_selected_test_0.RelativePathAcceptance.test_retains_ordinary_source) ... ok\n\n======================================================================\nFAIL: test_rejects_tab (_mybot_selected_test_0.RelativePathAcceptance.test_rejects_tab)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/tmp/mybot-coding-work-9qko9cto/test_relative_path.py\", line 13, in test_rejects_tab\n    with self.assertRaises(ValueError):\nAssertionError: ValueError not raised\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nFAILED (failures=1)\n\nMYBOT_TEST_RESULT={\"tests_run\": 4, \"failures\": 1, \"errors\": 0, \"skipped\": 0, \"success\": false}\n",
+    "timed_out": false,
+    "truncated": false,
+    "tests_run": 4,
+    "passed": false,
+    "receipt": {
+      "tests_run": 4,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "success": false
+    },
+    "round": 1,
+    "test_files": [
+      "test_relative_path.py"
+    ]
+  },
+  {
+    "profile": "python-unittest",
+    "command": [
+      "/home/my/workspace/ainfra/mywork/mybot/.venv/bin/python",
+      "-I",
+      "-B",
+      "/home/my/workspace/ainfra/mywork/mybot/workbench/test_sandbox.py",
+      "/tmp/mybot-coding-work-9qko9cto",
+      "[\"test_relative_path.py\"]"
+    ],
+    "exit_code": 0,
+    "duration_ms": 97,
+    "output": "test_rejects_newline (_mybot_selected_test_0.RelativePathAcceptance.test_rejects_newline) ... ok\ntest_rejects_tab (_mybot_selected_test_0.RelativePathAcceptance.test_rejects_tab) ... ok\ntest_retains_localized_source (_mybot_selected_test_0.RelativePathAcceptance.test_retains_localized_source) ... ok\ntest_retains_ordinary_source (_mybot_selected_test_0.RelativePathAcceptance.test_retains_ordinary_source) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n\nMYBOT_TEST_RESULT={\"tests_run\": 4, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"success\": true}\n",
+    "timed_out": false,
+    "truncated": false,
+    "tests_run": 4,
+    "passed": true,
+    "receipt": {
+      "tests_run": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "success": true
+    },
+    "round": 2,
+    "test_files": [
+      "test_relative_path.py"
+    ]
+  }
+]
