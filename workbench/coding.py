@@ -210,7 +210,7 @@ class CodingService:
                 return public_job(row)
             if row["state"] != "prepared":
                 raise CodingError("coding_candidate_discarded")
-            TaskTurnService.require_ready(db, task_id, own_coding_id=request_id)
+            dependencies = TaskTurnService.require_ready(db, task_id, own_coding_id=request_id)
             candidate = json.loads(row["candidate"])
             model = decode(db.execute("SELECT * FROM models WHERE id=?", (candidate["config"]["model_id"],)).fetchone())
             if model is None or any(
@@ -227,6 +227,8 @@ class CodingService:
                 "evidence": [{"path": f["path"], "bytes": f["bytes"]} for f in candidate["snapshot"]["files"]],
                 "models": {model["id"]: candidate["model"]},
             }
+            if dependencies is not None:
+                context["task_dependencies"] = dependencies
             resources = {
                 **{key: model["id"] for key in ("coordinator_model", "researcher_model", "reviewer_model")},
                 "max_calls": config["max_rounds"], "parallel": 1, "minutes": 10,

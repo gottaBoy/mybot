@@ -1,0 +1,82 @@
+{
+  "checks": [
+    "A pristine Task breakdown opens and closes without file preview, task creation or model execution",
+    "Real goals and acceptance remain editable; cyclic prerequisites fail locally before any preview or mutation",
+    "Lost creation restores the original exact GET receipt after reload, with exactly two real child Tasks and no Run",
+    "Dependent research and coding controls stay blocked, and direct Run POST also rejects without a model call",
+    "A successful prerequisite Run does not unblock its dependent until the actual final report is accepted",
+    "Human report acceptance unlocks the real dependent Run, recording admission identity without appending prerequisite output to model context"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/5fd2dcf88cfa4ddeb4ced3d284717a60/plan/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/5fd2dcf88cfa4ddeb4ced3d284717a60/plan/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/5fd2dcf88cfa4ddeb4ced3d284717a60/plan",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/39de7d44462444fc902311f4a062d61c/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/39de7d44462444fc902311f4a062d61c/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/0efdb63c1d854d3eb9f86cababefd412/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/0efdb63c1d854d3eb9f86cababefd412/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/artifacts/e991cc0217df44788e7b4f6a8bcad68c/decision",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/39de7d44462444fc902311f4a062d61c/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/39de7d44462444fc902311f4a062d61c/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/artifacts/e991cc0217df44788e7b4f6a8bcad68c/decision",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "verified-breakdown-desktop.png",
+    "prerequisite-blocked-desktop.png",
+    "successful-but-unreviewed.png",
+    "failure.png"
+  ],
+  "geometry": [],
+  "failure": "Error: locator.click: Error: strict mode violation: getByTestId('dependency-admission').locator('summary') resolved to 2 elements:\n    1) <summary>Dependency admission at queue time</summary> aka getByText('Dependency admission at queue')\n    2) <summary>Report receipts</summary> aka getByText('Report receipts')\n\nCall log:\n\u001b[2m  - waiting for getByTestId('dependency-admission').locator('summary')\u001b[22m\n"
+}

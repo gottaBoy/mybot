@@ -1,0 +1,124 @@
+{
+  "request_id": "8784a5e9-9280-4349-91fe-75da631051a7",
+  "task_id": "18b3b9efb2fb40479c67ceda0f7eaa47",
+  "preview_hash": "884a11121a31428a4ca8605b16e483eb23c0b4c376e3e5943fe79146f8b015b1",
+  "state": "applied",
+  "result": {
+    "schema_version": 1,
+    "unit": "task_plan",
+    "task_id": "18b3b9efb2fb40479c67ceda0f7eaa47",
+    "parent": null,
+    "gate": null,
+    "plan": {
+      "version": 1,
+      "parent_task_id": "18b3b9efb2fb40479c67ceda0f7eaa47",
+      "plan_hash": "884a11121a31428a4ca8605b16e483eb23c0b4c376e3e5943fe79146f8b015b1",
+      "created_at": "2026-11-26T13:46:01.550218+00:00",
+      "definition": {
+        "items": [
+          {
+            "key": "step1",
+            "title": "梳理源码边界与未知项",
+            "goal": "Analyze the selected README and record source boundaries with explicit unknowns.",
+            "acceptance": "A final report states the source evidence, unresolved assumptions and review scope.",
+            "files": [
+              "README.md"
+            ],
+            "depends_on": []
+          },
+          {
+            "key": "step2",
+            "title": "根据已验收结论设计验证步骤",
+            "goal": "Develop concrete validation advice after the source report has been reviewed.",
+            "acceptance": "The validation report has actionable steps and clearly separates executed tests from recommendations.",
+            "files": [
+              "README.md"
+            ],
+            "depends_on": [
+              "step1"
+            ]
+          }
+        ]
+      },
+      "parent_snapshot": {
+        "id": "18b3b9efb2fb40479c67ceda0f7eaa47",
+        "project_id": "8abb27ca79554bd6a56618ee708b3b29",
+        "title": "将研发目标拆成可执行、可审查的工作",
+        "goal": "Analyze explicit source constraints, obtain human review, then develop a bounded validation proposal.",
+        "acceptance": "Real child Tasks have explicit goals, acceptance, dependencies and persistent execution evidence.",
+        "files": [
+          "README.md"
+        ],
+        "created_at": "2026-11-26T13:45:59.863028+00:00"
+      },
+      "items": [
+        {
+          "key": "step1",
+          "task": {
+            "id": "40762f747c494531aa8145485e680f0a",
+            "project_id": "8abb27ca79554bd6a56618ee708b3b29",
+            "title": "梳理源码边界与未知项",
+            "goal": "Analyze the selected README and record source boundaries with explicit unknowns.",
+            "acceptance": "A final report states the source evidence, unresolved assumptions and review scope.",
+            "files": [
+              "README.md"
+            ],
+            "created_at": "2026-11-26T13:46:01.550218+00:00"
+          },
+          "review": {
+            "task_id": "40762f747c494531aa8145485e680f0a",
+            "title": "梳理源码边界与未知项",
+            "latest_run": null,
+            "state": "no_run",
+            "reports": []
+          },
+          "gate": {
+            "task_id": "40762f747c494531aa8145485e680f0a",
+            "parent_task_id": "18b3b9efb2fb40479c67ceda0f7eaa47",
+            "plan_hash": "884a11121a31428a4ca8605b16e483eb23c0b4c376e3e5943fe79146f8b015b1",
+            "criterion": "latest-successful-run-reviewed-reports-v1",
+            "ready": true,
+            "prerequisites": []
+          }
+        },
+        {
+          "key": "step2",
+          "task": {
+            "id": "b0ea8cacd7334cb7937632f8f959e68c",
+            "project_id": "8abb27ca79554bd6a56618ee708b3b29",
+            "title": "根据已验收结论设计验证步骤",
+            "goal": "Develop concrete validation advice after the source report has been reviewed.",
+            "acceptance": "The validation report has actionable steps and clearly separates executed tests from recommendations.",
+            "files": [
+              "README.md"
+            ],
+            "created_at": "2026-11-26T13:46:01.550218+00:00"
+          },
+          "review": {
+            "task_id": "b0ea8cacd7334cb7937632f8f959e68c",
+            "title": "根据已验收结论设计验证步骤",
+            "latest_run": null,
+            "state": "no_run",
+            "reports": []
+          },
+          "gate": {
+            "task_id": "b0ea8cacd7334cb7937632f8f959e68c",
+            "parent_task_id": "18b3b9efb2fb40479c67ceda0f7eaa47",
+            "plan_hash": "884a11121a31428a4ca8605b16e483eb23c0b4c376e3e5943fe79146f8b015b1",
+            "criterion": "latest-successful-run-reviewed-reports-v1",
+            "ready": false,
+            "prerequisites": [
+              {
+                "task_id": "40762f747c494531aa8145485e680f0a",
+                "title": "梳理源码边界与未知项",
+                "latest_run": null,
+                "state": "no_run",
+                "reports": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

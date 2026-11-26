@@ -3,6 +3,11 @@
 日期：2026-11-13。依据：用户逐条指定的 20 个模板、基础组件与“一套代码多种样式”要求。
 保留 ADR-0006 的渐进迁移边界，不改变 Provider、设备权限或认证协议。
 
+2026-11-26目标交付增量：沿Task work-item-detail和form-wizard适配增加真实子任务、
+固定依赖、人工报告门禁、原准入凭据。编辑器复用AppDialog/Input/TextArea/Checkbox/Button，
+列表与原因沿同一Task/Run树和语义Token；未复制模板或新增vendor组件。
+三style双mode/中文390、长表单与离开保护见ADR-0030及本批证据。
+
 2026-11-26后续采用：现有研发Dialog与work-item-detail增加代码起点选择、检查点分页、
 本轮要求、继承Diff、运行来源、累计/增量patch与结构化代码快照导出。
 复用AppSelect/Button/TextArea和原状态/Token；未引入新组件库、第二套页面或模板生成。
@@ -547,3 +552,16 @@ round0区分继承代码基线。三style双mode、1440英文/390中文、reduce
 8专项/58综合/8主只读共74检查、73最终fixturePNG。
 主4180/5173已启用，正式数据不变，没有自动开始模型或测试。
 详见`frontend/evidence/coding-continuation-2026-11-26/README.md`及ADR-0029。
+
+## 33. 真实子任务与前置报告审查
+
+2026-11-26沿Task work-item-detail与form-wizard落点整合真实Task拆解，固定2–8项、
+显式文件/目标/验收/依赖，preview后确认；AppDialog/Input/TextArea/Checkbox/Button均用既有
+项目包装，未新增通用UI/vendor副本/第二页面或重新生成模板。
+列表是同一Task业务树，角色/调用/成果仍复用原RunWorkspace；上下文中显示准入身份，
+当前状态与历史凭据分开。长表单底部取消和dirty Escape使用同一导航保护。
+
+2278前端/1288Python全量与22最后定向/typecheck/build通过，保留原警告；
+8主专项/3窄屏编辑/58综合/8主只读，共77浏览器检查/72最终fixturePNG，
+三style双mode、英文1440/中文390/reduced motion。主4180/5173已启用，原数据不变。
+证据`frontend/evidence/task-plans-2026-11-26/README.md`，没有声称计划修订/AI自动拆解/真机完成。

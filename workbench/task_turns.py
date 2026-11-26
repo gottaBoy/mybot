@@ -16,6 +16,7 @@ from .provider import key_available
 from .store import Store, decode, dump, now, uid
 from .task_query import MAX_PAGE
 from .task_artifacts import ArtifactReference, artifact_page, select_artifacts
+from .task_plans import require_dependencies
 from .workflows import MAX_INTEGER, run_workflow
 
 
@@ -281,6 +282,7 @@ class TaskTurnService:
             (task_id,),
         ).fetchone():
             raise TaskTurnError("task_turn_run_unfinished")
+        return require_dependencies(db, task_id)
 
     def models(self, db, config):
         models = {}
@@ -373,7 +375,7 @@ class TaskTurnService:
             return public_turn(row)
         if row["state"] != "prepared":
             raise TaskTurnError("task_turn_not_prepared")
-        self.require_ready(db, task_id, turn_id)
+        dependencies = self.require_ready(db, task_id, turn_id)
         current_models = self.models(db, candidate["config"])
         if any(
             {key: model.get(key) for key in EXECUTION_MODEL_FIELDS}
@@ -388,6 +390,8 @@ class TaskTurnService:
             raise TaskTurnError("task_turn_request_conflict")
         run_id = uid()
         context = candidate["context"]
+        if dependencies is not None:
+            context = {**context, "task_dependencies": dependencies}
         if "workflow" not in context:
             context = {**context, "workflow": run_workflow(db, candidate["config"])}
         db.execute(

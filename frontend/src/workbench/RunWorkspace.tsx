@@ -39,6 +39,8 @@ import {
 import './coding-results.css'
 import { runStageTitle } from './run-stages'
 import { parseArtifactSources } from './task-artifacts'
+import { parseDependencyGate } from './task-plans'
+import { TaskDependencyFacts } from './TaskPlanPanel'
 import { pushWorkbenchNavigation } from './navigation-guard'
 import {
   activeStatuses,
@@ -127,6 +129,8 @@ export function RunWorkspace({
         if (next.run.context.artifacts !== undefined)
           parseArtifactSources(next.run.context.artifacts, next.task.id)
         recordedCodingCandidate(next.run.context, next.task.id)
+        if (next.run.context.task_dependencies !== undefined)
+          parseDependencyGate(next.run.context.task_dependencies, next.task.id)
       } catch (reason) {
         setDetail(null)
         throw reason
@@ -750,6 +754,27 @@ export function RunWorkspace({
                   <code>{item.path}</code> · {item.bytes} bytes
                 </p>
               ))}
+              {run.context.task_dependencies && (
+                <details
+                  className="wb-disclosure"
+                  data-testid="dependency-admission"
+                >
+                  <summary>
+                    {t(
+                      '启动时的依赖凭据',
+                      'Dependency admission at queue time',
+                    )}
+                  </summary>
+                  <TaskDependencyFacts
+                    gate={run.context.task_dependencies}
+                    t={t}
+                    showReceipts
+                  />
+                  <code className="wb-wrap">
+                    {run.context.task_dependencies.plan_hash}
+                  </code>
+                </details>
+              )}
               {codingCandidate?.snapshot.continuation && (
                 <details
                   className="wb-disclosure"

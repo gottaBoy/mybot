@@ -48,6 +48,7 @@ from .saved_views import SavedViewError
 from .run_query import RunQueryError, parse_run_query, read_run_page
 from .task_board import EMPTY_PAGES, TaskBoardError, parse_task_board, read_task_board
 from .task_detail import TaskDetailError, parse_task_detail, read_task_detail
+from .task_plans import PlanCreate, PlanDefinition, TaskPlanError, TaskPlanService
 from .task_query import EMPTY_QUERY, MAX_PAGE, TaskQueryError, parse_task_query, read_task_page
 from .task_turns import (
     TaskTurnCreate, TaskTurnError, TaskTurnExecute, TaskTurnPrepare, TaskTurnPreview, TaskTurnService, TurnInput,
@@ -71,6 +72,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     devices = DeviceService(store, task_turns)
     device_execution = DeviceExecutionService(devices)
     coding = CodingService(store, settings.workspace)
+    task_plans = TaskPlanService(store)
     sessions = {}
     login_attempts = {}
     claim_attempts = {}
@@ -100,6 +102,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     app.state.devices = devices
     app.state.device_execution = device_execution
     app.state.coding = coding
+    app.state.task_plans = task_plans
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=list(settings.allowed_hosts))
 
     def loopback(request):
@@ -224,6 +227,10 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     async def task_detail_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
 
+    @app.exception_handler(TaskPlanError)
+    async def task_plan_error(request, exc):
+        return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
+
     @app.exception_handler(TaskTurnError)
     async def task_turn_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
@@ -331,6 +338,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "device_execution_delegation": True,
                                  "isolated_coding": True,
                                  "coding_continuation": True,
+                                 "task_plans": True,
                                  "task_artifact_references": True,
                                  "workspace_counts": True,
                                  "workspace_search": True,
@@ -717,6 +725,30 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                 "text": text, "evidence": evidence, "bytes": len(text.encode()),
                 "access": "read_only", "tools": [],
                 "context_hash": hashlib.sha256(json_bytes(task, project, text)).hexdigest()}
+
+    @app.get("/api/tasks/{identifier}/plan")
+    def task_plan_read(identifier: str, request: Request):
+        if request.query_params:
+            raise TaskPlanError("task_plan_parameters_invalid", 422)
+        return task_plans.read(identifier)
+
+    @app.post("/api/tasks/{identifier}/plan/preview")
+    def task_plan_preview(identifier: str, body: PlanDefinition, request: Request):
+        if request.query_params:
+            raise TaskPlanError("task_plan_parameters_invalid", 422)
+        return task_plans.preview(identifier, body)
+
+    @app.post("/api/tasks/{identifier}/plan")
+    def task_plan_create(identifier: str, body: PlanCreate, request: Request):
+        if request.query_params:
+            raise TaskPlanError("task_plan_parameters_invalid", 422)
+        return task_plans.create(identifier, body)
+
+    @app.get("/api/tasks/{identifier}/plan/operations/{request_id}")
+    def task_plan_operation(identifier: str, request_id: str, request: Request):
+        if request.query_params:
+            raise TaskPlanError("task_plan_parameters_invalid", 422)
+        return task_plans.operation(identifier, request_id)
 
     def coding_parameters(request):
         if request.query_params:

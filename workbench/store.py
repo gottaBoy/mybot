@@ -18,6 +18,7 @@ from .saved_views import (
     SavedViewCreate, SavedViewError, SavedViewUpdate, public_saved_view,
     require_identifier, require_scope, saved_view_delete_receipt,
 )
+from .task_plans import require_dependencies, TaskPlanError
 
 
 def now() -> str:
@@ -123,6 +124,7 @@ CREATE TABLE IF NOT EXISTS events (
 CREATE INDEX IF NOT EXISTS events_run_seq ON events(run_id,seq);
 CREATE INDEX IF NOT EXISTS calls_run ON calls(run_id);
 CREATE INDEX IF NOT EXISTS agents_run ON agents(run_id);
+CREATE INDEX IF NOT EXISTS artifacts_run_kind ON artifacts(run_id,kind);
 CREATE TABLE IF NOT EXISTS workspace_settings (
  key TEXT PRIMARY KEY, value TEXT NOT NULL
 );
@@ -229,6 +231,24 @@ CREATE TABLE IF NOT EXISTS coding_jobs (
  CHECK((state='applied' AND run_id IS NOT NULL) OR (state!='applied' AND run_id IS NULL))
 );
 CREATE UNIQUE INDEX IF NOT EXISTS coding_jobs_prepared ON coding_jobs(task_id) WHERE state='prepared';
+CREATE TABLE IF NOT EXISTS task_plans (
+ parent_task_id TEXT PRIMARY KEY REFERENCES tasks(id), plan_hash TEXT NOT NULL,
+ definition TEXT NOT NULL, parent_snapshot TEXT NOT NULL, created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS task_plan_items (
+ task_id TEXT PRIMARY KEY REFERENCES tasks(id), parent_task_id TEXT NOT NULL REFERENCES task_plans(parent_task_id),
+ item_key TEXT NOT NULL, position INTEGER NOT NULL CHECK(position>=0 AND position<8),
+ UNIQUE(parent_task_id,item_key), UNIQUE(parent_task_id,position)
+);
+CREATE TABLE IF NOT EXISTS task_plan_dependencies (
+ task_id TEXT NOT NULL REFERENCES task_plan_items(task_id),
+ prerequisite_id TEXT NOT NULL REFERENCES task_plan_items(task_id),
+ PRIMARY KEY(task_id,prerequisite_id), CHECK(task_id!=prerequisite_id)
+);
+CREATE TABLE IF NOT EXISTS task_plan_operations (
+ request_id TEXT PRIMARY KEY, task_id TEXT NOT NULL REFERENCES tasks(id),
+ command_hash TEXT NOT NULL, receipt TEXT NOT NULL, created_at TEXT NOT NULL
+);
 """
 
 
@@ -742,7 +762,7 @@ class Store:
                         or existing["context"].get("workflow", {}).get("version") != workflow_version):
                     raise ValueError("Request ID was already used with different input")
                 return existing
-            self._require_no_task_turn(db, task_id)
+            dependencies = self._require_no_task_turn(db, task_id)
             active = db.execute(
                 "SELECT id FROM runs WHERE task_id=? AND status NOT IN ('succeeded','failed','canceled') "
                 "AND NOT EXISTS(SELECT 1 FROM runs child WHERE child.source_run_id=runs.id)",
@@ -752,6 +772,8 @@ class Store:
                 raise ValueError("This task already has an unfinished run")
             from .workflows import run_workflow
             context = {**context, "workflow": run_workflow(db, config, workflow_version)}
+            if dependencies is not None:
+                context["task_dependencies"] = dependencies
             identifier = uid()
             db.execute("INSERT INTO runs(id,task_id,request_id,status,config,context,created_at) VALUES(?,?,?,'queued',?,?,?)",
                        (identifier, task_id, request_id, dump(config), dump(context), now()))
@@ -769,6 +791,7 @@ class Store:
             "SELECT 1 FROM task_turns WHERE task_id=? AND state='prepared'", (task_id,),
         ).fetchone():
             raise ValueError("task_turn_prepared_pending")
+        return require_dependencies(db, task_id)
 
     @staticmethod
     def _retry_state(db, identifier):
@@ -1029,7 +1052,7 @@ class Store:
             raise ValueError("task_turn_request_conflict")
         self._require_no_recovery_intent(db, identifier, own_intent_id)
         source, facts, preview = self._retry_state(db, identifier)
-        self._require_no_task_turn(db, source["task_id"])
+        dependencies = self._require_no_task_turn(db, source["task_id"])
         if not preview["allowed"]:
             raise ValueError("retry_source_not_ready")
         if preview["snapshot_hash"] != snapshot_hash:
@@ -1054,6 +1077,8 @@ class Store:
             "models": {**source["context"]["models"], **models},
             "retry_request_hash": request_hash,
         }
+        if dependencies is not None:
+            context["task_dependencies"] = dependencies
         db.execute(
             "INSERT INTO runs(id,task_id,request_id,status,config,context,plan,source_run_id,created_at) "
             "VALUES(?,?,?,'queued',?,?,?,?,?)",
@@ -1098,11 +1123,20 @@ class Store:
 
     def claim(self) -> dict | None:
         with self.transaction() as db:
-            row = db.execute("SELECT id FROM runs WHERE status='queued' ORDER BY created_at LIMIT 1").fetchone()
+            row = db.execute("SELECT id,task_id FROM runs WHERE status='queued' ORDER BY created_at LIMIT 1").fetchone()
             if not row:
                 return None
+            try:
+                dependencies = require_dependencies(db, row["task_id"])
+            except TaskPlanError as error:
+                db.execute("UPDATE runs SET status='failed',error=?,ended_at=? WHERE id=?",
+                           ("task_dependencies_blocked", now(), row["id"]))
+                self.event(db, "run.failed", {
+                    "error": "task_dependencies_blocked", "task_dependencies": error.dependencies,
+                }, row["id"])
+                return None
             db.execute("UPDATE runs SET status='running',started_at=COALESCE(started_at,?),error=NULL WHERE id=?", (now(), row["id"]))
-            self.event(db, "run.started", {}, row["id"])
+            self.event(db, "run.started", {"task_dependencies": dependencies} if dependencies is not None else {}, row["id"])
         return self.get("runs", row["id"])
 
     def plan(self, run_id: str, items: list[dict]):
@@ -1204,7 +1238,7 @@ class Store:
             raise ValueError("coding_control_not_supported")
         if action == "resume":
             self._require_no_recovery_intent(db, identifier, own_intent_id)
-            self._require_no_task_turn(db, row["task_id"])
+            dependencies = self._require_no_task_turn(db, row["task_id"])
         src = row["status"]
         if action == "pause" and src in {"queued", "running"}:
             dst = "paused" if src == "queued" else "pause_requested"
@@ -1238,6 +1272,8 @@ class Store:
                    (dst, now() if dst == "canceled" else None, identifier))
         self.event(db, f"control.{action}", {"from": src, "to": dst, "replay_acknowledged": acknowledge},
                    identifier, actor="user")
+        if action == "resume" and dependencies is not None:
+            self.event(db, "task.dependencies.resume_admitted", dependencies, identifier, actor="user")
         return decode(db.execute("SELECT * FROM runs WHERE id=?", (identifier,)).fetchone())
 
     def recover(self):

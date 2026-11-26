@@ -979,6 +979,7 @@ export function Workbench() {
                 }
               >
                 <TaskWorkspace
+                  onChanged={refresh}
                   key={route.id}
                   taskId={route.id}
                   data={data}

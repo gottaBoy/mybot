@@ -16,6 +16,10 @@ prepared snapshots freeze the selected bodies, not implicit history or patch app
 ADR-0029 adds explicitly selected trusted code checkpoints for new isolated coding
 Runs, with exact original-base checks and fresh execution consent. It never applies
 patches to the original project or infers checkpoints for legacy Runs.
+ADR-0030 adds a single immutable root Task breakdown and real child Tasks.
+Prerequisite admission requires the most recent successful Run's reviewed final
+reports. This is an execution condition, not an automatic Task-completed state,
+model memory, nested decomposition or arbitrary workflow scheduling.
 Distinguish local activation from isolated tests; Task messages are not implicit
 model memory, and a fixed pipeline is not an arbitrary DAG.
 For frontend work, also read `docs/ASTRYX_TEMPLATE_INTEGRATION.md` and

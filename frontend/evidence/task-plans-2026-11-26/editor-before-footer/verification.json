@@ -1,0 +1,34 @@
+{
+  "checks": [
+    "Advertised dependency read failure blocks new work and does not fall back to an empty successful plan",
+    "Chinese mobile editor fits long labels and retains goals, acceptance and dependency checks after Escape/Keep editing",
+    "Discarding uncreated edits produces no plan, children, file preview or additional Run"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    }
+  ],
+  "geometry": {
+    "width": 390,
+    "document": 390,
+    "dialog": {
+      "x": 16,
+      "y": 50,
+      "width": 358,
+      "height": 900,
+      "top": 50,
+      "right": 374,
+      "bottom": 950,
+      "left": 16
+    }
+  },
+  "fixture": {
+    "editor_task_id": "fa9e40cdd17b43baa42b3e949785502c",
+    "total_tasks": 4,
+    "total_runs": 2
+  }
+}

@@ -1,0 +1,207 @@
+........................................................................ [  5%]
+........................................................................ [ 11%]
+........................................................................ [ 16%]
+........................................................................ [ 22%]
+........................................................................ [ 27%]
+...............F........................................................ [ 33%]
+........................................................................ [ 39%]
+........................................................................ [ 44%]
+........................................................................ [ 50%]
+........................................................................ [ 55%]
+........................................................................ [ 61%]
+........................................................................ [ 67%]
+.......................................................F................ [ 72%]
+........................................................................ [ 78%]
+........................................................................ [ 83%]
+........................................................................ [ 89%]
+........................................................................ [ 95%]
+...............................................................F         [100%]
+=================================== FAILURES ===================================
+_ test_disposable_reference_seed_is_bounded_terminal_and_refuses_second_write __
+
+    def test_disposable_reference_seed_is_bounded_terminal_and_refuses_second_write():
+        from seed_project_references_fixture import seed
+        from seed_task_detail_fixture import MARKER
+    
+        with tempfile.TemporaryDirectory(prefix="mybot-astryx-workbench.references_", dir="/tmp") as directory_path:
+            root = Path(directory_path)
+            (root / "workspace").mkdir()
+            (root / "workspace/README.md").write_text(MARKER, encoding="utf-8")
+            store = Store(root / "data")
+>           value = seed(directory_path)
+                    ^^^^^^^^^^^^^^^^^^^^
+
+tests/test_project_references.py:378: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+directory = '/tmp/mybot-astryx-workbench.references_lg7em0c8'
+
+    def seed(directory: str):
+        root = Path(directory)
+        if (
+            not root.is_absolute() or root.parent != Path("/tmp") or
+            not re.fullmatch(r"mybot-astryx-workbench\.[A-Za-z0-9_-]+", root.name) or
+            root.is_symlink() or root.resolve(strict=True) != root
+        ):
+            raise ValueError("An explicit, nonsymlink /tmp/mybot-astryx-workbench.* fixture is required")
+        paths = (root / "workspace", root / "workspace/README.md", root / "data",
+                 root / "data/workbench.sqlite3")
+        if any(path.is_symlink() or path.resolve(strict=True) != path for path in paths):
+            raise ValueError("Fixture paths must exist without symlinks")
+        if paths[1].read_text(encoding="utf-8") != MARKER:
+            raise ValueError("The disposable browser fixture marker is missing")
+        database = paths[-1]
+        if any(Path(f"{database}{suffix}").is_symlink() for suffix in ("-wal", "-shm", "-journal")):
+            raise ValueError("SQLite fixture sidecars must not be symlinks")
+        with closing(sqlite3.connect(database.as_uri() + "?mode=rw", uri=True, timeout=10)) as db:
+            db.execute("PRAGMA foreign_keys=ON")
+            db.execute("BEGIN IMMEDIATE")
+            try:
+                tables = {
+                    row[0] for row in db.execute(
+                        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+                    )
+                }
+                required = {
+                    "projects", "tasks", "runs", "models", "model_tests", "agents",
+                    "calls", "artifacts", "events", "workspace_settings", "saved_views",
+                    "recovery_intents", "backend_connections", "conversation_refs",
+                    "conversation_messages",
+                    "task_turns",
+                    "workflow_drafts", "workflow_versions", "workflow_operations",
+                    "device_pairings", "devices", "device_operations", "device_messages",
+                    "device_execution_grants", "device_execution_operations",
+                    "coding_jobs",
+                }
+                if tables != required:
+>                   raise ValueError("The fixture schema does not match the expected workbench")
+E                   ValueError: The fixture schema does not match the expected workbench
+
+tests/seed_project_references_fixture.py:53: ValueError
+__ test_seed_only_accepts_empty_disposable_fixture_and_all_runs_are_terminal ___
+
+    def test_seed_only_accepts_empty_disposable_fixture_and_all_runs_are_terminal():
+        with tempfile.TemporaryDirectory(prefix="mybot-astryx-workbench.", dir="/tmp") as directory:
+            root = Path(directory)
+            (root / "workspace").mkdir()
+            (root / "workspace/README.md").write_text(MARKER)
+            store = Store(root / "data")
+>           result = seed(str(root))
+                     ^^^^^^^^^^^^^^^
+
+tests/test_task_detail.py:356: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+directory = '/tmp/mybot-astryx-workbench.awjl_604'
+
+    def seed(directory: str):
+        root = Path(directory)
+        if (
+            not root.is_absolute() or root.parent != Path("/tmp") or
+            not re.fullmatch(r"mybot-astryx-workbench\.[A-Za-z0-9_-]+", root.name) or
+            root.is_symlink() or root.resolve(strict=True) != root
+        ):
+            raise ValueError("An explicit, nonsymlink /tmp/mybot-astryx-workbench.* fixture is required")
+        paths = (root / "workspace", root / "workspace/README.md", root / "data",
+                 root / "data/workbench.sqlite3")
+        if any(path.is_symlink() or path.resolve(strict=True) != path for path in paths):
+            raise ValueError("Fixture paths must exist without symlinks")
+        if paths[1].read_text(encoding="utf-8") != MARKER:
+            raise ValueError("The disposable browser fixture marker is missing")
+        database = paths[-1]
+        if any(Path(f"{database}{suffix}").is_symlink() for suffix in ("-wal", "-shm", "-journal")):
+            raise ValueError("SQLite fixture sidecars must not be symlinks")
+        with closing(sqlite3.connect(database.as_uri() + "?mode=rw", uri=True, timeout=10)) as db:
+            db.execute("PRAGMA foreign_keys=ON")
+            db.execute("BEGIN IMMEDIATE")
+            try:
+                tables = {
+                    row[0] for row in db.execute(
+                        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+                    )
+                }
+                required = {
+                    "projects", "tasks", "runs", "models", "model_tests", "agents",
+                    "calls", "artifacts", "events", "workspace_settings", "saved_views",
+                    "recovery_intents", "backend_connections", "conversation_refs",
+                    "conversation_messages",
+                    "task_turns",
+                    "workflow_drafts", "workflow_versions", "workflow_operations",
+                    "device_pairings", "devices", "device_operations", "device_messages",
+                    "device_execution_grants", "device_execution_operations",
+                    "coding_jobs",
+                }
+                if tables != required:
+>                   raise ValueError("The fixture schema does not match the expected workbench")
+E                   ValueError: The fixture schema does not match the expected workbench
+
+tests/seed_task_detail_fixture.py:57: ValueError
+_ test_disposable_seed_accepts_tempfile_underscore_suffix_without_weakening_marker_checks _
+
+    def test_disposable_seed_accepts_tempfile_underscore_suffix_without_weakening_marker_checks():
+        with tempfile.TemporaryDirectory(prefix="mybot-astryx-workbench.fixture_", dir="/tmp") as directory:
+            root = Path(directory)
+            (root / "workspace").mkdir()
+            (root / "workspace/README.md").write_text(MARKER, encoding="utf-8")
+            store = Store(root / "data")
+>           value = seed(directory)
+                    ^^^^^^^^^^^^^^^
+
+tests/test_workspace_reads.py:486: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+directory = '/tmp/mybot-astryx-workbench.fixture_1v615gwo'
+
+    def seed(directory: str):
+        root = Path(directory)
+        if (
+            not root.is_absolute() or root.parent != Path("/tmp") or
+            not re.fullmatch(r"mybot-astryx-workbench\.[A-Za-z0-9_-]+", root.name) or
+            root.is_symlink() or root.resolve(strict=True) != root
+        ):
+            raise ValueError("An explicit, nonsymlink /tmp/mybot-astryx-workbench.* fixture is required")
+        paths = (root / "workspace", root / "workspace/README.md", root / "data",
+                 root / "data/workbench.sqlite3")
+        if any(path.is_symlink() or path.resolve(strict=True) != path for path in paths):
+            raise ValueError("Fixture paths must exist without symlinks")
+        if paths[1].read_text(encoding="utf-8") != MARKER:
+            raise ValueError("The disposable browser fixture marker is missing")
+        database = paths[-1]
+        if any(Path(f"{database}{suffix}").is_symlink() for suffix in ("-wal", "-shm", "-journal")):
+            raise ValueError("SQLite fixture sidecars must not be symlinks")
+        with closing(sqlite3.connect(database.as_uri() + "?mode=rw", uri=True, timeout=10)) as db:
+            db.execute("PRAGMA foreign_keys=ON")
+            db.execute("BEGIN IMMEDIATE")
+            try:
+                tables = {
+                    row[0] for row in db.execute(
+                        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+                    )
+                }
+                required = {
+                    "projects", "tasks", "runs", "models", "model_tests", "agents",
+                    "calls", "artifacts", "events", "workspace_settings", "saved_views",
+                    "recovery_intents", "backend_connections", "conversation_refs",
+                    "conversation_messages",
+                    "task_turns",
+                    "workflow_drafts", "workflow_versions", "workflow_operations",
+                    "device_pairings", "devices", "device_operations", "device_messages",
+                    "device_execution_grants", "device_execution_operations",
+                    "coding_jobs",
+                }
+                if tables != required:
+>                   raise ValueError("The fixture schema does not match the expected workbench")
+E                   ValueError: The fixture schema does not match the expected workbench
+
+tests/seed_task_detail_fixture.py:57: ValueError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /home/my/workspace/ainfra/mywork/mybot/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_project_references.py::test_disposable_reference_seed_is_bounded_terminal_and_refuses_second_write
+FAILED tests/test_task_detail.py::test_seed_only_accepts_empty_disposable_fixture_and_all_runs_are_terminal
+FAILED tests/test_workspace_reads.py::test_disposable_seed_accepts_tempfile_underscore_suffix_without_weakening_marker_checks
+3 failed, 1285 passed, 1 warning in 306.54s (0:05:06)

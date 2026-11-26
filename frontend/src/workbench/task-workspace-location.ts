@@ -6,13 +6,20 @@ export type TaskWorkspaceLocation = {
   runId?: string
   pendingRequestId?: string
   codingRequestId?: string
-  error?: 'tab_invalid' | 'run_invalid' | 'request_invalid' | 'coding_invalid'
+  planRequestId?: string
+  error?:
+    | 'tab_invalid'
+    | 'run_invalid'
+    | 'request_invalid'
+    | 'coding_invalid'
+    | 'plan_invalid'
 }
 export type TaskWorkspaceDestination = {
   tab?: TaskWorkspaceTab
   runId?: string
   pendingRequestId?: string
   codingRequestId?: string
+  planRequestId?: string
 }
 
 export function taskWorkspaceHref(
@@ -29,7 +36,11 @@ export function taskWorkspaceHref(
       !/^[A-Za-z0-9_-]{8,100}$/.test(destination.pendingRequestId)) ||
     (destination.codingRequestId !== undefined &&
       (!/^[A-Za-z0-9_-]{8,100}$/.test(destination.codingRequestId) ||
-        destination.pendingRequestId !== undefined))
+        destination.pendingRequestId !== undefined)) ||
+    (destination.planRequestId !== undefined &&
+      (!/^[A-Za-z0-9_-]{8,100}$/.test(destination.planRequestId) ||
+        destination.pendingRequestId !== undefined ||
+        destination.codingRequestId !== undefined))
   )
     throw new Error('task_workspace_location_invalid')
   const params = new URLSearchParams()
@@ -40,6 +51,8 @@ export function taskWorkspaceHref(
     params.set('taskSend', destination.pendingRequestId)
   if (destination.codingRequestId !== undefined)
     params.set('codingRequest', destination.codingRequestId)
+  if (destination.planRequestId !== undefined)
+    params.set('taskPlanRequest', destination.planRequestId)
   return `#task/${encodeURIComponent(taskId)}${params.size ? `?${params}` : ''}`
 }
 
@@ -117,10 +130,25 @@ export function readTaskWorkspaceLocation(href: string): TaskWorkspaceLocation {
         pendingRequestId !== undefined))
   )
     return { tab: selectedTab, error: 'coding_invalid' }
+  let plans: string[]
+  try {
+    plans = values('taskPlanRequest')
+  } catch {
+    return { tab: selectedTab, error: 'plan_invalid' }
+  }
+  if (
+    plans.length > 1 ||
+    (plans[0] !== undefined &&
+      (!/^[A-Za-z0-9_-]{8,100}$/.test(plans[0]) ||
+        pendingRequestId !== undefined ||
+        coding[0] !== undefined))
+  )
+    return { tab: selectedTab, error: 'plan_invalid' }
   return {
     tab: selectedTab,
     ...(runId === undefined ? {} : { runId }),
     ...(pendingRequestId === undefined ? {} : { pendingRequestId }),
     ...(coding[0] === undefined ? {} : { codingRequestId: coding[0] }),
+    ...(plans[0] === undefined ? {} : { planRequestId: plans[0] }),
   }
 }

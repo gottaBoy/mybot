@@ -1,6 +1,7 @@
 import type { ModelTestReceipt } from './model-test-state'
 import type { WorkflowSnapshot } from './workflows'
 import type { ArtifactSource } from './task-artifacts'
+import type { DependencyGate } from './task-plans'
 
 export type Project = {
   id: string
@@ -80,6 +81,7 @@ export type Bootstrap = {
     isolated_coding?: boolean
     coding_continuation?: boolean
     task_artifact_references?: boolean
+    task_plans?: boolean
   }
 }
 export type Snapshot = {
@@ -120,6 +122,7 @@ export type RunDetail = {
     context: {
       mode?: string
       coding?: unknown
+      task_dependencies?: DependencyGate
       evidence: Array<{ path: string; bytes: number }>
       workflow?: WorkflowSnapshot
       artifacts?: ArtifactSource[]

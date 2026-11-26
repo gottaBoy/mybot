@@ -1,0 +1,275 @@
+{
+  "checks": [
+    "A pristine Task breakdown opens and closes without file preview, task creation or model execution",
+    "Real goals and acceptance remain editable; cyclic prerequisites fail locally before any preview or mutation",
+    "Lost creation restores the original exact GET receipt after reload, with exactly two real child Tasks and no Run",
+    "Dependent research and coding controls stay blocked, and direct Run POST also rejects without a model call",
+    "A successful prerequisite Run does not unblock its dependent until the actual final report is accepted",
+    "Human report acceptance unlocks the real dependent Run, recording admission identity without appending prerequisite output to model context",
+    "Withdrawing prior review blocks future execution while preserving completed Run status and its original admission evidence",
+    "Published tasks, goals, acceptance and prerequisite review states render in three styles, both modes, English desktop and Chinese mobile"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/18b3b9efb2fb40479c67ceda0f7eaa47/plan/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/18b3b9efb2fb40479c67ceda0f7eaa47/plan/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/18b3b9efb2fb40479c67ceda0f7eaa47/plan",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/b0ea8cacd7334cb7937632f8f959e68c/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/b0ea8cacd7334cb7937632f8f959e68c/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/40762f747c494531aa8145485e680f0a/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/40762f747c494531aa8145485e680f0a/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/artifacts/fa7965c0d36d465b880ca005a13c5838/decision",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/b0ea8cacd7334cb7937632f8f959e68c/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/b0ea8cacd7334cb7937632f8f959e68c/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/artifacts/fa7965c0d36d465b880ca005a13c5838/decision",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "verified-breakdown-desktop.png",
+    "prerequisite-blocked-desktop.png",
+    "successful-but-unreviewed.png",
+    "current-block-and-original-admission.png",
+    "plan-neutral-light.png",
+    "plan-neutral-dark.png",
+    "plan-zira-light.png",
+    "plan-zira-dark.png",
+    "plan-y2k-light.png",
+    "plan-y2k-dark.png"
+  ],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "items": [
+        {
+          "x": 266,
+          "y": 659.140625,
+          "width": 715.609375,
+          "height": 165,
+          "top": 659.140625,
+          "right": 981.609375,
+          "bottom": 824.140625,
+          "left": 266
+        },
+        {
+          "x": 266,
+          "y": 824.140625,
+          "width": 715.609375,
+          "height": 186,
+          "top": 824.140625,
+          "right": 981.609375,
+          "bottom": 1010.140625,
+          "left": 266
+        }
+      ]
+    },
+    {
+      "style": "neutral",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "items": [
+        {
+          "x": 40,
+          "y": 793.625,
+          "width": 332,
+          "height": 221,
+          "top": 793.625,
+          "right": 372,
+          "bottom": 1014.625,
+          "left": 40
+        },
+        {
+          "x": 40,
+          "y": 1014.625,
+          "width": 332,
+          "height": 242,
+          "top": 1014.625,
+          "right": 372,
+          "bottom": 1256.625,
+          "left": 40
+        }
+      ]
+    },
+    {
+      "style": "zira",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "items": [
+        {
+          "x": 266,
+          "y": 659.140625,
+          "width": 715.609375,
+          "height": 165,
+          "top": 659.140625,
+          "right": 981.609375,
+          "bottom": 824.140625,
+          "left": 266
+        },
+        {
+          "x": 266,
+          "y": 824.140625,
+          "width": 715.609375,
+          "height": 204,
+          "top": 824.140625,
+          "right": 981.609375,
+          "bottom": 1028.140625,
+          "left": 266
+        }
+      ]
+    },
+    {
+      "style": "zira",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "items": [
+        {
+          "x": 40,
+          "y": 839.8125,
+          "width": 332,
+          "height": 221,
+          "top": 839.8125,
+          "right": 372,
+          "bottom": 1060.8125,
+          "left": 40
+        },
+        {
+          "x": 40,
+          "y": 1060.8125,
+          "width": 332,
+          "height": 260,
+          "top": 1060.8125,
+          "right": 372,
+          "bottom": 1320.8125,
+          "left": 40
+        }
+      ]
+    },
+    {
+      "style": "y2k",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "items": [
+        {
+          "x": 266,
+          "y": 695.53125,
+          "width": 715.609375,
+          "height": 169,
+          "top": 695.53125,
+          "right": 981.609375,
+          "bottom": 864.53125,
+          "left": 266
+        },
+        {
+          "x": 266,
+          "y": 864.53125,
+          "width": 715.609375,
+          "height": 190,
+          "top": 864.53125,
+          "right": 981.609375,
+          "bottom": 1054.53125,
+          "left": 266
+        }
+      ]
+    },
+    {
+      "style": "y2k",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "items": [
+        {
+          "x": 40,
+          "y": 837.625,
+          "width": 332,
+          "height": 229,
+          "top": 837.625,
+          "right": 372,
+          "bottom": 1066.625,
+          "left": 40
+        },
+        {
+          "x": 40,
+          "y": 1066.625,
+          "width": 332,
+          "height": 250,
+          "top": 1066.625,
+          "right": 372,
+          "bottom": 1316.625,
+          "left": 40
+        }
+      ]
+    }
+  ],
+  "actual": {
+    "parent_task_id": "18b3b9efb2fb40479c67ceda0f7eaa47",
+    "source_task_id": "40762f747c494531aa8145485e680f0a",
+    "dependent_task_id": "b0ea8cacd7334cb7937632f8f959e68c",
+    "source_run_id": "e16c8780cb2b49eea2d9306fb3bc29a7",
+    "dependent_run_id": "0113e923f08147beb756d574ecea3a18",
+    "source_calls": 4,
+    "dependent_calls": 4,
+    "operation_id": "8784a5e9-9280-4349-91fe-75da631051a7",
+    "plan_hash": "884a11121a31428a4ca8605b16e483eb23c0b4c376e3e5943fe79146f8b015b1"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "checks": [
+    "Advertised dependency read failure blocks new work and does not fall back to an empty successful plan"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    }
+  ],
+  "failure": "TypeError: Cannot read properties of undefined (reading 'x')"
+}

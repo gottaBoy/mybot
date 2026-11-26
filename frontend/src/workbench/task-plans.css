@@ -1,0 +1,72 @@
+.wb-task-plan {
+  padding-block: 18px;
+  border-top: 1px solid var(--wb-border);
+  min-width: 0;
+}
+.wb-task-plan-heading,
+.wb-task-plan-item-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.wb-task-plan-items {
+  margin: 12px 0 0;
+  padding-left: 22px;
+}
+.wb-task-plan-items > li {
+  padding-block: 12px;
+  border-bottom: 1px solid var(--wb-border);
+  overflow-wrap: anywhere;
+}
+.wb-task-plan-item-heading > a:first-child {
+  flex: 1 1 180px;
+  font-weight: 600;
+}
+.wb-task-dependency-facts {
+  margin-block: 12px;
+  min-width: 0;
+}
+.wb-task-dependency {
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+  overflow-wrap: anywhere;
+}
+.wb-task-dependency code,
+.wb-task-dependency span {
+  color: var(--wb-muted);
+  font-size: 12px;
+}
+.wb-plan-edit-item {
+  border-top: 1px solid var(--wb-border);
+  padding-block: 14px;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.wb-plan-files {
+  border: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.wb-plan-files legend {
+  padding: 0;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.wb-plan-confirm {
+  padding-block: 12px;
+  border-block: 1px solid var(--wb-border);
+  overflow-wrap: anywhere;
+}
+.wb-plan-receipt {
+  display: grid;
+  gap: 12px;
+  overflow-wrap: anywhere;
+}

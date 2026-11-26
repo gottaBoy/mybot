@@ -1,0 +1,27 @@
+{
+  "task_id": "b0ea8cacd7334cb7937632f8f959e68c",
+  "parent_task_id": "18b3b9efb2fb40479c67ceda0f7eaa47",
+  "plan_hash": "884a11121a31428a4ca8605b16e483eb23c0b4c376e3e5943fe79146f8b015b1",
+  "criterion": "latest-successful-run-reviewed-reports-v1",
+  "ready": true,
+  "prerequisites": [
+    {
+      "task_id": "40762f747c494531aa8145485e680f0a",
+      "title": "梳理源码边界与未知项",
+      "latest_run": {
+        "id": "e16c8780cb2b49eea2d9306fb3bc29a7",
+        "task_id": "40762f747c494531aa8145485e680f0a",
+        "status": "succeeded",
+        "created_at": "2026-11-26T13:46:02.449252+00:00"
+      },
+      "state": "accepted",
+      "reports": [
+        {
+          "id": "fa7965c0d36d465b880ca005a13c5838",
+          "decision": "accepted",
+          "sha256": "7554ce0c318f4ba1ea37aeaa2111eebfd837f40fd63709a7b3cfbbfd174fa42d"
+        }
+      ]
+    }
+  ]
+}

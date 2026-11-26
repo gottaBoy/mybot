@@ -14,6 +14,7 @@ RESOURCE_LIMITS = {
     "max_output_tokens": (256, 4096), "call_timeout_seconds": (10, 300),
 }
 SAFE_REJECTION_CODES = {
+    "task_dependencies_blocked",
     "recovery_intent_snapshot_changed", "recovery_intent_candidate_changed",
     "recovery_intent_source_not_ready", "recovery_intent_resources_invalid",
     "recovery_intent_model_missing", "recovery_resume_not_paused",

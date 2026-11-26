@@ -30,6 +30,10 @@ export function statusText(status: string, t: Copy) {
   return pair ? t(...pair) : status
 }
 const errors: Record<string, [string, string]> = {
+  task_dependencies_blocked: [
+    '运行被前置验收条件阻止，请核对前置任务的最近运行与报告。',
+    'Execution was blocked by prerequisite review. Check the latest prerequisite runs and reports.',
+  ],
   codex_cli_timeout_outcome_unknown: [
     'Codex CLI 超时；结果和用量未知，请勿盲目重试',
     'Codex CLI timed out; outcome and usage are unknown. Do not retry blindly.',

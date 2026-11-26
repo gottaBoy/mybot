@@ -1,5 +1,48 @@
 # 下次从这里继续
 
+更新日期：2026-11-26（Asia/Singapore；真实Task拆解与依赖首版已验收、本机启用）。
+
+最新合同[ADR-0030](docs/decisions/ADR-0030-task-breakdown-dependencies.md)，证据
+[本批记录](frontend/evidence/task-plans-2026-11-26/README.md)。
+本批起点8ea5fb5已push；按用户“按照目标实现”继续核心交付，提交push以Git实际回执为准。
+根Task目标页“拆分任务”明确创建2–8个真实同Project子Task、目标/验收/文件和固定无环依赖，
+父Task不改；preview/创建只用元数据，不读源码、不启动模型。
+新task_plans/items/dependencies/operations4表，计划不可变v1、无嵌套/已发布修订。
+taskPlanRequest原ID与taskSend/codingRequest互斥，unknown仅GET核对，404不解锁或重发；
+当前plan读取不等于原创建回执。发布后刷新所有受影响Task/目录/计数/搜索投影。
+
+执行前置标准是“前置Task**最近Run**成功、最终报告经人工接受、无未解决要求修改”，
+不是新Task完成状态或模型长期记忆。新未结束/失败Run、缺报告、撤回接受都会阻止新执行。
+统一门禁覆盖普通Run、TaskTurn、coding、恢复/旧resume与设备一次委托；
+队列worker开跑前再验，失败保留当时阻塞快照且不新增模型调用。
+既有运行不被静默取消。Run.context保留队列准入、开始/恢复事件另记源Run/报告ID/digest，
+没有自动把前置正文/文件送模型。配对不新增计划权限。
+
+最终2278前端/79文件、1288Python全量通过；最终22项计划/夹具定向复验、typecheck/build通过。
+专项8/10PNG、窄屏编辑3/1PNG、综合58/61PNG、主GET-only8，共77检查/72最终fixturePNG，
+最终pageerror/外部HTTP0。fresh.pSBtFg真实两子Task、各4FakeCall；成功未审查仍阻止，
+人工接受后第二Task成功，撤回接受后未来执行又阻止，旧准入/成功保留。
+未知创建丢响应reload原GET，1创建POST/1计划/2真实child；
+再加1编辑专项根Task验证长中文/依赖勾选/Escape保留/底部取消，无计划或Run增加。
+最终fixture4Task/2Run，正文是FakeProvider，HTTP/持久化/调用/门禁/审查均真实，无付费模型认证。
+保留旧React分页mock、严格seed表清单、nested-summary、preview停止、guard重名/native dialog
+失败；不把早期成功拼接成最终通过。
+app207.08/gzip65.89kB、CSS39.89/7.50、lazyEditor8.39/3.53、PlanPanel/DTO19.59/6.55，
+TaskWorkspace36.77/12.17、RunWorkspace25.25/9.31；httpx/chunk警告、Bootstrap全量、119/9/110保持。
+
+主4180原空闲3844765经identity/cwd/env内存核验、一致backup/私有Store演练/原行比对/
+SIGTERM锁释放，同command/cwd/env先启动48883、最终细化后按同流程对齐84755；
+task_plans=true，主5173保持。最后8只读后原行再次相同，4新表0、coding_jobs/TaskTurns/设备/授权0。
+原1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event与Workflow原行不变。
+私有备份`.runtime/backups/before-devices-20261126T135751Z/`、最终
+`before-devices-20261126T141139Z/`700/DBlog600，不进Git；无正式计划/子Task/模型/测试/
+正文截图/环境/原摘要导出。旧PID脚本不可重跑，不热覆盖回退，临时4187/4188/5176/5177已停。
+主4180/5173保留。状态读取是快照；刷新依赖或重开Task重读，实际启动总由后端重验。
+
+下一核心：**更多runtime/测试profile、计划修订与更广任务分解、原基线变化的显式冲突处理**。
+本批没有AI自动拆解、任意DAG调度/自动Run链、通用Task验收状态或团队权限，
+也不因有任务关系图就称目标全部完成。设备/连接器不是默认下一批。
+
 更新日期：2026-11-26（Asia/Singapore；代码检查点接续已验收、本机启用）。
 
 最新合同[ADR-0029](docs/decisions/ADR-0029-isolated-code-continuation.md)，证据

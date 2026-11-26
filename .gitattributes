@@ -4,3 +4,4 @@ frontend/evidence/**/incremental.patch whitespace=-blank-at-eol,-blank-at-eof
 frontend/evidence/**/frontend-tests.txt whitespace=-blank-at-eof
 frontend/evidence/**/client-targeted-tests.txt whitespace=-blank-at-eof
 frontend/evidence/**/mybot-artifacts-frontend.txt whitespace=-blank-at-eof
+frontend/evidence/task-plans-2026-11-26/failures/schema-seed/python-tests.txt whitespace=-blank-at-eol

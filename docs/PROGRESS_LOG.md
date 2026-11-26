@@ -1397,6 +1397,42 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
   本批继续提交push，以Git实际回执为准；更多runtime、任务分解/依赖、基线冲突处理仍待。
   原119/9/110不变。
 
+### 工作项：真实Task拆解与执行依赖
+
+- 2026-11-26，ADR-0030。根Task明确拆出2–8个实际子Task，独立目标/验收/显式文件、
+  固定无环依赖和不可变v1计划；4张新表与报告读取索引，父Task/原列不变。
+  preview和原子创建只用元数据，不读源码、不调用模型，原request精确回执，
+  unknown/reload仅GET、404不证明终止；当前plan读取不代替receipt。
+- 前置标准为Task最近Run成功、最终报告人工接受且无未解决“要求修改”。
+  不是通用Task完成状态或研究测试通过。门禁覆盖普通Run/TaskTurn/coding/恢复/
+  legacy resume/设备grant，队列claim再验；阻止时保存具体阻塞快照，已运行工作不静默取消。
+  Run保存源Run/报告身份，正文不隐式进模型，配对不扩张计划scope。
+- 同一Task/Astryx业务树呈现子任务链接、目标/验收、当前阻塞与原准入。
+  原先paging mock错误已限定到真实分页状态；严格seed表清单仅加入4确切表，
+  marker/路径/空库/拒绝二次写入规则保持。旧失败完整保留。
+- 最终2278前端/79文件、1288Python全量通过；最终阻塞证据细化后22项计划/seed定向复验，
+  typecheck/build通过。httpx/chunk警告与Bootstrap全量保留。
+- 专项8/10PNG、手机编辑3/1PNG、独立综合58/61PNG、最终主只读8，
+  共77浏览器检查/72最终fixturePNG，最终pageerror/外部HTTP0。
+  fresh.pSBtFg真实2子Task/各4FakeCall，成功未审查仍阻止，人工接受后第二Run成功，
+  撤回接受后新执行再次阻止，旧成功与原准入保留。未知创建1POST、原GET恢复，
+  之后增加独立编辑根Task验证长中文/Escape保留/底部取消，无计划/Run新增，
+  最终fixture4Task/2Run。无真实付费模型/实际代码测试/真机证明。
+- 保留nested-summary、preview停止、guard同名/native dialog定位失败；最终专项新fixture重跑，
+  手机补充复用其独立编辑根Task，没有拼接早期部分通过结果。
+  最终app207.08/gzip65.89kB、CSS39.89/7.50、lazyEditor8.39/3.53、
+  PlanPanel/DTO19.59/6.55、TaskWorkspace36.77/12.17、RunWorkspace25.25/9.31，非总transfer减量。
+- 主3844765空闲、一致backup/私有Store演练/原列原行比对、SIGTERM/锁释放，
+  同command/cwd/env启动48883，最终阻塞证据细化后再按同流程对齐84755。
+  主5173八项GET-only后原行再次相同，4新表/coding_jobs/TaskTurns/设备/授权0，
+  原1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event与Workflow不变。
+  私有备份`before-devices-20261126T135751Z`与最终`before-devices-20261126T141139Z`
+  700/DBlog600；无正式正文/截图/环境/原摘要、计划/模型/测试导出或执行。
+  临时4187/4188/5176/5177已停，主4180/5173保留。
+- [交付记录](../frontend/evidence/task-plans-2026-11-26/README.md)。
+  本批按目标继续提交push，以Git回执为准。更多runtime、计划修订/更广分解、
+  基线冲突处理仍待，不宣称AI自动拆解/任意DAG调度；原119/9/110不变。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。
@@ -1406,8 +1442,9 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
 当前交付顺序以 [PRODUCT_GOALS_CURRENT.md](PRODUCT_GOALS_CURRENT.md) 为准：
 Task工作区、选定消息、固定Workflow及Task范围设备接续初版已交付，
 显式历史位置、D3b一次研究委托和隔离研发实现/真实测试首版也已交付。
-明确前轮成果引用已按ADR-0028交付；当前优先更多runtime/测试profile、任务分解/
-依赖与基线变化的显式冲突处理；同基线coding检查点接续已按ADR-0029交付，
+明确前轮成果引用已按ADR-0028交付；当前优先更多runtime/测试profile、计划修订/
+更广任务分解与基线变化的显式冲突处理；同基线coding检查点接续已按ADR-0029交付，
+有界真实Task拆解与报告前置门禁已按ADR-0030交付，
 设备D4b/D5b与连接器保留待办，
 不再默认作为下一批。通用控制租约仍独立待办。
 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)保留阶段架构与能力边界；

@@ -33,6 +33,7 @@ import {
   confirmWorkbenchNavigation,
   pushWorkbenchNavigation,
   registerWorkbenchNavigationBlocker,
+  canOpenWorkbenchForm,
 } from './navigation-guard'
 import {
   readTaskWorkspaceLocation,
@@ -54,6 +55,9 @@ import { stripQueryWhitespace } from './task-query'
 import { pairedWorkspaceHref } from './pair-location'
 import './task-workspace.css'
 import { fetchPreparedCoding, type CodingJob } from './coding'
+import { useTaskPlan } from './useTaskPlan'
+import { TaskPlanPanel, TaskDependencyFacts } from './TaskPlanPanel'
+import type { PlanReceipt } from './task-plans'
 
 const RunWorkspace = lazy(() =>
   import('./RunWorkspace').then((module) => ({
@@ -63,6 +67,11 @@ const RunWorkspace = lazy(() =>
 const CodingRunDialog = lazy(() =>
   import('./CodingRunDialog').then((module) => ({
     default: module.CodingRunDialog,
+  })),
+)
+const TaskPlanEditor = lazy(() =>
+  import('./TaskPlanEditor').then((module) => ({
+    default: module.TaskPlanEditor,
   })),
 )
 
@@ -77,6 +86,7 @@ export type TaskWorkspaceProps = {
   onPrepareTurn?: (task: Task, turn: TaskTurn, snapshot: Snapshot) => void
   onOpenPreparedTurn?: (task: Task, turn: TaskTurn) => void
   preparing?: boolean
+  onChanged?: () => Promise<void>
 }
 
 export function TaskWorkspace({
@@ -90,6 +100,7 @@ export function TaskWorkspace({
   onPrepareTurn,
   onOpenPreparedTurn,
   preparing = false,
+  onChanged,
 }: TaskWorkspaceProps) {
   const compact = useCompactTaskList()
   const [paging, setPaging] = useState({ taskId, page: 1 })
@@ -117,6 +128,14 @@ export function TaskWorkspace({
   const location = readTaskWorkspaceLocation(
     typeof window === 'undefined' ? '' : window.location.href,
   )
+  const plans = useTaskPlan(
+    taskId,
+    data.capabilities.task_plans === true,
+    refreshRevision,
+  )
+  const [planEditorTask, setPlanEditorTask] = useState<Task | undefined>()
+  const [planNotice, setPlanNotice] = useState('')
+  const [planRefresh, setPlanRefresh] = useState(false)
   const codingEnabled = data.capabilities.isolated_coding === true
   const [codingOpen, setCodingOpen] = useState(
     Boolean(location.codingRequestId),
@@ -172,6 +191,8 @@ export function TaskWorkspace({
     setComposerLocked(locked)
   }, [])
   const conversationLocked = Boolean(
+    plans.blocked ||
+    location.planRequestId ||
     codingBlocked ||
     location.pendingRequestId ||
     (turns.remote &&
@@ -242,6 +263,7 @@ export function TaskWorkspace({
           runId: nextRun,
           pendingRequestId: location.pendingRequestId,
           codingRequestId: location.codingRequestId,
+          planRequestId: location.planRequestId,
         }),
       )
     } finally {
@@ -387,6 +409,8 @@ export function TaskWorkspace({
               label={t('研发实现', 'Implement & validate')}
               icon={<GitBranch size={16} />}
               disabled={
+                plans.blocked ||
+                Boolean(location.planRequestId) ||
                 !canNavigate() ||
                 composerLocked ||
                 preparing ||
@@ -406,6 +430,8 @@ export function TaskWorkspace({
                   !composerLock.current &&
                   !preparing &&
                   !location.pendingRequestId &&
+                  !plans.blocked &&
+                  !location.planRequestId &&
                   !location.error
                 )
                   setCodingOpen(true)
@@ -543,6 +569,69 @@ export function TaskWorkspace({
             'This server cannot reconcile the original implementation. The request remains locked.',
           )}
         </p>
+      )}
+      {(planEditorTask || (location.planRequestId && item)) && (
+        <Suspense
+          fallback={
+            <AppLoading
+              label={t('正在读取任务拆解', 'Loading task breakdown')}
+            />
+          }
+        >
+          <TaskPlanEditor
+            task={planEditorTask ?? item!.task}
+            initial={location.planRequestId}
+            enabled={plans.enabled}
+            t={t}
+            onClose={() => setPlanEditorTask(undefined)}
+            onCreated={async (_receipt: PlanReceipt) => {
+              setPlanEditorTask(undefined)
+              plans.retry()
+              read.retry()
+              turns.retry()
+              setPlanRefresh(true)
+              try {
+                await onChanged?.()
+                setPlanNotice(
+                  t(
+                    '子任务与依赖已创建，未启动模型。',
+                    'Subtasks and dependencies created. No model has started.',
+                  ),
+                )
+              } catch {
+                setPlanNotice(
+                  t(
+                    '创建已确认，但全局读取刷新失败，请重新刷新。',
+                    'Creation is confirmed, but global reads could not refresh. Refresh again.',
+                  ),
+                )
+              } finally {
+                setPlanRefresh(false)
+              }
+            }}
+          />
+        </Suspense>
+      )}
+      {planNotice && (
+        <p role="status" className="wb-notice">
+          {planNotice}
+        </p>
+      )}
+      {plans.enabled && plans.error && tab !== 'goal' && (
+        <p role="alert" className="wb-error">
+          {t(
+            '任务依赖读取失败，暂不能发起新的运行。',
+            'Task dependencies could not be read. New execution is blocked.',
+          )}
+          <AppButton
+            label={t('刷新任务依赖', 'Refresh task dependencies')}
+            icon={<RefreshCw size={15} />}
+            onClick={plans.retry}
+          />
+        </p>
+      )}
+      {plans.value?.gate && tab !== 'goal' && (
+        <TaskDependencyFacts gate={plans.value.gate} t={t} />
       )}
       {copyNotice?.taskId === taskId && (
         <p
@@ -718,6 +807,9 @@ export function TaskWorkspace({
               pendingRequestId={location.pendingRequestId}
               runId={location.runId}
               preparing={preparing || codingBlocked}
+              executionBlocked={
+                plans.blocked || Boolean(location.planRequestId)
+              }
               navigationAllowance={conversationNavigation}
               onComposerLockChange={setConversationLock}
               onPrepareTurn={onPrepareTurn}
@@ -777,6 +869,36 @@ export function TaskWorkspace({
                   <h2>{t('验收要求', 'Acceptance')}</h2>
                   <p>{item.task.acceptance || t('未填写', 'Not provided')}</p>
                 </section>
+                {plans.enabled && (
+                  <TaskPlanPanel
+                    value={plans.value}
+                    busy={plans.busy}
+                    error={plans.error}
+                    t={t}
+                    onRefresh={plans.retry}
+                    canCreate={
+                      !planRefresh &&
+                      !conversationLocked &&
+                      !composerLocked &&
+                      canNavigate() &&
+                      !preparing &&
+                      !location.error
+                    }
+                    onCreate={() => {
+                      if (
+                        !planRefresh &&
+                        !conversationLocked &&
+                        !composerLock.current &&
+                        canNavigate() &&
+                        canOpenWorkbenchForm() &&
+                        plans.value &&
+                        !plans.value.plan &&
+                        !plans.value.parent
+                      )
+                        setPlanEditorTask(item.task)
+                    }}
+                  />
+                )}
                 <section className="wb-task-brief-section">
                   <h2>{t('显式资料', 'Explicit files')}</h2>
                   {item.task.files.length ? (
@@ -998,6 +1120,7 @@ export function TaskConversation({
   pendingRequestId,
   runId,
   preparing,
+  executionBlocked = false,
   navigationAllowance,
   onComposerLockChange,
   onPrepareTurn,
@@ -1015,6 +1138,7 @@ export function TaskConversation({
   pendingRequestId?: string
   runId?: string
   preparing: boolean
+  executionBlocked?: boolean
   navigationAllowance?: { current: boolean }
   onComposerLockChange?: (locked: boolean) => void
   onPrepareTurn?: TaskWorkspaceProps['onPrepareTurn']
@@ -1301,7 +1425,8 @@ export function TaskConversation({
       turn.state !== 'saved' ||
       draftState.current ||
       saveState.current.phase !== 'idle' ||
-      !onPrepareTurn
+      !onPrepareTurn ||
+      executionBlocked
     )
       return
     const taskId = task.id
@@ -1557,6 +1682,7 @@ export function TaskConversation({
                           busy={previewing === turn.id}
                           disabled={
                             !canUseTurn(turn) ||
+                            executionBlocked ||
                             Boolean(value.prepared) ||
                             !onPrepareTurn
                           }
@@ -1566,9 +1692,17 @@ export function TaskConversation({
                         <AppButton
                           label={t('继续确认下一轮', 'Continue prepared run')}
                           icon={<ArrowRight size={15} />}
-                          disabled={!canUseTurn(turn) || !onOpenPreparedTurn}
+                          disabled={
+                            !canUseTurn(turn) ||
+                            !onOpenPreparedTurn ||
+                            executionBlocked
+                          }
                           onClick={() => {
-                            if (canUseTurn(turn) && onOpenPreparedTurn)
+                            if (
+                              canUseTurn(turn) &&
+                              onOpenPreparedTurn &&
+                              !executionBlocked
+                            )
                               onOpenPreparedTurn(task, turn)
                           }}
                         />

@@ -29,7 +29,14 @@ vi.mock('react', async () => {
   return {
     ...actual,
     useState: (initial: unknown) => [
-      mocks.paging ?? initial,
+      initial &&
+      typeof initial === 'object' &&
+      'taskId' in initial &&
+      'page' in initial
+        ? (mocks.paging ?? initial)
+        : typeof initial === 'function'
+          ? initial()
+          : initial,
       (next: unknown) => mocks.updates.push(next),
     ],
     useRef: (initial: unknown) => {
