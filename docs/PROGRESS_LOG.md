@@ -1454,6 +1454,31 @@ Task研发实现新增固定Python pytest选择，复用现有Dialog和Run树；
 临时服务已停；原httpx/chunk警告、Bootstrap全量、119/9/110不变。
 [证据和剩余范围](../frontend/evidence/coding-pytest-2026-11-27/README.md)。
 
+## 2026-11-27 多Agent计划修订与Pi SDK
+
+按用户深度分析/列计划/多Agent并最后补Pi的要求，完成
+[实施计划](CORE_DELIVERY_PLAN_2026-11-27.md)，三Agent分别做计划后端、前端和Pi runtime，
+root整合真实业务链、回归、本机启用。ADR-0032/0033记录最终边界。
+copy-on-write保留旧Task/Run/v1/receipt，变更及下游新Task重新验收；
+active/prepared/grant阻止受影响发布、retired禁新执行、unknown原ID GET、CAS保dirty。
+当前与20项冻结history分开；最多100版、新三表。
+
+Pi锁定SDK独立runtime，空工具/资源/内存身份、精确消息/maxTokens和单POST，
+无账号发现/自动retry/压缩/保温；研究与JSON编码进入原Call/Artifact链，实际pytest
+failure2→failure1→pass4、原源不变。回复为localhost mock，SDK/测试/HTTP/持久化真实。
+公共input统一含cache，native/cache子集不重复加、缺失不默认0。
+
+1406Python/2374前端82文件/typecheck/build通过；35计划、118前端计划定向，
+50SDK+9整合最终强制SDK再验59/no skip。计划9+补帧1、Pi5、综合58、主8GET，
+共81浏览器/86最终fixturePNG，最终pageerror0。最后仅测试门禁调整后复验59，
+不将skip当实际执行，也不伪称全量重跑。保留脚本失败与SDK计量纠正，见
+[证据](../frontend/evidence/plan-revisions-pi-2026-11-27/README.md)。
+
+4180空闲原PID378077经一致backup/Store副本演练/原行比对/同command/cwd/env更新
+PID1552381，5173保持；8只读后原行再一致、新三表空，无正式Pi/模型/测试/计划。
+临时服务已停；旧httpx/chunk警告、Bootstrap全量、119/9/110保持。
+提交push只以Git回执为准，后续基线冲突、其他runtime和嵌套/AI分解优先。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。
@@ -1463,9 +1488,8 @@ Task研发实现新增固定Python pytest选择，复用现有Dialog和Run树；
 当前交付顺序以 [PRODUCT_GOALS_CURRENT.md](PRODUCT_GOALS_CURRENT.md) 为准：
 Task工作区、选定消息、固定Workflow及Task范围设备接续初版已交付，
 显式历史位置、D3b一次研究委托和隔离研发实现/真实测试首版也已交付。
-明确前轮成果引用已按ADR-0028交付，固定pytest按ADR-0031交付；当前优先其他runtime、计划修订/
-更广任务分解与基线变化的显式冲突处理；同基线coding检查点接续已按ADR-0029交付，
-有界真实Task拆解与报告前置门禁已按ADR-0030交付，
+明确成果引用、检查点、Task拆解、pytest、计划修订和Pi文本子范围已按ADR-0028至0033交付；
+当前优先其他runtime、更广任务分解与基线变化的显式冲突处理，
 设备D4b/D5b与连接器保留待办，
 不再默认作为下一批。通用控制租约仍独立待办。
 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)保留阶段架构与能力边界；

@@ -145,6 +145,9 @@ export function WorkbenchForm({
     state.kind === 'task' && taskProjectRefs.busy && !taskProjectRefs.value
   const [endpoint, setEndpoint] = useState('')
   const [model, setModel] = useState('')
+  const [modelKind, setModelKind] = useState<'chat_completions' | 'pi_sdk'>(
+    'chat_completions',
+  )
   const [keyEnv, setKeyEnv] = useState('')
   const defaultModel =
     data.models.find((item) => item.id === data.default_model_id)?.id ??
@@ -237,6 +240,7 @@ export function WorkbenchForm({
     projectId,
     endpoint,
     model,
+    modelKind,
     keyEnv,
     routing,
     limits,
@@ -422,6 +426,15 @@ export function WorkbenchForm({
           'Project references could not be verified. Retry the project read.',
         )
     }
+    if (
+      state.kind === 'model' &&
+      modelKind === 'pi_sdk' &&
+      data.capabilities.pi_sdk !== true
+    )
+      validation.kind = t(
+        'Pi SDK 运行环境不可用。',
+        'The Pi SDK runtime is unavailable.',
+      )
     setFieldErrors(validation)
     if (Object.keys(validation).length) {
       if (state.kind === 'run' && validation.context_hash) {
@@ -493,7 +506,15 @@ export function WorkbenchForm({
         onTask(task)
         return
       } else if (state.kind === 'model') {
-        await post('/models', { name, endpoint, model, key_env: keyEnv })
+        if (modelKind === 'pi_sdk' && data.capabilities.pi_sdk !== true)
+          throw new Error('pi_sdk_not_available')
+        await post('/models', {
+          name,
+          endpoint,
+          model,
+          key_env: keyEnv,
+          kind: modelKind,
+        })
       } else if (state.kind === 'backend') {
         await post('/backends', { name, endpoint })
       } else if (state.kind === 'run') {
@@ -987,6 +1008,29 @@ export function WorkbenchForm({
   } else if (state.kind === 'model') {
     content = (
       <>
+        {fieldBlock(
+          'kind',
+          <AppSelect
+            label={t('执行方式', 'Execution adapter')}
+            value={modelKind}
+            options={[
+              { value: 'chat_completions', label: 'Chat Completions' },
+              ...(data.capabilities.pi_sdk === true || modelKind === 'pi_sdk'
+                ? [{ value: 'pi_sdk', label: 'Pi · SDK' }]
+                : []),
+            ]}
+            disabled={busy}
+            onChange={(value) => {
+              if (
+                value === 'chat_completions' ||
+                (value === 'pi_sdk' && data.capabilities.pi_sdk === true)
+              ) {
+                clearFieldError('kind')
+                setModelKind(value)
+              }
+            }}
+          />,
+        )}
         <div className="wb-inline">
           <AppButton
             label={t('本机推理', 'Local inference')}

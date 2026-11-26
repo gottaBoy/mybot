@@ -15,10 +15,17 @@ SAFE_ERROR_CODES = {
     "invalid_provider_response", "response_too_large", "empty_response",
     "codex_cli_not_found", "codex_cli_output_limit", "codex_cli_timeout_outcome_unknown",
     "codex_cli_start_failed", "codex_cli_failed", "codex_cli_empty_response",
+    "pi_sdk_not_available", "pi_sdk_invalid_input", "pi_sdk_start_failed",
+    "pi_sdk_provider_rejected", "pi_sdk_policy_violation", "pi_sdk_invalid_response",
+    "pi_sdk_empty_response", "pi_sdk_output_limit",
+    "pi_sdk_timeout_outcome_unknown", "pi_sdk_connection_outcome_unknown",
 }
 UNKNOWN_ERROR_CODES = {
     "provider_timeout_outcome_unknown", "provider_connection_error",
     "codex_cli_timeout_outcome_unknown", "model_test_execution_outcome_unknown",
+    "pi_sdk_timeout_outcome_unknown", "pi_sdk_connection_outcome_unknown",
+    "pi_sdk_output_limit", "pi_sdk_invalid_response", "pi_sdk_policy_violation",
+    "pi_sdk_empty_response",
 }
 
 

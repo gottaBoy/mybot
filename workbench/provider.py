@@ -265,10 +265,14 @@ class CodexCliProvider:
 
 class ProviderRouter:
     def __init__(self):
+        from .pi_provider import PiSdkProvider
         self.chat = ChatProvider()
         self.codex = CodexCliProvider()
+        self.pi = PiSdkProvider()
 
     async def complete(self, model: dict, messages: list[dict], max_tokens: int) -> dict:
         if model.get("kind") == "codex_cli":
             return await self.codex.complete(model, messages, max_tokens)
+        if model.get("kind") == "pi_sdk":
+            return await self.pi.complete(model, messages, max_tokens)
         return await self.chat.complete(model, messages, max_tokens)

@@ -80,6 +80,16 @@ const envelope = (item: unknown = grant) => ({
 })
 afterEach(() => vi.unstubAllGlobals())
 describe('one-use device execution contract', () => {
+  it('admits a Pi text adapter without expanding the execution grant summary', () => {
+    const selected = {
+      ...grant,
+      models: grant.models.map((model) => ({ ...model, kind: 'pi_sdk' })),
+    }
+    expect(parseExecutionGrant(selected, device)).toEqual(selected)
+    expect(
+      Object.keys(parseExecutionGrant(selected, device).models[0]),
+    ).toEqual(['role', 'id', 'name', 'model', 'kind'])
+  })
   it('retains referenced-artifact count in grant identity without source bodies', () => {
     const referenced = { ...grant, artifact_count: 2 }
     expect(parseExecutionGrant(referenced, device)).toEqual(referenced)

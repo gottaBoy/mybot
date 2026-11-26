@@ -42,6 +42,39 @@ function draft(): FormDraft {
 afterEach(() => vi.unstubAllGlobals())
 
 describe('form schema validation', () => {
+  it('binds a Pi execution adapter to the model draft without weakening endpoint or key rules', () => {
+    const selected = { ...draft(), modelKind: 'pi_sdk' as const }
+    expect(validateFormDraft('model', selected, data, english)).toEqual({})
+    expect(formDraftFingerprint('model', selected)).not.toBe(
+      formDraftFingerprint('model', draft()),
+    )
+    expect(
+      validateFormDraft(
+        'model',
+        {
+          ...selected,
+          endpoint: 'codex://local',
+          keyEnv: 'OPENAI_API_KEY',
+        },
+        data,
+        english,
+      ),
+    ).toMatchObject({
+      endpoint: expect.any(String),
+      key_env: expect.any(String),
+    })
+    expect(
+      validateFormDraft(
+        'model',
+        {
+          ...selected,
+          modelKind: 'pi_cli' as 'pi_sdk',
+        },
+        data,
+        english,
+      ),
+    ).toHaveProperty('kind')
+  })
   it('matches trimmed required and length fields and identifies the first invalid field', () => {
     const values = {
       ...draft(),

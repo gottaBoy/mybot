@@ -1,0 +1,29 @@
+{
+  "fixture": true,
+  "sdk": "Actual pinned Pi SDK; deterministic localhost SSE replies",
+  "checks": [
+    "Keyboard selects Pi in the real model form; saving config makes no SDK or model request"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models/07887db22bf44f22bfed24e4fbbcda72/test",
+      "method": "POST"
+    }
+  ],
+  "geometry": [],
+  "screenshots": [
+    "model-pi-desktop.png",
+    "pi-connection-receipt.png"
+  ],
+  "failure": "Error: locator.click: Error: strict mode violation: getByRole('dialog', { name: 'Test model connection', exact: true }).getByRole('button', { name: 'Close', exact: true }) resolved to 2 elements:\n    1) <button type=\"button\" data-size=\"md\" aria-label=\"Close\" data-variant=\"ghost\" data-elevation=\"none\" data-astryx-pressable=\"\" data-astryx-edge-comp=\"\" class=\"astryx-button x1k57tk5 x1vidyx5 x1t137rt x1jhp3zv xx47ajj x16bblx1 x1wfwxd8 x13aywxo x1n2onr6 x3nfvp2 x6s0dn4 xl56j7k x1txdalj xc342km xng3xce x1jxw6zd xjb2p0i xcr08ib x1kq96og x1e4wzip xuxw1ft xeuugli x1ypdohk x16khyan xrafxwg xuedmi6 x12w9bfk xlr8y92 x1ueg155 x1v15ycx xioom0i xnjsko4 xt970qd x2lah0s x1x1rfll x11z29ks xli5ek3 xem8lmn xogcwkh x1t1d…>…</button> aka getByLabel('Close')\n    2) <button type=\"button\" data-size=\"md\" data-variant=\"ghost\" data-elevation=\"none\" data-astryx-pressable=\"\" data-astryx-edge-comp=\"\" class=\"astryx-button x1k57tk5 x1vidyx5 x1t137rt x1jhp3zv xx47ajj x16bblx1 x1wfwxd8 x13aywxo x1n2onr6 x3nfvp2 x6s0dn4 xl56j7k x1txdalj xce4md1 xrrkdod xc342km xng3xce x1jxw6zd xjb2p0i xcr08ib x1kq96og x1e4wzip xuxw1ft xeuugli x193iq5w x1ypdohk x16khyan xrafxwg xuedmi6 x12w9bfk xlr8y92 x11l75t8 x11z29ks xli5ek3 xem8lmn xogcwkh x1t1ddl7 xziyay6 xz2mauf x1l7afqf x14e4jsf x6su2w…>…</button> aka locator('form').getByRole('button', { name: 'Close' })\n\nCall log:\n\u001b[2m  - waiting for getByRole('dialog', { name: 'Test model connection', exact: true }).getByRole('button', { name: 'Close', exact: true })\u001b[22m\n"
+}

@@ -129,6 +129,16 @@ const response = (value: unknown) =>
   })
 afterEach(() => vi.unstubAllGlobals())
 describe('real Task decomposition and dependency admission', () => {
+  it.each([undefined, false, true])(
+    'preserves legacy schema1 reads independently of revision capability: %j',
+    async (enabled) => {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue(new Response(JSON.stringify(read))),
+      )
+      expect(await fetchTaskPlan(parent.id, undefined, enabled)).toEqual(read)
+    },
+  )
   it('admits an immutable plan, actual children and independent readiness facts', () => {
     expect(parseTaskPlan(read, parent.id)).toEqual(read)
     expect(parsePlanPreview(preview, parent, definition)).toEqual(preview)

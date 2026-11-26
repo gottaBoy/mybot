@@ -1,5 +1,51 @@
 # 下次从这里继续
 
+更新：2026-11-27，计划修订与Pi SDK已验收、本机启用。
+用户要求深度分析/计划/多Agent，最后补Pi并再次确认；起点aee6715已push/干净。
+[实施计划](docs/CORE_DELIVERY_PLAN_2026-11-27.md)、
+[ADR-0032](docs/decisions/ADR-0032-task-plan-revisions.md)、
+[最新ADR-0033](docs/decisions/ADR-0033-pi-text-runtime.md)、
+[证据](frontend/evidence/plan-revisions-pi-2026-11-27/README.md)。
+backend/frontend/Pi三Agent分别交付，root整合/回归/启用；提交push以Git回执为准。
+
+计划2–8Task、最多100版、20项历史，新增versions/memberships/revision_operations三表；
+旧v1四表/Task/Run/receipt不改。变更字段/前置身份创建新Task，下游传播替换；移出/替换
+旧Task退役，可查看/记补充但不能新执行/恢复/设备委托，活动/准备/授权先阻止发布。
+未变Task复用，当前gate与历史快照分开。CAS/preview影响绑定；unknown复用原taskPlanRequest，
+GET核对不重发，cap丢失拒新schema2投影；原operation核对仍可用。
+实际fixture v1前置4FakeCall+人工接受→v2两节点替换→新前置4Call+接受→下游4Call，
+双browser实际抢先v3 reorder，原editor409保dirty；5Task/3Run/12FakeCall/3版，旧证据保留。
+
+Pi model.kind=pi_sdk，runtime/pi锁定SDK1.5.0/完整lock/integrity，Node>=22.19，
+ignore-scripts安装且node_modules不进Git；包无gitHead，不把研究源码085c84e冒称包构建commit。
+空tools/resource/内存auth/session、显式endpoint/model/key、cleanenv/emptycwd、禁自动retry/
+compaction/cachewarming/telemetry，实际maxTokens/单POST/拒redirect与第二请求/取消reap。
+公共input包含cache，native/cache为子集不重复加；缺/坏计量不默认0。
+SDK存在cap不是provider reachability。只接文本研究/JSON编码；写副本/pytest仍trusted runner。
+全新A8So5w实际SDK+localhost mock：保存0请求、test1、research4、coding2，共7，
+编码4不变pytest failure2→failure1→pass4；执行丢响应原GET/1POST，源/测试不变。
+模型回答是fixture，SDK/HTTP/文件/测试/持久化真实；无付费模型或账号效果认证。
+
+最终1406Python/2374前端82文件/typecheck/build通过，最后仅可选SDK测试gate调整后
+MYBOT_REQUIRE_PI_RUNTIME=1强制再验59Pi通过/no skip。新revision35、frontend118专项通过。
+计划9/13PNG+影响区1/2PNG、Pi5/10PNG、综合58/61PNG、主GET-only8，共81检查/86最终PNG。
+最终pageerror0、专项外部HTTP0；保留SDK原计量分母问题、research helper KeyError、
+opaque storage/登录时序/密码与required/重复按钮定位、临时服务中断失败，未拼接早期通过。
+app208.47/gzip66.42kB、CSS39.89/7.50、lazyPlanEditor13.30/5.27、PlanPanel33.38/10.05，
+TaskWorkspace37.67/12.45、Run25.78/9.44；旧httpx/chunk警告、Bootstrap全量、119/9/110保持。
+
+主4180原空闲PID378077经identity/cwd/env内存核验、一致backup/私有Store演练/原行比对/
+SIGTERM锁释放，同command/cwd/env启动PID1552381；主5173原进程保持，两新cap为true。
+8只读后再比对原行相同：1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event，
+Workflow原行不变，新三表/coding_jobs/TaskTurns/model_tests0，无正式计划/Pi配置/测试/模型。
+私有备份`.runtime/backups/before-devices-20261126T202615Z/`700/DBlog600不进Git，
+无原正文/截图/环境/原摘要导出，不热覆盖回退，旧PID脚本不可重跑；
+临时4187/4188/4189/5176/5177/5178已停，主4180/5173保持。
+
+下一核心：**原代码基线变化的显式冲突处理、其他语言/runtime、嵌套/AI建议分解**。
+计划版本和Pi文本子范围已交付，不重复做入口；Pi完整受限工具Harness/native Provider/
+长期会话、原项目应用/合并/部署、真实模型质量和团队权限仍独立待办。
+
 更新日期：2026-11-27（Asia/Singapore；固定pytest研发验证已验收、本机启用）。
 
 最新合同[ADR-0031](docs/decisions/ADR-0031-python-pytest-profile.md)，

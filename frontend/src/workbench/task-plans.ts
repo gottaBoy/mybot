@@ -1,5 +1,11 @@
 import { api, type Task, type Run } from './api'
 import { isTaskReadIdentifier, parseTaskQueryRun } from './task-query'
+import {
+  parseRevisionReceipt,
+  parseRevisionTaskPlan,
+  type PlanRevisionReceipt,
+  type PlanRevisionPreview,
+} from './task-plan-revisions'
 
 export const dependencyCriterion = 'latest-successful-run-reviewed-reports-v1'
 export type PlanItemInput = {
@@ -44,9 +50,11 @@ export type DependencyGate = {
   criterion: typeof dependencyCriterion
   ready: boolean
   prerequisites: TaskReview[]
+  plan_version?: number
+  membership?: 'current' | 'retired'
 }
 export type PublishedPlan = {
-  version: 1
+  version: number
   parent_task_id: string
   plan_hash: string
   created_at: string
@@ -60,7 +68,7 @@ export type PublishedPlan = {
   }>
 }
 export type TaskPlanRead = {
-  schema_version: 1
+  schema_version: 1 | 2
   unit: 'task_plan'
   task_id: string
   parent: { task_id: string; title: string } | null
@@ -74,6 +82,7 @@ export type PlanReceipt = {
   state: 'applied'
   result: TaskPlanRead
 }
+export type AnyPlanReceipt = PlanReceipt | PlanRevisionReceipt
 function fail(): never {
   throw new Error('task_plan_response_invalid')
 }
@@ -272,6 +281,48 @@ export function parseDependencyGate(
   taskId?: string,
 ): DependencyGate {
   if (
+    value &&
+    typeof value === 'object' &&
+    (Object.hasOwn(value, 'plan_version') || Object.hasOwn(value, 'membership'))
+  ) {
+    if (
+      !object(value, [
+        'task_id',
+        'parent_task_id',
+        'plan_hash',
+        'criterion',
+        'ready',
+        'prerequisites',
+        'plan_version',
+        'membership',
+      ]) ||
+      !Number.isSafeInteger(value.plan_version) ||
+      Number(value.plan_version) < 2 ||
+      Number(value.plan_version) > 100 ||
+      !['current', 'retired'].includes(value.membership as string) ||
+      (value.membership === 'retired' &&
+        (value.ready !== false ||
+          !Array.isArray(value.prerequisites) ||
+          value.prerequisites.length !== 0))
+    )
+      fail()
+    const { plan_version, membership, ...legacy } = value
+    if (membership === 'retired') {
+      const admitted = parseDependencyGate({ ...legacy, ready: true }, taskId)
+      return {
+        ...admitted,
+        ready: false,
+        plan_version: plan_version as number,
+        membership: 'retired',
+      }
+    }
+    return {
+      ...parseDependencyGate(legacy, taskId),
+      plan_version: plan_version as number,
+      membership: 'current',
+    }
+  }
+  if (
     !object(value, [
       'task_id',
       'parent_task_id',
@@ -351,6 +402,12 @@ export function parsePlanPreview(
 }
 export function parseTaskPlan(value: unknown, taskId: string): TaskPlanRead {
   if (
+    value &&
+    typeof value === 'object' &&
+    (value as { schema_version?: unknown }).schema_version === 2
+  )
+    return parseRevisionTaskPlan(value, taskId)
+  if (
     !object(value, [
       'schema_version',
       'unit',
@@ -366,6 +423,7 @@ export function parseTaskPlan(value: unknown, taskId: string): TaskPlanRead {
     fail()
   const gate =
     value.gate === null ? null : parseDependencyGate(value.gate, taskId)
+  if (gate?.plan_version !== undefined) fail()
   let parent: TaskPlanRead['parent'] = null
   if (value.parent !== null) {
     if (
@@ -426,7 +484,8 @@ export function parseTaskPlan(value: unknown, taskId: string): TaskPlanRead {
         JSON.stringify(child.files) !== JSON.stringify(spec.files) ||
         review.title !== child.title ||
         childGate.parent_task_id !== taskId ||
-        childGate.plan_hash !== raw.plan_hash
+        childGate.plan_hash !== raw.plan_hash ||
+        childGate.plan_version !== undefined
       )
         fail()
       return { key: spec.key, task: child, review, gate: childGate }
@@ -489,6 +548,7 @@ export function parsePlanReceipt(
     fail()
   const result = parseTaskPlan(value.result, taskId)
   if (
+    result.schema_version !== 1 ||
     !result.plan ||
     result.plan.plan_hash !== value.preview_hash ||
     (expected &&
@@ -532,8 +592,20 @@ async function request(path: string, body?: unknown, signal?: AbortSignal) {
     signal?.removeEventListener('abort', abort)
   }
 }
-export async function fetchTaskPlan(taskId: string, signal?: AbortSignal) {
-  return parseTaskPlan(await request(root(taskId), undefined, signal), taskId)
+export async function fetchTaskPlan(
+  taskId: string,
+  signal?: AbortSignal,
+  revisionsEnabled = false,
+) {
+  const value = await request(root(taskId), undefined, signal)
+  if (
+    !revisionsEnabled &&
+    value &&
+    typeof value === 'object' &&
+    (value as { schema_version?: unknown }).schema_version === 2
+  )
+    throw new Error('task_plan_revisions_unsupported')
+  return parseTaskPlan(value, taskId)
 }
 export async function previewTaskPlan(
   parent: Task,
@@ -575,17 +647,38 @@ export async function fetchPlanOperation(
   taskId: string,
   id: string,
   signal?: AbortSignal,
-  expected?: PlanPreview,
-) {
+  expected?: PlanPreview | PlanRevisionPreview,
+): Promise<AnyPlanReceipt> {
   if (!requestId(id)) throw new Error('task_plan_input_invalid')
-  return parsePlanReceipt(
-    await request(
-      `${root(taskId)}/operations/${encodeURIComponent(id)}`,
-      undefined,
-      signal,
-    ),
-    taskId,
-    id,
-    expected,
+  const value = await request(
+    `${root(taskId)}/operations/${encodeURIComponent(id)}`,
+    undefined,
+    signal,
   )
+  if (
+    value &&
+    typeof value === 'object' &&
+    (value as { schema_version?: unknown }).schema_version === 2
+  ) {
+    if (expected && !('schema_version' in expected)) fail()
+    return parseRevisionReceipt(
+      value,
+      taskId,
+      id,
+      expected && 'schema_version' in expected ? expected : undefined,
+    )
+  }
+  if (expected && 'schema_version' in expected) fail()
+  return parsePlanReceipt(value, taskId, id, expected)
+}
+
+export {
+  object as planObject,
+  text as planText,
+  hash as planHash,
+  requestId as planRequestId,
+  timestamp as planTimestamp,
+  task as parsePlanTask,
+  request as planRequest,
+  root as planRoot,
 }

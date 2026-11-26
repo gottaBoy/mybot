@@ -1,0 +1,164 @@
+{
+  "fixture": true,
+  "sdk": "Actual pinned Pi SDK; deterministic localhost SSE replies",
+  "checks": [
+    "Keyboard selects Pi in the real model form; saving config makes no SDK or model request",
+    "Explicit test runs the actual SDK exactly once; checking its durable receipt sends no second request",
+    "Actual Pi SDK research creates one Run, four Calls and verifiable reports in the existing Task workspace",
+    "Pi JSON drives actual isolated pytest fail2 -> fail1 -> pass4 with one execution POST and unchanged original source",
+    "The same Pi execution and real pytest result render in three styles, both modes and Chinese mobile"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models/50f580abf90042f38f172cc01f7c24b1/test",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/59fbf7074f744f6bb1b52d82770facff/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/59fbf7074f744f6bb1b52d82770facff/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/89bd13959453447a954183d3261c86e9/coding/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/89bd13959453447a954183d3261c86e9/coding/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/89bd13959453447a954183d3261c86e9/coding/62b25967-17d7-4e26-bcf4-3b8647db4835/execute",
+      "method": "POST"
+    }
+  ],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "style": "neutral",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "style": "zira",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "style": "zira",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "style": "y2k",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "style": "y2k",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    }
+  ],
+  "screenshots": [
+    "model-pi-desktop.png",
+    "pi-connection-receipt.png",
+    "pi-research-artifact.png",
+    "pi-coding-candidate.png",
+    "pi-result-neutral-light.png",
+    "pi-result-neutral-dark.png",
+    "pi-result-zira-light.png",
+    "pi-result-zira-dark.png",
+    "pi-result-y2k-light.png",
+    "pi-result-y2k-dark.png"
+  ],
+  "actual": {
+    "research_run": "213929bd252544af87f93d10ad431052",
+    "coding_run": "378b4f55b221489e87a3847d483af541",
+    "sdk_requests": 7,
+    "coding_calls": 2,
+    "model_kind": "pi_sdk",
+    "tests": [
+      {
+        "round": 0,
+        "tests_run": 4,
+        "receipt": {
+          "tests_run": 4,
+          "failures": 2,
+          "errors": 0,
+          "skipped": 0,
+          "success": false
+        },
+        "passed": false
+      },
+      {
+        "round": 1,
+        "tests_run": 4,
+        "receipt": {
+          "tests_run": 4,
+          "failures": 1,
+          "errors": 0,
+          "skipped": 0,
+          "success": false
+        },
+        "passed": false
+      },
+      {
+        "round": 2,
+        "tests_run": 4,
+        "receipt": {
+          "tests_run": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "success": true
+        },
+        "passed": true
+      }
+    ]
+  }
+}

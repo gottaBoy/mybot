@@ -778,3 +778,19 @@ unittest/pytest选择，准备摘要、运行测试状态和选定测试Artifact
 保留综合context中断与主GET早期时序失败，最终均独立完整重跑。
 主4180/5173已启用、原业务行不变；不是模型效果/真机或完整pytest插件兼容认证。
 见`frontend/evidence/coding-pytest-2026-11-27/README.md`。119/9/110保持。
+
+## 40. 修订计划与Pi真实闭环
+
+日期：2026-11-27。Task目标页显示当前vN、修订和版本历史，原Editor同树适配基线、
+排序、完整影响/阻塞与发布确认。旧Task/Run保留，新要求产生新身份与新验收；
+history不混实时review，retired可看/记补充但禁新执行。真实双browser409保dirty，
+丢发布响应原GET，主题/语言不替换baseline。
+
+原模型表单增加Pi选择与kind badge，配置、测试、调用有独立事实。
+实际SDK进入研究/隔离编码，原Run仍显示真实测试与独立审查，没有演示主页/假Agent/
+第二套主题页面；SDK与前端组件库分开。2374前端/1406Python/build，
+计划9/13PNG+影响补帧1/2PNG、Pi5/10PNG、综合58/61PNG、主8GET，
+共81检查/86最终PNG。看图后对未露完整影响区的Editor截图另补内部滚动桌面/390图，
+不以document overflow0单独宣布内容可见。脚本opaque storage/密码role/required/
+重复按钮失败保留，新环境完整重跑。主入口已启用、原行相同，无付费模型/真机认证。
+见`frontend/evidence/plan-revisions-pi-2026-11-27/README.md`。119/9/110不变。

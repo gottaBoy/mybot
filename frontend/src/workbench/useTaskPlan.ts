@@ -6,6 +6,7 @@ export function useTaskPlan(
   taskId: string,
   enabled: boolean,
   revision: number,
+  revisionsEnabled = false,
 ) {
   const [local, setLocal] = useState(0)
   const [state, setState] = useState<{
@@ -13,22 +14,24 @@ export function useTaskPlan(
     value?: TaskPlanRead
     error?: string
     busy: boolean
-  }>({ taskId, busy: enabled })
+    revisionsEnabled: boolean
+  }>({ taskId, busy: enabled, revisionsEnabled })
   const version = useRef(0)
   useEffect(() => {
     const generation = ++version.current
     if (!enabled) return
     const controller = new AbortController()
-    setState({ taskId, busy: true })
-    void fetchTaskPlan(taskId, controller.signal)
+    setState({ taskId, busy: true, revisionsEnabled })
+    void fetchTaskPlan(taskId, controller.signal, revisionsEnabled)
       .then((value) => {
         if (!controller.signal.aborted && generation === version.current)
-          setState({ taskId, value, busy: false })
+          setState({ taskId, value, busy: false, revisionsEnabled })
       })
       .catch((reason) => {
         if (!controller.signal.aborted && generation === version.current)
           setState({
             taskId,
+            revisionsEnabled,
             busy: false,
             error:
               reason instanceof ApiError &&
@@ -38,8 +41,13 @@ export function useTaskPlan(
           })
       })
     return () => controller.abort()
-  }, [taskId, enabled, revision, local])
-  const current = enabled && state.taskId === taskId ? state : undefined
+  }, [taskId, enabled, revisionsEnabled, revision, local])
+  const current =
+    enabled &&
+    state.taskId === taskId &&
+    state.revisionsEnabled === revisionsEnabled
+      ? state
+      : undefined
   return {
     enabled,
     value: current?.value,

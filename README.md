@@ -4,6 +4,11 @@
 
 **下次继续先读 [CONTINUE.md](CONTINUE.md)**。这里记录最新要求、证据、待办和禁止误用的旧方案。
 
+最新核心交付：真实Task计划可修订和查看历史，变更要求创建新Task并重新验收；
+新增Pi SDK受限文本执行，可参与既有研究和隔离编码/pytest流程。
+[深度分析与实施计划](docs/CORE_DELIVERY_PLAN_2026-11-27.md)、
+[Pi范围](docs/PI_INTEGRATION_CURRENT.md)。
+
 **工作项台账：[WORK_ITEMS.md](docs/WORK_ITEMS.md)**。保留 119 个原编号，当前 9 项完成、
 110 项未完全完成；按执行包推进，不用 commit 或测试数量代替产品完成度。
 
@@ -69,6 +74,16 @@ React工作台的Task“研发实现与验证”可选测试框架。pytest使�
 需要写临时文件、网络或子进程的fixture不在该固定配置范围内。
 准备与启动都验证运行能力，不自动安装依赖或退回其他框架。见
 [ADR-0031](docs/decisions/ADR-0031-python-pytest-profile.md)。
+
+Pi是独立可选运行时，要求Node.js >=22.19。安装锁定依赖不启动模型：
+
+```bash
+npm --prefix runtime/pi ci --ignore-scripts --no-audit --no-fund
+```
+
+在React工作台“添加模型”的执行方式选择Pi，配置明确的OpenAI-compatible地址、模型和
+专用密钥变量，再显式测试或启动。SDK没有文件/命令工具，也不读取Pi/Codex登录会话。
+真实修改和测试仍由mybot隔离执行；保存、连接测试、Run完成和人工验收是独立事实。
 
 - `WORKBENCH_WORKSPACE`：允许选择的服务器目录上界，默认本仓库；项目路径和任务文件均使用相对路径。
 - `WORKBENCH_DATA_DIR`：私有 SQLite/运行快照目录，默认 `.runtime/`，已排除 Git。

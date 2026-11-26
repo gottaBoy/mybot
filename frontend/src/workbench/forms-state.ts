@@ -11,6 +11,7 @@ export type FormDraft = {
   projectId: string
   endpoint: string
   model: string
+  modelKind?: 'chat_completions' | 'pi_sdk'
   keyEnv: string
   routing: {
     coordinator_model: string
@@ -184,6 +185,15 @@ export function validateFormDraft(
               'Use a loopback IP origin without path, credentials or query',
             )
     if (kind === 'model') {
+      if (
+        !['chat_completions', 'pi_sdk'].includes(
+          draft.modelKind ?? 'chat_completions',
+        )
+      )
+        errors.kind = t(
+          '请选择有效的执行方式',
+          'Select an available execution adapter',
+        )
       text('model', draft.model, 1, 150)
       text('key_env', draft.keyEnv, 0, 100)
       if (
@@ -258,6 +268,7 @@ export function formDraftFingerprint(kind: FormKind, draft: FormDraft) {
       draft.endpoint,
       draft.model,
       draft.keyEnv,
+      draft.modelKind ?? 'chat_completions',
     ])
   if (kind === 'backend') return JSON.stringify([draft.name, draft.endpoint])
   if (kind === 'run')

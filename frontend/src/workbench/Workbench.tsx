@@ -1598,6 +1598,7 @@ function ModelRow({
       <div className="wb-settings-copy">
         <div className="wb-inline">
           <strong>{model.name}</strong>
+          {model.kind === 'pi_sdk' && <AppBadge>Pi · SDK</AppBadge>}
           {data.default_model_id === model.id && (
             <AppBadge tone="info">{t('默认', 'Default')}</AppBadge>
           )}

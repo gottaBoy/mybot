@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "Revision impact and confirmation are framed inside the desktop and mobile dialog; discard adds no Task, Run or version"
+  ],
+  "screenshots": [
+    "visible-revision-impact-desktop.png",
+    "visible-revision-impact-mobile.png"
+  ],
+  "errors": [],
+  "external": []
+}

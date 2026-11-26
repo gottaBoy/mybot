@@ -1,8 +1,10 @@
-import { ArrowRight, GitBranch, RefreshCw } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowRight, GitBranch, RefreshCw, History, Pencil } from 'lucide-react'
 import { AppBadge, AppButton, AppLoading } from '../components/ui'
 import { taskWorkspaceHref } from './task-workspace-location'
 import { type Copy } from './state'
 import type { ReviewState, TaskPlanRead, DependencyGate } from './task-plans'
+import { TaskPlanHistory } from './TaskPlanHistory'
 import './task-plans.css'
 
 export function reviewLabel(state: ReviewState, t: Copy) {
@@ -31,12 +33,23 @@ export function TaskDependencyFacts({
     <div className="wb-task-dependency-facts" data-testid="task-dependencies">
       <div className="wb-inline">
         <strong>{t('执行前置条件', 'Execution prerequisites')}</strong>
+        {gate.plan_version !== undefined && <span>v{gate.plan_version}</span>}
         <AppBadge tone={gate.ready ? 'success' : 'warning'}>
-          {gate.ready
-            ? t('前置条件已满足', 'Prerequisites satisfied')
-            : t('等待前置验收', 'Waiting for prerequisite review')}
+          {gate.membership === 'retired'
+            ? t('旧计划任务已退役', 'Retired plan task')
+            : gate.ready
+              ? t('前置条件已满足', 'Prerequisites satisfied')
+              : t('等待前置验收', 'Waiting for prerequisite review')}
         </AppBadge>
       </div>
+      {gate.membership === 'retired' && (
+        <p className="wb-muted">
+          {t(
+            '此任务不能发起新的执行，仍可查看历史和记录补充。请从父任务打开当前计划。',
+            'This task cannot start new execution. You can still view its history and save supplemental messages. Open the current plan from its parent task.',
+          )}
+        </p>
+      )}
       {gate.prerequisites.map((item) => (
         <div key={item.task_id} className="wb-task-dependency">
           <a
@@ -76,6 +89,8 @@ export function TaskPlanPanel({
   onRefresh,
   onCreate,
   canCreate,
+  revisionsEnabled = false,
+  onRevise,
 }: {
   value?: TaskPlanRead
   busy: boolean
@@ -84,7 +99,10 @@ export function TaskPlanPanel({
   onRefresh: () => void
   onCreate: () => void
   canCreate: boolean
+  revisionsEnabled?: boolean
+  onRevise?: () => void
 }) {
+  const [historyOpen, setHistoryOpen] = useState(false)
   return (
     <section
       className="wb-task-plan"
@@ -125,56 +143,88 @@ export function TaskPlanPanel({
           )}
           {value.gate && <TaskDependencyFacts gate={value.gate} t={t} />}
           {value.plan ? (
-            <ol className="wb-task-plan-items">
-              {value.plan.items.map((item) => (
-                <li key={item.task.id}>
-                  <div className="wb-task-plan-item-heading">
-                    <a href={taskWorkspaceHref(item.task.id)}>
-                      {item.task.title}
-                    </a>
-                    <AppBadge
-                      tone={
-                        item.review.state === 'accepted'
-                          ? 'success'
-                          : item.gate.ready
-                            ? 'neutral'
-                            : 'warning'
-                      }
-                    >
-                      {reviewLabel(item.review.state, t)}
-                    </AppBadge>
+            <>
+              <div className="wb-task-plan-heading">
+                <strong>
+                  {t('当前计划', 'Current plan')} · v{value.plan.version}
+                </strong>
+                {revisionsEnabled && (
+                  <div className="wb-inline">
                     <AppButton
-                      label={t('打开子任务', 'Open subtask')}
-                      icon={<ArrowRight size={15} />}
-                      iconOnly
-                      tone="ghost"
-                      href={taskWorkspaceHref(item.task.id)}
+                      label={t('修订计划', 'Revise plan')}
+                      icon={<Pencil size={15} />}
+                      disabled={!canCreate || busy || value.plan.version >= 100}
+                      onClick={onRevise}
+                    />
+                    <AppButton
+                      label={t('版本历史', 'Version history')}
+                      icon={<History size={15} />}
+                      aria-expanded={historyOpen}
+                      disabled={busy}
+                      onClick={() => setHistoryOpen((open) => !open)}
                     />
                   </div>
-                  <p>{item.task.goal}</p>
-                  <dl className="wb-details">
-                    <dt>{t('验收要求', 'Acceptance')}</dt>
-                    <dd>{item.task.acceptance}</dd>
-                    <dt>{t('前置任务', 'Prerequisites')}</dt>
-                    <dd>
-                      {item.gate.prerequisites.length
-                        ? item.gate.prerequisites
-                            .map((dependency) => dependency.title)
-                            .join(' · ')
-                        : t('无', 'None')}
-                    </dd>
-                  </dl>
-                  {!item.gate.ready && (
-                    <span className="wb-muted">
-                      {t(
-                        '等待前置任务的成功运行及报告验收',
-                        'Waiting for successful prerequisite runs and accepted reports',
-                      )}
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ol>
+                )}
+              </div>
+              <ol className="wb-task-plan-items">
+                {value.plan.items.map((item) => (
+                  <li key={item.task.id}>
+                    <div className="wb-task-plan-item-heading">
+                      <a href={taskWorkspaceHref(item.task.id)}>
+                        {item.task.title}
+                      </a>
+                      <AppBadge
+                        tone={
+                          item.review.state === 'accepted'
+                            ? 'success'
+                            : item.gate.ready
+                              ? 'neutral'
+                              : 'warning'
+                        }
+                      >
+                        {reviewLabel(item.review.state, t)}
+                      </AppBadge>
+                      <AppButton
+                        label={t('打开子任务', 'Open subtask')}
+                        icon={<ArrowRight size={15} />}
+                        iconOnly
+                        tone="ghost"
+                        href={taskWorkspaceHref(item.task.id)}
+                      />
+                    </div>
+                    <p>{item.task.goal}</p>
+                    <dl className="wb-details">
+                      <dt>{t('验收要求', 'Acceptance')}</dt>
+                      <dd>{item.task.acceptance}</dd>
+                      <dt>{t('前置任务', 'Prerequisites')}</dt>
+                      <dd>
+                        {item.gate.prerequisites.length
+                          ? item.gate.prerequisites
+                              .map((dependency) => dependency.title)
+                              .join(' · ')
+                          : t('无', 'None')}
+                      </dd>
+                    </dl>
+                    {!item.gate.ready && (
+                      <span className="wb-muted">
+                        {t(
+                          '等待前置任务的成功运行及报告验收',
+                          'Waiting for successful prerequisite runs and accepted reports',
+                        )}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ol>
+              {historyOpen && revisionsEnabled && (
+                <TaskPlanHistory
+                  taskId={value.task_id}
+                  currentHash={value.plan.plan_hash}
+                  enabled={revisionsEnabled}
+                  t={t}
+                />
+              )}
+            </>
           ) : (
             !value.parent && (
               <AppButton

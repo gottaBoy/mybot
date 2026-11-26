@@ -1,0 +1,49 @@
+{
+  "fixture": true,
+  "endpoint": "http://127.0.0.1:40555/v1",
+  "calls": 7,
+  "requests": [
+    {
+      "model": "mybot-pi-coding",
+      "max_tokens": 16,
+      "path": "/v1/chat/completions",
+      "no_tools": true
+    },
+    {
+      "model": "mybot-pi-research",
+      "max_tokens": 1800,
+      "path": "/v1/chat/completions",
+      "no_tools": true
+    },
+    {
+      "model": "mybot-pi-research",
+      "max_tokens": 1800,
+      "path": "/v1/chat/completions",
+      "no_tools": true
+    },
+    {
+      "model": "mybot-pi-research",
+      "max_tokens": 1800,
+      "path": "/v1/chat/completions",
+      "no_tools": true
+    },
+    {
+      "model": "mybot-pi-research",
+      "max_tokens": 1800,
+      "path": "/v1/chat/completions",
+      "no_tools": true
+    },
+    {
+      "model": "mybot-pi-coding",
+      "max_tokens": 8192,
+      "path": "/v1/chat/completions",
+      "no_tools": true
+    },
+    {
+      "model": "mybot-pi-coding",
+      "max_tokens": 8192,
+      "path": "/v1/chat/completions",
+      "no_tools": true
+    }
+  ]
+}

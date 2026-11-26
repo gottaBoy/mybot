@@ -1,5 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
-import { Check, FileSearch, Plus, RefreshCw, Trash2, X } from 'lucide-react'
+import {
+  ArrowDown,
+  ArrowUp,
+  Check,
+  FileSearch,
+  Plus,
+  RefreshCw,
+  Trash2,
+  X,
+} from 'lucide-react'
 import {
   AppButton,
   AppCheckbox,
@@ -22,9 +31,16 @@ import {
   previewTaskPlan,
   type PlanDefinition,
   type PlanPreview,
-  type PlanReceipt,
+  type AnyPlanReceipt,
 } from './task-plans'
+import {
+  previewPlanRevision,
+  publishPlanRevision,
+  type PlanRevisionPreview,
+  type PlanVersion,
+} from './task-plan-revisions'
 import type { Copy } from './state'
+import { taskWorkspaceHref } from './task-workspace-location'
 import './task-plans.css'
 
 const blank = (key: string) => ({
@@ -36,9 +52,12 @@ const blank = (key: string) => ({
   depends_on: [],
 })
 export function TaskPlanEditor({
-  task,
+  task: initialTask,
   initial,
   enabled,
+  baseline: initialBaseline,
+  revisionsEnabled = false,
+  currentPlanHash,
   t,
   onClose,
   onCreated,
@@ -46,14 +65,21 @@ export function TaskPlanEditor({
   task: Task
   initial?: string
   enabled: boolean
+  baseline?: PlanVersion
+  revisionsEnabled?: boolean
+  currentPlanHash?: string
   t: Copy
   onClose: () => void
-  onCreated: (receipt: PlanReceipt) => void
+  onCreated: (receipt: AnyPlanReceipt) => void
 }) {
-  const [definition, setDefinition] = useState<PlanDefinition>({
-    items: [blank('step1'), blank('step2')],
-  })
-  const [preview, setPreview] = useState<PlanPreview>()
+  const task = useRef(initialTask).current
+  const baseline = useRef(initialBaseline).current
+  const [definition, setDefinition] = useState<PlanDefinition>(() =>
+    baseline
+      ? structuredClone(baseline.definition)
+      : { items: [blank('step1'), blank('step2')] },
+  )
+  const [preview, setPreview] = useState<PlanPreview | PlanRevisionPreview>()
   const [pending, setPending] = useState(initial)
   const [phase, setPhase] = useState<
     'edit' | 'preview' | 'sending' | 'unknown'
@@ -68,8 +94,19 @@ export function TaskPlanEditor({
     released = useRef(false)
   const request = useRef<AbortController | undefined>(undefined)
   const initialDraft = useRef(JSON.stringify(definition))
-  const latest = useRef({ definition, preview, pending, phase, consent })
-  latest.current = { definition, preview, pending, phase, consent }
+  const stale = Boolean(
+    baseline && currentPlanHash && baseline.plan_hash !== currentPlanHash,
+  )
+  const allowed = enabled && (!baseline || revisionsEnabled) && !stale
+  const latest = useRef({
+    definition,
+    preview,
+    pending,
+    phase,
+    consent,
+    allowed,
+  })
+  latest.current = { definition, preview, pending, phase, consent, allowed }
   const dirty =
     JSON.stringify(definition) !== initialDraft.current || Boolean(preview)
   const busy = phase === 'sending' || phase === 'unknown'
@@ -108,6 +145,9 @@ export function TaskPlanEditor({
   useEffect(() => {
     if (initial) void reconcile()
   }, [])
+  useEffect(() => {
+    if (!allowed) setConsent(false)
+  }, [allowed])
   function stamp(id?: string) {
     const url = new URL(window.location.href),
       params = new URLSearchParams(url.hash.split('?')[1] ?? '')
@@ -131,7 +171,7 @@ export function TaskPlanEditor({
     setError('')
     setPhase('edit')
   }
-  function complete(receipt: PlanReceipt) {
+  function complete(receipt: AnyPlanReceipt) {
     cancelWorkbenchNavigation()
     if (!stamp()) throw new Error('task_plan_navigation_unconfirmed')
     released.current = true
@@ -139,7 +179,8 @@ export function TaskPlanEditor({
     onCreated(receipt)
   }
   async function inspect() {
-    if (operation.current || latest.current.pending || !enabled) return
+    if (operation.current || latest.current.pending || !latest.current.allowed)
+      return
     let admitted: PlanDefinition
     try {
       admitted = parsePlanDefinition(latest.current.definition)
@@ -159,19 +200,42 @@ export function TaskPlanEditor({
     const controller = new AbortController()
     request.current = controller
     try {
-      const result = await previewTaskPlan(task, admitted, controller.signal)
+      const result = baseline
+        ? await previewPlanRevision(task, baseline, admitted, controller.signal)
+        : await previewTaskPlan(task, admitted, controller.signal)
       if (!mounted.current || controller.signal.aborted) return
       setPreview(result)
       setPhase('preview')
-    } catch {
+    } catch (reason) {
       if (!mounted.current) return
       setPhase('edit')
       setPreview(undefined)
+      const code =
+        reason instanceof ApiError &&
+        reason.details &&
+        typeof reason.details === 'object'
+          ? (reason.details as { code?: unknown }).code
+          : undefined
       setError(
-        t(
-          '拆解候选未核对成功。请检查父任务资料、文件范围或已保存计划。',
-          'The breakdown could not be verified. Check the parent context, file scope or existing plan.',
-        ),
+        code === 'task_plan_revision_unchanged'
+          ? t(
+              '当前计划没有变化。请编辑后再核对修订。',
+              'The plan is unchanged. Edit it before reviewing a revision.',
+            )
+          : code === 'task_plan_revision_conflict'
+            ? t(
+                '当前计划已变化，编辑已保留。请明确放弃编辑后从最新版本重开。',
+                'The current plan changed. Edits are retained. Explicitly discard them before reopening the latest version.',
+              )
+            : code === 'task_plan_version_limit'
+              ? t(
+                  '该计划已达到100个版本的上限。',
+                  'This plan has reached the limit of 100 versions.',
+                )
+              : t(
+                  '拆解候选未核对成功。请检查父任务资料、文件范围或已保存计划。',
+                  'The breakdown could not be verified. Check the parent context, file scope or existing plan.',
+                ),
       )
     } finally {
       if (mounted.current) operation.current = false
@@ -184,7 +248,9 @@ export function TaskPlanEditor({
       state.pending ||
       !state.preview ||
       !state.consent ||
-      !enabled
+      !state.allowed ||
+      ('schema_version' in state.preview &&
+        state.preview.impact.blockers.length > 0)
     )
       return
     const id = crypto.randomUUID()
@@ -197,12 +263,15 @@ export function TaskPlanEditor({
     const controller = new AbortController()
     request.current = controller
     try {
-      const receipt = await createTaskPlan(
-        task,
-        id,
-        state.preview,
-        controller.signal,
-      )
+      const receipt =
+        'schema_version' in state.preview
+          ? await publishPlanRevision(
+              task,
+              id,
+              state.preview,
+              controller.signal,
+            )
+          : await createTaskPlan(task, id, state.preview, controller.signal)
       if (!mounted.current || controller.signal.aborted) return
       complete(receipt)
     } catch (reason) {
@@ -277,7 +346,11 @@ export function TaskPlanEditor({
   return (
     <>
       <AppDialog
-        title={t('拆分任务', 'Break down task')}
+        title={
+          baseline
+            ? t('修订任务计划', 'Revise task plan')
+            : t('拆分任务', 'Break down task')
+        }
         closeLabel={t('关闭', 'Close')}
         busy={busy}
         onClose={close}
@@ -287,6 +360,29 @@ export function TaskPlanEditor({
           data-testid="task-plan-editor"
         >
           <strong>{task.title}</strong>
+          {baseline && (
+            <p className="wb-muted wb-wrap">
+              {t('修订基线', 'Revision baseline')} · v{baseline.version}
+              {' · '}
+              <code>{baseline.plan_hash}</code>
+            </p>
+          )}
+          {stale && (
+            <p role="alert" className="wb-error">
+              {t(
+                '当前计划已变化，编辑仍保留。关闭并明确放弃编辑后，才能从最新版本重新修订。',
+                'The current plan changed. Edits are retained. Close and explicitly discard them before starting from the latest version.',
+              )}
+            </p>
+          )}
+          {baseline && !revisionsEnabled && (
+            <p role="alert" className="wb-error">
+              {t(
+                '服务未提供计划修订能力。',
+                'This server does not provide plan revisions.',
+              )}
+            </p>
+          )}
           {error && (
             <p role="alert" className="wb-error">
               {error}
@@ -314,26 +410,59 @@ export function TaskPlanEditor({
                     <strong>
                       {t('子任务', 'Subtask')} {index + 1}
                     </strong>
-                    <AppButton
-                      label={t('移除子任务', 'Remove subtask')}
-                      icon={<Trash2 size={15} />}
-                      iconOnly
-                      tone="ghost"
-                      disabled={
-                        busy ||
-                        definition.items.length <= 2 ||
-                        definition.items.some((other) =>
-                          other.depends_on.includes(item.key),
-                        )
-                      }
-                      onClick={() =>
-                        edit({
-                          items: definition.items.filter(
-                            (other) => other.key !== item.key,
-                          ),
-                        })
-                      }
-                    />
+                    <code>{item.key}</code>
+                    <div className="wb-inline">
+                      <AppButton
+                        label={t('上移子任务', 'Move subtask earlier')}
+                        icon={<ArrowUp size={15} />}
+                        iconOnly
+                        tone="ghost"
+                        disabled={busy || index === 0}
+                        onClick={() => {
+                          const items = [...definition.items]
+                          ;[items[index - 1], items[index]] = [
+                            items[index],
+                            items[index - 1],
+                          ]
+                          edit({ items })
+                        }}
+                      />
+                      <AppButton
+                        label={t('下移子任务', 'Move subtask later')}
+                        icon={<ArrowDown size={15} />}
+                        iconOnly
+                        tone="ghost"
+                        disabled={busy || index === definition.items.length - 1}
+                        onClick={() => {
+                          const items = [...definition.items]
+                          ;[items[index], items[index + 1]] = [
+                            items[index + 1],
+                            items[index],
+                          ]
+                          edit({ items })
+                        }}
+                      />
+                      <AppButton
+                        label={t('移除子任务', 'Remove subtask')}
+                        icon={<Trash2 size={15} />}
+                        iconOnly
+                        tone="ghost"
+                        disabled={
+                          busy ||
+                          definition.items.length <= 2 ||
+                          definition.items.some((other) =>
+                            other.depends_on.includes(item.key),
+                          )
+                        }
+                        onClick={() =>
+                          edit({
+                            items: definition.items.filter(
+                              (other) => other.key !== item.key,
+                            ),
+                          })
+                        }
+                      />
+                    </div>
                   </div>
                   <AppInput
                     label={t('任务名称', 'Task title')}
@@ -441,19 +570,24 @@ export function TaskPlanEditor({
                   label={t('增加子任务', 'Add subtask')}
                   icon={<Plus size={16} />}
                   disabled={busy || definition.items.length >= 8}
-                  onClick={() =>
+                  onClick={() => {
+                    let key: string
+                    do {
+                      key = `step${sequence.current++}`
+                    } while (definition.items.some((item) => item.key === key))
                     edit({
-                      items: [
-                        ...definition.items,
-                        blank(`step${sequence.current++}`),
-                      ],
+                      items: [...definition.items, blank(key)],
                     })
-                  }
+                  }}
                 />
                 <AppButton
-                  label={t('核对任务拆解', 'Review task breakdown')}
+                  label={
+                    baseline
+                      ? t('核对计划修订', 'Review plan revision')
+                      : t('核对任务拆解', 'Review task breakdown')
+                  }
                   icon={<FileSearch size={16} />}
-                  disabled={busy || !enabled}
+                  disabled={busy || !allowed}
                   onClick={() => void inspect()}
                 />
               </div>
@@ -464,8 +598,10 @@ export function TaskPlanEditor({
                     aria-label={t('已核对拆解', 'Verified breakdown')}
                   >
                     <strong>
-                      {t('将创建的任务', 'Tasks to create')} ·{' '}
-                      {preview.definition.items.length}
+                      {baseline
+                        ? t('修订后的计划', 'Revised plan')
+                        : t('将创建的任务', 'Tasks to create')}{' '}
+                      · {preview.definition.items.length}
                     </strong>
                     {preview.definition.items.map((item) => (
                       <p key={item.key}>
@@ -484,20 +620,45 @@ export function TaskPlanEditor({
                     ))}
                     <code className="wb-wrap">{preview.preview_hash}</code>
                   </section>
+                  {'schema_version' in preview && (
+                    <PlanRevisionImpact preview={preview} t={t} />
+                  )}
                   <AppCheckbox
-                    label={t(
-                      '确认创建这些任务及固定依赖，不启动模型。',
-                      'Confirm creating these tasks and fixed dependencies without starting a model.',
-                    )}
+                    label={
+                      baseline
+                        ? t(
+                            '确认发布上述修订及影响，保留旧任务与运行记录，不启动模型。',
+                            'Confirm publishing this revision and its impact, preserving old tasks and runs without starting a model.',
+                          )
+                        : t(
+                            '确认创建这些任务及固定依赖，不启动模型。',
+                            'Confirm creating these tasks and fixed dependencies without starting a model.',
+                          )
+                    }
                     value={consent}
-                    isDisabled={busy || !enabled}
+                    isDisabled={
+                      busy ||
+                      !allowed ||
+                      ('schema_version' in preview &&
+                        preview.impact.blockers.length > 0)
+                    }
                     onChange={setConsent}
                   />
                   <AppButton
-                    label={t('确认创建子任务', 'Confirm subtask creation')}
+                    label={
+                      baseline
+                        ? t('确认发布修订', 'Confirm plan revision')
+                        : t('确认创建子任务', 'Confirm subtask creation')
+                    }
                     icon={<Check size={16} />}
                     tone="primary"
-                    disabled={busy || !consent || !enabled}
+                    disabled={
+                      busy ||
+                      !consent ||
+                      !allowed ||
+                      ('schema_version' in preview &&
+                        preview.impact.blockers.length > 0)
+                    }
                     onClick={() => void save()}
                   />
                 </>
@@ -536,5 +697,90 @@ export function TaskPlanEditor({
         />
       )}
     </>
+  )
+}
+
+function PlanRevisionImpact({
+  preview,
+  t,
+}: {
+  preview: PlanRevisionPreview
+  t: Copy
+}) {
+  const title = (key: string) =>
+    preview.definition.items.find((item) => item.key === key)?.title ??
+    preview.baseline.definition.items.find((item) => item.key === key)?.title ??
+    key
+  const groups = [
+    [t('复用原任务', 'Reuse existing tasks'), preview.impact.reused_keys],
+    [t('新增任务', 'Create new tasks'), preview.impact.added_keys],
+    [t('替换为新任务', 'Replace with new tasks'), preview.impact.replaced_keys],
+    [
+      t('移出当前计划', 'Remove from current plan'),
+      preview.impact.removed_keys,
+    ],
+  ] as const
+  const reasons = {
+    unfinished_run: t('有未结束的运行', 'Unfinished Run'),
+    prepared_turn: t('有已准备的任务消息', 'Prepared task message'),
+    prepared_coding: t('有已准备的研发执行', 'Prepared implementation'),
+    unresolved_recovery: t('有未解决的恢复请求', 'Unresolved recovery request'),
+    unconsumed_grant: t(
+      '有尚未使用的执行委托',
+      'Unconsumed execution delegation',
+    ),
+  }
+  return (
+    <section
+      className="wb-plan-confirm"
+      aria-label={t('修订影响', 'Revision impact')}
+    >
+      <h3>{t('修订影响', 'Revision impact')}</h3>
+      <dl className="wb-details">
+        {groups.map(([label, keys]) => (
+          <div className="wb-plan-impact-row" key={label}>
+            <dt>{label}</dt>
+            <dd>
+              {keys.length ? keys.map(title).join(' · ') : t('无', 'None')}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      {preview.impact.retired_task_ids.length > 0 && (
+        <>
+          <p>
+            {t(
+              '以下旧任务发布后不能再发起新执行，仍可查看历史和记录补充。',
+              'After publication, these old tasks cannot start new execution. Their history remains available and supplemental messages can still be saved.',
+            )}
+          </p>
+          <ul>
+            {preview.impact.retired_task_ids.map((id) => (
+              <li key={id}>
+                <a href={taskWorkspaceHref(id)}>
+                  {preview.baseline.bindings.find((item) => item.task.id === id)
+                    ?.task.title ?? id}
+                </a>{' '}
+                <code>{id}</code>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      {preview.impact.blockers.length > 0 && (
+        <div className="wb-error" role="alert">
+          <strong>
+            {t('暂不能发布修订', 'Revision publication is blocked')}
+          </strong>
+          {preview.impact.blockers.map((item) => (
+            <p key={item.task_id}>
+              <code>{item.task_id}</code>
+              {' · '}
+              {item.reasons.map((reason) => reasons[reason]).join(' · ')}
+            </p>
+          ))}
+        </div>
+      )}
+    </section>
   )
 }

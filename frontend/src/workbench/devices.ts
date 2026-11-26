@@ -1021,7 +1021,7 @@ function parseExecutionSummary(value: unknown): ExecutionSummary {
       !isTaskReadIdentifier(model.id) ||
       !named(model.name, 80) ||
       !named(model.model, 150) ||
-      !['chat_completions', 'codex_cli'].includes(model.kind as string)
+      !['chat_completions', 'codex_cli', 'pi_sdk'].includes(model.kind as string)
     )
       throw new DeviceResponseError()
   return value as unknown as ExecutionSummary

@@ -574,3 +574,17 @@ profile显示，复用AppSelect/Button/Checkbox与原语义tokens，未新增通
 2309前端/1312Python/typecheck/build通过，10专项/58综合/8主只读与76最终fixturePNG，
 三style双mode/1440英文/390中文/reduced motion已验。主4180/5173启用、原数据不变；
 模型生成是fixture，测试进程真实。证据`frontend/evidence/coding-pytest-2026-11-27/README.md`。
+
+## 35. 计划版本与Pi执行选择
+
+2026-11-27，保持Astryx0.7.13、项目wrapper、同一Task/Run树和语义tokens。
+原form-wizard的TaskPlanEditor增加修订baseline/impact/CAS/consent；
+work-item-detail显示当前vN、retired门禁和20项冻结history。
+TaskPlanHistory是领域组件。原模型表单复用AppSelect选Chat/Pi，ModelRow badge只表示
+保存kind，测试/执行依然独立。没有复制vendor源码、重生成模板、主题页面或升级frontend；
+Node SDK位于独立runtime。
+
+2374前端/1406Python/build，81browserchecks/86fixturePNG，
+三style双mode、中英/390/reducedmotion与主8GET-only通过。
+证据`frontend/evidence/plan-revisions-pi-2026-11-27/README.md`；
+回答为mock，SDK/HTTP/写副本/测试真实。主入口已启用，原数据不变，119/9/110保持。

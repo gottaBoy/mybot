@@ -81,8 +81,10 @@ export type Bootstrap = {
     isolated_coding?: boolean
     coding_continuation?: boolean
     coding_pytest?: boolean
+    pi_sdk?: boolean
     task_artifact_references?: boolean
     task_plans?: boolean
+    task_plan_revisions?: boolean
   }
 }
 export type Snapshot = {

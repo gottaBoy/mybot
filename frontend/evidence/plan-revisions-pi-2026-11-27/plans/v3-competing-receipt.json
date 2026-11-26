@@ -1,0 +1,163 @@
+{
+  "schema_version": 2,
+  "operation": "revise",
+  "request_id": "competing-browser-plan-reorder",
+  "task_id": "ce8a9e4de2294b2382e6d5586d60046d",
+  "preview_hash": "2112b587c593f274f70a8c14dad7bb5b0867541f5c079b5498a31868b89fc686",
+  "state": "applied",
+  "result": {
+    "schema_version": 2,
+    "unit": "task_plan",
+    "task_id": "ce8a9e4de2294b2382e6d5586d60046d",
+    "parent": null,
+    "gate": null,
+    "plan": {
+      "version": 3,
+      "parent_task_id": "ce8a9e4de2294b2382e6d5586d60046d",
+      "plan_hash": "2112b587c593f274f70a8c14dad7bb5b0867541f5c079b5498a31868b89fc686",
+      "created_at": "2026-11-26T19:43:58.569354+00:00",
+      "definition": {
+        "items": [
+          {
+            "key": "step2",
+            "title": "基于已验收结论制定验证步骤",
+            "goal": "Develop concrete validation advice after the source report has been accepted.",
+            "acceptance": "The validation report separates actual evidence from recommended tests.",
+            "files": [
+              "README.md"
+            ],
+            "depends_on": [
+              "step1"
+            ]
+          },
+          {
+            "key": "step1",
+            "title": "梳理源码边界与未知项",
+            "goal": "Analyze the selected README and record source boundaries with explicit unknowns.",
+            "acceptance": "重新核查源码边界、原有假设及变化风险；本版结论必须经过新的人工验收。",
+            "files": [
+              "README.md"
+            ],
+            "depends_on": []
+          }
+        ]
+      },
+      "parent_snapshot": {
+        "id": "ce8a9e4de2294b2382e6d5586d60046d",
+        "project_id": "79a1faf4fe7d48dabd6f49523b853ba4",
+        "title": "真实任务计划修订与历史保护",
+        "goal": "Analyze source boundaries and revise the plan when acceptance changes, preserving all earlier work.",
+        "acceptance": "New requirements receive new Task identities and fresh reviewed evidence before dependent execution.",
+        "files": [
+          "README.md"
+        ],
+        "created_at": "2026-11-26T19:43:48.492678+00:00"
+      },
+      "items": [
+        {
+          "key": "step2",
+          "task": {
+            "id": "51ef337de40145caa856ccc48347142b",
+            "project_id": "79a1faf4fe7d48dabd6f49523b853ba4",
+            "title": "基于已验收结论制定验证步骤",
+            "goal": "Develop concrete validation advice after the source report has been accepted.",
+            "acceptance": "The validation report separates actual evidence from recommended tests.",
+            "files": [
+              "README.md"
+            ],
+            "created_at": "2026-11-26T19:43:53.033932+00:00"
+          },
+          "review": {
+            "task_id": "51ef337de40145caa856ccc48347142b",
+            "title": "基于已验收结论制定验证步骤",
+            "latest_run": {
+              "id": "dc8d3e9e83d94530931fd316ae5f21a5",
+              "task_id": "51ef337de40145caa856ccc48347142b",
+              "status": "succeeded",
+              "created_at": "2026-11-26T19:43:56.246597+00:00"
+            },
+            "state": "review_pending",
+            "reports": [
+              {
+                "id": "53be6c08fdbe45c49f01c1da0ff6e36f",
+                "decision": "pending",
+                "sha256": "9e3cb571476d62353cea6beb281276a42bdd1061f40749206ac1b22b4b8af673"
+              }
+            ]
+          },
+          "gate": {
+            "task_id": "51ef337de40145caa856ccc48347142b",
+            "parent_task_id": "ce8a9e4de2294b2382e6d5586d60046d",
+            "plan_hash": "2112b587c593f274f70a8c14dad7bb5b0867541f5c079b5498a31868b89fc686",
+            "plan_version": 3,
+            "membership": "current",
+            "criterion": "latest-successful-run-reviewed-reports-v1",
+            "ready": true,
+            "prerequisites": [
+              {
+                "task_id": "d1d2225ceaca4897b04f859bc43a7c50",
+                "title": "梳理源码边界与未知项",
+                "latest_run": {
+                  "id": "9a566d2c7cfd405ba3214fb37371c59f",
+                  "task_id": "d1d2225ceaca4897b04f859bc43a7c50",
+                  "status": "succeeded",
+                  "created_at": "2026-11-26T19:43:54.636893+00:00"
+                },
+                "state": "accepted",
+                "reports": [
+                  {
+                    "id": "7497097ac6c7452793977aa1f8579edd",
+                    "decision": "accepted",
+                    "sha256": "bd12a18f8e8e42de669bd807439003a9b1898b6d9286b7fa935f9866ef370d77"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "key": "step1",
+          "task": {
+            "id": "d1d2225ceaca4897b04f859bc43a7c50",
+            "project_id": "79a1faf4fe7d48dabd6f49523b853ba4",
+            "title": "梳理源码边界与未知项",
+            "goal": "Analyze the selected README and record source boundaries with explicit unknowns.",
+            "acceptance": "重新核查源码边界、原有假设及变化风险；本版结论必须经过新的人工验收。",
+            "files": [
+              "README.md"
+            ],
+            "created_at": "2026-11-26T19:43:53.033932+00:00"
+          },
+          "review": {
+            "task_id": "d1d2225ceaca4897b04f859bc43a7c50",
+            "title": "梳理源码边界与未知项",
+            "latest_run": {
+              "id": "9a566d2c7cfd405ba3214fb37371c59f",
+              "task_id": "d1d2225ceaca4897b04f859bc43a7c50",
+              "status": "succeeded",
+              "created_at": "2026-11-26T19:43:54.636893+00:00"
+            },
+            "state": "accepted",
+            "reports": [
+              {
+                "id": "7497097ac6c7452793977aa1f8579edd",
+                "decision": "accepted",
+                "sha256": "bd12a18f8e8e42de669bd807439003a9b1898b6d9286b7fa935f9866ef370d77"
+              }
+            ]
+          },
+          "gate": {
+            "task_id": "d1d2225ceaca4897b04f859bc43a7c50",
+            "parent_task_id": "ce8a9e4de2294b2382e6d5586d60046d",
+            "plan_hash": "2112b587c593f274f70a8c14dad7bb5b0867541f5c079b5498a31868b89fc686",
+            "plan_version": 3,
+            "membership": "current",
+            "criterion": "latest-successful-run-reviewed-reports-v1",
+            "ready": true,
+            "prerequisites": []
+          }
+        }
+      ]
+    }
+  }
+}

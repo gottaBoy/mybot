@@ -49,6 +49,7 @@ from .run_query import RunQueryError, parse_run_query, read_run_page
 from .task_board import EMPTY_PAGES, TaskBoardError, parse_task_board, read_task_board
 from .task_detail import TaskDetailError, parse_task_detail, read_task_detail
 from .task_plans import PlanCreate, PlanDefinition, TaskPlanError, TaskPlanService
+from .task_plan_revisions import PlanRevisionCreate, PlanRevisionPreview, TaskPlanRevisionService
 from .task_query import EMPTY_QUERY, MAX_PAGE, TaskQueryError, parse_task_query, read_task_page
 from .task_turns import (
     TaskTurnCreate, TaskTurnError, TaskTurnExecute, TaskTurnPrepare, TaskTurnPreview, TaskTurnService, TurnInput,
@@ -73,6 +74,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     device_execution = DeviceExecutionService(devices)
     coding = CodingService(store, settings.workspace)
     task_plans = TaskPlanService(store)
+    task_plan_revisions = TaskPlanRevisionService(store)
     sessions = {}
     login_attempts = {}
     claim_attempts = {}
@@ -103,6 +105,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     app.state.device_execution = device_execution
     app.state.coding = coding
     app.state.task_plans = task_plans
+    app.state.task_plan_revisions = task_plan_revisions
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=list(settings.allowed_hosts))
 
     def loopback(request):
@@ -303,6 +306,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
 
     @app.get("/api/bootstrap")
     async def bootstrap():
+        from .pi_provider import pi_sdk_available
         local_harnesses = [
             {"id": name, "label": label, "available": bool(shutil.which(name)), "auth": "unverified"}
             for name, label in (("codex", "Codex CLI"), ("claude", "Claude Code"),
@@ -339,7 +343,9 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "isolated_coding": True,
                                  "coding_continuation": True,
                                  "coding_pytest": True,
+                                 "pi_sdk": pi_sdk_available(),
                                  "task_plans": True,
+                                 "task_plan_revisions": True,
                                  "task_artifact_references": True,
                                  "workspace_counts": True,
                                  "workspace_search": True,
@@ -750,6 +756,35 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
         if request.query_params:
             raise TaskPlanError("task_plan_parameters_invalid", 422)
         return task_plans.operation(identifier, request_id)
+
+    @app.post("/api/tasks/{identifier}/plan/revisions/preview")
+    def task_plan_revision_preview(identifier: str, body: PlanRevisionPreview, request: Request):
+        if request.query_params:
+            raise TaskPlanError("task_plan_parameters_invalid", 422)
+        return task_plan_revisions.preview(identifier, body)
+
+    @app.post("/api/tasks/{identifier}/plan/revisions")
+    def task_plan_revise(identifier: str, body: PlanRevisionCreate, request: Request):
+        if request.query_params:
+            raise TaskPlanError("task_plan_parameters_invalid", 422)
+        return task_plan_revisions.revise(identifier, body)
+
+    @app.get("/api/tasks/{identifier}/plan/versions")
+    def task_plan_versions(identifier: str, request: Request, page: int = Query(1, ge=1, le=MAX_PAGE)):
+        if any(
+            key != "page" or len(request.query_params.getlist(key)) != 1
+            for key in request.query_params
+        ):
+            raise TaskPlanError("task_plan_parameters_invalid", 422)
+        return task_plan_revisions.versions(identifier, page)
+
+    @app.get("/api/tasks/{identifier}/plan/versions/{version}")
+    def task_plan_version(identifier: str, version: str, request: Request):
+        if request.query_params:
+            raise TaskPlanError("task_plan_parameters_invalid", 422)
+        if not re.fullmatch(r"[1-9][0-9]{0,2}", version):
+            raise TaskPlanError("task_plan_version_invalid", 422)
+        return task_plan_revisions.version(identifier, int(version))
 
     def coding_parameters(request):
         if request.query_params:

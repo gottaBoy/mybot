@@ -30,6 +30,18 @@ export function statusText(status: string, t: Copy) {
   return pair ? t(...pair) : status
 }
 const errors: Record<string, [string, string]> = {
+  pi_sdk_not_available: [
+    'Pi SDK 运行环境不可用，请核对服务器安装。',
+    'The Pi SDK runtime is unavailable. Check the server installation.',
+  ],
+  pi_sdk_timeout_outcome_unknown: [
+    'Pi 调用超时，结果和用量未知，请先核对原请求。',
+    'The Pi call timed out. Outcome and usage are unknown; reconcile the original request.',
+  ],
+  pi_sdk_policy_violation: [
+    'Pi 返回了未授权的工具请求，本次执行已停止。',
+    'Pi requested an unauthorized tool. Execution stopped.',
+  ],
   task_dependencies_blocked: [
     '运行被前置验收条件阻止，请核对前置任务的最近运行与报告。',
     'Execution was blocked by prerequisite review. Check the latest prerequisite runs and reports.',

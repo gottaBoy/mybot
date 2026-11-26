@@ -81,6 +81,16 @@ describe('isolated coding admission', () => {
     expect(parseCodingConfig(config)).toEqual(config)
     expect(parseCodingConfig(config)).not.toHaveProperty('profile')
   })
+  it('retains an explicit Pi model identity in the immutable coding candidate', () => {
+    const selected = {
+      ...candidate,
+      snapshot: {
+        ...candidate.snapshot,
+        model: { ...candidate.snapshot.model, kind: 'pi_sdk' },
+      },
+    }
+    expect(parseCodingCandidate(selected, 'task-a', config)).toEqual(selected)
+  })
   it.each<CodingProfile>(['python-unittest', 'python-pytest'])(
     'admits explicit %s and binds its snapshot and exact receipt',
     (profile) => {

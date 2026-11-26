@@ -227,7 +227,7 @@ export function parseCodingCandidate(
     !object(snapshot.model, ['id', 'name', 'kind', 'model', 'endpoint']) ||
     snapshot.model.id !== config.model_id ||
     !text(snapshot.model.name, 80) ||
-    !['chat_completions', 'codex_cli'].includes(
+    !['chat_completions', 'codex_cli', 'pi_sdk'].includes(
       snapshot.model.kind as string,
     ) ||
     !text(snapshot.model.model, 150) ||

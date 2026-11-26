@@ -151,6 +151,10 @@ def reviewed_run(db, task_id):
 
 
 def dependency_state(db, task_id):
+    from .task_plan_revisions import revised_dependency_state
+    revised, state = revised_dependency_state(db, task_id)
+    if revised:
+        return state
     membership = db.execute(
         "SELECT i.parent_task_id,p.plan_hash FROM task_plan_items i"
         " JOIN task_plans p ON p.parent_task_id=i.parent_task_id WHERE i.task_id=?", (task_id,),
@@ -192,6 +196,10 @@ class TaskPlanService:
             yield db
 
     def read_in(self, db, task_id):
+        from .task_plan_revisions import revised_read
+        revised = revised_read(db, task_id)
+        if revised is not None:
+            return revised
         task_record(db, task_id)
         gate = dependency_state(db, task_id)
         parent = None
@@ -221,8 +229,9 @@ class TaskPlanService:
             return self.read_in(db, task_id)
 
     def candidate(self, db, task_id, definition):
+        from .task_plan_revisions import membership
         task = task_record(db, task_id)
-        if db.execute("SELECT 1 FROM task_plan_items WHERE task_id=?", (task_id,)).fetchone():
+        if membership(db, task_id) is not None:
             raise TaskPlanError("task_plan_nested_unsupported", 422)
         if db.execute("SELECT 1 FROM task_plans WHERE parent_task_id=?", (task_id,)).fetchone():
             raise TaskPlanError("task_plan_already_created")
@@ -246,6 +255,11 @@ class TaskPlanService:
                 (task_id, request_id),
             ).fetchone()
             if row is None:
+                row = db.execute(
+                    "SELECT receipt FROM task_plan_revision_operations WHERE task_id=? AND request_id=?",
+                    (task_id, request_id),
+                ).fetchone()
+            if row is None:
                 raise TaskPlanError("task_plan_operation_unavailable", 404)
             return json.loads(row["receipt"])
 
@@ -263,6 +277,10 @@ class TaskPlanService:
                 if old["task_id"] != task_id or old["command_hash"] != command_hash:
                     raise TaskPlanError("task_plan_request_conflict")
                 return json.loads(old["receipt"])
+            if db.execute(
+                "SELECT 1 FROM task_plan_revision_operations WHERE request_id=?", (body.request_id,),
+            ).fetchone():
+                raise TaskPlanError("task_plan_request_conflict")
             candidate = self.candidate(db, task_id, definition)
             if candidate["preview_hash"] != body.preview_hash:
                 raise TaskPlanError("task_plan_preview_changed")

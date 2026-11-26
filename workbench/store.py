@@ -249,6 +249,20 @@ CREATE TABLE IF NOT EXISTS task_plan_operations (
  request_id TEXT PRIMARY KEY, task_id TEXT NOT NULL REFERENCES tasks(id),
  command_hash TEXT NOT NULL, receipt TEXT NOT NULL, created_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS task_plan_versions (
+ parent_task_id TEXT NOT NULL REFERENCES tasks(id),
+ version INTEGER NOT NULL CHECK(version>=2 AND version<=100),
+ plan_hash TEXT NOT NULL, definition TEXT NOT NULL, parent_snapshot TEXT NOT NULL,
+ bindings TEXT NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY(parent_task_id,version)
+);
+CREATE TABLE IF NOT EXISTS task_plan_memberships (
+ task_id TEXT PRIMARY KEY REFERENCES tasks(id), parent_task_id TEXT NOT NULL REFERENCES tasks(id),
+ item_key TEXT NOT NULL, introduced_version INTEGER NOT NULL CHECK(introduced_version>=2)
+);
+CREATE TABLE IF NOT EXISTS task_plan_revision_operations (
+ request_id TEXT PRIMARY KEY, task_id TEXT NOT NULL REFERENCES tasks(id),
+ command_hash TEXT NOT NULL, receipt TEXT NOT NULL, created_at TEXT NOT NULL
+);
 """
 
 

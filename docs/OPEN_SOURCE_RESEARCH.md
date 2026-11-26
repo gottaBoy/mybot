@@ -2,6 +2,17 @@
 
 查阅日期：2026-11-01；2026-11-02 增补第一轮链路对照。
 
+2026-11-27 Pi接入：源码观察身份仍为`earendil-works/pi@085c84e...`；
+实际集成使用npm `@earendil-works/pi-coding-agent@1.5.0`完整lock/integrity，
+registry未提供gitHead，不能把两个身份当同一构建证明。
+已读安装产物`dist/core/sdk.js`、auth/settings/session/model-runtime、
+extensions/loader和pi-ai `dist/api/openai-completions.js`的usage映射；
+SDK input扣除cache，mybot公共input改为包含cache总输入，未知分项不默认0。
+没有复制上游源码、UI/品牌或凭证。ignore-scripts专用runtime安装，MIT及传递包许可声明
+与identity详见`runtime/pi/README.md`，不是完整第三方审计。
+50实际SDK/localhost SSE和9业务API整合、浏览器链证据见ADR-0033及本批记录；
+回复为fixture，执行SDK/协议/测试真实，不宣称付费模型质量、完整Pi工具或长期会话。
+
 2026-11-26固定pytest profile只读核对已锁定的`pytest-dev/pytest`发布包9.2.0：
 本机`.venv/lib/python3.12/site-packages/_pytest/config/__init__.py`
 （consider_module/consider_env/plugin载入）、`_pytest/main.py`

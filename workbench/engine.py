@@ -79,7 +79,7 @@ class Engine:
         try:
             try:
                 deadline = (
-                    timeout_seconds + 3 if timeout_seconds is not None and model.get("kind") == "codex_cli"
+                    timeout_seconds + 3 if timeout_seconds is not None and model.get("kind") in {"codex_cli", "pi_sdk"}
                     else timeout_seconds
                 )
                 async with asyncio.timeout(deadline):

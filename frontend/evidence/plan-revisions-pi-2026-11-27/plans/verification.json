@@ -1,0 +1,1864 @@
+{
+  "fixture": true,
+  "modelGeneration": "BrowserProvider/FakeProvider fixture; no paid or real Provider call",
+  "actualExecution": "Actual HTTP, SQLite, explicit research Runs and human Artifact decisions",
+  "checks": [
+    "The real editor creates v1 with two persisted child Tasks and an explicit dependency without starting a model",
+    "A v1 prerequisite actually completes four FakeProvider calls and receives an explicit human report acceptance",
+    "Editing source acceptance shows a real verified impact: both the source and its downstream task get fresh identities while old work is retained",
+    "Lost v2 publication reloads the same exact GET receipt with one POST, no automatic repeat and exactly two new replacement Tasks",
+    "The old Task is visibly retired and cannot start research or coding; its accepted report, Run, original creation receipt and v1 snapshot remain unchanged",
+    "Old acceptance cannot satisfy replacement Tasks: a fresh four-call prerequisite Run and new human review unlock the four-call dependent with exact v2 admission",
+    "A second browser really wins CAS during the first editor request; the HTTP 409 retains dirty input until explicit discard, and reorder preserves both Task identities",
+    "Version history opens by keyboard and displays immutable v1 Task identities and acceptance through GET-only reads, without restoration or execution controls",
+    "The current plan and immutable history render in three styles, both modes, English desktop and Chinese 390px layouts with computed styles and no document overflow"
+  ],
+  "errors": [],
+  "external": [],
+  "reads": [
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/versions/1",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workflows/local-research/versions",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/fb3a787f70ae419b961cf70a4c2c80bc",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/fb3a787f70ae419b961cf70a4c2c80bc",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/fb3a787f70ae419b961cf70a4c2c80bc",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/fb3a787f70ae419b961cf70a4c2c80bc",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/fb3a787f70ae419b961cf70a4c2c80bc",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/fb3a787f70ae419b961cf70a4c2c80bc",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/fb3a787f70ae419b961cf70a4c2c80bc",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/fb3a787f70ae419b961cf70a4c2c80bc",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/fb3a787f70ae419b961cf70a4c2c80bc",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/fb3a787f70ae419b961cf70a4c2c80bc",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/fb3a787f70ae419b961cf70a4c2c80bc",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/operations/fe40df1a-6e91-43fa-aad3-f95ceb327d38",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/operations/101ee3eb-d91f-4185-94d8-f5c63d3413bf",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/versions/1",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/fb3a787f70ae419b961cf70a4c2c80bc",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/fb3a787f70ae419b961cf70a4c2c80bc",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workflows/local-research/versions",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/9a566d2c7cfd405ba3214fb37371c59f",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/9a566d2c7cfd405ba3214fb37371c59f",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/9a566d2c7cfd405ba3214fb37371c59f",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/9a566d2c7cfd405ba3214fb37371c59f",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/9a566d2c7cfd405ba3214fb37371c59f",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/9a566d2c7cfd405ba3214fb37371c59f",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/9a566d2c7cfd405ba3214fb37371c59f",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/9a566d2c7cfd405ba3214fb37371c59f",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/9a566d2c7cfd405ba3214fb37371c59f",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workflows/local-research/versions",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/dc8d3e9e83d94530931fd316ae5f21a5",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/dc8d3e9e83d94530931fd316ae5f21a5",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/dc8d3e9e83d94530931fd316ae5f21a5",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/dc8d3e9e83d94530931fd316ae5f21a5",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/dc8d3e9e83d94530931fd316ae5f21a5",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/dc8d3e9e83d94530931fd316ae5f21a5",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "competing-writer",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "competing-writer",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "competing-writer",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "competing-writer",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "competing-writer",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "competing-writer",
+      "path": "/api/tasks/query",
+      "method": "GET"
+    },
+    {
+      "context": "competing-writer",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/versions",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/versions/1",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/versions",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/versions",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/versions",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/versions",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/versions",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/coding",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects/79a1faf4fe7d48dabd6f49523b853ba4/detail",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/turns",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/versions",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/dc8d3e9e83d94530931fd316ae5f21a5",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/9a566d2c7cfd405ba3214fb37371c59f",
+      "method": "GET"
+    },
+    {
+      "context": "owner",
+      "path": "/api/runs/fb3a787f70ae419b961cf70a4c2c80bc",
+      "method": "GET"
+    }
+  ],
+  "writes": [
+    {
+      "context": "owner",
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/preview",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/preview",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/runs",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/artifacts/726496b86bee468490c09418e1174a72/decision",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/revisions/preview",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/revisions",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/preview",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/4ab64f09c787479f91634752cfe847ce/runs",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/preview",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/runs",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/preview",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/d1d2225ceaca4897b04f859bc43a7c50/runs",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/artifacts/7497097ac6c7452793977aa1f8579edd/decision",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/preview",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/51ef337de40145caa856ccc48347142b/runs",
+      "method": "POST"
+    },
+    {
+      "context": "owner",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/revisions/preview",
+      "method": "POST"
+    },
+    {
+      "context": "competing-writer",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/revisions/preview",
+      "method": "POST"
+    },
+    {
+      "context": "competing-writer",
+      "path": "/api/tasks/ce8a9e4de2294b2382e6d5586d60046d/plan/revisions",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "v1-real-task-plan.png",
+    "v2-reviewed-impact-desktop.png",
+    "retired-task-controls.png",
+    "fresh-dependent-requires-new-evidence.png",
+    "v2-fresh-admission.png",
+    "real-cas-conflict-keeps-draft.png",
+    "immutable-v1-history-keyboard.png",
+    "history-neutral-light.png",
+    "history-neutral-dark.png",
+    "history-zira-light.png",
+    "history-zira-dark.png",
+    "history-y2k-light.png",
+    "history-y2k-dark.png"
+  ],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "color": "rgb(0, 0, 0)",
+      "background": "rgb(255, 255, 255)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "radius": "6px",
+      "taskIds": [
+        "#task/51ef337de40145caa856ccc48347142b",
+        "#task/51ef337de40145caa856ccc48347142b",
+        "#task/d1d2225ceaca4897b04f859bc43a7c50",
+        "#task/d1d2225ceaca4897b04f859bc43a7c50"
+      ]
+    },
+    {
+      "style": "neutral",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(28, 31, 34)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "radius": "6px",
+      "taskIds": [
+        "#task/51ef337de40145caa856ccc48347142b",
+        "#task/51ef337de40145caa856ccc48347142b",
+        "#task/d1d2225ceaca4897b04f859bc43a7c50",
+        "#task/d1d2225ceaca4897b04f859bc43a7c50"
+      ]
+    },
+    {
+      "style": "zira",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "color": "rgb(23, 43, 77)",
+      "background": "rgb(255, 255, 255)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif",
+      "radius": "6px",
+      "taskIds": [
+        "#task/51ef337de40145caa856ccc48347142b",
+        "#task/51ef337de40145caa856ccc48347142b",
+        "#task/d1d2225ceaca4897b04f859bc43a7c50",
+        "#task/d1d2225ceaca4897b04f859bc43a7c50"
+      ]
+    },
+    {
+      "style": "zira",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "color": "rgb(230, 233, 239)",
+      "background": "rgb(22, 26, 34)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif",
+      "radius": "6px",
+      "taskIds": [
+        "#task/51ef337de40145caa856ccc48347142b",
+        "#task/51ef337de40145caa856ccc48347142b",
+        "#task/d1d2225ceaca4897b04f859bc43a7c50",
+        "#task/d1d2225ceaca4897b04f859bc43a7c50"
+      ]
+    },
+    {
+      "style": "y2k",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "color": "rgb(45, 36, 27)",
+      "background": "rgb(255, 255, 255)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "radius": "0px",
+      "taskIds": [
+        "#task/51ef337de40145caa856ccc48347142b",
+        "#task/51ef337de40145caa856ccc48347142b",
+        "#task/d1d2225ceaca4897b04f859bc43a7c50",
+        "#task/d1d2225ceaca4897b04f859bc43a7c50"
+      ]
+    },
+    {
+      "style": "y2k",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "color": "rgb(237, 239, 252)",
+      "background": "rgb(22, 24, 43)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+      "radius": "0px",
+      "taskIds": [
+        "#task/51ef337de40145caa856ccc48347142b",
+        "#task/51ef337de40145caa856ccc48347142b",
+        "#task/d1d2225ceaca4897b04f859bc43a7c50",
+        "#task/d1d2225ceaca4897b04f859bc43a7c50"
+      ]
+    }
+  ],
+  "dialogs": [
+    {
+      "type": "beforeunload",
+      "message": ""
+    }
+  ],
+  "actual": {
+    "parent_task_id": "ce8a9e4de2294b2382e6d5586d60046d",
+    "original_source_task_id": "4ab64f09c787479f91634752cfe847ce",
+    "original_dependent_task_id": "c4f7c41ba26c4931a8b36c769f3d3537",
+    "current_source_task_id": "d1d2225ceaca4897b04f859bc43a7c50",
+    "current_dependent_task_id": "51ef337de40145caa856ccc48347142b",
+    "original_run_id": "fb3a787f70ae419b961cf70a4c2c80bc",
+    "fresh_source_run_id": "9a566d2c7cfd405ba3214fb37371c59f",
+    "dependent_run_id": "dc8d3e9e83d94530931fd316ae5f21a5",
+    "creation_request_id": "101ee3eb-d91f-4185-94d8-f5c63d3413bf",
+    "revision_request_id": "fe40df1a-6e91-43fa-aad3-f95ceb327d38",
+    "competing_request_id": "competing-browser-plan-reorder",
+    "versions": 3,
+    "tasks": 5,
+    "runs": 3,
+    "fake_calls": 12
+  }
+}

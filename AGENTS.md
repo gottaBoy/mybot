@@ -23,6 +23,14 @@ model memory, nested decomposition or arbitrary workflow scheduling.
 ADR-0031 adds an explicitly selected fixed Python pytest profile alongside legacy
 unittest. Keep absent legacy config fields absent; never install dependencies,
 load repository pytest plugins/configuration or expand test process permissions.
+ADR-0032 adds immutable Task plan revisions. Preserve old Tasks/Runs/v1 receipts;
+changed requirements/prerequisites create replacement Tasks and retire old
+execution paths. Current gates and frozen history have different contracts.
+ADR-0033 adds a pinned Pi SDK text adapter. Empty tools/resources, memory-only
+credentials/session, one request, explicit endpoint/model/key and actual token
+limits are mandatory. Pi does not gain shell/file tools or implicit history.
+Public input tokens include cache; native/cache diagnostics are subsets, never
+extra tokens to add again. Missing metrics remain unknown.
 Distinguish local activation from isolated tests; Task messages are not implicit
 model memory, and a fixed pipeline is not an arbitrary DAG.
 For frontend work, also read `docs/ASTRYX_TEMPLATE_INTEGRATION.md` and

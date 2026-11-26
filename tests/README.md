@@ -25,6 +25,18 @@ Codex 故障测试只运行临时 fake CLI，覆盖事件用量、超时、取�
 
 它验证进程内 fixture/参数化/assert、收集与 fixture 错误、全跳过/xfail、时限和原文件不变。
 
+计划修订和Pi专项：
+
+```bash
+.venv/bin/python -m pytest -q tests/test_task_plan_revisions.py
+MYBOT_REQUIRE_PI_RUNTIME=1 .venv/bin/python -m pytest -q tests/test_pi_provider.py tests/test_pi_integration.py
+```
+
+Pi测试使用真实锁定SDK和仅localhost HTTP/SSE mock，不使用fake CLI或真实模型。
+先按`runtime/pi/README.md`安装依赖。普通全量缺可选SDK时明确skip相应集成项；
+验收命令的`MYBOT_REQUIRE_PI_RUNTIME=1`要求SDK存在，缺失直接失败，不能用skip冒充通过。
+无SDK时配置拒绝/不fallback等纯API检查仍执行。
+
 重试测试覆盖来源快照 hash、显式重放确认、最低新增预算、角色模型重新分配、来源 Run 不变、幂等请求、活动运行互斥和服务重启后的 lineage；不会自动发起真实 Provider 重试。
 
 `tests/test_backend_service.py` 通过 MockTransport 检查配置/GET 无网络、显式 POST consent、

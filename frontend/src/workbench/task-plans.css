@@ -70,3 +70,21 @@
   gap: 12px;
   overflow-wrap: anywhere;
 }
+.wb-plan-impact-row {
+  display: contents;
+}
+.wb-plan-history {
+  border-top: 1px solid var(--wb-border);
+  padding-top: 14px;
+  margin-top: 14px;
+  min-width: 0;
+}
+.wb-plan-history-items {
+  margin-block: 12px;
+  padding-left: 22px;
+}
+.wb-plan-history-task {
+  padding-block: 12px;
+  border-bottom: 1px solid var(--wb-border);
+  overflow-wrap: anywhere;
+}

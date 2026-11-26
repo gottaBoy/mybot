@@ -35,7 +35,7 @@ class ProjectCreate(Input):
 
 
 class ModelCreate(Input):
-    kind: str = Field(default="chat_completions", pattern="^(chat_completions|codex_cli)$")
+    kind: str = Field(default="chat_completions", pattern="^(chat_completions|codex_cli|pi_sdk)$")
     name: str = Field(min_length=1, max_length=80)
     endpoint: str = Field(min_length=5, max_length=500)
     model: str = Field(min_length=1, max_length=150)
@@ -66,8 +66,8 @@ class ModelCreate(Input):
     def kind_endpoint_match(self):
         if self.kind == "codex_cli" and self.endpoint != "codex://local":
             raise ValueError("Codex CLI models must use codex://local")
-        if self.kind == "chat_completions" and self.endpoint == "codex://local":
-            raise ValueError("Chat Completions models must use an HTTP(S) endpoint")
+        if self.kind != "codex_cli" and self.endpoint == "codex://local":
+            raise ValueError("Text API models must use an HTTP(S) endpoint")
         return self
 
     @field_validator("key_env")

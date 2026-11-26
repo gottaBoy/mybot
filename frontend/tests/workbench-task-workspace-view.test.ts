@@ -14,6 +14,9 @@ const mocks = vi.hoisted(() => ({
   read: {} as Record<string, any>,
   project: {} as Record<string, any>,
   turns: {} as Record<string, any>,
+  plans: {} as Record<string, any>,
+  planReads: [] as any[][],
+  canOpenForm: vi.fn(() => true),
   location: {} as Record<string, any>,
   paging: undefined as Record<string, any> | undefined,
   updates: [] as unknown[],
@@ -102,6 +105,12 @@ vi.mock('../src/workbench/useTaskWorkspace', () => ({
     return mocks.read
   },
 }))
+vi.mock('../src/workbench/useTaskPlan', () => ({
+  useTaskPlan: (...args: any[]) => {
+    mocks.planReads.push(args)
+    return mocks.plans
+  },
+}))
 vi.mock('../src/workbench/useProjectDetail', () => ({
   useProjectDetail: (args: Record<string, any>) => {
     mocks.projects.push(args)
@@ -122,6 +131,7 @@ vi.mock('../src/workbench/task-workspace-location', () => ({
 }))
 vi.mock('../src/workbench/navigation-guard', () => ({
   pushWorkbenchNavigation: (...args: unknown[]) => mocks.push(...args),
+  canOpenWorkbenchForm: () => mocks.canOpenForm(),
 }))
 
 const t = (_zh: string, en: string) => en
@@ -228,6 +238,16 @@ beforeEach(() => {
   mocks.location = { tab: 'goal' }
   mocks.push.mockReset()
   mocks.push.mockReturnValue(true)
+  mocks.canOpenForm.mockReset().mockReturnValue(true)
+  mocks.plans = {
+    enabled: false,
+    value: undefined,
+    error: undefined,
+    busy: false,
+    blocked: false,
+    retry: vi.fn(),
+  }
+  mocks.planReads = []
   mocks.read = {
     remote: true,
     value: detail(),
@@ -252,6 +272,118 @@ beforeEach(() => {
 })
 
 describe('Task workspace composition', () => {
+  it.each([undefined, false, true])(
+    'passes only explicit revision capability to current plan admission: %j',
+    (task_plan_revisions) => {
+      render({
+        data: {
+          ...data,
+          capabilities: {
+            ...data.capabilities,
+            task_plans: true,
+            task_plan_revisions,
+          },
+        },
+      })
+      expect(mocks.planReads.at(-1)?.[3]).toBe(task_plan_revisions === true)
+    },
+  )
+  it('opens revisions only through their explicit capability and freezes the original baseline', () => {
+    const children = [1, 2].map((index) => ({
+      ...task,
+      id: `child-${index}`,
+      title: `Child ${index}`,
+      files: [],
+    }))
+    const plan = {
+      version: 1,
+      parent_task_id: task.id,
+      plan_hash: 'a'.repeat(64),
+      created_at: task.created_at,
+      parent_snapshot: task,
+      definition: {
+        items: children.map((child, index) => ({
+          key: `step${index + 1}`,
+          title: child.title,
+          goal: child.goal,
+          acceptance: child.acceptance,
+          files: [],
+          depends_on: [],
+        })),
+      },
+      items: children.map((child, index) => ({
+        key: `step${index + 1}`,
+        task: child,
+        review: { state: 'no_run' },
+        gate: { ready: true, prerequisites: [] },
+      })),
+    }
+    mocks.plans = {
+      ...mocks.plans,
+      enabled: true,
+      value: { task_id: task.id, parent: null, gate: null, plan },
+    }
+    render({
+      data: {
+        ...data,
+        capabilities: {
+          ...data.capabilities,
+          task_plans: true,
+          task_plan_revisions: true,
+        },
+      },
+    })
+    button('Revise plan').onClick()
+    const descriptor = mocks.updates.find(
+      (value: any) => value?.baseline,
+    ) as any
+    expect(descriptor.baseline.version).toBe(1)
+    expect(
+      descriptor.baseline.bindings.map((item: any) => item.task.id),
+    ).toEqual(['child-1', 'child-2'])
+    plan.definition.items[0].title = 'A later read'
+    expect(descriptor.baseline.definition.items[0].title).toBe('Child 1')
+  })
+  it('does not replace another protected form by opening a plan revision', () => {
+    mocks.canOpenForm.mockReturnValue(false)
+    mocks.plans = {
+      ...mocks.plans,
+      enabled: true,
+      value: {
+        task_id: task.id,
+        parent: null,
+        gate: null,
+        plan: { version: 1, items: [], plan_hash: 'a'.repeat(64) },
+      },
+    }
+    render({
+      data: {
+        ...data,
+        capabilities: { ...data.capabilities, task_plan_revisions: true },
+      },
+    })
+    button('Revise plan').onClick()
+    expect(mocks.updates.some((value: any) => value?.baseline)).toBe(false)
+  })
+  it('keeps plan revision actions absent when the capability is missing', () => {
+    mocks.plans = {
+      ...mocks.plans,
+      enabled: true,
+      value: {
+        task_id: task.id,
+        parent: null,
+        gate: null,
+        plan: { version: 1, items: [], plan_hash: 'a'.repeat(64) },
+      },
+    }
+    render()
+    expect(mocks.buttons.some((item) => item.label === 'Revise plan')).toBe(
+      false,
+    )
+    expect(mocks.buttons.some((item) => item.label === 'Version history')).toBe(
+      false,
+    )
+  })
   it.each([undefined, false, true])(
     'passes only explicit pytest capability to the implementation dialog: %j',
     (coding_pytest) => {

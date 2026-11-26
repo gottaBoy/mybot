@@ -57,7 +57,8 @@ import './task-workspace.css'
 import { fetchPreparedCoding, type CodingJob } from './coding'
 import { useTaskPlan } from './useTaskPlan'
 import { TaskPlanPanel, TaskDependencyFacts } from './TaskPlanPanel'
-import type { PlanReceipt } from './task-plans'
+import type { AnyPlanReceipt } from './task-plans'
+import { planVersionFromCurrent, type PlanVersion } from './task-plan-revisions'
 
 const RunWorkspace = lazy(() =>
   import('./RunWorkspace').then((module) => ({
@@ -132,8 +133,12 @@ export function TaskWorkspace({
     taskId,
     data.capabilities.task_plans === true,
     refreshRevision,
+    data.capabilities.task_plan_revisions === true,
   )
-  const [planEditorTask, setPlanEditorTask] = useState<Task | undefined>()
+  const [planEditor, setPlanEditor] = useState<{
+    task: Task
+    baseline?: PlanVersion
+  }>()
   const [planNotice, setPlanNotice] = useState('')
   const [planRefresh, setPlanRefresh] = useState(false)
   const codingEnabled = data.capabilities.isolated_coding === true
@@ -571,7 +576,7 @@ export function TaskWorkspace({
           )}
         </p>
       )}
-      {(planEditorTask || (location.planRequestId && item)) && (
+      {(planEditor || (location.planRequestId && item)) && (
         <Suspense
           fallback={
             <AppLoading
@@ -580,13 +585,17 @@ export function TaskWorkspace({
           }
         >
           <TaskPlanEditor
-            task={planEditorTask ?? item!.task}
+            key={taskId}
+            task={planEditor?.task ?? item!.task}
+            baseline={planEditor?.baseline}
+            revisionsEnabled={data.capabilities.task_plan_revisions === true}
+            currentPlanHash={plans.value?.plan?.plan_hash}
             initial={location.planRequestId}
-            enabled={plans.enabled}
+            enabled={plans.enabled && !plans.busy && !plans.error}
             t={t}
-            onClose={() => setPlanEditorTask(undefined)}
-            onCreated={async (_receipt: PlanReceipt) => {
-              setPlanEditorTask(undefined)
+            onClose={() => setPlanEditor(undefined)}
+            onCreated={async (receipt: AnyPlanReceipt) => {
+              setPlanEditor(undefined)
               plans.retry()
               read.retry()
               turns.retry()
@@ -594,10 +603,15 @@ export function TaskWorkspace({
               try {
                 await onChanged?.()
                 setPlanNotice(
-                  t(
-                    '子任务与依赖已创建，未启动模型。',
-                    'Subtasks and dependencies created. No model has started.',
-                  ),
+                  'operation' in receipt
+                    ? t(
+                        '计划修订已发布，旧任务与运行记录已保留。',
+                        'Plan revision published. Old tasks and runs are retained.',
+                      )
+                    : t(
+                        '子任务与依赖已创建，未启动模型。',
+                        'Subtasks and dependencies created. No model has started.',
+                      ),
                 )
               } catch {
                 setPlanNotice(
@@ -877,6 +891,9 @@ export function TaskWorkspace({
                     error={plans.error}
                     t={t}
                     onRefresh={plans.retry}
+                    revisionsEnabled={
+                      data.capabilities.task_plan_revisions === true
+                    }
                     canCreate={
                       !planRefresh &&
                       !conversationLocked &&
@@ -896,7 +913,24 @@ export function TaskWorkspace({
                         !plans.value.plan &&
                         !plans.value.parent
                       )
-                        setPlanEditorTask(item.task)
+                        setPlanEditor({ task: structuredClone(item.task) })
+                    }}
+                    onRevise={() => {
+                      if (
+                        data.capabilities.task_plan_revisions === true &&
+                        !planRefresh &&
+                        !conversationLocked &&
+                        !composerLock.current &&
+                        canNavigate() &&
+                        canOpenWorkbenchForm() &&
+                        !location.error &&
+                        plans.value?.plan &&
+                        !plans.value.parent
+                      )
+                        setPlanEditor({
+                          task: structuredClone(item.task),
+                          baseline: planVersionFromCurrent(plans.value.plan),
+                        })
                     }}
                   />
                 )}
