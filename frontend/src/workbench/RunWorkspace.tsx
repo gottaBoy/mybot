@@ -30,7 +30,12 @@ import { AppAvatarGroup } from '../components/ui/Avatars'
 import { ApiError, api, post, type Artifact, type RunDetail } from './api'
 import { resolveCallSelection } from './call-selection'
 import { recordedRunWorkflow } from './run-workflow'
-import { parseCodingTest, type CodingTest } from './coding'
+import {
+  parseCodingTest,
+  recordedCodingCandidate,
+  parseCodeCheckpoint,
+  type CodingTest,
+} from './coding'
 import './coding-results.css'
 import { runStageTitle } from './run-stages'
 import { parseArtifactSources } from './task-artifacts'
@@ -121,6 +126,7 @@ export function RunWorkspace({
         recordedRunWorkflow(next.run.context)
         if (next.run.context.artifacts !== undefined)
           parseArtifactSources(next.run.context.artifacts, next.task.id)
+        recordedCodingCandidate(next.run.context, next.task.id)
       } catch (reason) {
         setDetail(null)
         throw reason
@@ -204,6 +210,9 @@ export function RunWorkspace({
   const { run, task, project, agents, calls, artifacts, events, harness } =
     detail
   const coding = run.context.mode === 'coding-v1'
+  const codingCandidate = recordedCodingCandidate(run.context, task.id)
+  let codeCheckpoint: ReturnType<typeof parseCodeCheckpoint> | undefined
+  let checkpointError = false
   let latestTest: CodingTest | undefined
   let selectedTest: CodingTest | undefined
   let testError = false
@@ -230,6 +239,13 @@ export function RunWorkspace({
     }
   }
   const summary = usageSummary(calls)
+  if (artifact?.kind === 'code_checkpoint') {
+    try {
+      codeCheckpoint = parseCodeCheckpoint(artifact.content, task.id, run.id)
+    } catch {
+      checkpointError = true
+    }
+  }
   const report = preferredArtifact(artifacts)
   const decisionText = (value: string) =>
     value === 'pending' ? t('待审查', 'Awaiting review') : statusText(value, t)
@@ -263,10 +279,35 @@ export function RunWorkspace({
         </div>
         <h2>{artifact.title}</h2>
         <p className="wb-hint">{when(artifact.created_at)}</p>
-        {artifact.kind === 'diff' ? (
+        {['diff', 'incremental_diff'].includes(artifact.kind) ? (
           <pre className="wb-coding-log" tabIndex={0} data-testid="coding-diff">
             {artifact.content}
           </pre>
+        ) : artifact.kind === 'code_checkpoint' ? (
+          codeCheckpoint && !checkpointError ? (
+            <div data-testid="code-checkpoint">
+              <p>
+                {t('代码快照轮次', 'Code snapshot round')}{' '}
+                {codeCheckpoint.round}
+              </p>
+              <code className="wb-wrap">{codeCheckpoint.origin_hash}</code>
+              {codeCheckpoint.files.map((file) => (
+                <details key={file.path} className="wb-disclosure">
+                  <summary>
+                    {file.path} · {file.bytes} bytes
+                  </summary>
+                  <pre className="wb-coding-log">{file.content}</pre>
+                </details>
+              ))}
+            </div>
+          ) : (
+            <p role="alert" className="wb-error">
+              {t(
+                '代码检查点无法验证。',
+                'Code checkpoint could not be verified.',
+              )}
+            </p>
+          )
         ) : artifact.kind === 'test_result' ? (
           selectedTest ? (
             <>
@@ -292,7 +333,9 @@ export function RunWorkspace({
                 <dt>{t('轮次', 'Attempt')}</dt>
                 <dd>
                   {selectedTest.round === 0
-                    ? t('原始基线', 'Original baseline')
+                    ? codingCandidate?.snapshot.continuation
+                      ? t('继承代码基线', 'Inherited code baseline')
+                      : t('原始基线', 'Original baseline')
                     : selectedTest.round}
                 </dd>
               </dl>
@@ -707,6 +750,36 @@ export function RunWorkspace({
                   <code>{item.path}</code> · {item.bytes} bytes
                 </p>
               ))}
+              {codingCandidate?.snapshot.continuation && (
+                <details
+                  className="wb-disclosure"
+                  data-testid="coding-provenance"
+                >
+                  <summary>
+                    {t('接续代码来源', 'Continued code source')}
+                  </summary>
+                  <p>
+                    Run{' '}
+                    <code>{codingCandidate.snapshot.continuation.run_id}</code>{' '}
+                    · <code>{codingCandidate.snapshot.continuation.id}</code>
+                  </p>
+                  <p className="wb-wrap">
+                    SHA-256 {codingCandidate.snapshot.continuation.sha256}
+                  </p>
+                  <p className="wb-wrap">
+                    {t('原项目基线', 'Original project base')} ·{' '}
+                    <code>
+                      {codingCandidate.snapshot.continuation.origin_hash}
+                    </code>
+                  </p>
+                  <p className="wb-wrap">
+                    {codingCandidate.config.continuation?.instruction}
+                  </p>
+                  <pre className="wb-coding-log">
+                    {codingCandidate.snapshot.continuation.patch}
+                  </pre>
+                </details>
+              )}
               {run.context.artifacts?.map((item) => (
                 <details className="wb-disclosure" key={item.id}>
                   <summary>
@@ -980,12 +1053,11 @@ function downloadArtifact(artifact: Artifact) {
   )
   const link = document.createElement('a')
   link.href = url
-  const extension =
-    artifact.kind === 'diff'
-      ? 'patch'
-      : artifact.kind === 'test_result'
-        ? 'json'
-        : 'md'
+  const extension = ['diff', 'incremental_diff'].includes(artifact.kind)
+    ? 'patch'
+    : ['test_result', 'code_checkpoint'].includes(artifact.kind)
+      ? 'json'
+      : 'md'
   link.download = `mybot-${artifact.id.slice(0, 12)}.${extension}`
   link.click()
   window.setTimeout(() => URL.revokeObjectURL(url), 1000)

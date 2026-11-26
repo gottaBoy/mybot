@@ -1,0 +1,46 @@
+{
+  "checks": [
+    "A real bounded implementation fails with one remaining immutable-test failure and retains a trusted code checkpoint"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/5bc1d922cb34430683694d72dbed385a/coding/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/5bc1d922cb34430683694d72dbed385a/coding/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/5bc1d922cb34430683694d72dbed385a/coding/3af9784f-9f6f-4127-9eba-a95a92801128/execute",
+      "method": "POST"
+    }
+  ],
+  "geometry": [],
+  "screenshots": [
+    "failure.png"
+  ],
+  "failure": "TimeoutError: locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('coding-run-dialog').getByRole('textbox', { name: 'Requirements for this implementation', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <textarea rows=\"3\" readonly id=\"_r_39_\" spellcheck=\"true\" aria-disabled=\"true\" class=\"astryx-text-area-control x1lliihq xh8yej3 x9f619 xeuugli xc342km xng3xce xu0wf1k x1w6f3ag x9ynric xjm74w1 xf9zqsd xw6l6zx x1tgivj0 xjbqb8w x1a2a7pz xeyghm5 x288g5 xt0e3qv\"></textarea>\u001b[22m\n\u001b[2m    - fill(\"Keep the newline rejection already implemented. Complete tab and other ASCII-control rejection without changing tests.\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    60 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+}

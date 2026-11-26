@@ -1,0 +1,12 @@
+
+ RUN  v3.2.7 /home/my/workspace/ainfra/mywork/mybot/frontend
+
+ ✓ tests/workbench-coding-continuation.test.ts (31 tests) 8ms
+ ✓ tests/workbench-coding-client.test.ts (39 tests) 7ms
+ ✓ tests/workbench-coding-dialog.test.ts (8 tests) 109ms
+
+ Test Files  3 passed (3)
+      Tests  78 passed (78)
+   Start at  19:23:51
+   Duration  643ms (transform 454ms, setup 0ms, collect 988ms, tests 124ms, environment 0ms, prepare 123ms)
+

@@ -78,6 +78,7 @@ export type Bootstrap = {
     device_run_history?: boolean
     device_execution_delegation?: boolean
     isolated_coding?: boolean
+    coding_continuation?: boolean
     task_artifact_references?: boolean
   }
 }
@@ -118,6 +119,7 @@ export type RunDetail = {
     config: { max_calls: number }
     context: {
       mode?: string
+      coding?: unknown
       evidence: Array<{ path: string; bytes: number }>
       workflow?: WorkflowSnapshot
       artifacts?: ArtifactSource[]

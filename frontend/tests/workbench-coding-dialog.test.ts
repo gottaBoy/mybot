@@ -14,6 +14,8 @@ const m = vi.hoisted(() => ({
   buttons: [] as any[],
   checks: [] as any[],
   areas: [] as any[],
+  selects: [] as any[],
+  checkpointPicker: {} as any,
   dialog: {} as any,
   guard: {} as any,
   preview: vi.fn(),
@@ -64,9 +66,18 @@ vi.mock('../src/components/ui', () => ({
     return createElement('section', null, p.children)
   },
   AppNumber: () => null,
-  AppSelect: () => null,
+  AppSelect: (props: any) => {
+    m.selects.push(props)
+    return null
+  },
   AppTextArea: (props: any) => {
     m.areas.push(props)
+    return null
+  },
+}))
+vi.mock('../src/workbench/CodingCheckpointPicker', () => ({
+  CodingCheckpointPicker: (props: any) => {
+    m.checkpointPicker = props
     return null
   },
 }))
@@ -135,6 +146,8 @@ function render() {
   m.buttons = []
   m.checks = []
   m.areas = []
+  m.selects = []
+  m.checkpointPicker = {}
   html = renderToStaticMarkup(createElement(CodingRunDialog, props))
   for (const fn of m.pending.splice(0)) fn()
   return html
@@ -180,6 +193,79 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 describe('isolated coding confirmation', () => {
+  it('requires explicit checkpoint and requirements before previewing continued code', async () => {
+    props.continuationEnabled = true
+    render()
+    m.selects
+      .find((select) => select.label === 'Implementation starting point')
+      .onChange('checkpoint')
+    render()
+    await button('Review sources & test environment').onClick()
+    await settle()
+    expect(m.preview).not.toHaveBeenCalled()
+    m.checkpointPicker.onChange({ id: 'checkpoint-a', sha256: 'c'.repeat(64) })
+    render()
+    m.areas
+      .find((area) => area.label === 'Requirements for this implementation')
+      .onChange('Fix remaining tests')
+    render()
+    await button('Review sources & test environment').onClick()
+    await settle()
+    expect(m.preview).toHaveBeenCalledWith(
+      'task-a',
+      expect.objectContaining({
+        continuation: {
+          checkpoint: { id: 'checkpoint-a', sha256: 'c'.repeat(64) },
+          instruction: 'Fix remaining tests',
+        },
+      }),
+      expect.any(AbortSignal),
+    )
+    expect(m.guard.getState().dirty).toBe(true)
+  })
+  it('blocks a hydrated continuation when its explicit capability is unavailable', async () => {
+    props.initial = job.request_id
+    m.read.mockResolvedValue({
+      ...job,
+      candidate: {
+        ...candidate,
+        config: {
+          ...candidate.config,
+          continuation: {
+            checkpoint: { id: 'checkpoint-a', sha256: 'c'.repeat(64) },
+            instruction: 'Continue',
+          },
+        },
+        snapshot: {
+          ...candidate.snapshot,
+          continuation: {
+            id: 'checkpoint-a',
+            sha256: 'c'.repeat(64),
+            run_id: 'source-run',
+            round: 1,
+            patch: 'Diff',
+          },
+        },
+      },
+    })
+    render()
+    await settle()
+    m.checks[0].onChange(true)
+    render()
+    expect(button('Confirm implementation & tests').disabled).toBe(true)
+    expect(html).toContain('This server does not admit code continuation')
+    await button('Confirm implementation & tests').onClick()
+    await settle()
+    expect(m.apply).not.toHaveBeenCalled()
+    await button('Discard this preparation').onClick()
+    await settle()
+    expect(m.apply).toHaveBeenCalledWith(
+      'task-a',
+      expect.anything(),
+      'discard',
+      expect.any(AbortSignal),
+    )
+  })
   it('closes an unchanged configuration without a discard confirmation', async () => {
     props.task.files = [
       'workbench/schemas.py',

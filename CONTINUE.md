@@ -1,5 +1,45 @@
 # 下次从这里继续
 
+更新日期：2026-11-26（Asia/Singapore；代码检查点接续已验收、本机启用）。
+
+最新合同[ADR-0029](docs/decisions/ADR-0029-isolated-code-continuation.md)，证据
+[本批记录](frontend/evidence/coding-continuation-2026-11-26/README.md)。
+4e17c36是本批起点、已push；本批按用户“继续”沿核心交付并提交push，最终回执见Git。
+没有重复做ADR-0028研究引用，也没有转回设备/连接器。
+
+Task研发实现可选“原项目文件/前轮代码检查点”，选同Task终态的可信代码、填写本轮要求，
+核对继承修改/原项目基线/发送资料/模型预算后新consent。每次合法修改保存code_checkpoint，
+新Run实际重跑继承基线，再实现/测试，累计diff与incremental_diff分开导出，结构化代码JSON
+与Run原来源可读。原选定文件/测试/依赖漂移拒绝接续；继承修改必须在新writable内。
+prepare冻结后不因源Artifact或当前文件变化改写；unknown同ID GET，不自动重发。
+prepared不支持当前cap时禁止执行，仍能显式discard；设备没有代码读取/执行scope。
+旧Run缺检查点保持空态，不从原始patch推导，不写原项目/自动合并/任意Shell。
+
+全量1267Python通过后补设备scope与NUL输入检查；最终44核心定向通过，不伪称一次1269全量。
+前端最终2250/77文件通过，78相关合同再验，typecheck/生产build通过，httpx/chunk警告保留。
+最终专项8/12PNG、综合58/61PNG、主GET-only8，共74浏览器检查/73最终fixturePNG，
+无最终pageerror/外部HTTP。final fresh.wghbIa复制mybot源，第一Run基线4测试失败2，
+只修换行后失败1，保留可信检查点；第二Run继承基线失败1，一次注入响应后4项通过。
+2Run、各1Call，prepare/execute丢响应原GET，原文件/测试字节不变，累计patch只git apply --check。
+模型为注入fixture，修改/隔离/测试/持久化真实；未自动调用真实付费/Codex。
+Python还验三Run接续、基线/不变测试漂移、跨Task/未终态/继承越权/hash变化/无新修改。
+保留模型选择和option focus脚本失败，以及原7项成功画面；最终新fixture完整重跑。
+App JS206.35/gzip65.68kB、CSS39.89/7.50、lazy codingDialog14.62/5.70、
+RunWorkspace24.73/9.15；Bootstrap全量、119/9/110不变。
+
+主4180原空闲PID2393603经identity/cwd/env内存核验、一致backup/私有Store演练/原表原列
+比对、SIGTERM/锁释放后同command/cwd/env启动PID3844765，coding_continuation=true。
+主5173保持，8桌面/中文手机GET-only后原行再次相同；原1Project/1Task/6Run/1model/
+18Agent/17Call/6Artifact/157Event，coding_jobs/TaskTurns/设备/执行授权0，
+Workflow草稿1/version0/op0。无正式新消息/候选/模型/测试。
+私有备份`.runtime/backups/before-devices-20261126T112433Z/`700/DBlog600，
+不进Git，不导出正式正文/截图/环境/原摘要；旧PID脚本不可重跑，不热覆盖回退。
+临时4187/4188/5176/5177已停止，主4180/5173保留。
+
+下一核心：**更多runtime/测试profile、任务分解与依赖、原基线变化的显式冲突处理**。
+同基线代码接续已完成上述范围，不要重复实现；设备/连接器仍独立待办。
+模型调用依然只能由用户明确启动，未扩张原项目写入/部署权限。
+
 更新日期：2026-11-26（Asia/Singapore；明确前轮成果引用已验收、本机启用）。
 
 **继续核心研发交付，不默认返回设备/连接器。** 先读

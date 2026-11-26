@@ -1,5 +1,5 @@
 import { api } from './api'
-import { isTaskReadIdentifier } from './task-query'
+import { isTaskReadIdentifier, maxTaskQueryPage } from './task-query'
 
 export type CodingConfig = {
   model_id: string
@@ -8,6 +8,23 @@ export type CodingConfig = {
   max_rounds: number
   test_timeout: number
   max_output_tokens: number
+  continuation?: {
+    checkpoint: { id: string; sha256: string }
+    instruction: string
+  }
+}
+export type CodingFiles = Array<{
+  path: string
+  content: string
+  bytes: number
+}>
+export type CodingProvenance = {
+  id: string
+  sha256: string
+  run_id: string
+  round: number
+  origin_hash: string
+  patch: string
 }
 export type CodingCandidate = {
   config: CodingConfig
@@ -17,7 +34,9 @@ export type CodingCandidate = {
     acceptance: string
     notes: string
     profile: 'python-unittest'
-    files: Array<{ path: string; content: string; bytes: number }>
+    files: CodingFiles
+    origin_files?: CodingFiles
+    continuation?: CodingProvenance
     model: {
       id: string
       name: string
@@ -51,6 +70,17 @@ const object = (
   !Array.isArray(value) &&
   Object.keys(value).length === keys.length &&
   keys.every((key) => Object.hasOwn(value, key))
+const optionalObject = (
+  value: unknown,
+  keys: string[],
+  optional: string[],
+): value is Record<string, unknown> =>
+  object(value, [
+    ...keys,
+    ...optional.filter(
+      (key) => value && typeof value === 'object' && Object.hasOwn(value, key),
+    ),
+  ])
 const integer = (value: unknown, min: number, max: number): value is number =>
   typeof value === 'number' &&
   Number.isSafeInteger(value) &&
@@ -81,14 +111,18 @@ const paths = (value: unknown): value is string[] =>
   )
 export function parseCodingConfig(value: unknown): CodingConfig {
   if (
-    !object(value, [
-      'model_id',
-      'writable',
-      'tests',
-      'max_rounds',
-      'test_timeout',
-      'max_output_tokens',
-    ]) ||
+    !optionalObject(
+      value,
+      [
+        'model_id',
+        'writable',
+        'tests',
+        'max_rounds',
+        'test_timeout',
+        'max_output_tokens',
+      ],
+      ['continuation'],
+    ) ||
     !isTaskReadIdentifier(value.model_id) ||
     !paths(value.writable) ||
     !paths(value.tests) ||
@@ -100,6 +134,24 @@ export function parseCodingConfig(value: unknown): CodingConfig {
     !integer(value.max_output_tokens, 1024, 16384)
   )
     throw new CodingResponseError()
+  let continuation: CodingConfig['continuation']
+  if (Object.hasOwn(value, 'continuation')) {
+    const next = value.continuation
+    if (
+      !object(next, ['checkpoint', 'instruction']) ||
+      !object(next.checkpoint, ['id', 'sha256']) ||
+      !isTaskReadIdentifier(next.checkpoint.id) ||
+      !hash(next.checkpoint.sha256) ||
+      !text(next.instruction, 8000) ||
+      !next.instruction.trim() ||
+      next.instruction.trim() !== next.instruction
+    )
+      throw new CodingResponseError()
+    continuation = {
+      checkpoint: { id: next.checkpoint.id, sha256: next.checkpoint.sha256 },
+      instruction: next.instruction,
+    }
+  }
   return {
     model_id: value.model_id,
     writable: [...value.writable],
@@ -107,7 +159,33 @@ export function parseCodingConfig(value: unknown): CodingConfig {
     max_rounds: value.max_rounds,
     test_timeout: value.test_timeout,
     max_output_tokens: value.max_output_tokens,
+    ...(continuation ? { continuation } : {}),
   }
+}
+export function parseCodingFiles(value: unknown): CodingFiles {
+  if (!Array.isArray(value) || !value.length || value.length > 10)
+    throw new CodingResponseError()
+  const files = value.map((file) => {
+    if (
+      !object(file, ['path', 'content', 'bytes']) ||
+      !paths([file.path]) ||
+      !text(file.content, 32768) ||
+      !integer(file.bytes, 0, 32768) ||
+      new TextEncoder().encode(file.content).length !== file.bytes
+    )
+      throw new CodingResponseError()
+    return {
+      path: file.path as string,
+      content: file.content,
+      bytes: file.bytes,
+    }
+  })
+  if (
+    new Set(files.map((file) => file.path)).size !== files.length ||
+    files.reduce((sum, file) => sum + file.bytes, 0) > 65536
+  )
+    throw new CodingResponseError()
+  return files
 }
 export function parseCodingCandidate(
   value: unknown,
@@ -117,15 +195,11 @@ export function parseCodingCandidate(
   if (
     !object(value, ['config', 'snapshot', 'candidate_hash']) ||
     !hash(value.candidate_hash) ||
-    !object(value.snapshot, [
-      'task_id',
-      'goal',
-      'acceptance',
-      'notes',
-      'files',
-      'profile',
-      'model',
-    ])
+    !optionalObject(
+      value.snapshot,
+      ['task_id', 'goal', 'acceptance', 'notes', 'files', 'profile', 'model'],
+      ['origin_files', 'continuation'],
+    )
   )
     throw new CodingResponseError()
   const config = parseCodingConfig(value.config),
@@ -152,26 +226,49 @@ export function parseCodingCandidate(
     !text(snapshot.model.endpoint, 500)
   )
     throw new CodingResponseError()
-  const files = snapshot.files.map((file) => {
-    if (
-      !object(file, ['path', 'content', 'bytes']) ||
-      !paths([file.path]) ||
-      !text(file.content, 32768) ||
-      !integer(file.bytes, 0, 32768) ||
-      new TextEncoder().encode(file.content).length !== file.bytes
-    )
-      throw new CodingResponseError()
-    return {
-      path: file.path as string,
-      content: file.content,
-      bytes: file.bytes,
-    }
-  })
+  const files = parseCodingFiles(snapshot.files)
   const names = files.map((file) => file.path)
   if (
     new Set(names).size !== names.length ||
     files.reduce((sum, file) => sum + file.bytes, 0) > 65536 ||
     [...config.writable, ...config.tests].some((path) => !names.includes(path))
+  )
+    throw new CodingResponseError()
+  let originFiles: CodingFiles | undefined,
+    provenance: CodingProvenance | undefined
+  if (config.continuation) {
+    originFiles = parseCodingFiles(snapshot.origin_files)
+    const ref = snapshot.continuation
+    if (
+      !object(ref, [
+        'id',
+        'sha256',
+        'run_id',
+        'round',
+        'origin_hash',
+        'patch',
+      ]) ||
+      ref.id !== config.continuation.checkpoint.id ||
+      ref.sha256 !== config.continuation.checkpoint.sha256 ||
+      !isTaskReadIdentifier(ref.run_id) ||
+      !integer(ref.round, 1, 3) ||
+      !hash(ref.origin_hash) ||
+      !text(ref.patch, 200000) ||
+      !ref.patch ||
+      originFiles.some(
+        (file, index) =>
+          files[index]?.path !== file.path ||
+          (files[index]?.content !== file.content &&
+            !config.writable.includes(file.path)),
+      ) ||
+      originFiles.length !== files.length ||
+      originFiles.every((file, index) => file.content === files[index].content)
+    )
+      throw new CodingResponseError()
+    provenance = ref as CodingProvenance
+  } else if (
+    Object.hasOwn(snapshot, 'origin_files') ||
+    Object.hasOwn(snapshot, 'continuation')
   )
     throw new CodingResponseError()
   return {
@@ -183,10 +280,30 @@ export function parseCodingCandidate(
       acceptance: snapshot.acceptance,
       notes: snapshot.notes,
       files,
+      ...(originFiles && provenance
+        ? { origin_files: originFiles, continuation: provenance }
+        : {}),
       profile: 'python-unittest',
       model: snapshot.model as CodingCandidate['snapshot']['model'],
     },
   }
+}
+export function recordedCodingCandidate(
+  context: { mode?: string; coding?: unknown },
+  taskId: string,
+) {
+  if (context.mode !== 'coding-v1') return undefined
+  const value = context.coding
+  if (!object(value, ['config', 'snapshot', 'candidate_hash', 'model']))
+    throw new CodingResponseError()
+  return parseCodingCandidate(
+    {
+      config: value.config,
+      snapshot: value.snapshot,
+      candidate_hash: value.candidate_hash,
+    },
+    taskId,
+  )
 }
 export function parseCodingJob(
   value: unknown,
@@ -314,6 +431,157 @@ export async function fetchPreparedCoding(
     value.prepared === null ? null : parseCodingJob(value.prepared, taskId)
   if (job && job.state !== 'prepared') throw new CodingResponseError()
   return job
+}
+
+export type CodingCheckpointOption = {
+  id: string
+  run_id: string
+  task_id: string
+  title: string
+  created_at: string
+  source_status: 'succeeded' | 'failed' | 'canceled'
+  bytes: number
+  sha256: string | null
+  round: number | null
+}
+export type CodingCheckpointPage = {
+  schema_version: 1
+  unit: 'coding_checkpoints'
+  task_id: string
+  items: CodingCheckpointOption[]
+  total: number
+  requested_page: number
+  page: number
+  page_size: 20
+  total_pages: number
+  has_more: boolean
+  order: 'checkpoints-created-v1'
+}
+export function parseCodingCheckpoints(
+  value: unknown,
+  taskId: string,
+  requested: number,
+): CodingCheckpointPage {
+  if (
+    !object(value, [
+      'schema_version',
+      'unit',
+      'task_id',
+      'items',
+      'total',
+      'requested_page',
+      'page',
+      'page_size',
+      'total_pages',
+      'has_more',
+      'order',
+    ]) ||
+    value.schema_version !== 1 ||
+    value.unit !== 'coding_checkpoints' ||
+    value.task_id !== taskId ||
+    value.requested_page !== requested ||
+    value.page_size !== 20 ||
+    value.order !== 'checkpoints-created-v1' ||
+    !integer(value.total, 0, Number.MAX_SAFE_INTEGER) ||
+    !Array.isArray(value.items)
+  )
+    throw new CodingResponseError()
+  const pages = Math.max(1, Math.ceil(value.total / 20)),
+    page = Math.min(pages, requested)
+  if (
+    value.total_pages !== pages ||
+    value.page !== page ||
+    value.has_more !== page < pages ||
+    value.items.length !==
+      Math.min(20, Math.max(0, value.total - (page - 1) * 20))
+  )
+    throw new CodingResponseError()
+  for (const item of value.items) {
+    if (
+      !object(item, [
+        'id',
+        'run_id',
+        'task_id',
+        'title',
+        'created_at',
+        'source_status',
+        'bytes',
+        'sha256',
+        'round',
+      ]) ||
+      !isTaskReadIdentifier(item.id) ||
+      !isTaskReadIdentifier(item.run_id) ||
+      item.task_id !== taskId ||
+      !text(item.title, 2000) ||
+      !text(item.created_at, 60) ||
+      !Number.isFinite(Date.parse(item.created_at)) ||
+      !['succeeded', 'failed', 'canceled'].includes(
+        item.source_status as string,
+      ) ||
+      !integer(item.bytes, 0, Number.MAX_SAFE_INTEGER) ||
+      (item.sha256 === null
+        ? item.round !== null
+        : !hash(item.sha256) ||
+          !integer(item.round, 1, 3) ||
+          item.bytes < 1 ||
+          item.bytes > 524288)
+    )
+      throw new CodingResponseError()
+  }
+  if (new Set(value.items.map((item) => item.id)).size !== value.items.length)
+    throw new CodingResponseError()
+  return value as CodingCheckpointPage
+}
+export async function fetchCodingCheckpoints(
+  taskId: string,
+  page: number,
+  signal?: AbortSignal,
+) {
+  if (!integer(page, 1, maxTaskQueryPage))
+    throw new Error('coding_input_invalid')
+  return parseCodingCheckpoints(
+    await request(
+      `${root(taskId)}/checkpoints?page=${page}`,
+      undefined,
+      signal,
+    ),
+    taskId,
+    page,
+  )
+}
+export function parseCodeCheckpoint(
+  content: string,
+  taskId: string,
+  runId: string,
+) {
+  const value: unknown = JSON.parse(content)
+  if (
+    !object(value, [
+      'schema_version',
+      'task_id',
+      'run_id',
+      'candidate_hash',
+      'round',
+      'origin_hash',
+      'files',
+    ]) ||
+    value.schema_version !== 1 ||
+    value.task_id !== taskId ||
+    value.run_id !== runId ||
+    !hash(value.candidate_hash) ||
+    !hash(value.origin_hash) ||
+    !integer(value.round, 1, 3)
+  )
+    throw new CodingResponseError()
+  return { ...value, files: parseCodingFiles(value.files) } as {
+    schema_version: 1
+    task_id: string
+    run_id: string
+    candidate_hash: string
+    round: number
+    origin_hash: string
+    files: CodingFiles
+  }
 }
 export async function applyCoding(
   taskId: string,

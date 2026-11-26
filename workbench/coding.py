@@ -1,7 +1,6 @@
 """Owner-approved coding candidates and a bounded implementation/test loop."""
 
 from contextlib import closing, contextmanager
-import difflib
 import json
 from pathlib import Path, PurePosixPath
 import sqlite3
@@ -10,11 +9,27 @@ import tempfile
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from .coding_runner import CodingError
+from .coding_checkpoints import code_diff, file_records, checkpoint_content, checkpoint_page, read_checkpoint
 from .context import snapshot_files
 from .provider import key_available
 from .recovery import fingerprint
 from .store import decode, dump, now, uid
 from .task_turns import EXECUTION_MODEL_FIELDS, TaskTurnService
+from .task_artifacts import ArtifactReference
+
+
+class CodingContinuation(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    checkpoint: ArtifactReference
+    instruction: str = Field(min_length=1, max_length=8000)
+
+    @field_validator("instruction")
+    @classmethod
+    def exact_instruction(cls, value):
+        if not value.strip() or value != value.strip() or "\0" in value:
+            raise ValueError("coding_instruction_invalid")
+        value.encode("utf-8")
+        return value
 
 
 class CodingConfig(BaseModel):
@@ -25,6 +40,7 @@ class CodingConfig(BaseModel):
     max_rounds: int = Field(default=2, ge=1, le=3)
     test_timeout: int = Field(default=10, ge=1, le=15)
     max_output_tokens: int = Field(default=8192, ge=1024, le=16384)
+    continuation: CodingContinuation | None = None
 
     @field_validator("writable", "tests")
     @classmethod
@@ -106,7 +122,22 @@ class CodingService:
             "notes": project["notes"], "files": records, "profile": "python-unittest",
             "model": {key: model[key] for key in ("id", "name", "kind", "model", "endpoint")},
         }
-        value = {"config": config.model_dump(), "snapshot": snapshot, "model": model}
+        if config.continuation is not None:
+            selected, record = read_checkpoint(db, task_id, config.continuation.checkpoint)
+            if selected["origin_hash"] != fingerprint(records):
+                raise CodingError("coding_checkpoint_base_changed")
+            original, inherited = file_records(records), file_records(selected["files"])
+            if any(original[path] != inherited[path] and path not in config.writable for path in original):
+                raise CodingError("coding_checkpoint_scope_changed", 422)
+            snapshot.update({
+                "origin_files": records, "files": selected["files"],
+                "continuation": {
+                    "id": record["id"], "sha256": record["sha256"], "run_id": record["run_id"],
+                    "round": selected["round"], "origin_hash": selected["origin_hash"],
+                    "patch": code_diff(original, inherited),
+                },
+            })
+        value = {"config": config.model_dump(exclude_none=True), "snapshot": snapshot, "model": model}
         value["candidate_hash"] = fingerprint(value)
         return value
 
@@ -115,9 +146,14 @@ class CodingService:
             candidate = self.build(db, task_id, body)
         return public_candidate(candidate)
 
+    def checkpoints(self, task_id, page):
+        with self.reader() as db:
+            TaskTurnService.task(db, task_id)
+            return checkpoint_page(db, task_id, page)
+
     def prepare(self, task_id, body):
         config = CodingConfig.model_validate(body.model_dump(exclude={"request_id", "preview_hash"}))
-        input_hash = fingerprint([task_id, body.model_dump()])
+        input_hash = fingerprint([task_id, body.model_dump(exclude_none=True)])
         with self.store.transaction() as db:
             prior = db.execute("SELECT * FROM coding_jobs WHERE request_id=?", (body.request_id,)).fetchone()
             if prior is not None:
@@ -204,6 +240,8 @@ class CodingService:
             self.store.event(db, "coding.authorized", {
                 "task_id": task_id, "request_id": request_id, "candidate_hash": row["candidate_hash"],
                 "profile": "python-unittest", "original_workspace_write": False,
+                **({"checkpoint_id": candidate["snapshot"]["continuation"]["id"]}
+                   if "continuation" in candidate["snapshot"] else {}),
             }, run_id, entity_id=request_id, actor="user")
             return public_job(self.exact(db, task_id, request_id))
 
@@ -253,8 +291,9 @@ class CodingHarness:
     async def execute(self, run, invoke, checkpoint):
         candidate = run["context"]["coding"]
         config = CodingConfig.model_validate(candidate["config"])
-        original = {file["path"]: file["content"] for file in candidate["snapshot"]["files"]}
-        current = dict(original)
+        baseline = file_records(candidate["snapshot"]["files"])
+        original = file_records(candidate["snapshot"].get("origin_files", candidate["snapshot"]["files"]))
+        current = dict(baseline)
         await self.runner.probe()
         with tempfile.TemporaryDirectory(prefix="mybot-coding-work-") as directory:
             root = Path(directory)
@@ -297,6 +336,9 @@ class CodingHarness:
                     "notes": candidate["snapshot"]["notes"], "writable": config.writable,
                     "files": [{"path": path, "content": text} for path, text in current.items()],
                     "previous_test": result, "round": number,
+                    **({"continuation_instruction": config.continuation.instruction,
+                        "source_checkpoint": candidate["snapshot"]["continuation"]}
+                       if config.continuation is not None else {}),
                     "response_schema": {"summary": "change summary", "changes": [{"path": "admitted path", "content": "complete content"}]},
                 })
                 output = await invoke(agent, prompt)
@@ -309,20 +351,23 @@ class CodingHarness:
                         raw = change.content.encode("utf-8")
                         if len(raw) > 32768 or b"\0" in raw:
                             raise ValueError("coding_change_invalid")
+                    if all(current[change.path] == change.content for change in parsed.changes):
+                        raise ValueError("coding_no_new_change")
                     current.update({change.path: change.content for change in parsed.changes})
                     if sum(len(text.encode()) for text in current.values()) > 65536:
                         raise ValueError("coding_change_too_large")
                 except ValueError as error:
                     self.store.agent_status(agent["id"], "failed")
                     raise CodingError("coding_output_invalid") from error
-                diff = "".join("".join(line if line.endswith("\n") else line + "\n\\ No newline at end of file\n"
-                                      for line in difflib.unified_diff(
-                    original[path].splitlines(keepends=True), current[path].splitlines(keepends=True),
-                    fromfile=f"a/{path}", tofile=f"b/{path}",
-                )) for path in sorted(original) if current[path] != original[path])
+                diff = code_diff(original, current)
                 if not diff:
                     raise CodingError("coding_no_change")
                 self.store.artifact(run["id"], agent["id"], f"补丁 Diff · {number}", "diff", diff)
+                if config.continuation is not None:
+                    self.store.artifact(run["id"], agent["id"], f"本轮增量 · {number}", "incremental_diff",
+                                        code_diff(baseline, current))
+                self.store.artifact(run["id"], agent["id"], f"代码检查点 · {number}", "code_checkpoint",
+                                    dump(checkpoint_content(run, number, current)))
                 result = await test(number)
                 if result["passed"]:
                     self.store.artifact(run["id"], agent["id"], "研发实现与验证", "report",

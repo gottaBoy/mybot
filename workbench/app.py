@@ -330,6 +330,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "device_run_history": True,
                                  "device_execution_delegation": True,
                                  "isolated_coding": True,
+                                 "coding_continuation": True,
                                  "task_artifact_references": True,
                                  "workspace_counts": True,
                                  "workspace_search": True,
@@ -737,6 +738,15 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     def coding_prepared(identifier: str, request: Request):
         coding_parameters(request)
         return coding.read(identifier)
+
+    @app.get("/api/tasks/{identifier}/coding/checkpoints")
+    def coding_checkpoints(identifier: str, request: Request, page: int = Query(1, ge=1, le=MAX_PAGE)):
+        if any(
+            key != "page" or len(request.query_params.getlist(key)) != 1
+            for key in request.query_params
+        ):
+            raise CodingError("coding_parameters_invalid", 422)
+        return coding.checkpoints(identifier, page)
 
     @app.get("/api/tasks/{identifier}/coding/{request_id}")
     def coding_read(identifier: str, request_id: str, request: Request):

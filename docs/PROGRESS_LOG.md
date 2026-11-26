@@ -1368,6 +1368,35 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
   仍缺更多测试profile、任务分解/依赖与旧patch应用到新coding副本；不是自动历史/长期记忆。
   原119/9/110保持。
 
+### 工作项：跨Run的隔离代码检查点接续
+
+- 2026-11-26，ADR-0029。Task原实现Dialog新增明确代码起点、同Task终态checkpoint目录/
+  分页、本轮要求；核对继承Diff/原始基线/实际文件后冻结。原代码/测试/依赖漂移拒绝，
+  不fuzzy apply/rebase。每次合法修改由Harness存checkpoint，源失败也保留代码状态；
+  新Run实际重跑基线，累计diff/本轮incremental_diff/结构化代码JSON/测试分开，
+  Run记录立即来源，三Run接续保留根基线。原项目不写，旧Run不反推checkpoint。
+- prepare/execute丢响应同ID GET，冻结后不读新的正文替换；cap缺失阻止执行但保留显式discard。
+  配对设备新目录/preview仍403。无新表/依赖/Provider工具或权限扩张。
+- Python全量1267通过后补device/NUL用例，最终44核心定向；前端2250/77文件，
+  78相关合同最后再验/typecheck/生产build通过。httpx/chunk警告、Bootstrap全量保持。
+- 最终专项8/12PNG、综合58/61PNG、主GET-only8，共74浏览器/73最终fixturePNG；
+  final fresh.wghbIa真实4不变测试：源基线失败2→部分实现失败1，第二Run继承失败1→修复通过4，
+  2Run/各1注入Call、原文件不变，累计patch只git apply --check，结果与下载字节一致。
+  模型是fixture，不把实际本地执行冒称付费/Codex效果验证。
+- 保留起始模型错选/option focus两次脚本失败与原7项成功画面；最终新fixture完整重跑，
+  补“继承代码基线”标签与可见原项目指纹，三style双mode中英390复查。
+- 主2393603空闲、一致backup/私有Store演练/原行比对、SIGTERM/锁释放后同command/cwd/env
+  启动3844765，cap已启用，主5173八项只读后原行再次相同。
+  原1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event与Workflow不变，
+  coding_jobs/TaskTurns/设备/授权0。私有备份`before-devices-20261126T112433Z`
+  700/DBlog600，无正式正文/截图/环境/原摘要导出或实际模型/测试。
+  临时4187/4188/5176/5177已停止，主4180/5173保留。
+- app206.35/gzip65.68kB、CSS39.89/7.50、lazyCodingDialog14.62/5.70，
+  RunWorkspace24.73/9.15。证据
+  [代码接续交付](../frontend/evidence/coding-continuation-2026-11-26/README.md)。
+  本批继续提交push，以Git实际回执为准；更多runtime、任务分解/依赖、基线冲突处理仍待。
+  原119/9/110不变。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。
@@ -1378,7 +1407,8 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
 Task工作区、选定消息、固定Workflow及Task范围设备接续初版已交付，
 显式历史位置、D3b一次研究委托和隔离研发实现/真实测试首版也已交付。
 明确前轮成果引用已按ADR-0028交付；当前优先更多runtime/测试profile、任务分解/
-依赖与coding旧patch接续；设备D4b/D5b与连接器保留待办，
+依赖与基线变化的显式冲突处理；同基线coding检查点接续已按ADR-0029交付，
+设备D4b/D5b与连接器保留待办，
 不再默认作为下一批。通用控制租约仍独立待办。
 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)保留阶段架构与能力边界；
 OpenMausBot执行采用、Cindy/Headscale/IM和更广代码执行仍有独立未完范围，不覆盖当前优先级。

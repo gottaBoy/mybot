@@ -3,6 +3,11 @@
 日期：2026-11-13。依据：用户逐条指定的 20 个模板、基础组件与“一套代码多种样式”要求。
 保留 ADR-0006 的渐进迁移边界，不改变 Provider、设备权限或认证协议。
 
+2026-11-26后续采用：现有研发Dialog与work-item-detail增加代码起点选择、检查点分页、
+本轮要求、继承Diff、运行来源、累计/增量patch与结构化代码快照导出。
+复用AppSelect/Button/TextArea和原状态/Token；未引入新组件库、第二套页面或模板生成。
+ADR-0029的前后画面与实际合同见`frontend/evidence/coding-continuation-2026-11-26/`。
+
 2026-11-26采用映射增量：form-wizard/work-item-detail的现有mybot适配增加
 前轮成果选择、正文核对、冻结与Run来源；复用AppCheckbox/AppButton与语义Token，
 没有重生成模板、升级Astryx或另建主题页面。见ADR-0028及本批浏览器证据。
@@ -529,3 +534,16 @@ turn context专用纵向排版修复原notice挤列，没有新主题分支。
 `frontend/evidence/core-continuation-2026-11-26/README.md`。
 2217前端、1245Python与17后补专项/build通过，保留原警告。
 主4180/5173已启用且原数据不变；只是下一研究Run的明确输入，没有自动应用旧patch。
+
+## 32. 代码检查点接续
+
+2026-11-26，原研发Dialog的AppSelect/TextArea/Button复用进同一业务树，
+实现原项目/检查点切换、有界来源分页、本轮要求、继承修改/原基线与精确输入核对。
+prepared与unknown保持原确认/导航合同，没有新增通用UI组件或重生成上游模板。
+Run detail保留源Run/Artifact与根基线，累计/增量Diff与代码JSON按真实格式查看/下载，
+round0区分继承代码基线。三style双mode、1440英文/390中文、reduced motion已复查。
+
+2250前端、1267Python全量与44后续核心定向/build通过，78前端合同再验；
+8专项/58综合/8主只读共74检查、73最终fixturePNG。
+主4180/5173已启用，正式数据不变，没有自动开始模型或测试。
+详见`frontend/evidence/coding-continuation-2026-11-26/README.md`及ADR-0029。

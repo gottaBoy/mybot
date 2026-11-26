@@ -27,11 +27,14 @@ import {
   registerWorkbenchNavigationBlocker,
 } from './navigation-guard'
 import type { Copy } from './state'
+import { CodingCheckpointPicker } from './CodingCheckpointPicker'
+import './task-artifacts.css'
 
 export function CodingRunDialog({
   task,
   models,
   initial,
+  continuationEnabled = false,
   t,
   onClose,
   onStarted,
@@ -39,6 +42,7 @@ export function CodingRunDialog({
   task: Task
   models: Model[]
   initial?: string
+  continuationEnabled?: boolean
   t: Copy
   onClose: () => void
   onStarted: (id: string) => void
@@ -69,6 +73,9 @@ export function CodingRunDialog({
   const [consent, setConsent] = useState(false)
   const [error, setError] = useState('')
   const [discard, setDiscard] = useState(false)
+  const [sourceMode, setSourceMode] = useState<'original' | 'checkpoint'>(
+    'original',
+  )
   const mounted = useRef(true),
     internal = useRef(false),
     operation = useRef(false),
@@ -80,7 +87,9 @@ export function CodingRunDialog({
   const busy = phase === 'sending' || phase === 'unknown'
   const dirty =
     !job &&
-    (Boolean(candidate) || JSON.stringify(config) !== initialConfig.current)
+    (Boolean(candidate) ||
+      JSON.stringify(config) !== initialConfig.current ||
+      sourceMode === 'checkpoint')
   const guard = useRef({ busy, dirty })
   guard.current = { busy, dirty }
   useEffect(() => {
@@ -186,12 +195,17 @@ export function CodingRunDialog({
     if (operation.current || latest.current.pending) return
     let validated: CodingConfig
     try {
+      if (
+        sourceMode === 'checkpoint' &&
+        (!continuationEnabled || !latest.current.config.continuation)
+      )
+        throw new Error('coding_checkpoint_required')
       validated = parseCodingConfig(latest.current.config)
     } catch {
       setError(
         t(
-          '请选择模型、可修改文件和不可修改的Python测试文件。',
-          'Select a model, editable files and immutable Python test files.',
+          '请核对模型、文件、测试；接续实现还须选择检查点并填写本轮要求。',
+          'Review model, files and tests. Continuation also requires a checkpoint and supplemental requirements.',
         ),
       )
       return
@@ -212,10 +226,19 @@ export function CodingRunDialog({
       setCandidate(undefined)
       setPhase('edit')
       setError(
-        t(
-          '资料或隔离运行能力验证失败，尚未准备或调用模型。',
-          'Source or sandbox verification failed. No candidate was prepared and no model was called.',
-        ),
+        reason instanceof ApiError &&
+          reason.details &&
+          typeof reason.details === 'object' &&
+          (reason.details as { code?: unknown }).code ===
+            'coding_checkpoint_base_changed'
+          ? t(
+              '原项目文件已变化，不能沿用该检查点。请核对基线或选择从原项目开始。',
+              'The original project files changed. Review the base or start from the current project files.',
+            )
+          : t(
+              '资料、检查点或隔离运行能力验证失败，尚未准备或调用模型。',
+              'Source, checkpoint or sandbox verification failed. No candidate was prepared and no model was called.',
+            ),
       )
     } finally {
       if (mounted.current) operation.current = false
@@ -227,6 +250,9 @@ export function CodingRunDialog({
       operation.current ||
       state.phase === 'unknown' ||
       !state.candidate ||
+      (action === 'execute' &&
+        state.candidate.config.continuation &&
+        !continuationEnabled) ||
       (action === 'execute' && !state.consent)
     )
       return
@@ -307,6 +333,9 @@ export function CodingRunDialog({
     } else setDiscard(true)
   }
   const displayed = job?.candidate ?? candidate
+  const unsupportedContinuation = Boolean(
+    displayed?.config.continuation && !continuationEnabled,
+  )
   return (
     <>
       <AppDialog
@@ -333,8 +362,73 @@ export function CodingRunDialog({
               />
             </div>
           )}
+          {unsupportedContinuation && (
+            <p role="alert" className="wb-error">
+              {t(
+                '服务未提供本轮代码接续能力，执行已暂停。',
+                'This server does not admit code continuation. Execution is paused.',
+              )}
+            </p>
+          )}
           {!pending && (
             <>
+              {continuationEnabled && (
+                <AppSelect
+                  label={t('实现起点', 'Implementation starting point')}
+                  value={sourceMode}
+                  disabled={busy}
+                  options={[
+                    {
+                      value: 'original',
+                      label: t('原项目文件', 'Original project files'),
+                    },
+                    {
+                      value: 'checkpoint',
+                      label: t('前轮代码检查点', 'Prior code checkpoint'),
+                    },
+                  ]}
+                  onChange={(value) => {
+                    if (operation.current) return
+                    setSourceMode(
+                      value === 'checkpoint' ? 'checkpoint' : 'original',
+                    )
+                    change({ continuation: undefined })
+                  }}
+                />
+              )}
+              {sourceMode === 'checkpoint' && continuationEnabled && (
+                <>
+                  <CodingCheckpointPicker
+                    taskId={task.id}
+                    selected={config.continuation}
+                    disabled={busy}
+                    t={t}
+                    onChange={(checkpoint) =>
+                      change({
+                        continuation: {
+                          checkpoint,
+                          instruction: config.continuation?.instruction ?? '',
+                        },
+                      })
+                    }
+                  />
+                  <AppTextArea
+                    label={t(
+                      '本轮实现要求',
+                      'Requirements for this implementation',
+                    )}
+                    value={config.continuation?.instruction ?? ''}
+                    isDisabled={busy || !config.continuation}
+                    onChange={(instruction) => {
+                      if (config.continuation)
+                        change({
+                          continuation: { ...config.continuation, instruction },
+                        })
+                    }}
+                    rows={3}
+                  />
+                </>
+              )}
               <AppSelect
                 label={t('实现模型', 'Implementation model')}
                 value={config.model_id}
@@ -433,6 +527,39 @@ export function CodingRunDialog({
                   )}
                 </p>
               )}
+              {displayed.snapshot.continuation && (
+                <section
+                  className="wb-artifact-references"
+                  aria-label={t('接续代码快照', 'Continuation code snapshot')}
+                >
+                  <strong>
+                    {t('接续代码快照', 'Continuation code snapshot')}
+                  </strong>
+                  <p>
+                    Run <code>{displayed.snapshot.continuation.run_id}</code> ·{' '}
+                    {t('轮次', 'Round')} {displayed.snapshot.continuation.round}
+                  </p>
+                  <p className="wb-wrap">
+                    <code>{displayed.snapshot.continuation.id}</code>
+                    <br />
+                    SHA-256{' '}
+                    <code>{displayed.snapshot.continuation.sha256}</code>
+                  </p>
+                  <p className="wb-wrap">
+                    {t('原项目基线', 'Original project base')} ·{' '}
+                    <code>{displayed.snapshot.continuation.origin_hash}</code>
+                  </p>
+                  <p className="wb-wrap">
+                    {displayed.config.continuation?.instruction}
+                  </p>
+                  <details className="wb-disclosure">
+                    <summary>
+                      {t('继承的代码修改', 'Inherited code changes')}
+                    </summary>
+                    <pre>{displayed.snapshot.continuation.patch}</pre>
+                  </details>
+                </section>
+              )}
               <details className="wb-disclosure">
                 <summary>{t('完整发送资料', 'Complete model input')}</summary>
                 <p>{displayed.snapshot.goal}</p>
@@ -464,7 +591,7 @@ export function CodingRunDialog({
                 label={t('确认修改并验证', 'Confirm implementation & tests')}
                 icon={<Play size={16} />}
                 tone="primary"
-                disabled={busy || !consent}
+                disabled={busy || !consent || unsupportedContinuation}
                 onClick={() => void submit('execute')}
               />
               {job?.state === 'prepared' && (

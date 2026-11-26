@@ -21,11 +21,12 @@ class BrowserProvider(FakeProvider):
         self.review_failed = False
 
     async def complete(self, model, messages, max_tokens):
-        if model["model"] == "coding-fixture":
+        if model["model"] in {"coding-fixture", "coding-continuation-fixture"}:
             request = json.loads(messages[-1]["content"])
             source = next(file["content"] for file in request["files"] if file["path"] == "workbench/schemas.py")
-            extra = r'"\n" in value or ' if request["round"] == 1 else "any(ord(char) < 32 for char in value) or "
-            source = source.replace("if " + (r'"\n" in value or ' if request["round"] > 1 else "") + r'"\\" in value or ', "if " + extra + r'"\\" in value or ', 1)
+            continuation = model["model"] == "coding-continuation-fixture"
+            extra = r'"\n" in value or ' if request["round"] == 1 and not continuation else "any(ord(char) < 32 for char in value) or "
+            source = source.replace("if " + (r'"\n" in value or ' if request["round"] > 1 or continuation else "") + r'"\\" in value or ', "if " + extra + r'"\\" in value or ', 1)
             return {
                 "text": json.dumps({"summary": "拒绝路径控制字符，保留普通路径和中文路径。", "changes": [
                     {"path": "workbench/schemas.py", "content": source},

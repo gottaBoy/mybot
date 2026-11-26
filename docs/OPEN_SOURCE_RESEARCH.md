@@ -2,6 +2,13 @@
 
 查阅日期：2026-11-01；2026-11-02 增补第一轮链路对照。
 
+2026-11-26代码接续交付只读核对本机已固定的Astryx0.7.13安装产物
+`frontend/node_modules/@astryxdesign/core/dist/Selector/Selector.js`及
+mybot `frontend/src/components/ui/index.tsx`包装，确认option DOM focus与Selector
+键盘highlight不是同一事实；实际验收由combobox End/Enter完成。上游身份仍为
+`meta/astryx`，本次没有新查上游commit、升级、复制vendor源码或新增UI库；
+不能把安装源码观察当作真实浏览器通过，运行证据见ADR-0029交付记录。
+
 2026-11-02 用户新指定 `gottaBoy/dsh-superagent-prototype` 和 `Playa-Cyrene/Cyrene-Agent`，身份与资料阅读见 [USER_REFERENCES_2026-11-02.md](USER_REFERENCES_2026-11-02.md)。不要将后者与曾查看架构图的 `Yongchu-Yitao/Cyrene` 混用。
 
 目的：分析公开源码与官方文档中的产品结构、执行与交互机制，服务于原创研发工作台设计。不是复制界面，也不是逆向私有服务。

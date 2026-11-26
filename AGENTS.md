@@ -13,6 +13,9 @@ further device work and authorized isolated code changes and explicitly allowed
 test commands. Follow PRODUCT_GOALS_CURRENT and ADR-0027 for that bounded slice.
 ADR-0028 adds explicit same-Task artifact references to the next research Run;
 prepared snapshots freeze the selected bodies, not implicit history or patch application.
+ADR-0029 adds explicitly selected trusted code checkpoints for new isolated coding
+Runs, with exact original-base checks and fresh execution consent. It never applies
+patches to the original project or infers checkpoints for legacy Runs.
 Distinguish local activation from isolated tests; Task messages are not implicit
 model memory, and a fixed pipeline is not an arbitrary DAG.
 For frontend work, also read `docs/ASTRYX_TEMPLATE_INTEGRATION.md` and

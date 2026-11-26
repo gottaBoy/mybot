@@ -1,0 +1,191 @@
+{
+  "checks": [
+    "A real bounded implementation fails with one remaining immutable-test failure and retains a trusted code checkpoint",
+    "Explicit checkpoint selection recovers from catalog failure and previews inherited code with no new Run",
+    "Lost prepare reloads the same frozen checkpoint, original base and requirements with fresh unchecked consent",
+    "Frozen continuation renders across three styles, both modes, English desktop and Chinese mobile",
+    "One continued Run tests the inherited failing baseline, completes the repair with one fixture call and preserves original files",
+    "Run context retains the immediate code source, original base digest and exact supplemental requirements",
+    "Cumulative and incremental patches plus the structured code checkpoint display and export as exact artifacts"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c177f92969e04d768aad2291c78811c1/coding/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c177f92969e04d768aad2291c78811c1/coding/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c177f92969e04d768aad2291c78811c1/coding/4f288d58-775e-4891-98b2-a01b431aaf39/execute",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c177f92969e04d768aad2291c78811c1/coding/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c177f92969e04d768aad2291c78811c1/coding/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c177f92969e04d768aad2291c78811c1/coding/3d681599-7645-4877-808d-c1b3a8a714f5/execute",
+      "method": "POST"
+    }
+  ],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "panel": {
+        "x": 424,
+        "y": 143,
+        "width": 592,
+        "height": 1086.25,
+        "top": 143,
+        "right": 1016,
+        "bottom": 1229.25,
+        "left": 424
+      }
+    },
+    {
+      "style": "neutral",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "panel": {
+        "x": 32,
+        "y": 131,
+        "width": 326,
+        "height": 1247.921875,
+        "top": 131,
+        "right": 358,
+        "bottom": 1378.921875,
+        "left": 32
+      }
+    },
+    {
+      "style": "zira",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "panel": {
+        "x": 424,
+        "y": 143,
+        "width": 592,
+        "height": 1086.25,
+        "top": 143,
+        "right": 1016,
+        "bottom": 1229.25,
+        "left": 424
+      }
+    },
+    {
+      "style": "zira",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "panel": {
+        "x": 32,
+        "y": 131,
+        "width": 326,
+        "height": 1247.921875,
+        "top": 131,
+        "right": 358,
+        "bottom": 1378.921875,
+        "left": 32
+      }
+    },
+    {
+      "style": "y2k",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "panel": {
+        "x": 424,
+        "y": 143,
+        "width": 592,
+        "height": 1142.5,
+        "top": 143,
+        "right": 1016,
+        "bottom": 1285.5,
+        "left": 424
+      }
+    },
+    {
+      "style": "y2k",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "panel": {
+        "x": 40,
+        "y": 131,
+        "width": 310,
+        "height": 1412.5,
+        "top": 131,
+        "right": 350,
+        "bottom": 1543.5,
+        "left": 40
+      }
+    }
+  ],
+  "screenshots": [
+    "continuation-preview-desktop.png",
+    "prepared-neutral-light.png",
+    "prepared-neutral-dark.png",
+    "prepared-zira-light.png",
+    "prepared-zira-dark.png",
+    "prepared-y2k-light.png",
+    "prepared-y2k-dark.png",
+    "run-source-provenance.png",
+    "diff-desktop.png",
+    "incremental_diff-desktop.png",
+    "code_checkpoint-desktop.png"
+  ],
+  "actual": {
+    "task_id": "c177f92969e04d768aad2291c78811c1",
+    "source_run_id": "c52cfac048d044fb947190da18691133",
+    "run_id": "902806e4d6334df4995bda772b8bd325",
+    "checkpoint_id": "59c55722caa5436494567d3cd843a116",
+    "source_failures": [
+      2,
+      1
+    ],
+    "continued_failures": [
+      1,
+      0
+    ],
+    "continued_calls": 1
+  }
+}

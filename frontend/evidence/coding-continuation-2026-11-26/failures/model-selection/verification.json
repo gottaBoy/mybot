@@ -1,0 +1,44 @@
+{
+  "checks": [],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/dbafdcf8614b45d481f62033116fcbc4/coding/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/dbafdcf8614b45d481f62033116fcbc4/coding/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/dbafdcf8614b45d481f62033116fcbc4/coding/db2e9538-df01-4854-b620-2ab56e505741/execute",
+      "method": "POST"
+    }
+  ],
+  "geometry": [],
+  "screenshots": [
+    "failure.png"
+  ],
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'coding_output_invalid'\n- 'coding_tests_failed'\n          ^\n"
+}
