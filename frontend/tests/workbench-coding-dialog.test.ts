@@ -193,6 +193,158 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 describe('isolated coding confirmation', () => {
+  it.each([undefined, false])(
+    'keeps pytest unavailable without an explicit capability %j',
+    async (pytestEnabled) => {
+      props.pytestEnabled = pytestEnabled
+      render()
+      const selector = m.selects.find(
+        (select) => select.label === 'Test profile',
+      )
+      expect(selector.value).toBe('python-unittest')
+      expect(selector.options.map((option: any) => option.value)).toEqual([
+        'python-unittest',
+      ])
+      selector.onChange('python-pytest')
+      render()
+      await button('Review sources & test environment').onClick()
+      await settle()
+      expect(m.preview.mock.calls[0][1]).not.toHaveProperty('profile')
+    },
+  )
+  it('selects pytest independently of the source mode and clears preview and consent on changes', async () => {
+    props.pytestEnabled = true
+    props.continuationEnabled = true
+    const pytestCandidate = {
+      ...candidate,
+      config: { ...candidate.config, profile: 'python-pytest' },
+      snapshot: { ...candidate.snapshot, profile: 'python-pytest' },
+    }
+    m.preview.mockResolvedValue(pytestCandidate)
+    render()
+    m.selects
+      .find((select) => select.label === 'Test profile')
+      .onChange('python-pytest')
+    render()
+    expect(
+      m.selects.find(
+        (select) => select.label === 'Implementation starting point',
+      ).value,
+    ).toBe('original')
+    await button('Review sources & test environment').onClick()
+    await settle()
+    expect(m.preview.mock.calls[0][1].profile).toBe('python-pytest')
+    expect(html).toContain('Python pytest')
+    m.checks[0].onChange(true)
+    render()
+    m.selects
+      .find((select) => select.label === 'Test profile')
+      .onChange('python-unittest')
+    render()
+    expect(button('Confirm implementation & tests')).toBeUndefined()
+    m.preview.mockResolvedValue(candidate)
+    await button('Review sources & test environment').onClick()
+    await settle()
+    expect(m.preview.mock.calls[1][1]).not.toHaveProperty('profile')
+    expect(m.checks[0].value).toBe(false)
+    m.selects
+      .find((select) => select.label === 'Test profile')
+      .onChange('python-pytest')
+    render()
+    m.selects
+      .find((select) => select.label === 'Implementation starting point')
+      .onChange('checkpoint')
+    render()
+    expect(
+      m.selects.find((select) => select.label === 'Test profile').value,
+    ).toBe('python-pytest')
+  })
+  it('blocks a hydrated pytest candidate after capability loss but permits explicit discard', async () => {
+    props.initial = job.request_id
+    props.pytestEnabled = true
+    m.read.mockResolvedValue({
+      ...job,
+      candidate: {
+        ...candidate,
+        config: { ...candidate.config, profile: 'python-pytest' },
+        snapshot: { ...candidate.snapshot, profile: 'python-pytest' },
+      },
+    })
+    render()
+    await settle()
+    m.checks[0].onChange(true)
+    render()
+    const staleExecute = button('Confirm implementation & tests').onClick
+    props.pytestEnabled = false
+    render()
+    expect(html).toContain('This server does not admit pytest tests')
+    expect(html).toContain('Python pytest')
+    expect(button('Confirm implementation & tests').disabled).toBe(true)
+    await staleExecute()
+    await settle()
+    expect(m.prepare).not.toHaveBeenCalled()
+    expect(m.apply).not.toHaveBeenCalled()
+    await button('Discard this preparation').onClick()
+    await settle()
+    expect(m.apply.mock.calls[0][2]).toBe('discard')
+  })
+  it('does not execute a pytest candidate if capability disappears while preparing it', async () => {
+    props.pytestEnabled = true
+    const pytestCandidate = {
+      ...candidate,
+      config: { ...candidate.config, profile: 'python-pytest' },
+      snapshot: { ...candidate.snapshot, profile: 'python-pytest' },
+    }
+    let finish: ((value: any) => void) | undefined
+    m.preview.mockResolvedValue(pytestCandidate)
+    m.prepare.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve
+        }),
+    )
+    render()
+    m.selects
+      .find((select) => select.label === 'Test profile')
+      .onChange('python-pytest')
+    render()
+    await button('Review sources & test environment').onClick()
+    await settle()
+    m.checks[0].onChange(true)
+    render()
+    button('Confirm implementation & tests').onClick()
+    await settle()
+    props.pytestEnabled = false
+    render()
+    finish?.({
+      ...job,
+      request_id: m.prepare.mock.calls[0][1],
+      candidate: pytestCandidate,
+    })
+    await settle()
+    expect(m.apply).not.toHaveBeenCalled()
+    expect(button('Discard this preparation')).toBeDefined()
+  })
+  it('reports missing pytest precisely without preparing or substituting a test profile', async () => {
+    props.pytestEnabled = true
+    m.preview.mockRejectedValue(
+      new ApiError(422, 'unavailable', { code: 'coding_pytest_unavailable' }),
+    )
+    render()
+    m.selects
+      .find((select) => select.label === 'Test profile')
+      .onChange('python-pytest')
+    render()
+    await button('Review sources & test environment').onClick()
+    await settle()
+    expect(html).toContain(
+      'pytest is unavailable in this execution environment',
+    )
+    expect(m.preview).toHaveBeenCalledTimes(1)
+    expect(m.preview.mock.calls[0][1].profile).toBe('python-pytest')
+    expect(m.prepare).not.toHaveBeenCalled()
+    expect(m.apply).not.toHaveBeenCalled()
+  })
   it('requires explicit checkpoint and requirements before previewing continued code', async () => {
     props.continuationEnabled = true
     render()

@@ -1,6 +1,6 @@
 # 全部待办索引
 
-更新：2026-11-26（Asia/Singapore）。本页是集中阅读入口，不替代
+更新：2026-11-27（Asia/Singapore）。本页是集中阅读入口，不替代
 [原工作项台账](WORK_ITEMS.md) 或 [产品 UI 审计](PRODUCT_UI_AUDIT.md)。
 
 **最新研究入口：** 用户提供新的 Issues 截图，要求深度学习后继续。
@@ -17,6 +17,20 @@ UI 的 WUI 编号是交叉整改视图，执行包是实施组织方式，均可
 **不得与 119/110 相加**。本页不因新增测试、截图、文件或执行包调整原台账计数。
 
 ## 当前执行包
+
+### 2026-11-27 固定pytest研发验证
+
+| 工作 | 本批范围 | 尚缺 |
+| --- | --- | --- |
+| 测试框架 | 明确选择固定Python unittest/pytest；冻结profile，旧候选身份不变 | 其他语言/runtime、插件和任意命令 |
+| 真实验证 | 已装依赖的隔离自检、显式测试、fixture/参数化/assert、逐轮实际证据 | 写文件/网络/子进程fixture、完整仓库环境 |
+| 一致性 | 改框架清preview/consent；prepared/unknown原ID，检查点接续重新跑基线 | 不自动安装、回退、应用到原项目 |
+
+[ADR-0031](decisions/ADR-0031-python-pytest-profile.md)。
+本机已启用，1312Python/2309前端、10专项/58综合/8主只读通过；
+[证据](../frontend/evidence/coding-pytest-2026-11-27/README.md)。
+本条关闭固定pytest子范围，原119/9/110不变。下一核心为计划修订/更广分解、
+基线变化的显式冲突处理和其他语言/runtime。
 
 ### 2026-11-26 真实任务拆解与依赖
 

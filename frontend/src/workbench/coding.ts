@@ -1,6 +1,7 @@
 import { api } from './api'
 import { isTaskReadIdentifier, maxTaskQueryPage } from './task-query'
 
+export type CodingProfile = 'python-unittest' | 'python-pytest'
 export type CodingConfig = {
   model_id: string
   writable: string[]
@@ -8,6 +9,7 @@ export type CodingConfig = {
   max_rounds: number
   test_timeout: number
   max_output_tokens: number
+  profile?: CodingProfile
   continuation?: {
     checkpoint: { id: string; sha256: string }
     instruction: string
@@ -33,7 +35,7 @@ export type CodingCandidate = {
     goal: string
     acceptance: string
     notes: string
-    profile: 'python-unittest'
+    profile: CodingProfile
     files: CodingFiles
     origin_files?: CodingFiles
     continuation?: CodingProvenance
@@ -95,6 +97,8 @@ const hash = (value: unknown): value is string =>
   typeof value === 'string' && /^[0-9a-f]{64}$/.test(value)
 const requestId = (value: unknown): value is string =>
   typeof value === 'string' && /^[A-Za-z0-9_-]{8,100}$/.test(value)
+const profile = (value: unknown): value is CodingProfile =>
+  value === 'python-unittest' || value === 'python-pytest'
 const paths = (value: unknown): value is string[] =>
   Array.isArray(value) &&
   value.length >= 1 &&
@@ -121,7 +125,7 @@ export function parseCodingConfig(value: unknown): CodingConfig {
         'test_timeout',
         'max_output_tokens',
       ],
-      ['continuation'],
+      ['continuation', 'profile'],
     ) ||
     !isTaskReadIdentifier(value.model_id) ||
     !paths(value.writable) ||
@@ -131,7 +135,8 @@ export function parseCodingConfig(value: unknown): CodingConfig {
     ) ||
     !integer(value.max_rounds, 1, 3) ||
     !integer(value.test_timeout, 1, 15) ||
-    !integer(value.max_output_tokens, 1024, 16384)
+    !integer(value.max_output_tokens, 1024, 16384) ||
+    (Object.hasOwn(value, 'profile') && !profile(value.profile))
   )
     throw new CodingResponseError()
   let continuation: CodingConfig['continuation']
@@ -159,6 +164,9 @@ export function parseCodingConfig(value: unknown): CodingConfig {
     max_rounds: value.max_rounds,
     test_timeout: value.test_timeout,
     max_output_tokens: value.max_output_tokens,
+    ...(Object.hasOwn(value, 'profile')
+      ? { profile: value.profile as CodingProfile }
+      : {}),
     ...(continuation ? { continuation } : {}),
   }
 }
@@ -212,7 +220,7 @@ export function parseCodingCandidate(
     !snapshot.goal ||
     !text(snapshot.acceptance, 4000) ||
     !text(snapshot.notes, 16000) ||
-    snapshot.profile !== 'python-unittest' ||
+    snapshot.profile !== (config.profile ?? 'python-unittest') ||
     !Array.isArray(snapshot.files) ||
     !snapshot.files.length ||
     snapshot.files.length > 10 ||
@@ -283,7 +291,7 @@ export function parseCodingCandidate(
       ...(originFiles && provenance
         ? { origin_files: originFiles, continuation: provenance }
         : {}),
-      profile: 'python-unittest',
+      profile: snapshot.profile as CodingProfile,
       model: snapshot.model as CodingCandidate['snapshot']['model'],
     },
   }
@@ -609,6 +617,7 @@ export async function applyCoding(
 }
 
 export type CodingTest = {
+  profile: CodingProfile
   command: string[]
   round: number
   tests_run: number
@@ -619,6 +628,13 @@ export type CodingTest = {
   truncated: boolean
   output: string
   test_files: string[]
+  receipt: {
+    tests_run: number
+    failures: number
+    errors: number
+    skipped: number
+    success: boolean
+  } | null
 }
 export function parseCodingTest(content: string): CodingTest {
   const value: unknown = JSON.parse(content)
@@ -637,7 +653,7 @@ export function parseCodingTest(content: string): CodingTest {
       'round',
       'test_files',
     ]) ||
-    value.profile !== 'python-unittest' ||
+    !profile(value.profile) ||
     !Array.isArray(value.command) ||
     !value.command.every((v) => text(v, 8192)) ||
     !integer(value.exit_code, -128, 255) ||
@@ -663,9 +679,13 @@ export function parseCodingTest(content: string): CodingTest {
     ]) ||
       receipt.tests_run !== value.tests_run ||
       !integer(receipt.failures, 0, value.tests_run) ||
-      !integer(receipt.errors, 0, value.tests_run) ||
+      !integer(receipt.errors, 0, Number.MAX_SAFE_INTEGER) ||
       !integer(receipt.skipped, 0, value.tests_run) ||
-      typeof receipt.success !== 'boolean')
+      typeof receipt.success !== 'boolean' ||
+      (receipt.success &&
+        (receipt.failures !== 0 ||
+          receipt.errors !== 0 ||
+          value.tests_run <= receipt.skipped)))
   )
     throw new CodingResponseError()
   const passed =
@@ -676,6 +696,9 @@ export function parseCodingTest(content: string): CodingTest {
     !!receipt &&
     typeof receipt === 'object' &&
     'success' in receipt &&
+    'skipped' in receipt &&
+    typeof receipt.skipped === 'number' &&
+    value.tests_run > receipt.skipped &&
     receipt.success === true
   if (value.passed !== passed) throw new CodingResponseError()
   return value as unknown as CodingTest

@@ -47,6 +47,7 @@ def confine(workspace):
             Path("/usr/lib").resolve(),
             Path("/lib").resolve(),
             Path(workspace).resolve(),
+            Path(__file__).with_name("pytest_profile.ini").resolve(),
         }
         for path in paths:
             if not path.exists():
@@ -107,6 +108,62 @@ def confine(workspace):
         resource.setrlimit(kind, (limit, limit))
 
 
+def run_pytest(workspace, files):
+    # Import the installed runner before admitting selected project imports.
+    import pytest
+
+    sys.path.insert(0, str(workspace))
+    class Receipt:
+        def __init__(self):
+            self.nodes = {}
+            self.collection_errors = 0
+
+        def pytest_collectreport(self, report):
+            if report.failed:
+                self.collection_errors += 1
+
+        def pytest_load_initial_conftests(self, early_config):
+            def selected_module(module):
+                if getattr(module, "pytest_plugins", None):
+                    raise pytest.UsageError("mybot_pytest_module_plugins_unsupported")
+            early_config.pluginmanager.consider_module = selected_module
+
+        def pytest_runtest_logreport(self, report):
+            self.nodes.setdefault(report.nodeid, {})[report.when] = (
+                report.outcome, bool(getattr(report, "wasxfail", False)),
+            )
+
+        def value(self, exit_code):
+            failures = errors = skipped = 0
+            for phases in self.nodes.values():
+                if any(outcome == "skipped" for outcome, _ in phases.values()):
+                    skipped += 1
+                for phase, (outcome, xfail) in phases.items():
+                    if phase == "call" and (outcome == "failed" or outcome == "passed" and xfail):
+                        failures += 1
+                    elif phase != "call" and outcome == "failed":
+                        errors += 1
+            errors += self.collection_errors
+            return {
+                "tests_run": len(self.nodes), "failures": failures, "errors": errors,
+                "skipped": skipped,
+                "success": exit_code == 0 and len(self.nodes) > skipped and not failures and not errors,
+            }
+
+    receipt = Receipt()
+    code = pytest.main([
+        "-c", str(Path(__file__).with_name("pytest_profile.ini").resolve()),
+        "--rootdir", str(workspace), "--confcutdir", str(workspace),
+        "--noconftest", "--import-mode=importlib",
+        "--capture=sys", "--color=no", "--tb=short",
+        "-p", "no:cacheprovider", "-p", "no:faulthandler", "-p", "no:logging",
+        "--", *files,
+    ], plugins=[receipt])
+    value = receipt.value(code)
+    print("\nMYBOT_TEST_RESULT=" + json.dumps(value), flush=True)
+    raise SystemExit(0 if value["success"] else int(code) or 1)
+
+
 def main():
     workspace, mode = Path(sys.argv[1]).resolve(), sys.argv[2]
     confine(workspace)
@@ -127,10 +184,15 @@ def main():
             raise RuntimeError("test_sandbox_probe_failed")
         print(json.dumps({"confined": True, "denied": denied}))
         return
+    selection = json.loads(mode)
+    if isinstance(selection, dict):
+        if set(selection) != {"profile", "test_files"} or selection["profile"] != "python-pytest":
+            raise ValueError("test_profile_invalid")
+        run_pytest(workspace, selection["test_files"])
     sys.path.insert(0, str(workspace))
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
-    for index, path in enumerate(json.loads(mode)):
+    for index, path in enumerate(selection):
         specification = importlib.util.spec_from_file_location(
             f"_mybot_selected_test_{index}", workspace / path,
         )

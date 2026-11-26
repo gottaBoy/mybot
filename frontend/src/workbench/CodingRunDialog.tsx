@@ -35,6 +35,7 @@ export function CodingRunDialog({
   models,
   initial,
   continuationEnabled = false,
+  pytestEnabled = false,
   t,
   onClose,
   onStarted,
@@ -43,6 +44,7 @@ export function CodingRunDialog({
   models: Model[]
   initial?: string
   continuationEnabled?: boolean
+  pytestEnabled?: boolean
   t: Copy
   onClose: () => void
   onStarted: (id: string) => void
@@ -81,9 +83,27 @@ export function CodingRunDialog({
     operation = useRef(false),
     released = useRef(false)
   const request = useRef<AbortController | undefined>(undefined)
-  const latest = useRef({ phase, pending, job, candidate, config, consent })
+  const latest = useRef({
+    phase,
+    pending,
+    job,
+    candidate,
+    config,
+    consent,
+    continuationEnabled,
+    pytestEnabled,
+  })
   const initialConfig = useRef(JSON.stringify(config))
-  latest.current = { phase, pending, job, candidate, config, consent }
+  latest.current = {
+    phase,
+    pending,
+    job,
+    candidate,
+    config,
+    consent,
+    continuationEnabled,
+    pytestEnabled,
+  }
   const busy = phase === 'sending' || phase === 'unknown'
   const dirty =
     !job &&
@@ -125,6 +145,19 @@ export function CodingRunDialog({
   useEffect(() => {
     if (initial) void reconcile()
   }, [])
+  useEffect(() => {
+    if (!pytestEnabled) setConsent(false)
+  }, [pytestEnabled])
+  const pytestUnavailable = (reason: unknown) =>
+    reason instanceof ApiError &&
+    reason.details &&
+    typeof reason.details === 'object' &&
+    (reason.details as { code?: unknown }).code === 'coding_pytest_unavailable'
+  const pytestUnavailableMessage = () =>
+    t(
+      '当前执行环境中的 pytest 不可用，请核对所选测试框架。',
+      'pytest is unavailable in this execution environment. Review the selected test profile.',
+    )
   function stamp(id?: string) {
     const url = new URL(window.location.href),
       params = new URLSearchParams(url.hash.split('?')[1] ?? '')
@@ -193,6 +226,13 @@ export function CodingRunDialog({
   }
   async function preview() {
     if (operation.current || latest.current.pending) return
+    if (
+      latest.current.config.profile === 'python-pytest' &&
+      !latest.current.pytestEnabled
+    ) {
+      setError(pytestUnavailableMessage())
+      return
+    }
     let validated: CodingConfig
     try {
       if (
@@ -226,19 +266,21 @@ export function CodingRunDialog({
       setCandidate(undefined)
       setPhase('edit')
       setError(
-        reason instanceof ApiError &&
-          reason.details &&
-          typeof reason.details === 'object' &&
-          (reason.details as { code?: unknown }).code ===
-            'coding_checkpoint_base_changed'
-          ? t(
-              '原项目文件已变化，不能沿用该检查点。请核对基线或选择从原项目开始。',
-              'The original project files changed. Review the base or start from the current project files.',
-            )
-          : t(
-              '资料、检查点或隔离运行能力验证失败，尚未准备或调用模型。',
-              'Source, checkpoint or sandbox verification failed. No candidate was prepared and no model was called.',
-            ),
+        pytestUnavailable(reason)
+          ? pytestUnavailableMessage()
+          : reason instanceof ApiError &&
+              reason.details &&
+              typeof reason.details === 'object' &&
+              (reason.details as { code?: unknown }).code ===
+                'coding_checkpoint_base_changed'
+            ? t(
+                '原项目文件已变化，不能沿用该检查点。请核对基线或选择从原项目开始。',
+                'The original project files changed. Review the base or start from the current project files.',
+              )
+            : t(
+                '资料、检查点或隔离运行能力验证失败，尚未准备或调用模型。',
+                'Source, checkpoint or sandbox verification failed. No candidate was prepared and no model was called.',
+              ),
       )
     } finally {
       if (mounted.current) operation.current = false
@@ -252,7 +294,10 @@ export function CodingRunDialog({
       !state.candidate ||
       (action === 'execute' &&
         state.candidate.config.continuation &&
-        !continuationEnabled) ||
+        !state.continuationEnabled) ||
+      (action === 'execute' &&
+        state.candidate.snapshot.profile === 'python-pytest' &&
+        !state.pytestEnabled) ||
       (action === 'execute' && !state.consent)
     )
       return
@@ -277,6 +322,15 @@ export function CodingRunDialog({
         if (!mounted.current || controller.signal.aborted) return
         setJob(registered)
       }
+      if (
+        action === 'execute' &&
+        registered.candidate.snapshot.profile === 'python-pytest' &&
+        !latest.current.pytestEnabled
+      ) {
+        setPhase('prepared')
+        setError(pytestUnavailableMessage())
+        return
+      }
       const result = await applyCoding(
         task.id,
         registered,
@@ -300,10 +354,12 @@ export function CodingRunDialog({
           setPhase('preview')
         } else setPhase('unknown')
         setError(
-          t(
-            '请求未应用，请核对候选后重新确认。',
-            'The request was not applied. Review the candidate and confirm again.',
-          ),
+          pytestUnavailable(reason)
+            ? pytestUnavailableMessage()
+            : t(
+                '请求未应用，请核对候选后重新确认。',
+                'The request was not applied. Review the candidate and confirm again.',
+              ),
         )
       } else {
         setPhase('unknown')
@@ -320,7 +376,12 @@ export function CodingRunDialog({
   }
   function change(next: Partial<CodingConfig>) {
     if (operation.current || latest.current.pending) return
-    setConfig((previous) => ({ ...previous, ...next }))
+    setConfig((previous) => {
+      const updated = { ...previous, ...next }
+      if (updated.profile === undefined) delete updated.profile
+      if (updated.continuation === undefined) delete updated.continuation
+      return updated
+    })
     setCandidate(undefined)
     setConsent(false)
     setPhase('edit')
@@ -335,6 +396,10 @@ export function CodingRunDialog({
   const displayed = job?.candidate ?? candidate
   const unsupportedContinuation = Boolean(
     displayed?.config.continuation && !continuationEnabled,
+  )
+  const unsupportedPytest = Boolean(
+    (displayed?.snapshot.profile ?? config.profile) === 'python-pytest' &&
+    !pytestEnabled,
   )
   return (
     <>
@@ -367,6 +432,14 @@ export function CodingRunDialog({
               {t(
                 '服务未提供本轮代码接续能力，执行已暂停。',
                 'This server does not admit code continuation. Execution is paused.',
+              )}
+            </p>
+          )}
+          {unsupportedPytest && (
+            <p role="alert" className="wb-error">
+              {t(
+                '服务未提供 pytest 测试能力，执行已暂停。已准备的候选仍可放弃。',
+                'This server does not admit pytest tests. Execution is paused; a prepared candidate can still be discarded.',
               )}
             </p>
           )}
@@ -430,6 +503,26 @@ export function CodingRunDialog({
                 </>
               )}
               <AppSelect
+                label={t('测试框架', 'Test profile')}
+                value={config.profile ?? 'python-unittest'}
+                options={[
+                  { value: 'python-unittest', label: 'Python unittest' },
+                  ...(pytestEnabled
+                    ? [{ value: 'python-pytest', label: 'Python pytest' }]
+                    : []),
+                ]}
+                disabled={busy}
+                onChange={(value) => {
+                  if (value === 'python-unittest')
+                    change({ profile: undefined })
+                  else if (
+                    value === 'python-pytest' &&
+                    latest.current.pytestEnabled
+                  )
+                    change({ profile: 'python-pytest' })
+                }}
+              />
+              <AppSelect
                 label={t('实现模型', 'Implementation model')}
                 value={config.model_id}
                 options={models.map((model) => ({
@@ -484,7 +577,7 @@ export function CodingRunDialog({
                   'Review sources & test environment',
                 )}
                 icon={<FileSearch size={16} />}
-                disabled={busy}
+                disabled={busy || unsupportedPytest}
                 onClick={() => void preview()}
               />
             </>
@@ -502,7 +595,12 @@ export function CodingRunDialog({
                   <code>{displayed.snapshot.model.endpoint}</code>
                 </dd>
                 <dt>{t('测试', 'Tests')}</dt>
-                <dd>Python unittest · {displayed.config.test_timeout}s</dd>
+                <dd>
+                  {displayed.snapshot.profile === 'python-pytest'
+                    ? 'Python pytest'
+                    : 'Python unittest'}{' '}
+                  · {displayed.config.test_timeout}s
+                </dd>
                 <dt>{t('模型调用上限', 'Model call limit')}</dt>
                 <dd>{displayed.config.max_rounds}</dd>
                 <dt>{t('单次输出设置', 'Output token setting')}</dt>
@@ -591,7 +689,12 @@ export function CodingRunDialog({
                 label={t('确认修改并验证', 'Confirm implementation & tests')}
                 icon={<Play size={16} />}
                 tone="primary"
-                disabled={busy || !consent || unsupportedContinuation}
+                disabled={
+                  busy ||
+                  !consent ||
+                  unsupportedContinuation ||
+                  unsupportedPytest
+                }
                 onClick={() => void submit('execute')}
               />
               {job?.state === 'prepared' && (

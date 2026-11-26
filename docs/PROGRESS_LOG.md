@@ -1433,6 +1433,27 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
   本批按目标继续提交push，以Git回执为准。更多runtime、计划修订/更广分解、
   基线冲突处理仍待，不宣称AI自动拆解/任意DAG调度；原119/9/110不变。
 
+## 2026-11-27 固定pytest研发验证
+
+Task研发实现新增固定Python pytest选择，复用现有Dialog和Run树；框架与候选/hash、
+实际逐轮测试绑定。旧unittest省略字段保持，检查点切框架重新跑基线。
+固定显式文件、可信配置、禁conftest/plugin/cache，原隔离权限不放宽；
+缺依赖/零项/全skip/矛盾receipt/超时不算通过，不安装或回退。
+
+1312Python/2309前端79文件/typecheck/build通过，24pytest/63旧编码接续依赖专项通过；
+10pytest/58综合/8主只读，共76浏览器检查和76最终fixturePNG。
+复制mybot路径校验代码，4不变pytest实测failure2→failure1→pass4，1Run/2注入模型JSON，
+实际文件/隔离测试/HTTP/SQLite真实；原文件不变，patch只check。未调用真实付费模型。
+保留初探权限、错误fixture预期、Playwright路径、综合context关闭与主GET脚本时序失败；
+新环境综合完整重跑，未更改无关调用详情逻辑。
+最后allskip矛盾receipt拒绝规则细化后再次2309前端/build/主8GET通过；
+10/58浏览器是细化前合法链路，不伪称对新拒绝分支做浏览器重跑。
+
+4180原PID84755空闲/备份/副本演练/原行比对后同command/cwd/env更新PID378077，
+5173保留，coding_pytest=true。主GET-only后原行再次一致，无正式候选/模型/测试。
+临时服务已停；原httpx/chunk警告、Bootstrap全量、119/9/110不变。
+[证据和剩余范围](../frontend/evidence/coding-pytest-2026-11-27/README.md)。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。
@@ -1442,7 +1463,7 @@ Codex app-server 方向研究：使用本机 `codex app-server generate-json-sch
 当前交付顺序以 [PRODUCT_GOALS_CURRENT.md](PRODUCT_GOALS_CURRENT.md) 为准：
 Task工作区、选定消息、固定Workflow及Task范围设备接续初版已交付，
 显式历史位置、D3b一次研究委托和隔离研发实现/真实测试首版也已交付。
-明确前轮成果引用已按ADR-0028交付；当前优先更多runtime/测试profile、计划修订/
+明确前轮成果引用已按ADR-0028交付，固定pytest按ADR-0031交付；当前优先其他runtime、计划修订/
 更广任务分解与基线变化的显式冲突处理；同基线coding检查点接续已按ADR-0029交付，
 有界真实Task拆解与报告前置门禁已按ADR-0030交付，
 设备D4b/D5b与连接器保留待办，

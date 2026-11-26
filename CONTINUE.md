@@ -1,5 +1,42 @@
 # 下次从这里继续
 
+更新日期：2026-11-27（Asia/Singapore；固定pytest研发验证已验收、本机启用）。
+
+最新合同[ADR-0031](docs/decisions/ADR-0031-python-pytest-profile.md)，
+[证据](frontend/evidence/coding-pytest-2026-11-27/README.md)。起点b886ce0已push；
+用户“继续”沿核心研发交付固定Python pytest profile，提交push回执以Git为准。
+Task研发实现明确选unittest/pytest，freeze绑定config/snapshot/hash/Run/逐轮test_result；
+默认省略profile保留旧候选/请求/checkpoint身份，不补字段。
+已装pytest仍须真实fixture/parametrize隔离探测；缺依赖明确失败，不安装/fallback。
+固定显式测试/可信ini/confcutdir，禁conftest、自动/模块plugin、cache/logging/faulthandler；
+Landlock/seccomp只读/网络/进程权限不放宽。collection/setup/teardown错误独立，
+xfail计skip、XPASS计fail，零项/全skip/坏或重复receipt/超时/截断不可通过。
+切框架接续旧checkpoint重跑基线；prepared失cap可discard不可execute，unknown原ID GET。
+
+最终1312Python/2309前端79文件/typecheck/build、24pytest/63旧编码接续依赖专项通过。
+专项10/15PNG、综合新fixture58/61PNG、主GET-only8，共76浏览器/76最终fixturePNG；
+最终pageerror0，专项外部HTTP0。SWNcW9复制mybot schemas与依赖，4不变pytest
+failure2→failure1→pass4、1Run/2注入JSON；丢prepare/execute只原GET、各1POST。
+原源/测试/原仓库字节不变，下载patch只git apply --check。模型是fixture，执行/HTTP/持久化真实，
+没有付费Provider/Codex认证。保留初探权限、专项错误预期、Playwright路径、
+综合context关闭和主GET脚本时序失败，不拿早期部分画面拼接最终通过。
+最后前端收紧allskip矛盾成功receipt后，再验2309/build/主8GET；10/58 browser为细化前合法
+链路，拒绝支路由单测覆盖，不伪称浏览器重跑。
+app207.08/gzip65.88kB、CSS39.89/7.50、lazyCoding16.20/6.13、Run25.75/9.43、
+TaskWorkspace36.81/12.18；旧httpx/chunk警告、Bootstrap全量、119/9/110保持。
+
+主4180原空闲PID84755经identity/cwd/env内存核验、一致backup/Store副本演练/原行比对/
+SIGTERM锁释放，同command/cwd/env启动PID378077，coding_pytest=true；主5173原进程保持。
+8只读后再次原行相同：原1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event，
+coding_jobs/TaskTurns/计划/设备授权0，Workflow原行不变。私有备份
+`.runtime/backups/before-devices-20261126T160459Z/`700/DBlog600，不进Git；无正式候选/
+模型/测试、正文截图/环境/原摘要导出。旧PID脚本不可重跑，不热覆盖回退；
+临时4187/4188/5176/5177已停。
+
+下一核心：**计划修订与更广任务分解、原基线变化的显式冲突处理、其他语言/runtime**。
+固定pytest子范围已交付，不重复建设此选择器；插件/可写fixture、任意Shell、原项目应用/
+合并/部署、长期Agent/AI自动分解仍待。设备/连接器不是默认下一批。
+
 更新日期：2026-11-26（Asia/Singapore；真实Task拆解与依赖首版已验收、本机启用）。
 
 最新合同[ADR-0030](docs/decisions/ADR-0030-task-breakdown-dependencies.md)，证据

@@ -565,3 +565,12 @@ round0区分继承代码基线。三style双mode、1440英文/390中文、reduce
 8主专项/3窄屏编辑/58综合/8主只读，共77浏览器检查/72最终fixturePNG，
 三style双mode、英文1440/中文390/reduced motion。主4180/5173已启用，原数据不变。
 证据`frontend/evidence/task-plans-2026-11-26/README.md`，没有声称计划修订/AI自动拆解/真机完成。
+
+## 34. 固定pytest验证
+
+2026-11-27沿form-wizard/work-item-detail已适配的Dialog/Run树新增测试框架选择和实际
+profile显示，复用AppSelect/Button/Checkbox与原语义tokens，未新增通用UI、vendor源码、
+模板副本或主题分支。默认unittest保留；pytest能力丢失可放弃候选、不可执行。
+2309前端/1312Python/typecheck/build通过，10专项/58综合/8主只读与76最终fixturePNG，
+三style双mode/1440英文/390中文/reduced motion已验。主4180/5173启用、原数据不变；
+模型生成是fixture，测试进程真实。证据`frontend/evidence/coding-pytest-2026-11-27/README.md`。

@@ -5,6 +5,7 @@ import json
 from pathlib import Path, PurePosixPath
 import sqlite3
 import tempfile
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -41,6 +42,18 @@ class CodingConfig(BaseModel):
     test_timeout: int = Field(default=10, ge=1, le=15)
     max_output_tokens: int = Field(default=8192, ge=1024, le=16384)
     continuation: CodingContinuation | None = None
+    profile: Literal["python-unittest", "python-pytest"] | None = None
+
+    @field_validator("profile")
+    @classmethod
+    def explicit_profile(cls, value):
+        if value is None:
+            raise ValueError("coding_profile_invalid")
+        return value
+
+    @property
+    def test_profile(self):
+        return self.profile or "python-unittest"
 
     @field_validator("writable", "tests")
     @classmethod
@@ -119,7 +132,7 @@ class CodingService:
             model["workspace"] = str(self.workspace)
         snapshot = {
             "task_id": task_id, "goal": task["goal"], "acceptance": task["acceptance"],
-            "notes": project["notes"], "files": records, "profile": "python-unittest",
+            "notes": project["notes"], "files": records, "profile": config.test_profile,
             "model": {key: model[key] for key in ("id", "name", "kind", "model", "endpoint")},
         }
         if config.continuation is not None:
@@ -152,7 +165,7 @@ class CodingService:
             return checkpoint_page(db, task_id, page)
 
     def prepare(self, task_id, body):
-        config = CodingConfig.model_validate(body.model_dump(exclude={"request_id", "preview_hash"}))
+        config = CodingConfig.model_validate(body.model_dump(exclude={"request_id", "preview_hash"}, exclude_none=True))
         input_hash = fingerprint([task_id, body.model_dump(exclude_none=True)])
         with self.store.transaction() as db:
             prior = db.execute("SELECT * FROM coding_jobs WHERE request_id=?", (body.request_id,)).fetchone()
@@ -212,6 +225,9 @@ class CodingService:
                 raise CodingError("coding_candidate_discarded")
             dependencies = TaskTurnService.require_ready(db, task_id, own_coding_id=request_id)
             candidate = json.loads(row["candidate"])
+            config = CodingConfig.model_validate(candidate["config"])
+            if candidate["snapshot"]["profile"] != config.test_profile:
+                raise CodingError("coding_profile_inconsistent")
             model = decode(db.execute("SELECT * FROM models WHERE id=?", (candidate["config"]["model_id"],)).fetchone())
             if model is None or any(
                 model.get(key) != candidate["model"].get(key)
@@ -241,7 +257,7 @@ class CodingService:
             db.execute("UPDATE coding_jobs SET state='applied',run_id=? WHERE request_id=?", (run_id, request_id))
             self.store.event(db, "coding.authorized", {
                 "task_id": task_id, "request_id": request_id, "candidate_hash": row["candidate_hash"],
-                "profile": "python-unittest", "original_workspace_write": False,
+                "profile": candidate["snapshot"]["profile"], "original_workspace_write": False,
                 **({"checkpoint_id": candidate["snapshot"]["continuation"]["id"]}
                    if "continuation" in candidate["snapshot"] else {}),
             }, run_id, entity_id=request_id, actor="user")
@@ -276,7 +292,8 @@ class CodingHarness:
         return {
             "id": "isolated-coding", "version": 1, "mode": "isolated_write",
             "supports_pause": False, "supports_cancel": True, "supports_resume": False,
-            "tools": ["python-unittest"], "parallel_limit": 1, "run_status": run["status"],
+            "tools": [run["context"]["coding"]["snapshot"]["profile"]],
+            "parallel_limit": 1, "run_status": run["status"],
             "current_stage": next((a["step_key"] for a in agents if a["status"] == "running"), None),
             "stages": [{
                 "key": agent["step_key"], "title": agent["title"], "description": agent["objective"],
@@ -293,10 +310,12 @@ class CodingHarness:
     async def execute(self, run, invoke, checkpoint):
         candidate = run["context"]["coding"]
         config = CodingConfig.model_validate(candidate["config"])
+        if candidate["snapshot"]["profile"] != config.test_profile:
+            raise CodingError("coding_profile_inconsistent")
         baseline = file_records(candidate["snapshot"]["files"])
         original = file_records(candidate["snapshot"].get("origin_files", candidate["snapshot"]["files"]))
         current = dict(baseline)
-        await self.runner.probe()
+        await self.runner.probe(config.test_profile)
         with tempfile.TemporaryDirectory(prefix="mybot-coding-work-") as directory:
             root = Path(directory)
             def write_copy():
@@ -309,10 +328,10 @@ class CodingHarness:
                 write_copy()
                 agent = self.store.agent(
                     run["id"], f"test-{round_number}", "validator", f"Python tests · {round_number}",
-                    "Run the immutable selected tests in the confined copy", "system:python-unittest",
+                    "Run the immutable selected tests in the confined copy", f"system:{config.test_profile}",
                 )
                 self.store.agent_status(agent["id"], "running")
-                result = await self.runner.run(root, config.tests, config.test_timeout)
+                result = await self.runner.run(root, config.tests, config.test_timeout, profile=config.test_profile)
                 self.store.agent_status(agent["id"], "succeeded" if result["passed"] else "failed")
                 self.store.artifact(run["id"], agent["id"], f"实际测试 · {round_number}", "test_result",
                                     dump({**result, "round": round_number, "test_files": config.tests}))
@@ -320,6 +339,7 @@ class CodingHarness:
                     self.store.event(db, "coding.tests.completed", {
                         "round": round_number, "exit_code": result["exit_code"],
                         "tests_run": result["tests_run"], "passed": result["passed"],
+                        "profile": config.test_profile,
                         "timed_out": result["timed_out"], "truncated": result["truncated"],
                     }, run["id"], entity_id=agent["id"])
                 if (result["exit_code"] == 125 or result["tests_run"] == 0 or

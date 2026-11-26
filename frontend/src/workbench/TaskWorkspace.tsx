@@ -541,6 +541,7 @@ export function TaskWorkspace({
         >
           <CodingRunDialog
             continuationEnabled={data.capabilities.coding_continuation === true}
+            pytestEnabled={data.capabilities.coding_pytest === true}
             key={taskId}
             task={item.task}
             models={data.models}

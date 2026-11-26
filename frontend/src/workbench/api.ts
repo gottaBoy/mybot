@@ -80,6 +80,7 @@ export type Bootstrap = {
     device_execution_delegation?: boolean
     isolated_coding?: boolean
     coding_continuation?: boolean
+    coding_pytest?: boolean
     task_artifact_references?: boolean
     task_plans?: boolean
   }

@@ -10,6 +10,7 @@ import {
   prepareCoding,
   previewCoding,
   type CodingCandidate,
+  type CodingProfile,
 } from '../src/workbench/coding'
 import {
   readTaskWorkspaceLocation,
@@ -75,6 +76,71 @@ describe('isolated coding admission', () => {
     expect(parseCodingJob(job, 'task-a', job.request_id, candidate)).toEqual(
       job,
     )
+  })
+  it('keeps the legacy unittest configuration profile absent', () => {
+    expect(parseCodingConfig(config)).toEqual(config)
+    expect(parseCodingConfig(config)).not.toHaveProperty('profile')
+  })
+  it.each<CodingProfile>(['python-unittest', 'python-pytest'])(
+    'admits explicit %s and binds its snapshot and exact receipt',
+    (profile) => {
+      const selected = {
+        ...candidate,
+        config: { ...config, profile },
+        snapshot: { ...candidate.snapshot, profile },
+      }
+      expect(parseCodingCandidate(selected, 'task-a', selected.config)).toEqual(
+        selected,
+      )
+      expect(
+        parseCodingJob(
+          { ...job, candidate: selected },
+          'task-a',
+          job.request_id,
+          selected,
+        ).candidate.config.profile,
+      ).toBe(profile)
+    },
+  )
+  it.each([null, undefined, '', 'pytest', 'python-node', true])(
+    'rejects unsupported or absent-valued explicit profile %j',
+    (profile) => {
+      expect(() => parseCodingConfig({ ...config, profile })).toThrow()
+    },
+  )
+  it.each([
+    { config, snapshot: { ...candidate.snapshot, profile: 'python-pytest' } },
+    {
+      config: { ...config, profile: 'python-pytest' },
+      snapshot: candidate.snapshot,
+    },
+    {
+      config: { ...config, profile: 'python-unittest' },
+      snapshot: { ...candidate.snapshot, profile: 'python-pytest' },
+    },
+  ])('rejects a substituted test profile %j', (patch) => {
+    expect(() =>
+      parseCodingCandidate({ ...candidate, ...patch }, 'task-a'),
+    ).toThrow()
+  })
+  it('sends explicit pytest through preview and preparation unchanged', async () => {
+    const selected: CodingCandidate = {
+      ...candidate,
+      config: { ...config, profile: 'python-pytest' },
+      snapshot: { ...candidate.snapshot, profile: 'python-pytest' },
+    }
+    const fetcher = vi
+      .fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify(selected)))
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ ...job, candidate: selected })),
+      )
+    vi.stubGlobal('fetch', fetcher)
+    await previewCoding('task-a', selected.config)
+    await prepareCoding('task-a', job.request_id, selected)
+    expect(
+      fetcher.mock.calls.map((call) => JSON.parse(call[1].body).profile),
+    ).toEqual(['python-pytest', 'python-pytest'])
   })
   it.each([
     { max_rounds: 4 },
@@ -173,15 +239,13 @@ describe('isolated coding admission', () => {
   it('prepared hydration rejects an applied row and cancelled reads make no request', async () => {
     vi.stubGlobal(
       'fetch',
-      vi
-        .fn()
-        .mockResolvedValue(
-          new Response(
-            JSON.stringify({
-              prepared: { ...job, state: 'applied', run_id: 'run-a' },
-            }),
-          ),
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            prepared: { ...job, state: 'applied', run_id: 'run-a' },
+          }),
         ),
+      ),
     )
     await expect(fetchPreparedCoding('task-a')).rejects.toThrow()
     const fetcher = vi.fn()
@@ -197,6 +261,69 @@ describe('isolated coding admission', () => {
 describe('actual test result contract', () => {
   it('preserves actual output and test count', () =>
     expect(parseCodingTest(JSON.stringify(result))).toEqual(result))
+  it('preserves the pytest profile and all five actual receipt fields', () => {
+    const pytestResult = { ...result, profile: 'python-pytest' }
+    const parsed = parseCodingTest(JSON.stringify(pytestResult))
+    expect(parsed).toEqual(pytestResult)
+    expect(parsed.profile).toBe('python-pytest')
+    expect(parsed.receipt).toEqual(result.receipt)
+  })
+  it.each([
+    { tests_run: 0, errors: 1 },
+    { tests_run: 1, errors: 2 },
+  ])('preserves actual pytest collection or fixture errors %j', (counts) => {
+    const failed = {
+      ...result,
+      profile: 'python-pytest',
+      exit_code: 1,
+      passed: false,
+      tests_run: counts.tests_run,
+      receipt: { ...result.receipt, ...counts, success: false },
+    }
+    expect(parseCodingTest(JSON.stringify(failed))).toEqual(failed)
+  })
+  it('rejects success receipts that contradict actual failures', () => {
+    expect(() =>
+      parseCodingTest(
+        JSON.stringify({
+          ...result,
+          receipt: { ...result.receipt, failures: 1 },
+        }),
+      ),
+    ).toThrow()
+  })
+  it('preserves all-skipped failures and rejects contradictory successful receipts', () => {
+    const skipped = {
+      ...result,
+      profile: 'python-pytest',
+      passed: false,
+      receipt: {
+        ...result.receipt,
+        skipped: result.tests_run,
+        success: false,
+      },
+    }
+    expect(parseCodingTest(JSON.stringify(skipped))).toEqual(skipped)
+    expect(() =>
+      parseCodingTest(JSON.stringify({ ...skipped, passed: true })),
+    ).toThrow()
+    expect(() =>
+      parseCodingTest(
+        JSON.stringify({
+          ...skipped,
+          receipt: { ...skipped.receipt, success: true },
+        }),
+      ),
+    ).toThrow()
+  })
+  it.each([null, undefined, 'pytest', 'python-node'])(
+    'rejects an unsupported test-result profile %j',
+    (profile) => {
+      expect(() =>
+        parseCodingTest(JSON.stringify({ ...result, profile })),
+      ).toThrow()
+    },
+  )
   it.each([
     { exit_code: 1 },
     { tests_run: 0 },

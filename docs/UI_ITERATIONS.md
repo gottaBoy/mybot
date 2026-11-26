@@ -763,3 +763,18 @@ required标记定位和sending时提前unroute的脚本失败保留，未保存�
 主4180 PID1104938与5173启用且原业务行不变。配对端不能自动调用模型；
 真正远程网络/HTTPS/物理手机、委托执行和进程迁移仍未实现。
 证据`frontend/evidence/devices-2026-11-23/README.md`及ADR-0024，未声称用户最终视觉接受。
+
+## 39. 研发测试框架与真实证据
+
+日期：2026-11-27。沿用研发Dialog和RunWorkspace同一业务树，增加AppSelect的
+unittest/pytest选择，准备摘要、运行测试状态和选定测试Artifact显示真实框架。
+换框架撤回preview/consent；prepared保留冻结值，失cap不隐式回退；收集/fixture错误
+和人工审查保持独立。没有新首页、演示数据、组件库或按主题复制页面。
+
+真实复制mybot源的fixture验收4项pytest从失败2→失败1→通过，1Run/2注入模型JSON；
+副本写入/测试/HTTP/持久化实际，原文件不变。Neutral/Zira/Y2K双mode、1440英文/
+390中文、reduced motion实际PNG检查无重叠，主入口8GET-only通过。
+2309前端/1312Python/build，10专项/58综合/8主只读与76最终fixturePNG；
+保留综合context中断与主GET早期时序失败，最终均独立完整重跑。
+主4180/5173已启用、原业务行不变；不是模型效果/真机或完整pytest插件兼容认证。
+见`frontend/evidence/coding-pytest-2026-11-27/README.md`。119/9/110保持。

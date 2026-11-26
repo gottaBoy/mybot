@@ -1,0 +1,796 @@
+{
+  "fixture": true,
+  "modelGeneration": "Injected coding-fixture JSON; no real Provider or paid model call",
+  "actualExecution": "Copied mybot source, confined Python pytest subprocesses, HTTP and SQLite",
+  "profile": "python-pytest",
+  "checks": [
+    "Explicit Python pytest selection produces an exact pytest source/test candidate without starting a Run",
+    "Lost pytest preparation reloads the original GET receipt, keeps its profile and requires fresh consent",
+    "Frozen pytest candidates retain the selected profile across three styles, both modes, desktop English and mobile Chinese",
+    "Actual confined pytest verifies fail2 -> partial fix/fail1 -> pass4 with one execution POST and two injected model responses",
+    "Copied source, immutable pytest fixture and original repository source remain byte-for-byte unchanged",
+    "Run shows the actual pytest profile and blocks incompatible research recovery controls",
+    "Actual implementation and pytest stages keep their real Agent memberships",
+    "Actual Diff downloads unchanged and passes git apply --check without applying it",
+    "Actual pytest output, fixed argv, result counts and exit evidence display and export as original JSON",
+    "Actual pytest results retain their profile across all six style/mode layouts"
+  ],
+  "errors": [],
+  "external": [],
+  "reads": [
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/project-references"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/project-references"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding/cf3cb0d8-524e-440a-a613-b0edea32dff8"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding/cf3cb0d8-524e-440a-a613-b0edea32dff8"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/project-references"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding/cf3cb0d8-524e-440a-a613-b0edea32dff8"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding/cf3cb0d8-524e-440a-a613-b0edea32dff8"
+    },
+    {
+      "path": "/api/project-references"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/project-references"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding/cf3cb0d8-524e-440a-a613-b0edea32dff8"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding/cf3cb0d8-524e-440a-a613-b0edea32dff8"
+    },
+    {
+      "path": "/api/project-references"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/project-references"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding/cf3cb0d8-524e-440a-a613-b0edea32dff8"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding/cf3cb0d8-524e-440a-a613-b0edea32dff8"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding/cf3cb0d8-524e-440a-a613-b0edea32dff8"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding/cf3cb0d8-524e-440a-a613-b0edea32dff8"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/runs/b6cafde316684977bbbee8703923a34f"
+    },
+    {
+      "path": "/api/runs/b6cafde316684977bbbee8703923a34f"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/runs/b6cafde316684977bbbee8703923a34f"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/runs/b6cafde316684977bbbee8703923a34f"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/runs/b6cafde316684977bbbee8703923a34f"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/runs/b6cafde316684977bbbee8703923a34f"
+    },
+    {
+      "path": "/api/runs/b6cafde316684977bbbee8703923a34f/retry-preview"
+    },
+    {
+      "path": "/api/project-references"
+    },
+    {
+      "path": "/api/project-references"
+    },
+    {
+      "path": "/api/project-references"
+    },
+    {
+      "path": "/api/project-references"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/project-references"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/runs/b6cafde316684977bbbee8703923a34f"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/runs/b6cafde316684977bbbee8703923a34f"
+    },
+    {
+      "path": "/api/project-references"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/project-references"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/runs/b6cafde316684977bbbee8703923a34f"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/runs/b6cafde316684977bbbee8703923a34f"
+    },
+    {
+      "path": "/api/project-references"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/project-references"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/runs/b6cafde316684977bbbee8703923a34f"
+    },
+    {
+      "path": "/api/auth/state"
+    },
+    {
+      "path": "/api/bootstrap"
+    },
+    {
+      "path": "/api/workspace/counts"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/plan"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding"
+    },
+    {
+      "path": "/api/projects/9b5c81e5cf264005978ff943df974e82/detail"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/turns"
+    },
+    {
+      "path": "/api/runs/b6cafde316684977bbbee8703923a34f"
+    }
+  ],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c0d7c10f2d424bdd823d4169424c801d/coding/cf3cb0d8-524e-440a-a613-b0edea32dff8/execute",
+      "method": "POST"
+    }
+  ],
+  "geometry": [
+    {
+      "surface": "candidate",
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "color": "rgb(0, 0, 0)",
+      "background": "rgb(255, 255, 255)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "surface": "candidate",
+      "style": "neutral",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(28, 31, 34)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "surface": "candidate",
+      "style": "zira",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "color": "rgb(23, 43, 77)",
+      "background": "rgb(255, 255, 255)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+    },
+    {
+      "surface": "candidate",
+      "style": "zira",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "color": "rgb(230, 233, 239)",
+      "background": "rgb(22, 26, 34)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+    },
+    {
+      "surface": "candidate",
+      "style": "y2k",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "color": "rgb(45, 36, 27)",
+      "background": "rgb(255, 255, 255)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "surface": "candidate",
+      "style": "y2k",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "color": "rgb(237, 239, 252)",
+      "background": "rgb(22, 24, 43)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "surface": "result",
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "color": "rgb(0, 0, 0)",
+      "background": "rgb(255, 255, 255)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "surface": "result",
+      "style": "neutral",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(28, 31, 34)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "surface": "result",
+      "style": "zira",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "color": "rgb(23, 43, 77)",
+      "background": "rgb(255, 255, 255)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+    },
+    {
+      "surface": "result",
+      "style": "zira",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "color": "rgb(230, 233, 239)",
+      "background": "rgb(22, 26, 34)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+    },
+    {
+      "surface": "result",
+      "style": "y2k",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "color": "rgb(45, 36, 27)",
+      "background": "rgb(255, 255, 255)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "surface": "result",
+      "style": "y2k",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "color": "rgb(237, 239, 252)",
+      "background": "rgb(22, 24, 43)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    }
+  ],
+  "screenshots": [
+    "candidate-neutral-light.png",
+    "candidate-neutral-dark.png",
+    "candidate-zira-light.png",
+    "candidate-zira-dark.png",
+    "candidate-y2k-light.png",
+    "candidate-y2k-dark.png",
+    "graph-implementation-desktop.png",
+    "actual-patch-desktop.png",
+    "actual-tests-desktop.png",
+    "result-neutral-light.png",
+    "result-neutral-dark.png",
+    "result-zira-light.png",
+    "result-zira-dark.png",
+    "result-y2k-light.png",
+    "result-y2k-dark.png"
+  ],
+  "actual": {
+    "task_id": "c0d7c10f2d424bdd823d4169424c801d",
+    "run_id": "b6cafde316684977bbbee8703923a34f",
+    "status": "succeeded",
+    "model_calls": 2,
+    "test_attempts": [
+      {
+        "profile": "python-pytest",
+        "round": 0,
+        "tests_run": 4,
+        "exit_code": 1,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0,
+        "passed": false
+      },
+      {
+        "profile": "python-pytest",
+        "round": 1,
+        "tests_run": 4,
+        "exit_code": 1,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0,
+        "passed": false
+      },
+      {
+        "profile": "python-pytest",
+        "round": 2,
+        "tests_run": 4,
+        "exit_code": 0,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": true
+      }
+    ]
+  }
+}

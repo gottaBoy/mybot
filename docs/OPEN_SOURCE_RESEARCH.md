@@ -2,6 +2,15 @@
 
 查阅日期：2026-11-01；2026-11-02 增补第一轮链路对照。
 
+2026-11-26固定pytest profile只读核对已锁定的`pytest-dev/pytest`发布包9.2.0：
+本机`.venv/lib/python3.12/site-packages/_pytest/config/__init__.py`
+（consider_module/consider_env/plugin载入）、`_pytest/main.py`
+（collect/confcutdir）和`_pytest/logging.py`（默认日志文件）。
+未克隆新commit、复制vendor源码或升级依赖；发布包身份来自METADATA，
+不是上游HEAD审计。仅禁entrypoint autoload不足以阻止模块声明插件，因此固定runner
+拒绝该入口；confcutdir限制收集父目录，日志/cache/faulthandler禁用以保持原隔离权限。
+本地实际执行与误判/边界测试见ADR-0031证据，源码观察不等于完整pytest兼容性。
+
 2026-11-26代码接续交付只读核对本机已固定的Astryx0.7.13安装产物
 `frontend/node_modules/@astryxdesign/core/dist/Selector/Selector.js`及
 mybot `frontend/src/components/ui/index.tsx`包装，确认option DOM focus与Selector

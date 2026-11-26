@@ -20,6 +20,9 @@ ADR-0030 adds a single immutable root Task breakdown and real child Tasks.
 Prerequisite admission requires the most recent successful Run's reviewed final
 reports. This is an execution condition, not an automatic Task-completed state,
 model memory, nested decomposition or arbitrary workflow scheduling.
+ADR-0031 adds an explicitly selected fixed Python pytest profile alongside legacy
+unittest. Keep absent legacy config fields absent; never install dependencies,
+load repository pytest plugins/configuration or expand test process permissions.
 Distinguish local activation from isolated tests; Task messages are not implicit
 model memory, and a fixed pipeline is not an arbitrary DAG.
 For frontend work, also read `docs/ASTRYX_TEMPLATE_INTEGRATION.md` and

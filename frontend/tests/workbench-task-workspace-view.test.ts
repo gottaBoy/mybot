@@ -252,6 +252,28 @@ beforeEach(() => {
 })
 
 describe('Task workspace composition', () => {
+  it.each([undefined, false, true])(
+    'passes only explicit pytest capability to the implementation dialog: %j',
+    (coding_pytest) => {
+      mocks.location = {
+        tab: 'goal',
+        codingRequestId: 'original-coding-request',
+      }
+      render({
+        data: {
+          ...data,
+          capabilities: {
+            ...data.capabilities,
+            isolated_coding: true,
+            coding_pytest,
+          },
+        },
+      })
+      expect(
+        mocks.runs.find((props) => 'pytestEnabled' in props)?.pytestEnabled,
+      ).toBe(coding_pytest === true)
+    },
+  )
   it('uses named icon-only Task tabs on narrow screens and keeps all four destinations', () => {
     mocks.compact = true
     render()

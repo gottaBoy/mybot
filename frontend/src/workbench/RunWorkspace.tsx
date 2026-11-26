@@ -224,7 +224,15 @@ export function RunWorkspace({
     try {
       const results = artifacts
         .filter((item) => item.kind === 'test_result')
-        .map((item) => parseCodingTest(item.content))
+        .map((item) => {
+          const result = parseCodingTest(item.content)
+          if (
+            codingCandidate &&
+            result.profile !== codingCandidate.snapshot.profile
+          )
+            throw new Error('coding_test_profile_mismatch')
+          return result
+        })
       latestTest = results.sort((a, b) => b.round - a.round)[0]
     } catch {
       testError = true
@@ -237,7 +245,13 @@ export function RunWorkspace({
     preferredArtifact(artifacts)
   if (artifact?.kind === 'test_result') {
     try {
-      selectedTest = parseCodingTest(artifact.content)
+      const result = parseCodingTest(artifact.content)
+      if (
+        codingCandidate &&
+        result.profile !== codingCandidate.snapshot.profile
+      )
+        throw new Error('coding_test_profile_mismatch')
+      selectedTest = result
     } catch {
       testError = true
     }
@@ -316,6 +330,12 @@ export function RunWorkspace({
           selectedTest ? (
             <>
               <dl className="wb-details">
+                <dt>{t('测试框架', 'Test profile')}</dt>
+                <dd>
+                  {selectedTest.profile === 'python-pytest'
+                    ? 'Python pytest'
+                    : 'Python unittest'}
+                </dd>
                 <dt>{t('测试结果', 'Test result')}</dt>
                 <dd>
                   {selectedTest.passed
@@ -576,6 +596,13 @@ export function RunWorkspace({
                   : t('未通过', 'Did not pass')
                 : t('未执行', 'Not run')}
           </span>
+          {codingCandidate && (
+            <span className="wb-muted" data-testid="run-test-profile">
+              {codingCandidate.snapshot.profile === 'python-pytest'
+                ? 'Python pytest'
+                : 'Python unittest'}
+            </span>
+          )}
         </div>
         <div>
           <small>{t('人工审查', 'Human review')}</small>

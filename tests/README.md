@@ -16,6 +16,15 @@ node --check web/app.js
 
 Codex 故障测试只运行临时 fake CLI，覆盖事件用量、超时、取消、输出限额、临时文件/读取任务清理、共享单通道、临时隔离 cwd/忽略 AGENTS 规则，以及恢复时复用已完成研究。不会执行本机真实 Codex。
 
+研发实现的固定 pytest profile 使用已安装依赖和同一隔离 runner，只运行明确选中的
+`.py` 文件，禁用项目配置、conftest、插件与缓存，不安装依赖或执行任意命令：
+
+```bash
+.venv/bin/python -m pytest -q tests/test_coding.py tests/test_coding_continuation.py tests/test_coding_pytest.py
+```
+
+它验证进程内 fixture/参数化/assert、收集与 fixture 错误、全跳过/xfail、时限和原文件不变。
+
 重试测试覆盖来源快照 hash、显式重放确认、最低新增预算、角色模型重新分配、来源 Run 不变、幂等请求、活动运行互斥和服务重启后的 lineage；不会自动发起真实 Provider 重试。
 
 `tests/test_backend_service.py` 通过 MockTransport 检查配置/GET 无网络、显式 POST consent、

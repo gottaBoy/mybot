@@ -51,14 +51,15 @@ root = Path(sys.argv[1])
 workspace = root / "workspace"
 workspace.mkdir(parents=True)
 (workspace / "README.md").write_text("# Browser test repository\nExplicit context fixture.", encoding="utf-8")
-if len(sys.argv) > 4 and sys.argv[4] == "coding":
+if len(sys.argv) > 4 and sys.argv[4] in {"coding", "pytest"}:
     if root.parent != Path("/tmp") or not root.name.startswith("mybot-astryx-workbench.") or root.is_symlink():
         raise ValueError("Coding browser input requires an explicit disposable fixture")
     repository = Path(__file__).resolve().parents[1]
     (workspace / "workbench").mkdir()
     for name in ("__init__.py", "schemas.py", "saved_views.py"):
         shutil.copyfile(repository / "workbench" / name, workspace / "workbench" / name)
-    shutil.copyfile(repository / "tests/fixtures/coding_relative_path_case.py", workspace / "test_relative_path.py")
+    test_case = "coding_pytest_case.py" if sys.argv[4] == "pytest" else "coding_relative_path_case.py"
+    shutil.copyfile(repository / "tests/fixtures" / test_case, workspace / "test_relative_path.py")
 settings = Settings(root / "data", workspace, poll_interval=0.01,
                     access_token=sys.argv[3] if len(sys.argv) > 3 else "")
 

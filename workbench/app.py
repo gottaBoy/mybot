@@ -338,6 +338,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "device_execution_delegation": True,
                                  "isolated_coding": True,
                                  "coding_continuation": True,
+                                 "coding_pytest": True,
                                  "task_plans": True,
                                  "task_artifact_references": True,
                                  "workspace_counts": True,
@@ -757,13 +758,19 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     @app.post("/api/tasks/{identifier}/coding/preview")
     async def coding_preview(identifier: str, body: CodingConfig, request: Request):
         coding_parameters(request)
-        await engine.coding.runner.probe()
+        if body.test_profile == "python-unittest":
+            await engine.coding.runner.probe()
+        else:
+            await engine.coding.runner.probe(body.test_profile)
         return coding.preview(identifier, body)
 
     @app.post("/api/tasks/{identifier}/coding/prepare")
     async def coding_prepare(identifier: str, body: CodingPrepare, request: Request):
         coding_parameters(request)
-        await engine.coding.runner.probe()
+        if body.test_profile == "python-unittest":
+            await engine.coding.runner.probe()
+        else:
+            await engine.coding.runner.probe(body.test_profile)
         return coding.prepare(identifier, body)
 
     @app.get("/api/tasks/{identifier}/coding")
@@ -788,7 +795,13 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     @app.post("/api/tasks/{identifier}/coding/{request_id}/execute")
     async def coding_execute(identifier: str, request_id: str, body: CodingExecute, request: Request):
         coding_parameters(request)
-        await engine.coding.runner.probe()
+        job = coding.read(identifier, request_id)
+        if job["state"] == "prepared":
+            profile = job["candidate"]["snapshot"]["profile"]
+            if profile == "python-unittest":
+                await engine.coding.runner.probe()
+            else:
+                await engine.coding.runner.probe(profile)
         return coding.execute(identifier, request_id, body)
 
     @app.post("/api/tasks/{identifier}/coding/{request_id}/discard")
