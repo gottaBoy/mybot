@@ -550,6 +550,7 @@ export function TaskWorkspace({
               data.capabilities.coding_reconciliation === true
             }
             pytestEnabled={data.capabilities.coding_pytest === true}
+            nodeEnabled={data.capabilities.coding_node_test === true}
             key={taskId}
             task={item.task}
             models={data.models}

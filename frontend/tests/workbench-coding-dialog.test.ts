@@ -442,6 +442,208 @@ afterEach(() => {
 })
 describe('isolated coding confirmation', () => {
   it.each([undefined, false])(
+    'keeps Node unavailable unless its independent capability is explicit: %j',
+    async (nodeEnabled) => {
+      props.pytestEnabled = true
+      props.nodeEnabled = nodeEnabled
+      render()
+      const selector = m.selects.find(
+        (select) => select.label === 'Test profile',
+      )
+      expect(selector.options.map((option: any) => option.value)).toEqual([
+        'python-unittest',
+        'python-pytest',
+      ])
+      selector.onChange('node-test')
+      render()
+      expect(
+        m.selects.find((select) => select.label === 'Test profile').value,
+      ).toBe('python-unittest')
+      await button('Review sources & test environment').onClick()
+      await settle()
+      expect(m.preview.mock.calls[0][1]).not.toHaveProperty('profile')
+    },
+  )
+  it('preserves source and test path edits while changing profiles and rejects unsupported Node tests', async () => {
+    props.nodeEnabled = true
+    render()
+    m.areas
+      .find((area) => area.label === 'Editable files (one per line)')
+      .onChange('draft-source.py')
+    render()
+    m.areas
+      .find((area) => area.label === 'Immutable test files (one per line)')
+      .onChange('draft-test.js')
+    render()
+    m.selects
+      .find((select) => select.label === 'Test profile')
+      .onChange('node-test')
+    render()
+    expect(
+      m.areas.find((area) => area.label === 'Editable files (one per line)')
+        .value,
+    ).toBe('draft-source.py')
+    expect(
+      m.areas.find(
+        (area) => area.label === 'Immutable test files (one per line)',
+      ).value,
+    ).toBe('draft-test.js')
+    expect(m.guard.getState().dirty).toBe(true)
+    await button('Review sources & test environment').onClick()
+    await settle()
+    expect(html).toContain('requires explicitly selected .mjs/.cjs test files')
+    expect(m.preview).not.toHaveBeenCalled()
+    m.selects
+      .find((select) => select.label === 'Test profile')
+      .onChange('python-unittest')
+    render()
+    expect(
+      m.areas.find(
+        (area) => area.label === 'Immutable test files (one per line)',
+      ).value,
+    ).toBe('draft-test.js')
+  })
+  it('requires fresh consent after selecting Node and explicitly returns to the omitted legacy profile', async () => {
+    await chooseNode()
+    expect(m.preview.mock.calls[0][1].profile).toBe('node-test')
+    expect(html).toContain('Node.js node:test')
+    m.checks.at(-1).onChange(true)
+    render()
+    m.selects
+      .find((select) => select.label === 'Test profile')
+      .onChange('python-unittest')
+    render()
+    expect(button('Confirm implementation & tests')).toBeUndefined()
+    expect(
+      m.areas.find(
+        (area) => area.label === 'Immutable test files (one per line)',
+      ).value,
+    ).toBe('test_code.mjs')
+    m.preview.mockResolvedValue(candidate)
+    await button('Review sources & test environment').onClick()
+    await settle()
+    expect(m.preview.mock.calls[1][1]).not.toHaveProperty('profile')
+    expect(m.checks.at(-1).value).toBe(false)
+  })
+  it('revokes a baseline comparison after changing the test profile while preserving manual drafts', async () => {
+    props.nodeEnabled = true
+    await chooseChangedBase()
+    m.baseline.onChange('code.py', {
+      source: 'manual',
+      content: 'retained manual draft',
+    })
+    render()
+    m.selects
+      .find((select) => select.label === 'Test profile')
+      .onChange('node-test')
+    render()
+    expect(m.baseline.stale).toBe(true)
+    expect(m.baseline.drafts['code.py'].content).toBe('retained manual draft')
+    expect(m.compare).toHaveBeenCalledOnce()
+    expect(m.preview).not.toHaveBeenCalled()
+  })
+  it('blocks a prepared Node candidate after capability loss but retains original GET and discard', async () => {
+    const selected = nodeDialogCandidate()
+    props.initial = job.request_id
+    props.nodeEnabled = true
+    m.read.mockResolvedValue({ ...job, candidate: selected })
+    render()
+    await settle()
+    m.checks.at(-1).onChange(true)
+    render()
+    const staleExecute = button('Confirm implementation & tests').onClick
+    props.nodeEnabled = false
+    render()
+    expect(html).toContain('This server does not admit Node.js node:test')
+    expect(button('Confirm implementation & tests').disabled).toBe(true)
+    await staleExecute()
+    await settle()
+    expect(m.prepare).not.toHaveBeenCalled()
+    expect(m.apply).not.toHaveBeenCalled()
+    await button('Check original implementation').onClick()
+    await settle()
+    expect(m.read.mock.calls.at(-1)[1]).toBe(job.request_id)
+    expect(m.apply).not.toHaveBeenCalled()
+    await button('Discard this preparation').onClick()
+    await settle()
+    expect(m.apply.mock.calls[0][2]).toBe('discard')
+  })
+  it('does not execute Node when the capability disappears while preparing it', async () => {
+    await chooseNode()
+    let finish: ((value: any) => void) | undefined
+    m.prepare.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve
+        }),
+    )
+    m.checks.at(-1).onChange(true)
+    render()
+    const pending = button('Confirm implementation & tests').onClick()
+    await settle()
+    props.nodeEnabled = false
+    render()
+    finish?.({
+      ...job,
+      request_id: m.prepare.mock.calls[0][1],
+      candidate: nodeDialogCandidate(),
+    })
+    await pending
+    await settle()
+    expect(m.apply).not.toHaveBeenCalled()
+    expect(button('Discard this preparation')).toBeDefined()
+  })
+  it.each([
+    [
+      'coding_node_unavailable',
+      'Node.js is unavailable in this execution environment',
+    ],
+    ['coding_node_sandbox_unavailable', 'cannot confine Node.js node:test'],
+  ])(
+    'reports %s precisely without fallback or automatic preparation',
+    async (code, message) => {
+      props.nodeEnabled = true
+      props.task.files = ['code.mjs', 'test_code.mjs']
+      render()
+      m.selects
+        .find((select) => select.label === 'Test profile')
+        .onChange('node-test')
+      render()
+      m.areas
+        .find((area) => area.label === 'Immutable test files (one per line)')
+        .onChange('test_code.mjs')
+      render()
+      m.preview.mockRejectedValue(new ApiError(422, 'unavailable', { code }))
+      await button('Review sources & test environment').onClick()
+      await settle()
+      expect(html).toContain(message)
+      expect(m.preview).toHaveBeenCalledOnce()
+      expect(m.preview.mock.calls[0][1].profile).toBe('node-test')
+      expect(m.prepare).not.toHaveBeenCalled()
+      expect(m.apply).not.toHaveBeenCalled()
+    },
+  )
+  it('reconciles a lost Node preparation by original GET without execution', async () => {
+    await chooseNode()
+    m.prepare.mockRejectedValueOnce(new Error('lost response'))
+    m.checks.at(-1).onChange(true)
+    render()
+    await button('Confirm implementation & tests').onClick()
+    await settle()
+    const id = m.prepare.mock.calls[0][1]
+    m.read.mockResolvedValue({
+      ...job,
+      request_id: id,
+      candidate: nodeDialogCandidate(),
+    })
+    await button('Check original implementation').onClick()
+    await settle()
+    expect(m.prepare).toHaveBeenCalledOnce()
+    expect(m.read.mock.calls[0][1]).toBe(id)
+    expect(m.apply).not.toHaveBeenCalled()
+    expect(m.checks.at(-1).value).toBe(false)
+  })
+  it.each([undefined, false])(
     'keeps pytest unavailable without an explicit capability %j',
     async (pytestEnabled) => {
       props.pytestEnabled = pytestEnabled
@@ -758,3 +960,39 @@ describe('isolated coding confirmation', () => {
     expect(props.onClose).toHaveBeenCalled()
   })
 })
+
+function nodeDialogCandidate() {
+  return {
+    ...candidate,
+    config: {
+      ...candidate.config,
+      profile: 'node-test',
+      writable: ['code.mjs'],
+      tests: ['test_code.mjs'],
+    },
+    snapshot: {
+      ...candidate.snapshot,
+      profile: 'node-test',
+      files: [
+        { path: 'code.mjs', content: 'export const n=0\n', bytes: 17 },
+        { path: 'test_code.mjs', content: '', bytes: 0 },
+      ],
+    },
+  }
+}
+async function chooseNode() {
+  props.nodeEnabled = true
+  props.task.files = ['code.mjs', 'test_code.mjs']
+  render()
+  m.selects
+    .find((select) => select.label === 'Test profile')
+    .onChange('node-test')
+  render()
+  m.areas
+    .find((area) => area.label === 'Immutable test files (one per line)')
+    .onChange('test_code.mjs')
+  render()
+  m.preview.mockResolvedValue(nodeDialogCandidate())
+  await button('Review sources & test environment').onClick()
+  await settle()
+}

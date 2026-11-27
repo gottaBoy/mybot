@@ -1,0 +1,57 @@
+..............FF........F......                                          [100%]
+=================================== FAILURES ===================================
+__________ test_assertion_import_and_hook_errors_cannot_pass[source2] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-my/pytest-75/test_assertion_import_and_hook2')
+source = "import {before,test} from 'node:test';before(()=>{throw new Error('hook failed')});test('case',()=>{})"
+
+    @pytest.mark.parametrize("source", [
+        "import test from 'node:test';import assert from 'node:assert/strict';test('failure',()=>assert.equal(1,2))",
+        "throw new Error('import failed')",
+        "import {before,test} from 'node:test';before(()=>{throw new Error('hook failed')});test('case',()=>{})",
+        "import {after,test} from 'node:test';after(()=>{throw new Error('teardown failed')});test('case',()=>{})",
+        "import {describe,it,before} from 'node:test';describe('suite',()=>{before(()=>{throw new Error('suite hook')});it('case',()=>{})})",
+    ])
+    def test_assertion_import_and_hook_errors_cannot_pass(tmp_path, source):
+        result = run(tmp_path, source)
+        assert not result["passed"] and result["exit_code"] != 0, result
+        if "hook failed" in source or "teardown failed" in source or "suite hook" in source:
+>           assert result["receipt"] is None or result["receipt"]["errors"] >= 1, result
+E           AssertionError: {'profile': 'node-test', 'command': ['/home/my/workspace/ainfra/mywork/mybot/.venv/bin/python', '-I', '-B', '/home/my/...rtion_import_and_hook2', '/home/my/.nvm/versions/node/v24.21.0/bin/node', ...], 'exit_code': 1, 'duration_ms': 67, ...}
+E           assert ({'tests_run': 1, 'failures': 1, 'errors': 0, 'skipped': 0, ...} is None or 0 >= 1)
+
+tests/test_coding_node_runner.py:118: AssertionError
+__________ test_assertion_import_and_hook_errors_cannot_pass[source3] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-my/pytest-75/test_assertion_import_and_hook3')
+source = "import {after,test} from 'node:test';after(()=>{throw new Error('teardown failed')});test('case',()=>{})"
+
+    @pytest.mark.parametrize("source", [
+        "import test from 'node:test';import assert from 'node:assert/strict';test('failure',()=>assert.equal(1,2))",
+        "throw new Error('import failed')",
+        "import {before,test} from 'node:test';before(()=>{throw new Error('hook failed')});test('case',()=>{})",
+        "import {after,test} from 'node:test';after(()=>{throw new Error('teardown failed')});test('case',()=>{})",
+        "import {describe,it,before} from 'node:test';describe('suite',()=>{before(()=>{throw new Error('suite hook')});it('case',()=>{})})",
+    ])
+    def test_assertion_import_and_hook_errors_cannot_pass(tmp_path, source):
+        result = run(tmp_path, source)
+>       assert not result["passed"] and result["exit_code"] != 0, result
+E       AssertionError: {'profile': 'node-test', 'command': ['/home/my/workspace/ainfra/mywork/mybot/.venv/bin/python', '-I', '-B', '/home/my/...rtion_import_and_hook3', '/home/my/.nvm/versions/node/v24.21.0/bin/node', ...], 'exit_code': 0, 'duration_ms': 63, ...}
+E       assert (not True)
+
+tests/test_coding_node_runner.py:116: AssertionError
+____________ test_process_exit_without_receipt_is_not_test_evidence ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-my/pytest-75/test_process_exit_without_rece0')
+
+    def test_process_exit_without_receipt_is_not_test_evidence(tmp_path):
+        result = run(tmp_path, "process.exit(0)\n")
+>       assert result["exit_code"] == 0
+E       assert 125 == 0
+
+tests/test_coding_node_runner.py:195: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_coding_node_runner.py::test_assertion_import_and_hook_errors_cannot_pass[source2]
+FAILED tests/test_coding_node_runner.py::test_assertion_import_and_hook_errors_cannot_pass[source3]
+FAILED tests/test_coding_node_runner.py::test_process_exit_without_receipt_is_not_test_evidence
+3 failed, 28 passed in 6.51s

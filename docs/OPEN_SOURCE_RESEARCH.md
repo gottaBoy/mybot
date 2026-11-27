@@ -2,6 +2,18 @@
 
 查阅日期：2026-11-01；2026-11-02 增补第一轮链路对照。
 
+2026-11-27 固定 Node 测试配置的官方源码观察：`nodejs/node` 标签
+`v24.21.0`，`git ls-remote` 得到 annotated tag
+`f37d7da830134b5314a14ced553273786a2bb4cd`、peeled commit
+`955266bfdd854cd280dffd47548673914484e4c0`。本机 `process.version` 为
+`v24.21.0`，只读核对内嵌 `internal/test_runner/runner`、`harness` 和 `test`
+源码，另读该版本官方 test/permission API 与 Linux Landlock/seccomp 文档。
+没有把上游 HEAD 当成本机编译身份，也未复制 Node vendor 源码或升级前端依赖。
+`isolation: 'none'` 的空文件占位通过、默认 only 过滤、expected-failure 倒置、
+父子测试计数均需要在可信启动入口中明确处理。Node permission 不能代替 OS 隔离；
+Landlock 必须在 Node 创建线程前生效，本机 ABI 7 不能靠启动后主线程限制覆盖旧线程。
+正式集成和实际测试证据见 ADR-0035 及其交付记录，尚未完成的验证不由源码观察代替。
+
 2026-11-27 Pi接入：源码观察身份仍为`earendil-works/pi@085c84e...`；
 实际集成使用npm `@earendil-works/pi-coding-agent@1.5.0`完整lock/integrity，
 registry未提供gitHead，不能把两个身份当同一构建证明。

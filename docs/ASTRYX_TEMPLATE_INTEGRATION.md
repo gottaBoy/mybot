@@ -3,6 +3,12 @@
 日期：2026-11-13。依据：用户逐条指定的 20 个模板、基础组件与“一套代码多种样式”要求。
 保留 ADR-0006 的渐进迁移边界，不改变 Provider、设备权限或认证协议。
 
+2026-11-27 Node采用增量：沿form-wizard/work-item-detail现有研发Dialog和Run树，
+添加Node.js node:test选择、能力/运行时错误、实际profile及测试项口径。
+复用AppSelect/原确认/成果包装，不生成模板、不新增vendor组件或另一套页面。
+同一冻结候选三style双mode、英文1440/中文390与真实Node结果见
+`frontend/evidence/coding-node-2026-11-27/`；模板与119项台账计数不变。
+
 2026-11-26目标交付增量：沿Task work-item-detail和form-wizard适配增加真实子任务、
 固定依赖、人工报告门禁、原准入凭据。编辑器复用AppDialog/Input/TextArea/Checkbox/Button，
 列表与原因沿同一Task/Run树和语义Token；未复制模板或新增vendor组件。

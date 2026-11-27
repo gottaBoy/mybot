@@ -12,7 +12,7 @@ class ContextError(ValueError):
 
 
 ALLOWED_SUFFIXES = {
-    ".md", ".txt", ".rst", ".py", ".js", ".mjs", ".ts", ".tsx", ".jsx",
+    ".md", ".txt", ".rst", ".py", ".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx",
     ".css", ".html", ".vue", ".json", ".toml", ".yaml", ".yml", ".go",
     ".rs", ".java", ".kt", ".c", ".cpp", ".h", ".sql", ".sh",
 }

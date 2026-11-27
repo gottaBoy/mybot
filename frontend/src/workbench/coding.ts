@@ -7,7 +7,14 @@ import {
   type CodingReconciliationSnapshot,
 } from './coding-reconciliation'
 
-export type CodingProfile = 'python-unittest' | 'python-pytest'
+export type CodingProfile = 'python-unittest' | 'python-pytest' | 'node-test'
+const codingProfileNames: Record<CodingProfile, string> = {
+  'python-unittest': 'Python unittest',
+  'python-pytest': 'Python pytest',
+  'node-test': 'Node.js node:test',
+}
+export const codingProfileLabel = (value: CodingProfile) =>
+  codingProfileNames[value]
 export type CodingConfig = {
   model_id: string
   writable: string[]
@@ -106,7 +113,11 @@ const hash = (value: unknown): value is string =>
 const requestId = (value: unknown): value is string =>
   typeof value === 'string' && /^[A-Za-z0-9_-]{8,100}$/.test(value)
 const profile = (value: unknown): value is CodingProfile =>
-  value === 'python-unittest' || value === 'python-pytest'
+  value === 'python-unittest' ||
+  value === 'python-pytest' ||
+  value === 'node-test'
+const nodeTestFiles = (value: string[]) =>
+  value.every((path) => path.endsWith('.mjs') || path.endsWith('.cjs'))
 const paths = (value: unknown): value is string[] =>
   Array.isArray(value) &&
   value.length >= 1 &&
@@ -144,7 +155,8 @@ export function parseCodingConfig(value: unknown): CodingConfig {
     !integer(value.max_rounds, 1, 3) ||
     !integer(value.test_timeout, 1, 15) ||
     !integer(value.max_output_tokens, 1024, 16384) ||
-    (Object.hasOwn(value, 'profile') && !profile(value.profile))
+    (Object.hasOwn(value, 'profile') && !profile(value.profile)) ||
+    (value.profile === 'node-test' && !nodeTestFiles(value.tests))
   )
     throw new CodingResponseError()
   let continuation: CodingConfig['continuation']
@@ -699,7 +711,8 @@ export function parseCodingTest(content: string): CodingTest {
     typeof value.passed !== 'boolean' ||
     !integer(value.tests_run, 0, 1000000) ||
     !integer(value.round, 0, 3) ||
-    !paths(value.test_files)
+    !paths(value.test_files) ||
+    (value.profile === 'node-test' && !nodeTestFiles(value.test_files))
   )
     throw new CodingResponseError()
   const receipt = value.receipt

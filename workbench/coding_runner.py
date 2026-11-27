@@ -1,16 +1,18 @@
 """Bounded local Python test execution. The selected code never runs in the host."""
 
 import asyncio
+import hashlib
 import json
 import os
 from pathlib import Path
+import platform
 import signal
 import sys
 import tempfile
 import time
 
 
-PROFILES = {"python-unittest", "python-pytest"}
+PROFILES = {"python-unittest", "python-pytest", "node-test"}
 
 
 class CodingError(Exception):
@@ -26,9 +28,16 @@ class PythonTestRunner:
     async def command(self, workspace, mode, timeout, canary=None, profile="python-unittest"):
         if profile not in PROFILES:
             raise CodingError("coding_profile_invalid", 422)
-        argv = [sys.executable, "-I", "-B", str(self.entry), str(workspace), mode]
-        if canary is not None:
-            argv.append(str(canary))
+        if profile == "node-test":
+            runtime, manifest = node_runtime()
+            argv = [
+                sys.executable, "-I", "-B", str(Path(__file__).with_name("node_test_launcher.py")),
+                str(workspace), manifest["node"], str(runtime), mode,
+            ]
+        else:
+            argv = [sys.executable, "-I", "-B", str(self.entry), str(workspace), mode]
+            if canary is not None:
+                argv.append(str(canary))
         process = await asyncio.create_subprocess_exec(
             *argv, cwd=workspace, env={
                 "LANG": "C.UTF-8", "PYTHONHASHSEED": "0",
@@ -82,6 +91,30 @@ class PythonTestRunner:
     async def probe(self, profile="python-unittest"):
         if profile not in PROFILES:
             raise CodingError("coding_profile_invalid", 422)
+        if profile == "node-test":
+            node_runtime()
+            with tempfile.TemporaryDirectory(prefix="mybot-node-probe-") as directory:
+                root = Path(directory)
+                source = root / "source"
+                source.mkdir()
+                canary = root / "outside-canary"
+                canary.write_text("synthetic-private-canary", encoding="utf-8")
+                (source / "test_probe.mjs").write_text(
+                    "import test from 'node:test'\nimport assert from 'node:assert/strict'\n"
+                    "test('first',()=>assert.equal(2+2,4))\n"
+                    "test('async',async()=>assert.equal(await Promise.resolve(3),3))\n",
+                    encoding="utf-8",
+                )
+                result = await self.command(source, json.dumps({
+                    "mode": "probe", "test_files": ["test_probe.mjs"], "canary": str(canary),
+                }), 5, profile=profile)
+                parsed = parse_test_result(result)
+                if (
+                    not parsed["passed"] or parsed["tests_run"] != 2
+                    or 'MYBOT_NODE_PROBE={"confined":true' not in result["output"]
+                ):
+                    raise CodingError("coding_node_sandbox_unavailable", 422)
+            return {"id": "landlock-seccomp-node", "available": True, "profile": profile}
         with tempfile.TemporaryDirectory(prefix="mybot-coding-probe-") as directory:
             root = Path(directory)
             source = root / "source"
@@ -110,6 +143,30 @@ class PythonTestRunner:
             "profile": profile, "test_files": test_files,
         })
         result = await self.command(workspace, mode, timeout, profile=profile)
+        return parse_test_result(result)
+
+
+def node_runtime():
+    runtime = Path(__file__).resolve().parents[1] / "runtime" / "node-test"
+    try:
+        manifest = json.loads((runtime / "build" / "manifest.json").read_text(encoding="utf-8"))
+        node = Path(manifest["node"])
+        if (
+            set(manifest) != {"node", "version", "machine", "node_sha256", "source_sha256", "addon_sha256"}
+            or manifest["version"] != "v24.21.0" or manifest["machine"] != platform.machine()
+            or not node.is_file() or node.resolve() != node
+            or manifest["node_sha256"] != hashlib.sha256(node.read_bytes()).hexdigest()
+            or manifest["source_sha256"] != hashlib.sha256((runtime / "sandbox.c").read_bytes()).hexdigest()
+            or manifest["addon_sha256"] != hashlib.sha256((runtime / "build" / "sandbox.node").read_bytes()).hexdigest()
+            or not (runtime / "bootstrap.mjs").is_file() or not (runtime / "openssl.cnf").is_file()
+        ):
+            raise ValueError("coding_node_runtime_invalid")
+        return runtime, manifest
+    except (OSError, ValueError, KeyError, TypeError):
+        raise CodingError("coding_node_unavailable", 422) from None
+
+
+def parse_test_result(result):
         receipt = None
         markers = 0
         for line in result["output"].splitlines():

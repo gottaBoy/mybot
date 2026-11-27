@@ -34,6 +34,7 @@ import {
   parseCodingTest,
   recordedCodingCandidate,
   parseCodeCheckpoint,
+  codingProfileLabel,
   type CodingTest,
 } from './coding'
 import './coding-results.css'
@@ -331,18 +332,18 @@ export function RunWorkspace({
             <>
               <dl className="wb-details">
                 <dt>{t('测试框架', 'Test profile')}</dt>
-                <dd>
-                  {selectedTest.profile === 'python-pytest'
-                    ? 'Python pytest'
-                    : 'Python unittest'}
-                </dd>
+                <dd>{codingProfileLabel(selectedTest.profile)}</dd>
                 <dt>{t('测试结果', 'Test result')}</dt>
                 <dd>
                   {selectedTest.passed
                     ? t('通过', 'Passed')
                     : t('未通过', 'Did not pass')}
                 </dd>
-                <dt>{t('实际测试数', 'Tests run')}</dt>
+                <dt>
+                  {selectedTest.profile === 'node-test'
+                    ? t('测试项', 'Test cases')
+                    : t('实际测试数', 'Tests run')}
+                </dt>
                 <dd>{selectedTest.tests_run}</dd>
                 <dt>{t('退出码', 'Exit code')}</dt>
                 <dd>{selectedTest.exit_code}</dd>
@@ -603,9 +604,7 @@ export function RunWorkspace({
           </span>
           {codingCandidate && (
             <span className="wb-muted" data-testid="run-test-profile">
-              {codingCandidate.snapshot.profile === 'python-pytest'
-                ? 'Python pytest'
-                : 'Python unittest'}
+              {codingProfileLabel(codingCandidate.snapshot.profile)}
             </span>
           )}
         </div>

@@ -273,6 +273,28 @@ beforeEach(() => {
 
 describe('Task workspace composition', () => {
   it.each([undefined, false, true])(
+    'passes only explicit Node test capability to the implementation dialog: %j',
+    (coding_node_test) => {
+      mocks.location = {
+        tab: 'goal',
+        codingRequestId: 'original-coding-request',
+      }
+      render({
+        data: {
+          ...data,
+          capabilities: {
+            ...data.capabilities,
+            isolated_coding: true,
+            coding_node_test,
+          },
+        },
+      })
+      expect(
+        mocks.runs.find((props) => 'nodeEnabled' in props)?.nodeEnabled,
+      ).toBe(coding_node_test === true)
+    },
+  )
+  it.each([undefined, false, true])(
     'passes only explicit baseline reconciliation capability to implementation: %j',
     (coding_reconciliation) => {
       mocks.location = {

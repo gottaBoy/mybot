@@ -1,0 +1,24 @@
+{
+  "kind": "actual-local-service-read-only",
+  "date": "2026-11-16",
+  "base": "http://127.0.0.1:5173/",
+  "checks": [],
+  "writesBlocked": [],
+  "unexpectedApi": [
+    "/api/project-references",
+    "/api/workspace/counts",
+    "/api/project-references",
+    "/api/project-references",
+    "/api/tasks/query",
+    "/api/workspace/counts",
+    "/api/project-references",
+    "/api/tasks/query",
+    "/api/workspace/counts"
+  ],
+  "pageErrors": [],
+  "screenshots": "Not captured: preserve private workspace content",
+  "failure": {
+    "type": "TimeoutError",
+    "message": "Read-only acceptance did not finish; no private DOM or response payload is recorded"
+  }
+}

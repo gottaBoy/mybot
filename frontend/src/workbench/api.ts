@@ -82,6 +82,7 @@ export type Bootstrap = {
     coding_continuation?: boolean
     coding_reconciliation?: boolean
     coding_pytest?: boolean
+    coding_node_test?: boolean
     pi_sdk?: boolean
     task_artifact_references?: boolean
     task_plans?: boolean

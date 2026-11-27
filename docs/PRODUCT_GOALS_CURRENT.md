@@ -5,6 +5,14 @@
 
 ## 最新产品反馈
 
+2026-11-27继续其他语言研发验证，ADR-0035新增固定Node.js node:test：
+明确.mjs/.cjs不变测试、同候选与检查点链路、真实失败/修正/通过，
+Python↔Node重新验证，不把历史通过当作新框架证据。固定Node/native身份与双阶段
+LL-before-exec/TSYNC，不安装依赖/运行npm/写原项目。1497Python/2470前端/build、
+74浏览器检查通过并已本机启用，原记录不变；见
+[实施计划](CORE_NODE_PLAN_2026-11-27.md)和
+[证据](../frontend/evidence/coding-node-2026-11-27/README.md)。
+
 2026-11-27继续核心研发交付，ADR-0034补原项目变化后的显式代码基线解决：
 比较旧根/检查点/当前，人工仅决定writable全文，测试/readonly取当前；
 冻结新根后实际重跑基线，累计/增量/旧来源分开，新checkpoint可普通继续。
@@ -82,7 +90,7 @@ Cindy的任务接力、OpenMausBot的会话管理、nanoMuse的自托管控制�
 | --- | --- | --- |
 | 项目与任务 | 2–8真实子任务、不可变计划修订/历史、变更影响与前置报告门禁 | 嵌套分解、AI自动拆解、团队分工及通用Task验收状态 |
 | 任务持续工作 | 持久消息、选单条补充与同Task前轮成果，核对正文/来源后冻结到下一研究Run；原快照保留 | 没有自动历史、长期记忆、旧patch自动应用或通用聊天执行器 |
-| 研发实现与验证 | 固定unittest/pytest隔离修改/有限修正、checkpoint接续；当前基线变化可人工全文解决并重新验证，累计/增量/来源分开 | 其他runtime/可写fixture、路径增删/rename/自动行合并、原项目应用/合并、真实模型效果与规模验收 |
+| 研发实现与验证 | 固定unittest/pytest/node:test隔离修改/有限修正、checkpoint接续；当前基线变化可人工全文解决并重新验证，累计/增量/来源分开 | 更多runtime/项目依赖/可写fixture、路径增删/rename/自动行合并、原项目应用/合并、真实模型效果与规模验收 |
 | 多Agent执行 | 固定Planning/Research/Synthesis只读流程，可配置阶段模型/指令/资源、保存与发布 | 长期Agent、更多角色、正式Harness/Model Port及任意流程 |
 | 可视化 | Task/Run/Agent/Call/Artifact，固定阶段配置、版本历史与运行快照、预算和已知用量 | 任意DAG编辑、插件执行及更多Workflow对象 |
 | 模型 | Codex CLI、OpenAI-compatible和受限Pi SDK文本适配；角色模型/资源、实际用量/cache口径 | Pi完整工具Harness、其他Provider/native协议、账单对账、真实模型效果认证 |
@@ -106,7 +114,7 @@ Cindy的任务接力、OpenMausBot的会话管理、nanoMuse的自托管控制�
 | --- | --- | --- |
 | R1 实现候选 | Task显式源文件、可修改路径、不变测试、模型与调用限制，核对后prepare | 已实现，候选持久化/原ID核对 |
 | R2 隔离实现 | 模型严格JSON修改，可信写入器只写临时副本；原项目不变 | 已实现，最多10个已选文件/64KiB |
-| R3 真实验证与修正 | 固定Python unittest/pytest，记录实际argv/退出码/测试数/日志，失败回传最多3次调用 | 两个有界profile，不是通用命令或完整项目环境 |
+| R3 真实验证与修正 | 固定Python unittest/pytest和Node.js node:test，记录实际argv/退出码/测试数/日志，失败回传最多3次调用 | 三个有界profile，不是通用命令或完整项目环境 |
 | R4 成果与审查 | 实际Diff/逐轮测试/报告分开，patch下载；阶段来自实际执行记录 | 已实现，等待人工决定，未自动应用/合并 |
 | R5 交付验收 | mybot路径校验需求，真实失败/修复/通过；模型响应与真实执行证据分开 | 初版已本机启用：10专项/58综合/8主只读；2197前端/1229Python，见ADR-0027证据 |
 

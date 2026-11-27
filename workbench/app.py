@@ -344,6 +344,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "coding_continuation": True,
                                  "coding_reconciliation": True,
                                  "coding_pytest": True,
+                                 "coding_node_test": True,
                                  "pi_sdk": pi_sdk_available(),
                                  "task_plans": True,
                                  "task_plan_revisions": True,

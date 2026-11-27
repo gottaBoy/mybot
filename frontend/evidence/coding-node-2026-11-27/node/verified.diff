@@ -1,0 +1,12 @@
+--- a/forwarded-origin.mjs
++++ b/forwarded-origin.mjs
+@@ -5,6 +5,8 @@
+   try {
+     const source = new URL(origin)
+     if (source.origin !== origin || !['http:', 'https:'].includes(source.protocol) || source.host !== host) return origin
+-    return new URL(target).origin
++    const destination = new URL(target)
++    if (destination.username || destination.password) return origin
++    return destination.origin
+   } catch { return origin }
+ }

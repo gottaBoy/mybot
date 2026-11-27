@@ -1,0 +1,65 @@
+..................FF...F.....................                            [100%]
+=================================== FAILURES ===================================
+_ test_late_async_errors_are_observed_before_receipt_and_natural_exit[import test from 'node:test';test('late timer',()=>{setTimeout(()=>{throw new Error('late')},50)})] _
+
+tmp_path = PosixPath('/tmp/pytest-of-my/pytest-77/test_late_async_errors_are_obs0')
+source = "import test from 'node:test';test('late timer',()=>{setTimeout(()=>{throw new Error('late')},50)})"
+
+    @pytest.mark.parametrize("source", [
+        "import test from 'node:test';test('late timer',()=>{setTimeout(()=>{throw new Error('late')},50)})",
+        "import test from 'node:test';test('late rejection',()=>{setTimeout(()=>Promise.reject(new Error('late')),50)})",
+    ])
+    def test_late_async_errors_are_observed_before_receipt_and_natural_exit(tmp_path, source):
+        result = run(tmp_path, source)
+        assert not result["passed"] and result["exit_code"] != 0, result
+>       assert result["receipt"]["errors"] >= 1 and result["receipt"]["success"] is False, result
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+tests/test_coding_node_runner.py:139: TypeError
+_ test_late_async_errors_are_observed_before_receipt_and_natural_exit[source1] _
+
+tmp_path = PosixPath('/tmp/pytest-of-my/pytest-77/test_late_async_errors_are_obs1')
+source = "import test from 'node:test';test('late rejection',()=>{setTimeout(()=>Promise.reject(new Error('late')),50)})"
+
+    @pytest.mark.parametrize("source", [
+        "import test from 'node:test';test('late timer',()=>{setTimeout(()=>{throw new Error('late')},50)})",
+        "import test from 'node:test';test('late rejection',()=>{setTimeout(()=>Promise.reject(new Error('late')),50)})",
+    ])
+    def test_late_async_errors_are_observed_before_receipt_and_natural_exit(tmp_path, source):
+        result = run(tmp_path, source)
+        assert not result["passed"] and result["exit_code"] != 0, result
+>       assert result["receipt"]["errors"] >= 1 and result["receipt"]["success"] is False, result
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+tests/test_coding_node_runner.py:139: TypeError
+_ test_timeout_top_level_await_and_output_limits_never_pass[import test from 'node:test';await test('top-level await',()=>{})-timed_out] _
+
+tmp_path = PosixPath('/tmp/pytest-of-my/pytest-77/test_timeout_top_level_await_a1')
+source = "import test from 'node:test';await test('top-level await',()=>{})"
+flag = 'timed_out'
+
+    @pytest.mark.parametrize("source,flag", [
+        ("import test from 'node:test';test('loop',()=>{while(true){}})", "timed_out"),
+        ("import test from 'node:test';await test('top-level await',()=>{})", "timed_out"),
+        ("import test from 'node:test';test('output',()=>{console.log('x'.repeat(100000))})", "truncated"),
+    ])
+    def test_timeout_top_level_await_and_output_limits_never_pass(tmp_path, source, flag):
+        result = run(tmp_path, source, timeout=1)
+>       assert not result["passed"] and result["exit_code"] != 0, result
+E       AssertionError: {'profile': 'node-test', 'command': ['/home/my/workspace/ainfra/mywork/mybot/.venv/bin/python', '-I', '-B', '/home/my/...out_top_level_await_a1', '/home/my/.nvm/versions/node/v24.21.0/bin/node', ...], 'exit_code': 0, 'duration_ms': 60, ...}
+E       assert (not True)
+
+tests/test_coding_node_runner.py:199: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /home/my/workspace/ainfra/mywork/mybot/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_coding_node_runner.py::test_late_async_errors_are_observed_before_receipt_and_natural_exit[import test from 'node:test';test('late timer',()=>{setTimeout(()=>{throw new Error('late')},50)})]
+FAILED tests/test_coding_node_runner.py::test_late_async_errors_are_observed_before_receipt_and_natural_exit[source1]
+FAILED tests/test_coding_node_runner.py::test_timeout_top_level_await_and_output_limits_never_pass[import test from 'node:test';await test('top-level await',()=>{})-timed_out]
+3 failed, 42 passed, 1 warning in 30.37s

@@ -1,0 +1,725 @@
+{
+  "fixture": true,
+  "profile": "node-test",
+  "modelGeneration": "Injected fixed JSON; no paid or real model",
+  "actualExecution": "Extracted mybot forwardedOrigin body, confined node:test, HTTP and SQLite",
+  "checks": [
+    "Explicit Node profile retains selected immutable paths and previews without a model or Run",
+    "A lost preparation restores the same persisted ID by GET and requires fresh consent",
+    "A frozen Node candidate survives three styles, two modes and English desktop/Chinese mobile",
+    "Actual confined Node tests fail two cases, then one, then pass four after two injected JSON changes",
+    "A lost execution response reconciles the applied original ID without a second execution POST",
+    "Result evidence names the actual profile; its patch validates and a trusted checkpoint is available",
+    "Actual Node test output, counts and fixed argv display and export as the unchanged test JSON",
+    "Mobile evidence fits and all selected source/tests and the original mybot source remain unchanged"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding/08aca7a5-c5b5-499b-9a37-442c4f6627db/execute",
+      "method": "POST"
+    }
+  ],
+  "reads": [
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/query",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/5a08afe8b0f14aed806dd9b1d6b783d8/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/5a08afe8b0f14aed806dd9b1d6b783d8/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding/08aca7a5-c5b5-499b-9a37-442c4f6627db",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding/08aca7a5-c5b5-499b-9a37-442c4f6627db",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/5a08afe8b0f14aed806dd9b1d6b783d8/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding/08aca7a5-c5b5-499b-9a37-442c4f6627db",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/5a08afe8b0f14aed806dd9b1d6b783d8/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding/08aca7a5-c5b5-499b-9a37-442c4f6627db",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/5a08afe8b0f14aed806dd9b1d6b783d8/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding/08aca7a5-c5b5-499b-9a37-442c4f6627db",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/5a08afe8b0f14aed806dd9b1d6b783d8/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding/08aca7a5-c5b5-499b-9a37-442c4f6627db",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/5a08afe8b0f14aed806dd9b1d6b783d8/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding/08aca7a5-c5b5-499b-9a37-442c4f6627db",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/5a08afe8b0f14aed806dd9b1d6b783d8/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding/08aca7a5-c5b5-499b-9a37-442c4f6627db",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/5a08afe8b0f14aed806dd9b1d6b783d8/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding/08aca7a5-c5b5-499b-9a37-442c4f6627db",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/5a08afe8b0f14aed806dd9b1d6b783d8/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding/08aca7a5-c5b5-499b-9a37-442c4f6627db",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/d428dec35fcc4b1d91c7a9b56cb60c70",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/d428dec35fcc4b1d91c7a9b56cb60c70",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/d428dec35fcc4b1d91c7a9b56cb60c70",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/d428dec35fcc4b1d91c7a9b56cb60c70",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/5a08afe8b0f14aed806dd9b1d6b783d8/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/d428dec35fcc4b1d91c7a9b56cb60c70",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/5a08afe8b0f14aed806dd9b1d6b783d8/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/2319a83d84ea40f2a909a3a7625bc0c2/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/d428dec35fcc4b1d91c7a9b56cb60c70",
+      "method": "GET"
+    }
+  ],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "color": "rgb(0, 0, 0)",
+      "background": "rgb(255, 255, 255)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "neutral",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(28, 31, 34)",
+      "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "zira",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "color": "rgb(23, 43, 77)",
+      "background": "rgb(255, 255, 255)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+    },
+    {
+      "style": "zira",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "color": "rgb(230, 233, 239)",
+      "background": "rgb(22, 26, 34)",
+      "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+    },
+    {
+      "style": "y2k",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "color": "rgb(45, 36, 27)",
+      "background": "rgb(255, 255, 255)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    },
+    {
+      "style": "y2k",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "color": "rgb(237, 239, 252)",
+      "background": "rgb(22, 24, 43)",
+      "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+    }
+  ],
+  "screenshots": [
+    "candidate-neutral-light.png",
+    "candidate-neutral-dark.png",
+    "candidate-zira-light.png",
+    "candidate-zira-dark.png",
+    "candidate-y2k-light.png",
+    "candidate-y2k-dark.png",
+    "result-desktop.png",
+    "actual-diff-desktop.png",
+    "actual-tests-desktop.png",
+    "result-mobile.png"
+  ],
+  "actual": {
+    "task_id": "2319a83d84ea40f2a909a3a7625bc0c2",
+    "run_id": "d428dec35fcc4b1d91c7a9b56cb60c70",
+    "model_calls": 2,
+    "attempts": [
+      {
+        "round": 0,
+        "profile": "node-test",
+        "tests_run": 4,
+        "exit_code": 1,
+        "receipt": {
+          "tests_run": 4,
+          "failures": 2,
+          "errors": 0,
+          "skipped": 0,
+          "success": false
+        },
+        "passed": false
+      },
+      {
+        "round": 1,
+        "profile": "node-test",
+        "tests_run": 4,
+        "exit_code": 1,
+        "receipt": {
+          "tests_run": 4,
+          "failures": 1,
+          "errors": 0,
+          "skipped": 0,
+          "success": false
+        },
+        "passed": false
+      },
+      {
+        "round": 2,
+        "profile": "node-test",
+        "tests_run": 4,
+        "exit_code": 0,
+        "receipt": {
+          "tests_run": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "success": true
+        },
+        "passed": true
+      }
+    ]
+  }
+}

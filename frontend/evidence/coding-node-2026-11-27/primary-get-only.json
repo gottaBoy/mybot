@@ -1,0 +1,16 @@
+{
+  "checks": [
+    "1440/en: explicit Node capability and original counts",
+    "1440/en: Node profile option renders without source preview or test execution",
+    "1440/en: pristine form closes without a candidate or model call",
+    "1440/en: research history retains its original test state",
+    "390/zh: explicit Node capability and original counts",
+    "390/zh: Node profile option renders without source preview or test execution",
+    "390/zh: pristine form closes without a candidate or model call",
+    "390/zh: research history retains its original test state"
+  ],
+  "writes": [],
+  "external": [],
+  "errors": [],
+  "screenshots": false
+}

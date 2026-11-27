@@ -11,6 +11,7 @@ import {
   previewCoding,
   type CodingCandidate,
   type CodingProfile,
+  codingProfileLabel,
 } from '../src/workbench/coding'
 import {
   readTaskWorkspaceLocation,
@@ -71,6 +72,76 @@ const result = {
 }
 afterEach(() => vi.unstubAllGlobals())
 describe('isolated coding admission', () => {
+  it.each(['mjs', 'cjs'])(
+    'admits explicit Node tests in .%s files without changing their identity',
+    (extension) => {
+      const selected = nodeCandidate(extension)
+      expect(parseCodingCandidate(selected, 'task-a', selected.config)).toEqual(
+        selected,
+      )
+      expect(
+        parseCodingJob(
+          { ...job, candidate: selected },
+          'task-a',
+          job.request_id,
+          selected,
+        ).candidate,
+      ).toEqual(selected)
+      expect(selected.config.profile).toBe('node-test')
+    },
+  )
+  it.each(['test_code.js', 'test_code.py', 'test_code.ts', 'test_code.MJS'])(
+    'rejects unsupported Node test extension %s without normalizing the config',
+    (path) => {
+      expect(() =>
+        parseCodingConfig({
+          ...config,
+          profile: 'node-test',
+          tests: [path],
+        }),
+      ).toThrow()
+    },
+  )
+  it('does not accept a substituted Node profile or a missing explicit Node profile', () => {
+    const selected = nodeCandidate()
+    expect(() =>
+      parseCodingCandidate(
+        {
+          ...selected,
+          snapshot: { ...selected.snapshot, profile: 'python-unittest' },
+        },
+        'task-a',
+      ),
+    ).toThrow()
+    const { profile: _profile, ...legacyConfig } = selected.config
+    expect(() =>
+      parseCodingCandidate({ ...selected, config: legacyConfig }, 'task-a'),
+    ).toThrow()
+  })
+  it('preserves explicit Node selection through preview, prepare and original request reads', async () => {
+    const selected = nodeCandidate()
+    const prepared = { ...job, candidate: selected }
+    const fetcher = vi
+      .fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify(selected)))
+      .mockResolvedValueOnce(new Response(JSON.stringify(prepared)))
+      .mockResolvedValueOnce(new Response(JSON.stringify(prepared)))
+    vi.stubGlobal('fetch', fetcher)
+    expect(await previewCoding('task-a', selected.config)).toEqual(selected)
+    expect(
+      (await prepareCoding('task-a', job.request_id, selected)).candidate,
+    ).toEqual(selected)
+    expect(
+      (await fetchCoding('task-a', job.request_id, undefined, selected))
+        .candidate,
+    ).toEqual(selected)
+    expect(
+      fetcher.mock.calls
+        .slice(0, 2)
+        .map((call) => JSON.parse(call[1].body).profile),
+    ).toEqual(['node-test', 'node-test'])
+    expect(fetcher.mock.calls[2][1].method).toBeUndefined()
+  })
   it('admits exact candidate and stable prepared identity', () => {
     expect(parseCodingCandidate(candidate, 'task-a', config)).toEqual(candidate)
     expect(parseCodingJob(job, 'task-a', job.request_id, candidate)).toEqual(
@@ -269,6 +340,90 @@ describe('isolated coding admission', () => {
   })
 })
 describe('actual test result contract', () => {
+  it.each(['python-unittest', 'python-pytest', 'node-test'] as const)(
+    'names the exact %s profile without an unrelated fallback',
+    (profile) => {
+      expect(codingProfileLabel(profile)).toBe(
+        {
+          'python-unittest': 'Python unittest',
+          'python-pytest': 'Python pytest',
+          'node-test': 'Node.js node:test',
+        }[profile],
+      )
+    },
+  )
+  it.each(['mjs', 'cjs'])(
+    'preserves Node .%s test results and the five receipt fields',
+    (extension) => {
+      const selected = {
+        ...result,
+        profile: 'node-test',
+        test_files: [`test_code.${extension}`],
+        command: ['node', 'fixed-runner', `test_code.${extension}`],
+      }
+      expect(parseCodingTest(JSON.stringify(selected))).toEqual(selected)
+    },
+  )
+  it('retains a Node load error without fabricating test cases', () => {
+    const failed = {
+      ...result,
+      profile: 'node-test',
+      test_files: ['test_code.mjs'],
+      passed: false,
+      exit_code: 1,
+      tests_run: 0,
+      receipt: {
+        tests_run: 0,
+        failures: 0,
+        errors: 1,
+        skipped: 0,
+        success: false,
+      },
+    }
+    expect(parseCodingTest(JSON.stringify(failed))).toEqual(failed)
+  })
+  it.each(['test_code.js', 'test_code.py'])(
+    'rejects unsupported Node result test files %s',
+    (path) => {
+      expect(() =>
+        parseCodingTest(
+          JSON.stringify({
+            ...result,
+            profile: 'node-test',
+            test_files: [path],
+          }),
+        ),
+      ).toThrow()
+    },
+  )
+  it.each([
+    {
+      tests_run: 0,
+      receipt: {
+        tests_run: 0,
+        failures: 0,
+        errors: 0,
+        skipped: 0,
+        success: true,
+      },
+    },
+    { receipt: { ...result.receipt, skipped: 2 } },
+    { receipt: { ...result.receipt, failures: 1 } },
+    { receipt: null },
+    { timed_out: true },
+    { truncated: true },
+  ])('rejects success-shaped Node evidence %#', (patch) => {
+    expect(() =>
+      parseCodingTest(
+        JSON.stringify({
+          ...result,
+          profile: 'node-test',
+          test_files: ['test_code.mjs'],
+          ...patch,
+        }),
+      ),
+    ).toThrow()
+  })
   it('preserves actual output and test count', () =>
     expect(parseCodingTest(JSON.stringify(result))).toEqual(result))
   it('preserves the pytest profile and all five actual receipt fields', () => {
@@ -349,6 +504,26 @@ describe('actual test result contract', () => {
     ).toThrow(),
   )
 })
+
+function nodeCandidate(extension = 'mjs'): CodingCandidate {
+  return {
+    ...candidate,
+    config: {
+      ...config,
+      profile: 'node-test',
+      writable: [`code.${extension}`],
+      tests: [`test_code.${extension}`],
+    },
+    snapshot: {
+      ...candidate.snapshot,
+      profile: 'node-test',
+      files: [
+        { path: `code.${extension}`, content: 'x=0\n', bytes: 4 },
+        { path: `test_code.${extension}`, content: '', bytes: 0 },
+      ],
+    },
+  }
+}
 describe('coding pending location', () => {
   it('round trips the original request independently of the selected Run', () => {
     const href = taskWorkspaceHref('task-a', {

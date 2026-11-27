@@ -53,7 +53,7 @@
 - 后端采用 FastAPI + SQLite + 单后台 Worker，不需要前端构建，也不强制 GPU。
 - 已建立只读 Backend/Conversation 合同和本机连接配置页；保存不联网，健康检查需显式确认，撤销后禁止使用。公共 health 可达不代表认证/会话读取。OpenMausBot 固定 fork 尚未完成真实会话接入。
 - 已实现：Task目标/验收、持续消息、固定Workflow版本、真实子任务与前置报告审查；
-  研发实现可在显式文件的隔离副本中修改代码，选择固定Python unittest或pytest测试，
+  研发实现可在显式文件的隔离副本中修改代码，选择固定Python unittest、pytest或Node.js测试，
   有限修正并交付Diff/实际测试证据；可从同Task可信代码检查点继续。
 - 未实现：任意Shell、原项目代码应用/合并、部署、任意DAG、团队权限、原生App。
 - 工作台已接入显式启用的 Codex CLI；2026-11-09 一个获授权的关联重试已完成 2 项研究与汇总，3 次新增调用、3 份待审查成果。仍有历史超时/未知用量，且尚未完成源码研究及工具边界验收。自动回归使用测试 Provider；凭证由 CLI 保管，OpenMausBot 尚未接入。
@@ -78,6 +78,19 @@ React工作台的Task“研发实现与验证”可选测试框架。pytest使�
 需要写临时文件、网络或子进程的fixture不在该固定配置范围内。
 准备与启动都验证运行能力，不自动安装依赖或退回其他框架。见
 [ADR-0031](docs/decisions/ADR-0031-python-pytest-profile.md)。
+
+Node.js固定配置使用已安装的精确v24.21.0及其N-API头文件、C编译器、
+Linux Landlock和libseccomp。先显式构建可信隔离模块：
+
+```bash
+.venv/bin/python runtime/node-test/build.py
+```
+
+随后在Task中选择`Node.js node:test`与明确的`.mjs/.cjs`不变测试。
+它使用相同的隔离副本、有限修正和检查点链路；不安装项目包、不执行npm scripts、
+不自动构建运行时。缺少或变化的运行时明确拒绝。
+配置与安装边界见[runtime/node-test](runtime/node-test/README.md)及
+[ADR-0035](docs/decisions/ADR-0035-node-test-profile.md)。
 
 Pi是独立可选运行时，要求Node.js >=22.19。安装锁定依赖不启动模型：
 

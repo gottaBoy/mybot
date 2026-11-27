@@ -1,0 +1,95 @@
+[
+  {
+    "profile": "node-test",
+    "command": [
+      "/home/my/workspace/ainfra/mywork/mybot/.venv/bin/python",
+      "-I",
+      "-B",
+      "/home/my/workspace/ainfra/mywork/mybot/workbench/node_test_launcher.py",
+      "/tmp/mybot-coding-work-cqoy37my",
+      "/home/my/.nvm/versions/node/v24.21.0/bin/node",
+      "/home/my/workspace/ainfra/mywork/mybot/runtime/node-test",
+      "{\"profile\": \"node-test\", \"test_files\": [\"test_forwarded_origin.mjs\"]}"
+    ],
+    "exit_code": 1,
+    "duration_ms": 66,
+    "output": "(node:357421) [PERM0001] SecurityWarning: The flag --allow-addons must be used with extreme caution. It could invalidate the permission model.\n(Use `node --trace-warnings ...` to show where the warning was created)\nMYBOT_NODE_RUNTIME={\"version\":\"v24.21.0\",\"executable\":\"/home/my/.nvm/versions/node/v24.21.0/bin/node\",\"execArgv\":[\"--permission\",\"--allow-addons\",\"--allow-fs-read=/tmp/mybot-coding-work-cqoy37my\",\"--allow-fs-read=/home/my/workspace/ainfra/mywork/mybot/runtime/node-test/bootstrap.mjs\",\"--allow-fs-read=/home/my/workspace/ainfra/mywork/mybot/runtime/node-test/build/sandbox.node\",\"--openssl-config=/home/my/workspace/ainfra/mywork/mybot/runtime/node-test/openssl.cnf\",\"--jitless\",\"--no-experimental-strip-types\",\"--max-old-space-size=192\",\"--max-semi-space-size=8\",\"--stack-size=512\"],\"argv\":[\"/home/my/.nvm/versions/node/v24.21.0/bin/node\",\"/home/my/workspace/ainfra/mywork/mybot/runtime/node-test/bootstrap.mjs\",\"/tmp/mybot-coding-work-cqoy37my\",\"{\\\"profile\\\": \\\"node-test\\\", \\\"test_files\\\": [\\\"test_forwarded_origin.mjs\\\"]}\"]}\nFAIL does not rewrite an origin for a backend target containing credentials\n[Error [ERR_TEST_FAILURE]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'http://127.0.0.1:4187'\n- 'http://localhost:5176'\n          ^\n] {\n  code: 'ERR_TEST_FAILURE',\n  failureType: 'testCodeFailure',\n  cause: AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 'http://127.0.0.1:4187'\n  - 'http://localhost:5176'\n            ^\n  \n      at TestContext.<anonymous> (file:///tmp/mybot-coding-work-cqoy37my/test_forwarded_origin.mjs:18:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)\n      at Test.postRun (node:internal/test_runner/test:1542:19)\n      at Test.run (node:internal/test_runner/test:1467:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'http://127.0.0.1:4187',\n    expected: 'http://localhost:5176',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n}\nFAIL does not rewrite an origin for a backend target containing a path\n[Error [ERR_TEST_FAILURE]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'http://127.0.0.1:4187'\n- 'http://localhost:5176'\n          ^\n] {\n  code: 'ERR_TEST_FAILURE',\n  failureType: 'testCodeFailure',\n  cause: AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 'http://127.0.0.1:4187'\n  - 'http://localhost:5176'\n            ^\n  \n      at TestContext.<anonymous> (file:///tmp/mybot-coding-work-cqoy37my/test_forwarded_origin.mjs:22:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)\n      at Test.postRun (node:internal/test_runner/test:1542:19)\n      at Test.run (node:internal/test_runner/test:1467:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'http://127.0.0.1:4187',\n    expected: 'http://localhost:5176',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n}\nMYBOT_TEST_RESULT={\"tests_run\":4,\"failures\":2,\"errors\":0,\"skipped\":0,\"success\":false}\n",
+    "timed_out": false,
+    "truncated": false,
+    "tests_run": 4,
+    "passed": false,
+    "receipt": {
+      "tests_run": 4,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0,
+      "success": false
+    },
+    "round": 0,
+    "test_files": [
+      "test_forwarded_origin.mjs"
+    ]
+  },
+  {
+    "profile": "node-test",
+    "command": [
+      "/home/my/workspace/ainfra/mywork/mybot/.venv/bin/python",
+      "-I",
+      "-B",
+      "/home/my/workspace/ainfra/mywork/mybot/workbench/node_test_launcher.py",
+      "/tmp/mybot-coding-work-cqoy37my",
+      "/home/my/.nvm/versions/node/v24.21.0/bin/node",
+      "/home/my/workspace/ainfra/mywork/mybot/runtime/node-test",
+      "{\"profile\": \"node-test\", \"test_files\": [\"test_forwarded_origin.mjs\"]}"
+    ],
+    "exit_code": 1,
+    "duration_ms": 70,
+    "output": "(node:357437) [PERM0001] SecurityWarning: The flag --allow-addons must be used with extreme caution. It could invalidate the permission model.\n(Use `node --trace-warnings ...` to show where the warning was created)\nMYBOT_NODE_RUNTIME={\"version\":\"v24.21.0\",\"executable\":\"/home/my/.nvm/versions/node/v24.21.0/bin/node\",\"execArgv\":[\"--permission\",\"--allow-addons\",\"--allow-fs-read=/tmp/mybot-coding-work-cqoy37my\",\"--allow-fs-read=/home/my/workspace/ainfra/mywork/mybot/runtime/node-test/bootstrap.mjs\",\"--allow-fs-read=/home/my/workspace/ainfra/mywork/mybot/runtime/node-test/build/sandbox.node\",\"--openssl-config=/home/my/workspace/ainfra/mywork/mybot/runtime/node-test/openssl.cnf\",\"--jitless\",\"--no-experimental-strip-types\",\"--max-old-space-size=192\",\"--max-semi-space-size=8\",\"--stack-size=512\"],\"argv\":[\"/home/my/.nvm/versions/node/v24.21.0/bin/node\",\"/home/my/workspace/ainfra/mywork/mybot/runtime/node-test/bootstrap.mjs\",\"/tmp/mybot-coding-work-cqoy37my\",\"{\\\"profile\\\": \\\"node-test\\\", \\\"test_files\\\": [\\\"test_forwarded_origin.mjs\\\"]}\"]}\nFAIL does not rewrite an origin for a backend target containing a path\n[Error [ERR_TEST_FAILURE]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'http://127.0.0.1:4187'\n- 'http://localhost:5176'\n          ^\n] {\n  code: 'ERR_TEST_FAILURE',\n  failureType: 'testCodeFailure',\n  cause: AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 'http://127.0.0.1:4187'\n  - 'http://localhost:5176'\n            ^\n  \n      at TestContext.<anonymous> (file:///tmp/mybot-coding-work-cqoy37my/test_forwarded_origin.mjs:22:10)\n      at Test.runInAsyncScope (node:async_hooks:227:14)\n      at Test.run (node:internal/test_runner/test:1402:25)\n      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)\n      at Test.postRun (node:internal/test_runner/test:1542:19)\n      at Test.run (node:internal/test_runner/test:1467:12)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'http://127.0.0.1:4187',\n    expected: 'http://localhost:5176',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n}\nMYBOT_TEST_RESULT={\"tests_run\":4,\"failures\":1,\"errors\":0,\"skipped\":0,\"success\":false}\n",
+    "timed_out": false,
+    "truncated": false,
+    "tests_run": 4,
+    "passed": false,
+    "receipt": {
+      "tests_run": 4,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "success": false
+    },
+    "round": 1,
+    "test_files": [
+      "test_forwarded_origin.mjs"
+    ]
+  },
+  {
+    "profile": "node-test",
+    "command": [
+      "/home/my/workspace/ainfra/mywork/mybot/.venv/bin/python",
+      "-I",
+      "-B",
+      "/home/my/workspace/ainfra/mywork/mybot/workbench/node_test_launcher.py",
+      "/tmp/mybot-coding-work-cqoy37my",
+      "/home/my/.nvm/versions/node/v24.21.0/bin/node",
+      "/home/my/workspace/ainfra/mywork/mybot/runtime/node-test",
+      "{\"profile\": \"node-test\", \"test_files\": [\"test_forwarded_origin.mjs\"]}"
+    ],
+    "exit_code": 0,
+    "duration_ms": 59,
+    "output": "(node:357452) [PERM0001] SecurityWarning: The flag --allow-addons must be used with extreme caution. It could invalidate the permission model.\n(Use `node --trace-warnings ...` to show where the warning was created)\nMYBOT_NODE_RUNTIME={\"version\":\"v24.21.0\",\"executable\":\"/home/my/.nvm/versions/node/v24.21.0/bin/node\",\"execArgv\":[\"--permission\",\"--allow-addons\",\"--allow-fs-read=/tmp/mybot-coding-work-cqoy37my\",\"--allow-fs-read=/home/my/workspace/ainfra/mywork/mybot/runtime/node-test/bootstrap.mjs\",\"--allow-fs-read=/home/my/workspace/ainfra/mywork/mybot/runtime/node-test/build/sandbox.node\",\"--openssl-config=/home/my/workspace/ainfra/mywork/mybot/runtime/node-test/openssl.cnf\",\"--jitless\",\"--no-experimental-strip-types\",\"--max-old-space-size=192\",\"--max-semi-space-size=8\",\"--stack-size=512\"],\"argv\":[\"/home/my/.nvm/versions/node/v24.21.0/bin/node\",\"/home/my/workspace/ainfra/mywork/mybot/runtime/node-test/bootstrap.mjs\",\"/tmp/mybot-coding-work-cqoy37my\",\"{\\\"profile\\\": \\\"node-test\\\", \\\"test_files\\\": [\\\"test_forwarded_origin.mjs\\\"]}\"]}\nMYBOT_TEST_RESULT={\"tests_run\":4,\"failures\":0,\"errors\":0,\"skipped\":0,\"success\":true}\n",
+    "timed_out": false,
+    "truncated": false,
+    "tests_run": 4,
+    "passed": true,
+    "receipt": {
+      "tests_run": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "success": true
+    },
+    "round": 2,
+    "test_files": [
+      "test_forwarded_origin.mjs"
+    ]
+  }
+]

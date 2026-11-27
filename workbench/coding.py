@@ -55,7 +55,7 @@ class CodingConfig(BaseModel):
     test_timeout: int = Field(default=10, ge=1, le=15)
     max_output_tokens: int = Field(default=8192, ge=1024, le=16384)
     continuation: CodingContinuation | None = None
-    profile: Literal["python-unittest", "python-pytest"] | None = None
+    profile: Literal["python-unittest", "python-pytest", "node-test"] | None = None
 
     @field_validator("profile")
     @classmethod
@@ -131,9 +131,10 @@ class CodingService:
             raise CodingError("coding_project_unavailable", 404)
         records = snapshot_files(self.workspace, project, task["files"])
         paths = {record["path"] for record in records}
+        suffixes = (".mjs", ".cjs") if config.test_profile == "node-test" else (".py",)
         if (not set(config.writable + config.tests) <= paths
                 or set(config.writable) & set(config.tests)
-                or any(not name.endswith(".py") for name in config.tests)):
+                or any(not name.endswith(suffixes) for name in config.tests)):
             raise CodingError("coding_file_scope_invalid", 422)
         if any(PurePosixPath(name).name.startswith("test") for name in config.writable):
             raise CodingError("coding_test_files_immutable", 422)
@@ -371,7 +372,8 @@ class CodingHarness:
                 checkpoint(run["id"])
                 write_copy()
                 agent = self.store.agent(
-                    run["id"], f"test-{round_number}", "validator", f"Python tests · {round_number}",
+                    run["id"], f"test-{round_number}", "validator",
+                    f"{'Node.js' if config.test_profile == 'node-test' else 'Python'} tests · {round_number}",
                     "Run the immutable selected tests in the confined copy", f"system:{config.test_profile}",
                 )
                 self.store.agent_status(agent["id"], "running")

@@ -23,6 +23,7 @@ import {
   parseCodingConfig,
   prepareCoding,
   previewCoding,
+  codingProfileLabel,
   type CodingCandidate,
   type CodingConfig,
   type CodingJob,
@@ -55,6 +56,7 @@ export function CodingRunDialog({
   continuationEnabled = false,
   reconciliationEnabled = false,
   pytestEnabled = false,
+  nodeEnabled = false,
   t,
   onClose,
   onStarted,
@@ -65,6 +67,7 @@ export function CodingRunDialog({
   continuationEnabled?: boolean
   reconciliationEnabled?: boolean
   pytestEnabled?: boolean
+  nodeEnabled?: boolean
   t: Copy
   onClose: () => void
   onStarted: (id: string) => void
@@ -122,6 +125,7 @@ export function CodingRunDialog({
     consent,
     continuationEnabled,
     pytestEnabled,
+    nodeEnabled,
     reconciliationEnabled,
     comparison,
     comparisonStale,
@@ -139,6 +143,7 @@ export function CodingRunDialog({
     consent,
     continuationEnabled,
     pytestEnabled,
+    nodeEnabled,
     reconciliationEnabled,
     comparison,
     comparisonStale,
@@ -192,6 +197,9 @@ export function CodingRunDialog({
   useEffect(() => {
     if (!pytestEnabled) setConsent(false)
   }, [pytestEnabled])
+  useEffect(() => {
+    if (!nodeEnabled) setConsent(false)
+  }, [nodeEnabled])
   useEffect(() => {
     if (!reconciliationEnabled) setConsent(false)
   }, [reconciliationEnabled])
@@ -252,6 +260,10 @@ export function CodingRunDialog({
       !state.continuationEnabled
     )
       return
+    if (state.config.profile === 'node-test' && !state.nodeEnabled) {
+      setError(nodeCapabilityMessage())
+      return
+    }
     let admitted: CodingConfig
     try {
       admitted = parseCodingConfig(state.config)
@@ -348,6 +360,23 @@ export function CodingRunDialog({
       '当前执行环境中的 pytest 不可用，请核对所选测试框架。',
       'pytest is unavailable in this execution environment. Review the selected test profile.',
     )
+  const nodeCapabilityMessage = () =>
+    t(
+      '服务未提供 Node.js node:test 能力，不能准备或执行此候选。已准备候选仍可放弃。',
+      'This server does not admit Node.js node:test. Preparation and execution are blocked; an existing preparation can still be discarded.',
+    )
+  const nodeUnavailableMessage = (reason: unknown) =>
+    errorCode(reason) === 'coding_node_unavailable'
+      ? t(
+          '当前执行环境中的 Node.js 不可用。请核对所选测试框架。',
+          'Node.js is unavailable in this execution environment. Review the selected test profile.',
+        )
+      : errorCode(reason) === 'coding_node_sandbox_unavailable'
+        ? t(
+            '当前执行环境不能隔离运行 Node.js node:test。请核对所选测试框架。',
+            'This execution environment cannot confine Node.js node:test. Review the selected test profile.',
+          )
+        : undefined
   function stamp(id?: string) {
     const url = new URL(window.location.href),
       params = new URLSearchParams(url.hash.split('?')[1] ?? '')
@@ -425,6 +454,13 @@ export function CodingRunDialog({
       setError(pytestUnavailableMessage())
       return
     }
+    if (
+      latest.current.config.profile === 'node-test' &&
+      !latest.current.nodeEnabled
+    ) {
+      setError(nodeCapabilityMessage())
+      return
+    }
     let validated: CodingConfig
     try {
       if (
@@ -474,10 +510,18 @@ export function CodingRunDialog({
       }
     } catch {
       setError(
-        t(
-          '请核对模型、文件、测试和接续要求；人工解决还须重新比较并选择每个可修改文件的内容（单文件32 KiB、总计64 KiB）。',
-          'Review model, files, tests and continuation requirements. Resolution also needs a fresh comparison and a choice for every editable file (32 KiB each, 64 KiB total).',
-        ),
+        latest.current.config.profile === 'node-test' &&
+          latest.current.config.tests.some(
+            (path) => !path.endsWith('.mjs') && !path.endsWith('.cjs'),
+          )
+          ? t(
+              'Node.js node:test 仅接受明确选择的 .mjs/.cjs 测试文件。文件路径编辑已保留。',
+              'Node.js node:test requires explicitly selected .mjs/.cjs test files. File path edits are retained.',
+            )
+          : t(
+              '请核对模型、文件、测试和接续要求；人工解决还须重新比较并选择每个可修改文件的内容（单文件32 KiB、总计64 KiB）。',
+              'Review model, files, tests and continuation requirements. Resolution also needs a fresh comparison and a choice for every editable file (32 KiB each, 64 KiB total).',
+            ),
       )
       return
     }
@@ -523,6 +567,7 @@ export function CodingRunDialog({
       if (resolutionError(reason)) setComparisonStale(true)
       setError(
         resolutionError(reason) ??
+          nodeUnavailableMessage(reason) ??
           (pytestUnavailable(reason)
             ? pytestUnavailableMessage()
             : reason instanceof ApiError &&
@@ -555,6 +600,9 @@ export function CodingRunDialog({
       (action === 'execute' &&
         state.candidate.snapshot.profile === 'python-pytest' &&
         !state.pytestEnabled) ||
+      (action === 'execute' &&
+        state.candidate.snapshot.profile === 'node-test' &&
+        !state.nodeEnabled) ||
       (action === 'execute' &&
         state.candidate.snapshot.reconciliation &&
         !state.reconciliationEnabled) ||
@@ -595,6 +643,15 @@ export function CodingRunDialog({
       ) {
         setPhase('prepared')
         setError(pytestUnavailableMessage())
+        return
+      }
+      if (
+        action === 'execute' &&
+        registered.candidate.snapshot.profile === 'node-test' &&
+        !latest.current.nodeEnabled
+      ) {
+        setPhase('prepared')
+        setError(nodeCapabilityMessage())
         return
       }
       if (
@@ -640,6 +697,7 @@ export function CodingRunDialog({
         clearPrivate(reason)
         setError(
           resolutionError(reason) ??
+            nodeUnavailableMessage(reason) ??
             (pytestUnavailable(reason)
               ? pytestUnavailableMessage()
               : t(
@@ -687,6 +745,10 @@ export function CodingRunDialog({
   const unsupportedPytest = Boolean(
     (displayed?.snapshot.profile ?? config.profile) === 'python-pytest' &&
     !pytestEnabled,
+  )
+  const unsupportedNode = Boolean(
+    (displayed?.snapshot.profile ?? config.profile) === 'node-test' &&
+    !nodeEnabled,
   )
   const unsupportedReconciliation = Boolean(
     (displayed?.snapshot.reconciliation || resolutionMode) &&
@@ -739,6 +801,11 @@ export function CodingRunDialog({
                 '服务未提供 pytest 测试能力，执行已暂停。已准备的候选仍可放弃。',
                 'This server does not admit pytest tests. Execution is paused; a prepared candidate can still be discarded.',
               )}
+            </p>
+          )}
+          {unsupportedNode && (
+            <p role="alert" className="wb-error">
+              {nodeCapabilityMessage()}
             </p>
           )}
           {unsupportedReconciliation && (
@@ -870,6 +937,9 @@ export function CodingRunDialog({
                   ...(pytestEnabled
                     ? [{ value: 'python-pytest', label: 'Python pytest' }]
                     : []),
+                  ...(nodeEnabled
+                    ? [{ value: 'node-test', label: 'Node.js node:test' }]
+                    : []),
                 ]}
                 disabled={busy}
                 onChange={(value) => {
@@ -880,6 +950,8 @@ export function CodingRunDialog({
                     latest.current.pytestEnabled
                   )
                     change({ profile: 'python-pytest' })
+                  else if (value === 'node-test' && latest.current.nodeEnabled)
+                    change({ profile: 'node-test' })
                 }}
               />
               <AppSelect
@@ -938,7 +1010,10 @@ export function CodingRunDialog({
                 )}
                 icon={<FileSearch size={16} />}
                 disabled={
-                  busy || unsupportedPytest || unsupportedReconciliation
+                  busy ||
+                  unsupportedPytest ||
+                  unsupportedNode ||
+                  unsupportedReconciliation
                 }
                 onClick={() => void preview()}
               />
@@ -958,10 +1033,8 @@ export function CodingRunDialog({
                 </dd>
                 <dt>{t('测试', 'Tests')}</dt>
                 <dd>
-                  {displayed.snapshot.profile === 'python-pytest'
-                    ? 'Python pytest'
-                    : 'Python unittest'}{' '}
-                  · {displayed.config.test_timeout}s
+                  {codingProfileLabel(displayed.snapshot.profile)} ·{' '}
+                  {displayed.config.test_timeout}s
                 </dd>
                 <dt>{t('模型调用上限', 'Model call limit')}</dt>
                 <dd>{displayed.config.max_rounds}</dd>
@@ -1116,6 +1189,7 @@ export function CodingRunDialog({
                   !consent ||
                   unsupportedContinuation ||
                   unsupportedPytest ||
+                  unsupportedNode ||
                   unsupportedReconciliation ||
                   staleUnpreparedReconciliation
                 }

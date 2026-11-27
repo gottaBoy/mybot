@@ -1,5 +1,49 @@
 # 下次从这里继续
 
+更新：2026-11-27，固定 Node.js 研发验证已验收、本机启用。
+用户“继续”沿既有多Agent/核心交付/提交push授权，起点688c232已push且干净。
+[实施计划](docs/CORE_NODE_PLAN_2026-11-27.md)、
+[最新ADR-0035](docs/decisions/ADR-0035-node-test-profile.md)、
+[证据](frontend/evidence/coding-node-2026-11-27/README.md)。
+backend/frontend/verification三Agent分别交执行器、UI、合同/夹具与独立review，
+root集成/完整验收/启用；提交push以Git回执为准。
+
+新显式coding_node_test合同，profile=node-test、仅.mjs/.cjs不变测试；
+同一候选/有限修正/逐轮证据/检查点/基线解决，旧Python字段省略和hash不改。
+固定本机Node v24.21.0及binary/native/source摘要，可信native仅显式一次build、
+产物忽略Git；缺失/漂移拒绝，Task不安装或编译。单线程Python先LL再exec，
+Node/libuv线程继承，trustedprewarm后seccompTSYNC覆盖所有线程；
+同步/异步真实OS读拒绝与native socket/clone/PROT_EXEC探针都过，Nodepermission仅附加限制。
+fixedinternalNODE_TEST_CONTEXT禁.only隐式过滤；trustedsetup逐文件import再用原生node:test，
+避开native空文件假通过/注册后importerror吞掉。自然drain、hookFailed/runtimeerror/exit绑定
+最终回执；迟到nativefatal可无回执但绝不pass。父/子test都计、suite不计，非leaf/assertion数。
+不发现/安装/npm scripts/TS编译/原项目写入，无完整项目环境或恶意代码的独立证明。
+
+最终1497Python全量（MYBOT_REQUIRE_PI_RUNTIME=1）/2470前端84files/typecheck/build通过，
+90后端定向=32Node runner+13API+45旧coding/pytest；独立6边界无falsepass。
+新Node专项8/10PNG、综合58/61PNG、主GET-only8，共74check/71最终PNG；
+最终pageerror0、Node专项外部HTTP0。最终YP7SYx提取真实api-proxy.ts的forwardedOrigin，
+仅去参数类型，4不变测试fail2→fail1→pass4、1Run/2注入JSON；丢prepare/execute原GET、
+各原ID1POST。源码/测试不写，实际Diff下载仅git apply --check。模型为fixture，
+Node/HTTP/SQLite/实际测试真实，无真实付费模型认证。CJS真实运行、
+Python→Node→Python接续与Node三Run基线解决也由API验证。
+保留.only/after/import原生误判、首轮测试预期、.cjs读取缺口、滚动截图与旧主检查脚本
+白名单失败；未拿早期画面拼最终通过。app208.51/gzip66.44kB、CSS39.89/7.50、
+lazyCoding29.14/9.64、Run26.99/9.82、Task37.83/12.50；旧httpx/chunkwarning、
+Bootstrap全量、119/9/110保持。
+
+主4180原空闲PID2447464经身份/一致backup/Store副本演练/原行比对/SIGTERM锁释放，
+同command/cwd/env启动PID369142，coding_node_test=true；5173原进程保持。
+8只读后原行再次一致：1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event，
+Workflow原行保持，coding_jobs/TaskTurns/model_tests/plan_versions0，无正式新候选/
+模型或测试。私有备份`.runtime/backups/before-devices-20261127T144503Z/`700/DBlog600，
+不进Git、无原正文/截图/环境或原摘要导出，旧PID脚本不可重跑，不热覆盖回退。
+临时4187/4188/5176/5177已停；主4180/5173保持。
+
+下一核心：**嵌套/AI建议分解、更多项目依赖和runtime、Pi完整受限工具Harness**。
+固定Node子范围已交付，不再重复selector；没有npm依赖安装、任意命令、TS类型检查、
+路径增删/rename/自动合并、原项目应用/merge/deploy或真实模型规模效果验收。
+
 更新：2026-11-27，原代码基线变化的显式解决已验收、本机启用。
 用户“好的，继续”沿已明确multiAgent与核心目标，起点6f94d73已push/干净。
 [实施计划](docs/CORE_BASELINE_PLAN_2026-11-27.md)、

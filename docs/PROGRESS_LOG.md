@@ -2,6 +2,30 @@
 
 规则：每个工作项完成后追加一条。这里记录交付和证据，不把计划写成完成事实。
 
+## 2026-11-27：固定 Node.js 研发验证
+
+用户继续既有多Agent核心交付；起点688c232，backend负责固定执行器、frontend负责配置/
+证据/门禁、verification负责ADR/夹具与独立review，root集成、实际验收和本机启用。
+新增node-test与coding_node_test，仅显式.mjs/.cjs测试；固定Node v24.21.0与本机摘要，
+一次可信build，LL先于exec、TSYNC后于trustedwarmup，selected代码在全部边界后才导入。
+同一有限修正、真实测试、Diff/检查点和基线解决，旧Python候选省略字段/hash不改。
+
+交付中实际发现并修复原生.only隐式过滤、空文件占位、注册后import错误吞掉、
+全局after不进计数等问题；可信setup捕获模块错误，自然drain并单列hook/runtimeerror。
+迟到nativefatal若无完整回执维持未验证，不编造0错误或成功。
+最终1497Python/2470前端84files、typecheck/build通过，90相关后端检查及6独立边界通过。
+最终专项8/10PNG、综合58/61PNG、主GET-only8，共74check/71最终PNG；无最终pageerror。
+真实mybot函数体提取后4不变测试fail2→fail1→pass4，模型JSON为fixture，
+实际Node/HTTP/SQLite/执行与下载为真，原源/测试不被写入。
+
+主4180从空闲2447464经一致backup/Store副本/原行比对/优雅停止启动369142；
+5173保持，新captrue，8只读后原业务行一致，无正式候选/模型测试/Run新增。
+旧httpx/chunkwarning与Bootstrap全量保留；119/9/110不变。
+[完整证据](../frontend/evidence/coding-node-2026-11-27/README.md)；
+[实施计划](CORE_NODE_PLAN_2026-11-27.md)；
+[ADR-0035](decisions/ADR-0035-node-test-profile.md)。
+后续为嵌套/AI建议分解、更多runtime/依赖和Pi工具Harness，未交付任意shell/原项目应用。
+
 ## 2026-11-08
 
 ### 工作项：本地 Superagent Harness 抽取
