@@ -273,6 +273,29 @@ beforeEach(() => {
 
 describe('Task workspace composition', () => {
   it.each([undefined, false, true])(
+    'passes only explicit baseline reconciliation capability to implementation: %j',
+    (coding_reconciliation) => {
+      mocks.location = {
+        tab: 'goal',
+        codingRequestId: 'original-coding-request',
+      }
+      render({
+        data: {
+          ...data,
+          capabilities: {
+            ...data.capabilities,
+            isolated_coding: true,
+            coding_reconciliation,
+          },
+        },
+      })
+      expect(
+        mocks.runs.find((props) => 'reconciliationEnabled' in props)
+          ?.reconciliationEnabled,
+      ).toBe(coding_reconciliation === true)
+    },
+  )
+  it.each([undefined, false, true])(
     'passes only explicit revision capability to current plan admission: %j',
     (task_plan_revisions) => {
       render({

@@ -31,6 +31,12 @@ credentials/session, one request, explicit endpoint/model/key and actual token
 limits are mandatory. Pi does not gain shell/file tools or implicit history.
 Public input tokens include cache; native/cache diagnostics are subsets, never
 extra tokens to add again. Missing metrics remain unknown.
+ADR-0034 permits explicit reconciliation of a changed coding baseline. Preserve
+old origin/checkpoint provenance, adopt current project records as the new root,
+and accept complete human choices only for current writable paths. Tests and
+read-only dependencies always use current records. Comparison is read-only;
+execution still needs a frozen candidate and new consent. No automatic merge,
+patch application or original-project write is implied.
 Distinguish local activation from isolated tests; Task messages are not implicit
 model memory, and a fixed pipeline is not an arbitrary DAG.
 For frontend work, also read `docs/ASTRYX_TEMPLATE_INTEGRATION.md` and

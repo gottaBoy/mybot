@@ -1,0 +1,240 @@
+{
+  "fixture": true,
+  "modelGeneration": "Injected strict JSON; no paid model calls",
+  "actualExecution": "Copied mybot source, explicit fixture base advance, confined pytest, HTTP/SQLite",
+  "checks": [
+    "The old base really fails two tests; a bounded partial fix leaves one failure and a trusted checkpoint",
+    "One explicit fixture operation advances source, readonly dependency and tests; strict legacy continuation still refuses drift",
+    "Three exact versions are readable without a model call; current tests and readonly dependencies have no resolution controls",
+    "Manual content preserves the new maintenance change; explicit recompare retains text but requires choosing each writable file again",
+    "Lost preparation reloads the original frozen resolved/current baselines with unchecked consent and no new model call",
+    "The resolved baseline runs all five current tests, then a real isolated fix passes them without sending old source bodies or writing the project",
+    "Cumulative patch is against the current project, incremental patch against manual start, and the new checkpoint anchors to the adopted project fingerprint",
+    "A third strict continuation succeeds from the new checkpoint without reconciliation, proving the adopted project base is the new root"
+  ],
+  "errors": [],
+  "external": [],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/7a5c709ca96a48908ed357e0cf83e1b1/coding/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/7a5c709ca96a48908ed357e0cf83e1b1/coding/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/7a5c709ca96a48908ed357e0cf83e1b1/coding/reconciliation-source-original/execute",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/7a5c709ca96a48908ed357e0cf83e1b1/coding/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/7a5c709ca96a48908ed357e0cf83e1b1/coding/reconciliation/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/7a5c709ca96a48908ed357e0cf83e1b1/coding/reconciliation/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/7a5c709ca96a48908ed357e0cf83e1b1/coding/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/7a5c709ca96a48908ed357e0cf83e1b1/coding/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/7a5c709ca96a48908ed357e0cf83e1b1/coding/c0dea179-26f6-4b99-840b-8cec972261d3/execute",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/7a5c709ca96a48908ed357e0cf83e1b1/coding/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/7a5c709ca96a48908ed357e0cf83e1b1/coding/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/7a5c709ca96a48908ed357e0cf83e1b1/coding/reconciliation-new-anchor-third/execute",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "manual-resolution-desktop.png",
+    "manual-resolution-mobile.png",
+    "prepared-neutral-light.png",
+    "prepared-neutral-dark.png",
+    "prepared-zira-light.png",
+    "prepared-zira-dark.png",
+    "prepared-y2k-light.png",
+    "prepared-y2k-dark.png",
+    "result-neutral-light.png",
+    "result-neutral-dark.png",
+    "result-zira-light.png",
+    "result-zira-dark.png",
+    "result-y2k-light.png",
+    "result-y2k-dark.png"
+  ],
+  "geometry": [
+    {
+      "surface": "prepared",
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "surface": "prepared",
+      "style": "neutral",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "surface": "prepared",
+      "style": "zira",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "surface": "prepared",
+      "style": "zira",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "surface": "prepared",
+      "style": "y2k",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "surface": "prepared",
+      "style": "y2k",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "surface": "result",
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "surface": "result",
+      "style": "neutral",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "surface": "result",
+      "style": "zira",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "surface": "result",
+      "style": "zira",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    },
+    {
+      "surface": "result",
+      "style": "y2k",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440
+    },
+    {
+      "surface": "result",
+      "style": "y2k",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390
+    }
+  ],
+  "actual": {
+    "task_id": "7a5c709ca96a48908ed357e0cf83e1b1",
+    "source_run": "dbb72f092cc149f5a28f5b9c6ac4553d",
+    "reconciled_run": "f500da59c6384c608af7e07c36e3067f",
+    "third_run": "b60b6b8bc3a1438295c0dee1959c2faa",
+    "model_calls": 3,
+    "adopted_current_hash": "620739c082cd7ed6fc3827fb3e5b6917be43e531674432ff13848843886c6a50",
+    "source_origin_hash": "4023e2d76ba5b9d00ce0d0df8022da056976694e4d4bde35203fdf1d59268463",
+    "tests": [
+      {
+        "round": 0,
+        "tests_run": 5,
+        "receipt": {
+          "tests_run": 5,
+          "failures": 1,
+          "errors": 0,
+          "skipped": 0,
+          "success": false
+        },
+        "passed": false
+      },
+      {
+        "round": 1,
+        "tests_run": 5,
+        "receipt": {
+          "tests_run": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "success": true
+        },
+        "passed": true
+      }
+    ]
+  }
+}

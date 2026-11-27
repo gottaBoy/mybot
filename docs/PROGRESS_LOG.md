@@ -1479,6 +1479,29 @@ PID1552381，5173保持；8只读后原行再一致、新三表空，无正式Pi
 临时服务已停；旧httpx/chunk警告、Bootstrap全量、119/9/110保持。
 提交push只以Git回执为准，后续基线冲突、其他runtime和嵌套/AI分解优先。
 
+## 2026-11-27 当前项目变化后的代码接续
+
+按用户继续核心目标，三Agent完成后端、前端、合同/夹具与独立review，root整合验收。
+ADR-0034新增显式O旧根/K检查点/N当前比较与writable全文决定R；
+readonly/tests用N、config/Task/Project/model/source绑定review，最终preview/prepare重验。
+freeze后不读host/source，unknown原ID GET。累计N→final、增量R→final与来源O→K分开；
+新checkpoint以N为根，未来普通接续。旧hash/回执/tuple保持，不新增表、不写原项目。
+
+1446Python（显式PiSDKrequired）/2435前端84file/typecheck/build通过；
+后端108含新40，独立review修P2迟到预览竞态后4回归/前端全量/build/两新fixture完整重跑。
+专项8/14PNG、综合58/61PNG、主8GET-only共74检查/75最终fixturePNG，
+最终pageerror0，专项外部HTTP0。实际mybot路径例旧4tests failure2→partial1；
+固定fixture显式推进当前source/readonly/test，普通continue409；人工保留两侧后
+新5tests failure1→pass5，再第三Run普通续接5pass。模型回复注入，实际执行/HTTP/SQLite真实；
+原host仅夹具操作推进，执行器不写，旧Run/hash保持，patch仅check。
+
+主4180空闲原PID1552381经identity/一致backup/Store副本演练/原行比对/同环境更新
+PID2447464，5173保持。8GET后原行再一致，无正式比较/candidate/test/model；
+临时服务已停。旧httpx/chunkwarning、Bootstrap全量、119/9/110保持。
+[计划](CORE_BASELINE_PLAN_2026-11-27.md)、
+[证据](../frontend/evidence/coding-reconciliation-2026-11-27/README.md)。
+提交push以Git回执为准；下一核心为其他runtime、嵌套/AI分解。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。
@@ -1488,8 +1511,8 @@ PID1552381，5173保持；8只读后原行再一致、新三表空，无正式Pi
 当前交付顺序以 [PRODUCT_GOALS_CURRENT.md](PRODUCT_GOALS_CURRENT.md) 为准：
 Task工作区、选定消息、固定Workflow及Task范围设备接续初版已交付，
 显式历史位置、D3b一次研究委托和隔离研发实现/真实测试首版也已交付。
-明确成果引用、检查点、Task拆解、pytest、计划修订和Pi文本子范围已按ADR-0028至0033交付；
-当前优先其他runtime、更广任务分解与基线变化的显式冲突处理，
+明确成果引用、检查点、Task拆解、pytest、计划修订、Pi文本和人工基线解决子范围
+已按ADR-0028至0034交付；当前优先其他runtime、更广任务分解，
 设备D4b/D5b与连接器保留待办，
 不再默认作为下一批。通用控制租约仍独立待办。
 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)保留阶段架构与能力边界；

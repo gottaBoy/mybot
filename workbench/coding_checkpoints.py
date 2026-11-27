@@ -74,7 +74,7 @@ def checkpoint_value(row):
     return value
 
 
-def read_checkpoint(db, task_id, reference):
+def read_checkpoint_source(db, task_id, reference):
     row = db.execute(
         "SELECT a.id,a.run_id,a.title,a.kind,a.created_at,r.task_id,r.context,"
         f"CASE WHEN length(CAST(a.content AS BLOB)) BETWEEN 1 AND {MAX_CHECKPOINT_BYTES}"
@@ -114,6 +114,11 @@ def read_checkpoint(db, task_id, reference):
             raise ValueError("checkpoint_scope_invalid")
     except (KeyError, ValueError, TypeError, UnicodeError) as error:
         raise CodingError("coding_checkpoint_invalid", 422) from error
+    return value, record, origin
+
+
+def read_checkpoint(db, task_id, reference):
+    value, record, _ = read_checkpoint_source(db, task_id, reference)
     return value, record
 
 

@@ -794,3 +794,18 @@ history不混实时review，retired可看/记补充但禁新执行。真实双br
 不以document overflow0单独宣布内容可见。脚本opaque storage/密码role/required/
 重复按钮失败保留，新环境完整重跑。主入口已启用、原行相同，无付费模型/真机认证。
 见`frontend/evidence/plan-revisions-pi-2026-11-27/README.md`。119/9/110不变。
+
+## 41. 基线变化的人工解决
+
+日期：2026-11-27。在既有研发Dialog内显式比较三份完整内容，每文件纵向details，
+仅writable提供current/checkpoint/manual选择与完整文本输入；readonly/tests固定当前。
+比较和手工输入只形成下一轮候选，不伪造已应用/已测试状态。重比较保留正文但撤回选择，
+配置变化清preview/consent；迟到200响应必须与最新比较binding一致，prepared回执冻结豁免。
+原Task/Run同树展示新根/起点/旧来源，累计与增量Diff含义分开，无新主页或主题页面。
+
+最终2435前端/1446Python/build通过，8专项/58综合/8主只读和75fixturePNG；
+三style双mode、1440英文/390中文/reducedmotion，实际手工输入和prepared/result均看图，
+手机仅内容区滚动，无文档溢出。P2race修后两新fixture全重跑，不拼接修前截图。
+模型为受限JSONfixture，副本/测试/HTTP/持久化真实；主入口已启用、原行不变。
+不是自动merge、原项目应用、真机或模型质量认证。
+见`frontend/evidence/coding-reconciliation-2026-11-27/README.md`。119/9/110保持。

@@ -1,5 +1,6 @@
 # Preserve generated patch context and captured test-log line endings verbatim.
 frontend/evidence/**/actual.patch whitespace=-blank-at-eol,-blank-at-eof
+frontend/evidence/**/cumulative.patch whitespace=-blank-at-eol,-blank-at-eof
 frontend/evidence/**/incremental.patch whitespace=-blank-at-eol,-blank-at-eof
 frontend/evidence/**/frontend-tests.txt whitespace=-blank-at-eof
 frontend/evidence/**/client-targeted-tests.txt whitespace=-blank-at-eof

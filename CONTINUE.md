@@ -1,5 +1,44 @@
 # 下次从这里继续
 
+更新：2026-11-27，原代码基线变化的显式解决已验收、本机启用。
+用户“好的，继续”沿已明确multiAgent与核心目标，起点6f94d73已push/干净。
+[实施计划](docs/CORE_BASELINE_PLAN_2026-11-27.md)、
+[最新ADR-0034](docs/decisions/ADR-0034-explicit-code-baseline-reconciliation.md)、
+[证据](frontend/evidence/coding-reconciliation-2026-11-27/README.md)。
+三Agent分别交后端/前端/合同夹具独立review，root整合/实际验收/启用，提交push以Git回执为准。
+coding_reconciliation显式cap，compare只读无runnerprobe/model/event，按fullconfig/Task/
+Project/modelidentity/O旧根/K检查点/N当前绑定review；每writable current/checkpoint/manual全文，
+readonly/tests固定N；pathset/order变化先拒。原128KiB body、32KiB/file、64KiB总限制不改。
+finalpreview/preparefresh验证，freeze后不读host/source；unknown原ID GET、不重发。
+新origin=N/startR，旧O/K/patch独立来源，模型只R/实际测试/要求/固定meta。
+累计N→final、增量R→final；R==N合法但model仍须新改/最终Diff非空。
+新checkpoint以N为根、下一轮普通接续；旧candidate/hash/回执/tuple保持，无新表。
+
+最终1446Python（MYBOT_REQUIRE_PI_RUNTIME=1）/2435前端84file/typecheck/build通过；
+108后端定向含新40，独立review发现P2迟到preview在Task/model变化后恢复旧候选，
+serverCAS本会拒，UI已加response/confirm/submit绑定与prepared豁免、4回归；
+修后前端全量+全新fixtures专项8/14PNG、综合58/61PNG，主GET-only8，共74check/75最终PNG。
+最终pageerror0、专项外部HTTP0。5KuyMW实际旧4test failure2→局部1；夹具显式一次advance
+当前维护注释/readonlydependency/test（独立记录），strictcontinue409；UI人工保留两侧，
+新5test failure1→pass5；第三Run普通newroot继续baseline/test均5pass。1Task/3Run/3注入JSON，
+丢prepare/execute原GET、各该原ID1POST，current源/测试/依赖不被执行器写入；
+sourceoldhash不变、累计patch只git apply --check。模型fixture，执行/HTTP/SQLite/测试真实。
+首轮测试误把applied当prepared已修；旧8/58修前结果不冒充最终，两个新fixture完整重跑。
+app208.51/gzip66.45kB、CSS39.89/7.50、lazyCoding27.48/9.31、Run27.03/9.81、
+TaskWorkspace37.78/12.49；旧httpx/chunkwarning、Bootstrap全量和119/9/110保持。
+
+主4180原空闲PID1552381经identity/cwd/env内存核验、一致backup/私有Store演练/原行比对/
+SIGTERM锁释放，同command/cwd/env启动PID2447464；5173原进程保持，新captrue。
+主8只读后原行再次一致：1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event、
+Workflow与空计划/设备表保持；coding_jobs/TaskTurns/model_tests/plan_versions0。
+无正式candidate/比较/测试/模型。私有备份
+`.runtime/backups/before-devices-20261127T011801Z/`700/DBlog600，不进Git，无原正文/截图/
+环境/原摘要导出；旧PID脚本不可重跑，不热覆盖回退，临时4187/4188/5176/5177已停。
+
+下一核心：**其他语言/runtime、嵌套/AI建议分解**，按产品优先级选完整切片。
+原基线漂移的人工全文子范围已交付，不重复做入口；路径增删/rename/自动行合并、
+原项目应用/merge/deploy、Pi完整受限工具Harness/长期会话/真实模型质量仍独立待办。
+
 更新：2026-11-27，计划修订与Pi SDK已验收、本机启用。
 用户要求深度分析/计划/多Agent，最后补Pi并再次确认；起点aee6715已push/干净。
 [实施计划](docs/CORE_DELIVERY_PLAN_2026-11-27.md)、

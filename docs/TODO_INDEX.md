@@ -18,6 +18,19 @@ UI 的 WUI 编号是交叉整改视图，执行包是实施组织方式，均可
 
 ## 当前执行包
 
+### 2026-11-27 原代码基线显式解决
+
+| 工作 | 已交付 | 剩余 |
+| --- | --- | --- |
+| 三份比较 | 旧根/检查点/当前完整显式文件，独立reviewhash，比较不运行模型/测试 | 增删/重命名路径与自动行合并 |
+| 人工起点 | 每writable明确current/checkpoint/manual，readonly/tests只当前 | 原项目应用/merge/deploy |
+| 可核查继续 | 新根冻结、真实基线测试、累计/增量/来源分开、新checkpoint再接续 | 其他语言/runtime、可写fixture |
+| 验收启用 | 1446Python/2435前端/build，专项8/综合58/主8GET、原行不变 | 嵌套/AI分解与Pi更广Harness独立 |
+
+[计划](CORE_BASELINE_PLAN_2026-11-27.md)、
+[证据](../frontend/evidence/coding-reconciliation-2026-11-27/README.md)。
+只关闭原基线漂移的人工全文子范围，原119/9/110保持。
+
 ### 2026-11-27 计划修订与Pi文本执行
 
 | 工作 | 已交付 | 剩余 |

@@ -9,6 +9,10 @@
 [深度分析与实施计划](docs/CORE_DELIVERY_PLAN_2026-11-27.md)、
 [Pi范围](docs/PI_INTEGRATION_CURRENT.md)。
 
+代码检查点遇到当前项目变化时，可显式比较旧基线、检查点和当前内容，
+仅对可修改文件人工选择或填写完整解决结果；当前测试/只读依赖保持不变，
+确认后在隔离副本重新验证并继续。见[基线处理计划](docs/CORE_BASELINE_PLAN_2026-11-27.md)。
+
 **工作项台账：[WORK_ITEMS.md](docs/WORK_ITEMS.md)**。保留 119 个原编号，当前 9 项完成、
 110 项未完全完成；按执行包推进，不用 commit 或测试数量代替产品完成度。
 

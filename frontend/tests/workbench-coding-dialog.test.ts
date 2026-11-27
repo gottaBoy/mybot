@@ -3,6 +3,10 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { CodingRunDialog } from '../src/workbench/CodingRunDialog'
 import { ApiError } from '../src/workbench/api'
+import {
+  reconciliationComparison,
+  reconciledCandidate,
+} from './coding-reconciliation-fixture'
 const m = vi.hoisted(() => ({
   states: [] as any[],
   refs: [] as any[],
@@ -16,6 +20,8 @@ const m = vi.hoisted(() => ({
   areas: [] as any[],
   selects: [] as any[],
   checkpointPicker: {} as any,
+  baseline: {} as any,
+  compare: vi.fn(),
   dialog: {} as any,
   guard: {} as any,
   preview: vi.fn(),
@@ -80,6 +86,22 @@ vi.mock('../src/workbench/CodingCheckpointPicker', () => ({
     m.checkpointPicker = props
     return null
   },
+}))
+vi.mock('../src/workbench/CodingBaselineResolution', () => ({
+  CodingBaselineResolution: (props: any) => {
+    m.baseline = props
+    return createElement(
+      'section',
+      null,
+      props.stale ? 'Comparison stale' : 'Comparison current',
+    )
+  },
+}))
+vi.mock('../src/workbench/coding-reconciliation', async () => ({
+  ...(await vi.importActual<
+    typeof import('../src/workbench/coding-reconciliation')
+  >('../src/workbench/coding-reconciliation')),
+  compareCodingBaseline: (...args: any[]) => m.compare(...args),
 }))
 vi.mock('../src/components/ui/DraftGuard', () => ({
   AppDraftGuard: () => null,
@@ -148,6 +170,7 @@ function render() {
   m.areas = []
   m.selects = []
   m.checkpointPicker = {}
+  m.baseline = {}
   html = renderToStaticMarkup(createElement(CodingRunDialog, props))
   for (const fn of m.pending.splice(0)) fn()
   return html
@@ -174,6 +197,7 @@ beforeEach(() => {
     run_id: action === 'execute' ? 'run-a' : null,
   }))
   m.read.mockReset().mockResolvedValue(job)
+  m.compare.mockReset().mockResolvedValue(reconciliationComparison)
   m.push.mockReset().mockReturnValue(true)
   vi.stubGlobal('window', {
     location: { href: 'http://localhost/#task/task-a' },
@@ -187,6 +211,230 @@ beforeEach(() => {
     onClose: vi.fn(),
     onStarted: vi.fn(),
   }
+})
+async function chooseChangedBase() {
+  props.continuationEnabled = true
+  props.reconciliationEnabled = true
+  render()
+  m.selects
+    .find((select) => select.label === 'Implementation starting point')
+    .onChange('checkpoint')
+  render()
+  m.checkpointPicker.onChange({ id: 'checkpoint-a', sha256: 'a'.repeat(64) })
+  render()
+  m.areas
+    .find((area) => area.label === 'Requirements for this implementation')
+    .onChange(reconciliationComparison.config.continuation!.instruction)
+  render()
+  await button('Compare & resolve baseline changes').onClick()
+  await settle()
+}
+describe('changed-base manual resolution confirmation', () => {
+  it.each(['task', 'model'])(
+    'discards a late preview after %s identity changes and preserves manual drafts',
+    async (changed) => {
+      await chooseChangedBase()
+      m.baseline.onChange('code.py', { source: 'manual', content: 'x=3\n' })
+      render()
+      let finish: ((value: any) => void) | undefined
+      m.preview.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            finish = resolve
+          }),
+      )
+      const pending = button('Review sources & test environment').onClick()
+      await settle()
+      if (changed === 'task')
+        props.task = { ...props.task, goal: 'Changed task requirements' }
+      else
+        props.models = [
+          { ...props.models[0], endpoint: 'http://127.0.0.1:9998/v1' },
+        ]
+      render()
+      await settle()
+      finish?.(reconciledCandidate())
+      await pending
+      await settle()
+      expect(m.preview).toHaveBeenCalledOnce()
+      expect(button('Confirm implementation & tests')).toBeUndefined()
+      expect(m.checks).toHaveLength(0)
+      expect(m.baseline.stale).toBe(true)
+      expect(m.baseline.drafts['code.py'].content).toBe('x=3\n')
+      expect(html).toContain('The stale preview was discarded')
+      expect(m.prepare).not.toHaveBeenCalled()
+      expect(m.apply).not.toHaveBeenCalled()
+    },
+  )
+  it('blocks a retained confirmation handler immediately after a changed binding', async () => {
+    await chooseChangedBase()
+    m.baseline.onChange('code.py', { source: 'manual', content: 'x=3\n' })
+    render()
+    m.preview.mockResolvedValue(reconciledCandidate())
+    await button('Review sources & test environment').onClick()
+    await settle()
+    m.checks.at(-1).onChange(true)
+    render()
+    const staleConfirm = button('Confirm implementation & tests').onClick
+    props.task = { ...props.task, goal: 'Changed task requirement' }
+    render()
+    expect(button('Confirm implementation & tests').disabled).toBe(true)
+    await staleConfirm()
+    expect(m.prepare).not.toHaveBeenCalled()
+    expect(m.apply).not.toHaveBeenCalled()
+  })
+  it('keeps a persisted reconciliation candidate executable after presentation inputs change', async () => {
+    props.initial = job.request_id
+    props.continuationEnabled = true
+    props.reconciliationEnabled = true
+    m.read.mockResolvedValue({ ...job, candidate: reconciledCandidate() })
+    render()
+    await settle()
+    props.task = {
+      ...props.task,
+      goal: 'Current task changed after preparation',
+    }
+    props.models = [{ ...props.models[0], name: 'Changed visible model name' }]
+    render()
+    await settle()
+    m.checks.at(-1).onChange(true)
+    render()
+    expect(button('Confirm implementation & tests').disabled).toBe(false)
+    await button('Confirm implementation & tests').onClick()
+    await settle()
+    expect(m.prepare).not.toHaveBeenCalled()
+    expect(m.apply).toHaveBeenCalledWith(
+      'task-a',
+      expect.objectContaining({ candidate: reconciledCandidate() }),
+      'execute',
+      expect.any(AbortSignal),
+    )
+  })
+  it('does not expose baseline resolution without explicit capability', () => {
+    props.continuationEnabled = true
+    render()
+    m.selects
+      .find((select) => select.label === 'Implementation starting point')
+      .onChange('checkpoint')
+    render()
+    expect(button('Compare & resolve baseline changes')).toBeUndefined()
+    expect(m.compare).not.toHaveBeenCalled()
+  })
+  it('compares only explicitly and requires a choice for every writable file before preview', async () => {
+    await chooseChangedBase()
+    expect(m.compare).toHaveBeenCalledOnce()
+    expect(m.prepare).not.toHaveBeenCalled()
+    expect(m.preview).not.toHaveBeenCalled()
+    expect(m.guard.getState().dirty).toBe(true)
+    await button('Review sources & test environment').onClick()
+    await settle()
+    expect(m.preview).not.toHaveBeenCalled()
+    m.baseline.onChange('code.py', { source: 'manual', content: 'x=3\n' })
+    render()
+    m.preview.mockResolvedValue(reconciledCandidate())
+    await button('Review sources & test environment').onClick()
+    await settle()
+    expect(m.preview.mock.calls[0][1].continuation.reconciliation).toEqual(
+      reconciledCandidate().config.continuation!.reconciliation,
+    )
+    expect(m.checks.at(-1).value).toBe(false)
+    expect(html).toContain('Adopted current project base')
+  })
+  it('preserves manual content across config edits but requires a new comparison and fresh choices', async () => {
+    await chooseChangedBase()
+    m.baseline.onChange('code.py', {
+      source: 'manual',
+      content: 'retained draft',
+    })
+    render()
+    m.areas
+      .find((area) => area.label === 'Requirements for this implementation')
+      .onChange('Changed explicit instructions')
+    render()
+    expect(m.baseline.stale).toBe(true)
+    expect(m.baseline.drafts['code.py'].content).toBe('retained draft')
+    await button('Review sources & test environment').onClick()
+    await settle()
+    expect(m.preview).not.toHaveBeenCalled()
+    m.compare.mockImplementation(async (_task, config) => ({
+      ...reconciliationComparison,
+      config,
+    }))
+    await button('Compare the three baselines again').onClick()
+    await settle()
+    expect(m.baseline.stale).toBe(false)
+    expect(m.baseline.drafts['code.py']).toEqual({ content: 'retained draft' })
+    expect(html).toContain('choose content for every editable file again')
+  })
+  it('keeps resolution drafts on a stale-current409 without retrying or preparing', async () => {
+    await chooseChangedBase()
+    m.baseline.onChange('code.py', { source: 'manual', content: 'x=3\n' })
+    render()
+    m.preview.mockRejectedValue(
+      new ApiError(409, 'changed', {
+        code: 'coding_reconciliation_current_changed',
+      }),
+    )
+    await button('Review sources & test environment').onClick()
+    await settle()
+    expect(m.baseline.stale).toBe(true)
+    expect(m.baseline.drafts['code.py'].content).toBe('x=3\n')
+    expect(html).toContain('Manual content is retained')
+    expect(m.compare).toHaveBeenCalledOnce()
+    expect(m.preview).toHaveBeenCalledOnce()
+    expect(m.prepare).not.toHaveBeenCalled()
+  })
+  it('preserves unknown reconciliation requests and GET never implicitly executes', async () => {
+    await chooseChangedBase()
+    m.baseline.onChange('code.py', { source: 'manual', content: 'x=3\n' })
+    render()
+    m.preview.mockResolvedValue(reconciledCandidate())
+    m.prepare.mockRejectedValueOnce(new Error('lost preparation'))
+    await button('Review sources & test environment').onClick()
+    await settle()
+    m.checks.at(-1).onChange(true)
+    render()
+    await button('Confirm implementation & tests').onClick()
+    await settle()
+    const id = m.prepare.mock.calls[0][1]
+    m.read.mockResolvedValue({
+      ...job,
+      request_id: id,
+      candidate: reconciledCandidate(),
+    })
+    await button('Check original implementation').onClick()
+    await settle()
+    expect(m.prepare).toHaveBeenCalledOnce()
+    expect(m.apply).not.toHaveBeenCalled()
+    expect(m.read.mock.calls[0][1]).toBe(id)
+    expect(m.checks.at(-1).value).toBe(false)
+  })
+  it('lets a frozen reconciled candidate be discarded after capability loss', async () => {
+    props.initial = job.request_id
+    m.read.mockResolvedValue({ ...job, candidate: reconciledCandidate() })
+    render()
+    await settle()
+    expect(html).toContain('This server does not admit baseline reconciliation')
+    m.checks.at(-1).onChange(true)
+    render()
+    await button('Confirm implementation & tests').onClick()
+    await settle()
+    expect(m.apply).not.toHaveBeenCalled()
+    await button('Discard this preparation').onClick()
+    await settle()
+    expect(m.apply.mock.calls[0][2]).toBe('discard')
+  })
+  it('reports the128KiB request boundary without deleting manual content', async () => {
+    await chooseChangedBase()
+    m.baseline.onChange('code.py', { source: 'manual', content: 'x=3\n' })
+    render()
+    m.preview.mockRejectedValue(new ApiError(413, 'too large'))
+    await button('Review sources & test environment').onClick()
+    await settle()
+    expect(html).toContain('The request exceeds 128 KiB')
+    expect(m.baseline.drafts['code.py'].content).toBe('x=3\n')
+    expect(m.prepare).not.toHaveBeenCalled()
+  })
 })
 afterEach(() => {
   for (const value of m.effects) value?.cleanup?.()

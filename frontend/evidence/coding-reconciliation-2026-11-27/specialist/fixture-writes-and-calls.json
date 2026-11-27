@@ -1,0 +1,102 @@
+{
+  "fixture": true,
+  "advanced": true,
+  "model_calls": 3,
+  "calls": [
+    {
+      "model": "reconciliation-partial-fixture",
+      "round": 1,
+      "max_output_tokens": 8192,
+      "input_hash": "ca77a3dc5a5a329343cfc72fd7326da64d34028380444129da651914cfe642ad",
+      "file_hashes": {
+        "workbench/__init__.py": "d4bf1783388e12957306e2743a335ee76ce14fce6d2852463141a4fd499922c0",
+        "workbench/schemas.py": "aedb8429b4a2456838ad8f55b6a8c9f7a5cccfc64fb63fc560611a2eaec4d0c7",
+        "workbench/saved_views.py": "775ad47170ee9b610d71a2c3bac66c6549823f0e86c929fee856659220f3b03b",
+        "baseline_info.py": "503eaf2054fd52dd5c10c111456a5e76f6bceab2a82d083e7d46cc49b82fc775",
+        "test_relative_path.py": "2c9dcca9c55e8de03aaa54499f028818e955e211c6f6ab527602246e9607f355"
+      },
+      "source_checkpoint_fields": []
+    },
+    {
+      "model": "reconciliation-repair-fixture",
+      "round": 1,
+      "max_output_tokens": 8192,
+      "input_hash": "ed10f70ddd10bb987b80de87f0faef01da7938b187da1a8f276def336290c2bc",
+      "file_hashes": {
+        "workbench/__init__.py": "d4bf1783388e12957306e2743a335ee76ce14fce6d2852463141a4fd499922c0",
+        "workbench/schemas.py": "0942d5a8067e27dc1840b0b052a72d6f66e2457ee3cd91b6dbde34f839da98ce",
+        "workbench/saved_views.py": "775ad47170ee9b610d71a2c3bac66c6549823f0e86c929fee856659220f3b03b",
+        "baseline_info.py": "481c676ccba68797179672beda20e5d6ad72170bd207e81a99b96624b4125791",
+        "test_relative_path.py": "53a59ee5ec8b8402b630c1674510ccfe4ac950af34310ee126bd652d6bde8f1a"
+      },
+      "source_checkpoint_fields": [
+        "current_hash",
+        "id",
+        "origin_hash",
+        "resolved_hash",
+        "round",
+        "run_id",
+        "sha256"
+      ]
+    },
+    {
+      "model": "reconciliation-annotate-fixture",
+      "round": 1,
+      "max_output_tokens": 8192,
+      "input_hash": "f38112f66ce2b869f4c1e9ea304679b96ec3d97906ea7304def65e450fff6367",
+      "file_hashes": {
+        "workbench/__init__.py": "d4bf1783388e12957306e2743a335ee76ce14fce6d2852463141a4fd499922c0",
+        "workbench/schemas.py": "a0064360b9120950754d9968bc1dbd79b25db1cfbf947e3dd38e85b608836a85",
+        "workbench/saved_views.py": "775ad47170ee9b610d71a2c3bac66c6549823f0e86c929fee856659220f3b03b",
+        "baseline_info.py": "481c676ccba68797179672beda20e5d6ad72170bd207e81a99b96624b4125791",
+        "test_relative_path.py": "53a59ee5ec8b8402b630c1674510ccfe4ac950af34310ee126bd652d6bde8f1a"
+      },
+      "source_checkpoint_fields": [
+        "id",
+        "origin_hash",
+        "patch",
+        "round",
+        "run_id",
+        "sha256"
+      ]
+    }
+  ],
+  "initial_hashes": {
+    "workbench/__init__.py": "d4bf1783388e12957306e2743a335ee76ce14fce6d2852463141a4fd499922c0",
+    "workbench/schemas.py": "aedb8429b4a2456838ad8f55b6a8c9f7a5cccfc64fb63fc560611a2eaec4d0c7",
+    "workbench/saved_views.py": "775ad47170ee9b610d71a2c3bac66c6549823f0e86c929fee856659220f3b03b",
+    "baseline_info.py": "503eaf2054fd52dd5c10c111456a5e76f6bceab2a82d083e7d46cc49b82fc775",
+    "test_relative_path.py": "2c9dcca9c55e8de03aaa54499f028818e955e211c6f6ab527602246e9607f355"
+  },
+  "current_hashes": {
+    "workbench/__init__.py": "d4bf1783388e12957306e2743a335ee76ce14fce6d2852463141a4fd499922c0",
+    "workbench/schemas.py": "6bc4df94ca6b517e03373e95926ffc757788f5ae84cff04dff994340262dd362",
+    "workbench/saved_views.py": "775ad47170ee9b610d71a2c3bac66c6549823f0e86c929fee856659220f3b03b",
+    "baseline_info.py": "481c676ccba68797179672beda20e5d6ad72170bd207e81a99b96624b4125791",
+    "test_relative_path.py": "53a59ee5ec8b8402b630c1674510ccfe4ac950af34310ee126bd652d6bde8f1a"
+  },
+  "fixture_writes": [
+    {
+      "kind": "advance-current",
+      "paths": [
+        "workbench/schemas.py",
+        "baseline_info.py",
+        "test_relative_path.py"
+      ],
+      "before": {
+        "workbench/__init__.py": "d4bf1783388e12957306e2743a335ee76ce14fce6d2852463141a4fd499922c0",
+        "workbench/schemas.py": "aedb8429b4a2456838ad8f55b6a8c9f7a5cccfc64fb63fc560611a2eaec4d0c7",
+        "workbench/saved_views.py": "775ad47170ee9b610d71a2c3bac66c6549823f0e86c929fee856659220f3b03b",
+        "baseline_info.py": "503eaf2054fd52dd5c10c111456a5e76f6bceab2a82d083e7d46cc49b82fc775",
+        "test_relative_path.py": "2c9dcca9c55e8de03aaa54499f028818e955e211c6f6ab527602246e9607f355"
+      },
+      "after": {
+        "workbench/__init__.py": "d4bf1783388e12957306e2743a335ee76ce14fce6d2852463141a4fd499922c0",
+        "workbench/schemas.py": "6bc4df94ca6b517e03373e95926ffc757788f5ae84cff04dff994340262dd362",
+        "workbench/saved_views.py": "775ad47170ee9b610d71a2c3bac66c6549823f0e86c929fee856659220f3b03b",
+        "baseline_info.py": "481c676ccba68797179672beda20e5d6ad72170bd207e81a99b96624b4125791",
+        "test_relative_path.py": "53a59ee5ec8b8402b630c1674510ccfe4ac950af34310ee126bd652d6bde8f1a"
+      }
+    }
+  ]
+}

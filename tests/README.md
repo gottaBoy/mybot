@@ -37,6 +37,17 @@ Pi测试使用真实锁定SDK和仅localhost HTTP/SSE mock，不使用fake CLI�
 验收命令的`MYBOT_REQUIRE_PI_RUNTIME=1`要求SDK存在，缺失直接失败，不能用skip冒充通过。
 无SDK时配置拒绝/不fallback等纯API检查仍执行。
 
+代码基线处理专项：
+
+```bash
+.venv/bin/python -m pytest -q tests/test_coding_reconciliation.py tests/test_coding_continuation.py tests/test_coding.py tests/test_coding_pytest.py
+```
+
+比较和人工全文决定均不写宿主文件。新tests/readonly基线、freeze后源变化、旧hash、
+两profile实际运行和新checkpoint根接续均验证。独立
+`tests/reconciliation_browser_server.py`只在严格一次性目录允许固定基线推进；
+该夹具写入与产品副本写入/模型调用分别留证，不能指向主4180/5173。
+
 重试测试覆盖来源快照 hash、显式重放确认、最低新增预算、角色模型重新分配、来源 Run 不变、幂等请求、活动运行互斥和服务重启后的 lineage；不会自动发起真实 Provider 重试。
 
 `tests/test_backend_service.py` 通过 MockTransport 检查配置/GET 无网络、显式 POST consent、

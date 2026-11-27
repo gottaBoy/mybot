@@ -5,6 +5,14 @@
 
 ## 最新产品反馈
 
+2026-11-27继续核心研发交付，ADR-0034补原项目变化后的显式代码基线解决：
+比较旧根/检查点/当前，人工仅决定writable全文，测试/readonly取当前；
+冻结新根后实际重跑基线，累计/增量/旧来源分开，新checkpoint可普通继续。
+原项目不写，默认严格接续仍拒漂移；没有自动合并/路径映射。
+1446Python/2435前端/build、74浏览器检查通过，主入口已启用/原行不变，
+见[实施计划](CORE_BASELINE_PLAN_2026-11-27.md)和
+[证据](../frontend/evidence/coding-reconciliation-2026-11-27/README.md)。
+
 2026-11-27按用户“深度分析/列计划/多Agent实现”，交付ADR-0032计划修订和ADR-0033 Pi：
 当前vN、完整影响核对、CAS/原ID回执和只读版本历史；变更要求及下游创建新Task，
 旧Task/Run/已接受报告不重写，新要求须重新验收。退役Task保留补充记录但不可新执行。
@@ -74,7 +82,7 @@ Cindy的任务接力、OpenMausBot的会话管理、nanoMuse的自托管控制�
 | --- | --- | --- |
 | 项目与任务 | 2–8真实子任务、不可变计划修订/历史、变更影响与前置报告门禁 | 嵌套分解、AI自动拆解、团队分工及通用Task验收状态 |
 | 任务持续工作 | 持久消息、选单条补充与同Task前轮成果，核对正文/来源后冻结到下一研究Run；原快照保留 | 没有自动历史、长期记忆、旧patch自动应用或通用聊天执行器 |
-| 研发实现与验证 | 显式文件隔离修改、固定unittest/pytest实际测试、有限修正；可选前轮代码检查点继续，累计/增量Diff与测试证据分开 | 其他runtime/插件及可写fixture、基线变化的冲突合并、原项目应用/合并、真实模型效果与规模验收 |
+| 研发实现与验证 | 固定unittest/pytest隔离修改/有限修正、checkpoint接续；当前基线变化可人工全文解决并重新验证，累计/增量/来源分开 | 其他runtime/可写fixture、路径增删/rename/自动行合并、原项目应用/合并、真实模型效果与规模验收 |
 | 多Agent执行 | 固定Planning/Research/Synthesis只读流程，可配置阶段模型/指令/资源、保存与发布 | 长期Agent、更多角色、正式Harness/Model Port及任意流程 |
 | 可视化 | Task/Run/Agent/Call/Artifact，固定阶段配置、版本历史与运行快照、预算和已知用量 | 任意DAG编辑、插件执行及更多Workflow对象 |
 | 模型 | Codex CLI、OpenAI-compatible和受限Pi SDK文本适配；角色模型/资源、实际用量/cache口径 | Pi完整工具Harness、其他Provider/native协议、账单对账、真实模型效果认证 |

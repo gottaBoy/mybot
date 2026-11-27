@@ -357,9 +357,14 @@ export function RunWorkspace({
                 <dt>{t('轮次', 'Attempt')}</dt>
                 <dd>
                   {selectedTest.round === 0
-                    ? codingCandidate?.snapshot.continuation
-                      ? t('继承代码基线', 'Inherited code baseline')
-                      : t('原始基线', 'Original baseline')
+                    ? codingCandidate?.snapshot.reconciliation
+                      ? t(
+                          '人工核对后的起点基线',
+                          'Reviewed starting point baseline',
+                        )
+                      : codingCandidate?.snapshot.continuation
+                        ? t('继承代码基线', 'Inherited code baseline')
+                        : t('原始基线', 'Original baseline')
                     : selectedTest.round}
                 </dd>
               </dl>
@@ -819,7 +824,11 @@ export function RunWorkspace({
                     SHA-256 {codingCandidate.snapshot.continuation.sha256}
                   </p>
                   <p className="wb-wrap">
-                    {t('原项目基线', 'Original project base')} ·{' '}
+                    {t(
+                      '来源检查点的旧项目基线',
+                      'Source checkpoint project base',
+                    )}{' '}
+                    ·{' '}
                     <code>
                       {codingCandidate.snapshot.continuation.origin_hash}
                     </code>
@@ -830,6 +839,52 @@ export function RunWorkspace({
                   <pre className="wb-coding-log">
                     {codingCandidate.snapshot.continuation.patch}
                   </pre>
+                  {codingCandidate.snapshot.reconciliation && (
+                    <>
+                      <p className="wb-wrap">
+                        {t(
+                          '本轮采用的当前项目基线',
+                          'Adopted project base for this Run',
+                        )}{' '}
+                        ·{' '}
+                        <code>
+                          {codingCandidate.snapshot.reconciliation.current_hash}
+                        </code>
+                      </p>
+                      <p className="wb-wrap">
+                        {t('人工核对的运行起点', 'Reviewed Run starting point')}{' '}
+                        ·{' '}
+                        <code>
+                          {
+                            codingCandidate.snapshot.reconciliation
+                              .resolved_hash
+                          }
+                        </code>
+                      </p>
+                      <p>
+                        {t(
+                          '以上旧补丁仅记录检查点来源。本轮累计Diff相对采用的新基线，增量Diff相对人工核对后的起点。',
+                          'The old patch records checkpoint provenance. This Run cumulative Diff compares with the adopted new base; incremental Diff compares with the reviewed starting point.',
+                        )}
+                      </p>
+                      {codingCandidate.config.continuation?.reconciliation?.resolutions.map(
+                        (choice) => (
+                          <details className="wb-disclosure" key={choice.path}>
+                            <summary>
+                              {choice.path} · {choice.source}
+                            </summary>
+                            <pre className="wb-coding-log">
+                              {
+                                codingCandidate.snapshot.files.find(
+                                  (file) => file.path === choice.path,
+                                )?.content
+                              }
+                            </pre>
+                          </details>
+                        ),
+                      )}
+                    </>
+                  )}
                 </details>
               )}
               {run.context.artifacts?.map((item) => (

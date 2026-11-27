@@ -588,3 +588,13 @@ Node SDK位于独立runtime。
 三style双mode、中英/390/reducedmotion与主8GET-only通过。
 证据`frontend/evidence/plan-revisions-pi-2026-11-27/README.md`；
 回答为mock，SDK/HTTP/写副本/测试真实。主入口已启用，原数据不变，119/9/110保持。
+
+## 36. 三份基线与人工起点
+
+2026-11-27沿原form-wizard/work-item-detail落点，在同一CodingRunDialog加入项目领域组件
+CodingBaselineResolution，复用AppSelect/TextArea/Badge/Button和details展示三份来源。
+只writable有决定控件，测试/readonly固定当前；换配置撤回比较/consent、重比较保留手工正文。
+已冻结候选与Run分别显示旧来源、新根与人工起点，不另建页面/主题/通用组件或vendor副本。
+1446Python/2435前端/build，74browsercheck/75fixturePNG、三style双mode/中英390/
+reduced motion与主8GET-only验证。迟到preview竞态修后全新fixture完整重跑；
+主入口已启用、原行不变。见`frontend/evidence/coding-reconciliation-2026-11-27/README.md`。

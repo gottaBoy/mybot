@@ -1,5 +1,11 @@
 import { api } from './api'
 import { isTaskReadIdentifier, maxTaskQueryPage } from './task-query'
+import {
+  parseReconciliationInput,
+  parseReconciliationSnapshot,
+  type CodingReconciliation,
+  type CodingReconciliationSnapshot,
+} from './coding-reconciliation'
 
 export type CodingProfile = 'python-unittest' | 'python-pytest'
 export type CodingConfig = {
@@ -13,6 +19,7 @@ export type CodingConfig = {
   continuation?: {
     checkpoint: { id: string; sha256: string }
     instruction: string
+    reconciliation?: CodingReconciliation
   }
 }
 export type CodingFiles = Array<{
@@ -39,6 +46,7 @@ export type CodingCandidate = {
     files: CodingFiles
     origin_files?: CodingFiles
     continuation?: CodingProvenance
+    reconciliation?: CodingReconciliationSnapshot
     model: {
       id: string
       name: string
@@ -143,7 +151,11 @@ export function parseCodingConfig(value: unknown): CodingConfig {
   if (Object.hasOwn(value, 'continuation')) {
     const next = value.continuation
     if (
-      !object(next, ['checkpoint', 'instruction']) ||
+      !optionalObject(
+        next,
+        ['checkpoint', 'instruction'],
+        ['reconciliation'],
+      ) ||
       !object(next.checkpoint, ['id', 'sha256']) ||
       !isTaskReadIdentifier(next.checkpoint.id) ||
       !hash(next.checkpoint.sha256) ||
@@ -155,6 +167,14 @@ export function parseCodingConfig(value: unknown): CodingConfig {
     continuation = {
       checkpoint: { id: next.checkpoint.id, sha256: next.checkpoint.sha256 },
       instruction: next.instruction,
+      ...(Object.hasOwn(next, 'reconciliation')
+        ? {
+            reconciliation: parseReconciliationInput(
+              next.reconciliation,
+              value.writable as string[],
+            ),
+          }
+        : {}),
     }
   }
   return {
@@ -206,7 +226,7 @@ export function parseCodingCandidate(
     !optionalObject(
       value.snapshot,
       ['task_id', 'goal', 'acceptance', 'notes', 'files', 'profile', 'model'],
-      ['origin_files', 'continuation'],
+      ['origin_files', 'continuation', 'reconciliation'],
     )
   )
     throw new CodingResponseError()
@@ -243,7 +263,8 @@ export function parseCodingCandidate(
   )
     throw new CodingResponseError()
   let originFiles: CodingFiles | undefined,
-    provenance: CodingProvenance | undefined
+    provenance: CodingProvenance | undefined,
+    reconciliation: CodingReconciliationSnapshot | undefined
   if (config.continuation) {
     originFiles = parseCodingFiles(snapshot.origin_files)
     const ref = snapshot.continuation
@@ -270,13 +291,26 @@ export function parseCodingCandidate(
             !config.writable.includes(file.path)),
       ) ||
       originFiles.length !== files.length ||
-      originFiles.every((file, index) => file.content === files[index].content)
+      (!config.continuation.reconciliation &&
+        originFiles.every(
+          (file, index) => file.content === files[index].content,
+        ))
     )
       throw new CodingResponseError()
     provenance = ref as CodingProvenance
+    if (config.continuation.reconciliation) {
+      reconciliation = parseReconciliationSnapshot(
+        snapshot.reconciliation,
+        config,
+        originFiles,
+        files,
+      )
+    } else if (Object.hasOwn(snapshot, 'reconciliation'))
+      throw new CodingResponseError()
   } else if (
     Object.hasOwn(snapshot, 'origin_files') ||
-    Object.hasOwn(snapshot, 'continuation')
+    Object.hasOwn(snapshot, 'continuation') ||
+    Object.hasOwn(snapshot, 'reconciliation')
   )
     throw new CodingResponseError()
   return {
@@ -291,6 +325,7 @@ export function parseCodingCandidate(
       ...(originFiles && provenance
         ? { origin_files: originFiles, continuation: provenance }
         : {}),
+      ...(reconciliation ? { reconciliation } : {}),
       profile: snapshot.profile as CodingProfile,
       model: snapshot.model as CodingCandidate['snapshot']['model'],
     },
@@ -702,4 +737,14 @@ export function parseCodingTest(content: string): CodingTest {
     receipt.success === true
   if (value.passed !== passed) throw new CodingResponseError()
   return value as unknown as CodingTest
+}
+
+export {
+  object as codingObject,
+  optionalObject as codingOptionalObject,
+  text as codingText,
+  hash as codingHash,
+  paths as codingPaths,
+  request as codingRequest,
+  root as codingRoot,
 }

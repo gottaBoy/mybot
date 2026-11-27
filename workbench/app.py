@@ -342,6 +342,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "device_execution_delegation": True,
                                  "isolated_coding": True,
                                  "coding_continuation": True,
+                                 "coding_reconciliation": True,
                                  "coding_pytest": True,
                                  "pi_sdk": pi_sdk_available(),
                                  "task_plans": True,
@@ -789,6 +790,11 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     def coding_parameters(request):
         if request.query_params:
             raise CodingError("coding_parameters_invalid", 422)
+
+    @app.post("/api/tasks/{identifier}/coding/reconciliation/preview")
+    def coding_reconciliation_preview(identifier: str, body: CodingConfig, request: Request):
+        coding_parameters(request)
+        return coding.compare(identifier, body)
 
     @app.post("/api/tasks/{identifier}/coding/preview")
     async def coding_preview(identifier: str, body: CodingConfig, request: Request):

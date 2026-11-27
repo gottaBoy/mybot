@@ -546,6 +546,9 @@ export function TaskWorkspace({
         >
           <CodingRunDialog
             continuationEnabled={data.capabilities.coding_continuation === true}
+            reconciliationEnabled={
+              data.capabilities.coding_reconciliation === true
+            }
             pytestEnabled={data.capabilities.coding_pytest === true}
             key={taskId}
             task={item.task}

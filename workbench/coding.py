@@ -10,7 +10,12 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from .coding_runner import CodingError
-from .coding_checkpoints import code_diff, file_records, checkpoint_content, checkpoint_page, read_checkpoint
+from .coding_checkpoints import (
+    code_diff, file_records, checkpoint_content, checkpoint_page, read_checkpoint, read_checkpoint_source,
+)
+from .coding_reconciliation import (
+    CodingReconciliation, comparison, resolved_files, validate_frozen_reconciliation,
+)
 from .context import snapshot_files
 from .provider import key_available
 from .recovery import fingerprint
@@ -23,6 +28,14 @@ class CodingContinuation(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     checkpoint: ArtifactReference
     instruction: str = Field(min_length=1, max_length=8000)
+    reconciliation: CodingReconciliation | None = None
+
+    @field_validator("reconciliation")
+    @classmethod
+    def explicit_reconciliation(cls, value):
+        if value is None:
+            raise ValueError("coding_reconciliation_invalid")
+        return value
 
     @field_validator("instruction")
     @classmethod
@@ -111,7 +124,7 @@ class CodingService:
             db.execute("BEGIN")
             yield db
 
-    def build(self, db, task_id, config):
+    def inputs(self, db, task_id, config):
         task = TaskTurnService.task(db, task_id)
         project = decode(db.execute("SELECT * FROM projects WHERE id=?", (task["project_id"],)).fetchone())
         if project is None:
@@ -130,20 +143,49 @@ class CodingService:
         model = {key: model.get(key) for key in (*EXECUTION_MODEL_FIELDS, "name")}
         if model["kind"] == "codex_cli":
             model["workspace"] = str(self.workspace)
+        return task, project, records, model
+
+    def compare(self, task_id, config):
+        if config.continuation is None or config.continuation.reconciliation is not None:
+            raise CodingError("coding_reconciliation_input_invalid", 422)
+        with self.reader() as db:
+            task, project, records, model = self.inputs(db, task_id, config)
+            selected, record, origin = read_checkpoint_source(db, task_id, config.continuation.checkpoint)
+            return comparison(task, project, config.model_dump(exclude_none=True), selected, record, origin, records, model)
+
+    def build(self, db, task_id, config):
+        task, project, records, model = self.inputs(db, task_id, config)
         snapshot = {
             "task_id": task_id, "goal": task["goal"], "acceptance": task["acceptance"],
             "notes": project["notes"], "files": records, "profile": config.test_profile,
             "model": {key: model[key] for key in ("id", "name", "kind", "model", "endpoint")},
         }
         if config.continuation is not None:
-            selected, record = read_checkpoint(db, task_id, config.continuation.checkpoint)
-            if selected["origin_hash"] != fingerprint(records):
-                raise CodingError("coding_checkpoint_base_changed")
-            original, inherited = file_records(records), file_records(selected["files"])
-            if any(original[path] != inherited[path] and path not in config.writable for path in original):
-                raise CodingError("coding_checkpoint_scope_changed", 422)
+            choices = config.continuation.reconciliation
+            if choices is None:
+                selected, record = read_checkpoint(db, task_id, config.continuation.checkpoint)
+                if selected["origin_hash"] != fingerprint(records):
+                    raise CodingError("coding_checkpoint_base_changed")
+                original, inherited = file_records(records), file_records(selected["files"])
+                if any(original[path] != inherited[path] and path not in config.writable for path in original):
+                    raise CodingError("coding_checkpoint_scope_changed", 422)
+                starting_files = selected["files"]
+            else:
+                selected, record, origin = read_checkpoint_source(db, task_id, config.continuation.checkpoint)
+                reviewed_config = config.model_dump(exclude_none=True)
+                del reviewed_config["continuation"]["reconciliation"]
+                review = comparison(task, project, reviewed_config, selected, record, origin, records, model)
+                starting_files = resolved_files(review, choices, config.writable)
+                original, inherited = file_records(origin), file_records(selected["files"])
+                snapshot["reconciliation"] = {
+                    "schema_version": 1, "review_hash": review["review_hash"],
+                    "current_hash": review["current_hash"], "resolved_hash": fingerprint(starting_files),
+                    "source_candidate_hash": selected["candidate_hash"],
+                    "source_origin_files": origin, "checkpoint_files": selected["files"],
+                    "changes": review["changes"],
+                }
             snapshot.update({
-                "origin_files": records, "files": selected["files"],
+                "origin_files": records, "files": starting_files,
                 "continuation": {
                     "id": record["id"], "sha256": record["sha256"], "run_id": record["run_id"],
                     "round": selected["round"], "origin_hash": selected["origin_hash"],
@@ -226,6 +268,7 @@ class CodingService:
             dependencies = TaskTurnService.require_ready(db, task_id, own_coding_id=request_id)
             candidate = json.loads(row["candidate"])
             config = CodingConfig.model_validate(candidate["config"])
+            validate_frozen_reconciliation(candidate, config)
             if candidate["snapshot"]["profile"] != config.test_profile:
                 raise CodingError("coding_profile_inconsistent")
             model = decode(db.execute("SELECT * FROM models WHERE id=?", (candidate["config"]["model_id"],)).fetchone())
@@ -310,6 +353,7 @@ class CodingHarness:
     async def execute(self, run, invoke, checkpoint):
         candidate = run["context"]["coding"]
         config = CodingConfig.model_validate(candidate["config"])
+        validate_frozen_reconciliation(candidate, config)
         if candidate["snapshot"]["profile"] != config.test_profile:
             raise CodingError("coding_profile_inconsistent")
         baseline = file_records(candidate["snapshot"]["files"])
@@ -358,9 +402,7 @@ class CodingHarness:
                     "notes": candidate["snapshot"]["notes"], "writable": config.writable,
                     "files": [{"path": path, "content": text} for path, text in current.items()],
                     "previous_test": result, "round": number,
-                    **({"continuation_instruction": config.continuation.instruction,
-                        "source_checkpoint": candidate["snapshot"]["continuation"]}
-                       if config.continuation is not None else {}),
+                    **self.continuation_input(candidate, config),
                     "response_schema": {"summary": "change summary", "changes": [{"path": "admitted path", "content": "complete content"}]},
                 })
                 output = await invoke(agent, prompt)
@@ -397,3 +439,17 @@ class CodingHarness:
                                         "修改仅在隔离副本中。原项目未写入、未合并、未提交，等待人工审查。")
                     return
             raise CodingError("coding_tests_failed")
+
+    @staticmethod
+    def continuation_input(candidate, config):
+        if config.continuation is None:
+            return {}
+        source = candidate["snapshot"]["continuation"]
+        reconciliation = candidate["snapshot"].get("reconciliation")
+        if reconciliation is not None:
+            source = {
+                **{key: source[key] for key in ("id", "sha256", "run_id", "round", "origin_hash")},
+                "current_hash": reconciliation["current_hash"],
+                "resolved_hash": reconciliation["resolved_hash"],
+            }
+        return {"continuation_instruction": config.continuation.instruction, "source_checkpoint": source}
