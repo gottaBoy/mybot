@@ -1,7 +1,8 @@
 import type { ModelTestReceipt } from './model-test-state'
 import type { WorkflowSnapshot } from './workflows'
 import type { ArtifactSource } from './task-artifacts'
-import type { DependencyGate } from './task-plans'
+import type { AnyDependencyGate } from './task-plans'
+import type { TaskPlanScope } from './task-plan-scope'
 
 export type Project = {
   id: string
@@ -74,6 +75,7 @@ export type Bootstrap = {
     run_query?: boolean
     task_board?: boolean
     task_conversation?: boolean
+    task_turn_discard?: boolean
     workflow_versions?: boolean
     device_continuation?: boolean
     device_run_history?: boolean
@@ -87,6 +89,7 @@ export type Bootstrap = {
     task_artifact_references?: boolean
     task_plans?: boolean
     task_plan_revisions?: boolean
+    nested_task_plans?: boolean
   }
 }
 export type Snapshot = {
@@ -99,6 +102,7 @@ export type Snapshot = {
   evidence: Array<{ path: string; bytes: number }>
   workflow?: WorkflowSnapshot
   artifacts?: ArtifactSource[]
+  task_plan_scope?: TaskPlanScope
 }
 export type Call = {
   id: string
@@ -127,7 +131,8 @@ export type RunDetail = {
     context: {
       mode?: string
       coding?: unknown
-      task_dependencies?: DependencyGate
+      task_dependencies?: AnyDependencyGate
+      task_plan_scope?: TaskPlanScope
       evidence: Array<{ path: string; bytes: number }>
       workflow?: WorkflowSnapshot
       artifacts?: ArtifactSource[]

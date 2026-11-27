@@ -64,9 +64,12 @@ def succeed_and_review(case,child):
 
 
 def child_run(case,child,request_id="dependency-child-123"):
-    context=post(case[0],f"/api/tasks/{child['id']}/preview",{}).json()
+    preview=post(case[0],f"/api/tasks/{child['id']}/preview",{})
+    assert preview.status_code in {200,409},preview.text
+    context=preview.json()
+    # A corrupt plan must reject execution even when no valid preview can be obtained.
     return post(case[0],f"/api/tasks/{child['id']}/runs",run_body(
-        case[5],context_hash=context["context_hash"],request_id=request_id,
+        case[5],context_hash=context.get("context_hash", "0" * 64),request_id=request_id,
     ))
 
 
@@ -197,13 +200,14 @@ def test_no_research_turn_recovery_or_legacy_resume_bypasses_dependency_gate(pla
     assert plan_case[2].requests==[]
 
 
-def test_plan_read_parameters_receipts_and_single_level_scope(plan_case):
+def test_plan_read_parameters_receipts_and_nested_preview_scope(plan_case):
     client=plan_case[0]
     assert client.get(endpoint(plan_case)+"?extra=1").status_code==422
     assert client.get(endpoint(plan_case)+"/operations/not-found-request").status_code==404
     assert client.get("/api/tasks/missing/plan").status_code==404
     child=create(plan_case)["result"]["plan"]["items"][0]["task"]
-    assert post(client,f"/api/tasks/{child['id']}/plan/preview",plan_case[7]).status_code==422
+    nested=post(client,f"/api/tasks/{child['id']}/plan/preview",plan_case[7])
+    assert nested.status_code==200 and nested.json()["schema_version"]==3
     assert client.get(f"/api/tasks/{child['id']}/plan").json()["parent"]["task_id"]==plan_case[6]["id"]
 
 

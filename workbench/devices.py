@@ -122,7 +122,10 @@ def public_pairing(row, clock):
 
 
 def public_message(row):
-    return {key: row[key] for key in ("id", "request_id", "content", "created_at", "state", "run_id")}
+    value = dict(row)
+    if value.get("discarded_at") is not None:
+        value["state"] = "discarded"
+    return {key: value[key] for key in ("id", "request_id", "content", "created_at", "state", "run_id")}
 
 
 class DeviceService:

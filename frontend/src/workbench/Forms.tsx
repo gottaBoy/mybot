@@ -14,6 +14,7 @@ import {
   RefreshCw,
   Save,
   ShieldCheck,
+  Trash2,
 } from 'lucide-react'
 import {
   AppButton,
@@ -42,6 +43,7 @@ import {
   prepareTaskTurn,
   previewTaskTurn,
   assertTaskTurnReceipt,
+  discardTaskTurn,
   type TaskTurn,
   type TurnPreparation,
 } from './task-turns'
@@ -79,6 +81,8 @@ import { useProjectReferences } from './useProjectReferences'
 import { useRunWorkflow } from './useRunWorkflow'
 import { TaskArtifactPicker } from './TaskArtifactPicker'
 import { artifactRefs } from './task-artifacts'
+import { useTaskPlan } from './useTaskPlan'
+import { admitTaskPlanScope, sameTaskPlanScope } from './task-plan-scope'
 
 export type FormState =
   | { kind: 'project' }
@@ -167,7 +171,12 @@ export function WorkbenchForm({
   const [turn, setTurn] = useState<TaskTurn | undefined>(
     state.kind === 'run' ? state.turn : undefined,
   )
-  const [turnUncertain, setTurnUncertain] = useState(false)
+  const [turnUncertain, updateTurnUncertainty] = useState(false)
+  const turnUncertainRef = useRef(false)
+  function setTurnUncertain(value: boolean) {
+    turnUncertainRef.current = value
+    updateTurnUncertainty(value)
+  }
   const [prepareOnly, setPrepareOnly] = useState(false)
   const [checkingTurn, setCheckingTurn] = useState(false)
   const turnLocked = Boolean(turn?.candidate || turnUncertain)
@@ -206,6 +215,46 @@ export function WorkbenchForm({
     Boolean(runSnapshot?.artifacts?.length) &&
     data.capabilities.task_artifact_references !== true
   const [contextChanged, setContextChanged] = useState(false)
+  const [scopeRefresh, setScopeRefresh] = useState(0)
+  const [discardTurnOpen, setDiscardTurnOpen] = useState(false)
+  const planScopeRead = useTaskPlan(
+    state.kind === 'run' ? state.task.id : '',
+    state.kind === 'run' && data.capabilities.nested_task_plans === true,
+    scopeRefresh,
+    data.capabilities.task_plan_revisions === true,
+    data.capabilities.nested_task_plans === true,
+  )
+  useEffect(() => {
+    setScopeRefresh((value) => value + 1)
+  }, [data])
+  const snapshotScope = runSnapshot?.task_plan_scope
+  const currentScope =
+    planScopeRead.value?.schema_version === 3
+      ? {
+          schema_version: 1 as const,
+          task_id: planScopeRead.value.task_id,
+          scope_hash: planScopeRead.value.gate.scope_hash,
+        }
+      : undefined
+  const planScopeMismatch = Boolean(
+    planScopeRead.value && !sameTaskPlanScope(snapshotScope, currentScope),
+  )
+  const planScopeBlocked =
+    state.kind === 'run' &&
+    ((snapshotScope !== undefined &&
+      data.capabilities.nested_task_plans !== true) ||
+      (planScopeRead.enabled &&
+        (planScopeRead.busy ||
+          !!planScopeRead.error ||
+          !planScopeRead.value ||
+          planScopeRead.blocked ||
+          planScopeMismatch)))
+  useEffect(() => {
+    if (planScopeMismatch) {
+      setConsent(false)
+      if (!turn?.candidate) setContextChanged(true)
+    }
+  }, [planScopeMismatch])
   const [rechecking, setRechecking] = useState(false)
   // Kept stable across network errors, so explicit re-submit cannot enqueue a duplicate Run.
   const [requestId] = useState(() => crypto.randomUUID())
@@ -260,10 +309,10 @@ export function WorkbenchForm({
       turnUncertain ||
       artifactSelectionPending)
   const guardState = useRef({ dirty, busy })
-  guardState.current = { dirty, busy }
+  guardState.current = { dirty, busy: busy || turnUncertain }
   function setFormBusy(value: boolean) {
     operationBusy.current = value
-    guardState.current.busy = value
+    guardState.current.busy = value || turnUncertainRef.current
     setBusy(value)
     refreshWorkbenchNavigationBlocker()
   }
@@ -297,7 +346,8 @@ export function WorkbenchForm({
     const unregister = registerWorkbenchNavigationBlocker({
       getState: () => ({
         dirty: !saved.current && guardState.current.dirty,
-        busy: !saved.current && operationBusy.current,
+        busy:
+          !saved.current && (operationBusy.current || turnUncertainRef.current),
       }),
       onBlocked: (intent) => {
         setUnmanagedNavigation(intent.kind === 'unmanaged')
@@ -382,6 +432,11 @@ export function WorkbenchForm({
     if (state.kind === 'run' && contextChanged) return
     if (state.kind === 'run' && turnUncertain) return
     if (state.kind === 'run' && workflow.blocked) return
+    if (
+      state.kind === 'run' &&
+      (planScopeBlocked || turn?.state === 'discarded')
+    )
+      return
     if (
       state.kind === 'run' &&
       (artifactSelectionPending || referencesUnsupported)
@@ -553,6 +608,12 @@ export function WorkbenchForm({
             }
             if (!preparedTurn.candidate)
               throw new Error('task_turn_preparation_missing')
+            if (preparedTurn.state === 'discarded') {
+              await onSaved()
+              saved.current = true
+              onClose()
+              return
+            }
             if (prepareOnly) {
               await onSaved()
               saved.current = true
@@ -722,7 +783,10 @@ export function WorkbenchForm({
             undefined,
             artifactRefs((runSnapshot ?? state.snapshot).artifacts),
           )
-        : await post<Snapshot>(`/tasks/${state.task.id}/preview`)
+        : admitTaskPlanScope(
+            await post<Snapshot>(`/tasks/${state.task.id}/preview`),
+            state.task.id,
+          )
       const next = recheckedRunContext(
         {
           snapshot: runSnapshot ?? state.snapshot,
@@ -792,6 +856,10 @@ export function WorkbenchForm({
         saved.current = true
         if (!confirmWorkbenchNavigation()) onRun(current.run_id)
         onClose()
+      } else if (current.state === 'discarded') {
+        await onSaved()
+        saved.current = true
+        onClose()
       }
     } catch (reason) {
       if (!mounted.current) return
@@ -803,6 +871,41 @@ export function WorkbenchForm({
         setCheckingTurn(false)
         setFormBusy(false)
       }
+    }
+  }
+  async function discardPreparedTurn() {
+    if (
+      state.kind !== 'run' ||
+      !turn?.candidate ||
+      turn.state !== 'prepared' ||
+      turnUncertain ||
+      operationBusy.current ||
+      data.capabilities.task_turn_discard !== true
+    )
+      return
+    setFormBusy(true)
+    setDiscardTurnOpen(false)
+    setConsent(false)
+    setTurnUncertain(true)
+    try {
+      const discarded = await discardTaskTurn(state.task.id, turn)
+      if (!mounted.current) return
+      setTurn(discarded)
+      setTurnUncertain(false)
+      await onSaved()
+      saved.current = true
+      onClose()
+    } catch (reason) {
+      if (!mounted.current) return
+      setTurnUncertain(true)
+      setError(
+        t(
+          '放弃结果仍待核对，请按原消息读取，不会重发。',
+          'The discard outcome is unresolved. Check the original message; it will not be resent.',
+        ),
+      )
+    } finally {
+      if (mounted.current) setFormBusy(false)
     }
   }
   const field = (
@@ -1120,6 +1223,8 @@ export function WorkbenchForm({
       workflow.blocked ||
       artifactSelectionPending ||
       referencesUnsupported ||
+      planScopeBlocked ||
+      turn?.state === 'discarded' ||
       (prepareOnly && data.capabilities.device_execution_delegation !== true)
     const used = data.models.filter((item) =>
       Object.values(routing).includes(item.id),
@@ -1135,6 +1240,23 @@ export function WorkbenchForm({
             )}
           </span>
         </div>
+        {planScopeBlocked && (
+          <p role="alert" className="wb-error">
+            {t(
+              '任务树条件尚未确认或已变化，请重新核对。已准备的原候选只能按原消息核对或显式放弃。',
+              'Task tree conditions are unresolved or changed. Review again. A prepared candidate retains its original message identity and can be checked or explicitly discarded.',
+            )}
+          </p>
+        )}
+        {turn?.state === 'prepared' &&
+          data.capabilities.task_turn_discard === true && (
+            <AppButton
+              label={t('放弃此轮准备', 'Discard prepared turn')}
+              icon={<Trash2 size={15} />}
+              disabled={busy || turnUncertain}
+              onClick={() => setDiscardTurnOpen(true)}
+            />
+          )}
         {!workflowEnabled && workflow.blocked && (
           <p role="alert" className="wb-error">
             {t(
@@ -1736,7 +1858,7 @@ export function WorkbenchForm({
         title={titles[state.kind]}
         onClose={requestClose}
         closeLabel={t('关闭', 'Close')}
-        busy={busy || discardOpen}
+        busy={busy || turnUncertain || discardOpen || discardTurnOpen}
       >
         <form ref={formRef} noValidate className="wb-form" onSubmit={submit}>
           <fieldset disabled={busy} className="wb-form-fields">
@@ -1774,7 +1896,7 @@ export function WorkbenchForm({
               label={t('关闭', 'Close')}
               tone="ghost"
               onClick={requestClose}
-              disabled={busy}
+              disabled={busy || turnUncertain}
             />
             {state.kind === 'run' && step > 0 && (
               <AppButton
@@ -1810,6 +1932,33 @@ export function WorkbenchForm({
           </div>
         </form>
       </AppDialog>
+      {discardTurnOpen && (
+        <AppDialog
+          title={t('放弃已准备的下一轮？', 'Discard the prepared next run?')}
+          closeLabel={t('关闭', 'Close')}
+          onClose={() => setDiscardTurnOpen(false)}
+        >
+          <p>
+            {t(
+              '消息和原候选凭据会保留，本轮不会执行。后续运行需要新的明确候选。',
+              'The message and original candidate receipt remain. This turn will not execute; later work needs a new explicit candidate.',
+            )}
+          </p>
+          <div className="wb-form-actions">
+            <AppButton
+              label={t('保留准备', 'Keep preparation')}
+              onClick={() => setDiscardTurnOpen(false)}
+            />
+            <AppButton
+              label={t('确认放弃此轮准备', 'Confirm prepared turn discard')}
+              icon={<Trash2 size={15} />}
+              tone="destructive"
+              disabled={busy || turnUncertain}
+              onClick={() => void discardPreparedTurn()}
+            />
+          </div>
+        </AppDialog>
+      )}
       {discardOpen && (
         <AppDraftGuard
           title={t('放弃未保存的更改？', 'Discard unsaved changes?')}

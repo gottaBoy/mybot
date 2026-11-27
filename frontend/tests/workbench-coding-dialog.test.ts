@@ -441,6 +441,60 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 describe('isolated coding confirmation', () => {
+  it('keeps a frozen scoped coding candidate available for discard when current child evidence changes', async () => {
+    const scoped = {
+      ...candidate,
+      snapshot: {
+        ...candidate.snapshot,
+        task_plan_scope: {
+          schema_version: 1,
+          task_id: 'task-a',
+          scope_hash: 'a'.repeat(64),
+        },
+      },
+    }
+    props.initial = job.request_id
+    props.nestedEnabled = true
+    props.currentTaskPlanScope = scoped.snapshot.task_plan_scope
+    m.read.mockResolvedValue({ ...job, candidate: scoped })
+    render()
+    await settle()
+    m.checks.at(-1).onChange(true)
+    render()
+    const staleExecute = button('Confirm implementation & tests').onClick
+    props.currentTaskPlanScope = {
+      ...scoped.snapshot.task_plan_scope,
+      scope_hash: 'b'.repeat(64),
+    }
+    render()
+    expect(button('Confirm implementation & tests').disabled).toBe(true)
+    await staleExecute()
+    await settle()
+    expect(m.apply).not.toHaveBeenCalled()
+    await button('Discard this preparation').onClick()
+    await settle()
+    expect(m.apply.mock.calls[0][2]).toBe('discard')
+  })
+  it('does not prepare a formerly flat candidate after its Task becomes part of a nested scope', async () => {
+    render()
+    await button('Review sources & test environment').onClick()
+    await settle()
+    m.checks.at(-1).onChange(true)
+    render()
+    const staleExecute = button('Confirm implementation & tests').onClick
+    props.nestedEnabled = true
+    props.currentTaskPlanScope = {
+      schema_version: 1,
+      task_id: 'task-a',
+      scope_hash: 'a'.repeat(64),
+    }
+    render()
+    expect(button('Confirm implementation & tests').disabled).toBe(true)
+    await staleExecute()
+    await settle()
+    expect(m.prepare).not.toHaveBeenCalled()
+    expect(button('Confirm implementation & tests')).toBeUndefined()
+  })
   it.each([undefined, false])(
     'keeps Node unavailable unless its independent capability is explicit: %j',
     async (nodeEnabled) => {

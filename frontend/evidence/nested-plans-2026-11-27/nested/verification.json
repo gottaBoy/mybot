@@ -1,0 +1,2064 @@
+{
+  "fixture": true,
+  "modelGeneration": "Deterministic FakeProvider text; no paid provider transport",
+  "actualExecution": "Application HTTP, SQLite, explicit research Runs and human report decisions",
+  "checks": [
+    "A blocked container can draft a nested plan; Escape/Keep editing preserves its goals and dependency without model calls",
+    "Lost nested creation reconciles schema3 by the original GET ID, keeps the old schema1 receipt, and presents parent plus own plan with one POST",
+    "A real child navigation opens the grandchild, and its missing ancestor review blocks both the UI and direct Run POST without a model call",
+    "An advertised nested-plan read failure blocks new execution and recovers by GET without pretending the plan or counts are empty",
+    "Accepted ancestor evidence admits A1; its lost execution reconciles the same prepared message by GET with one execute POST, while unreviewed success still blocks A2",
+    "Both real child reports are accepted before A can run, and B remains blocked until A has a separately reviewed integration",
+    "A fresh explicit integration binds exact child completion evidence without sending child bodies, and human acceptance admits a real four-call B Run",
+    "Withdrawing A1 review blocks future B execution while the completed B Run, original integration context and accepted integration report remain unchanged",
+    "The same parent-plus-own-plan view fits three computed styles in both modes, English desktop and Chinese mobile, without changing stored work or calling a model"
+  ],
+  "errors": [],
+  "external": [],
+  "reads": [
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/776581c5df2b4fcbb49926529f972813/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/776581c5df2b4fcbb49926529f972813/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/776581c5df2b4fcbb49926529f972813/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/776581c5df2b4fcbb49926529f972813/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan/operations/158d2691-886b-4d88-ab9c-6a75be473836",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/776581c5df2b4fcbb49926529f972813/plan/operations/nested-root-original-plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/54d6f32848334dc89c1bdddc629c7a1b/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/54d6f32848334dc89c1bdddc629c7a1b/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/54d6f32848334dc89c1bdddc629c7a1b/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/54d6f32848334dc89c1bdddc629c7a1b/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workflows/local-research/versions",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/54d6f32848334dc89c1bdddc629c7a1b/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/54d6f32848334dc89c1bdddc629c7a1b/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/cc6b3ff72cae490b986f46aeca9921ed",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/54d6f32848334dc89c1bdddc629c7a1b/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/54d6f32848334dc89c1bdddc629c7a1b/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/54d6f32848334dc89c1bdddc629c7a1b/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/54d6f32848334dc89c1bdddc629c7a1b/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/cc6b3ff72cae490b986f46aeca9921ed",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/cc6b3ff72cae490b986f46aeca9921ed",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/cc6b3ff72cae490b986f46aeca9921ed",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/cc6b3ff72cae490b986f46aeca9921ed",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/54d6f32848334dc89c1bdddc629c7a1b/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/54d6f32848334dc89c1bdddc629c7a1b/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/54d6f32848334dc89c1bdddc629c7a1b/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/54d6f32848334dc89c1bdddc629c7a1b/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/cc6b3ff72cae490b986f46aeca9921ed",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/cc6b3ff72cae490b986f46aeca9921ed",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/cc6b3ff72cae490b986f46aeca9921ed",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/turns/3d78de84f1bc4456aa81952c8277cb59",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/40d016e9298b4c58ab859f752f117527",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/40d016e9298b4c58ab859f752f117527",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/40d016e9298b4c58ab859f752f117527",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/40d016e9298b4c58ab859f752f117527",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/40d016e9298b4c58ab859f752f117527",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workflows/local-research/versions",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/4ed58ff2ed944d3c9c37c3b076dc963f",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/4ed58ff2ed944d3c9c37c3b076dc963f",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/4ed58ff2ed944d3c9c37c3b076dc963f",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/4ed58ff2ed944d3c9c37c3b076dc963f",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/4ed58ff2ed944d3c9c37c3b076dc963f",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/4ed58ff2ed944d3c9c37c3b076dc963f",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/4ed58ff2ed944d3c9c37c3b076dc963f",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/4ed58ff2ed944d3c9c37c3b076dc963f",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workflows/local-research/versions",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/320ed766c0fe4efd8363d1e0284fb100",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/320ed766c0fe4efd8363d1e0284fb100",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/320ed766c0fe4efd8363d1e0284fb100",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/320ed766c0fe4efd8363d1e0284fb100",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/320ed766c0fe4efd8363d1e0284fb100",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/320ed766c0fe4efd8363d1e0284fb100",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/320ed766c0fe4efd8363d1e0284fb100",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/320ed766c0fe4efd8363d1e0284fb100",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/776581c5df2b4fcbb49926529f972813/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/776581c5df2b4fcbb49926529f972813/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/776581c5df2b4fcbb49926529f972813/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/776581c5df2b4fcbb49926529f972813/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/776581c5df2b4fcbb49926529f972813/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/776581c5df2b4fcbb49926529f972813/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/776581c5df2b4fcbb49926529f972813/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workflows/local-research/versions",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/20ab02b4b41b416c885d664ad45d244a",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/20ab02b4b41b416c885d664ad45d244a",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/20ab02b4b41b416c885d664ad45d244a",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/20ab02b4b41b416c885d664ad45d244a",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/40d016e9298b4c58ab859f752f117527",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/40d016e9298b4c58ab859f752f117527",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/40d016e9298b4c58ab859f752f117527",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/20ab02b4b41b416c885d664ad45d244a",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/20ab02b4b41b416c885d664ad45d244a",
+      "method": "GET"
+    },
+    {
+      "path": "/api/runs/320ed766c0fe4efd8363d1e0284fb100",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/2c23a119e6e447f992832173184ff80c/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/turns",
+      "method": "GET"
+    }
+  ],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/776581c5df2b4fcbb49926529f972813/plan/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/776581c5df2b4fcbb49926529f972813/plan",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/plan",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/54d6f32848334dc89c1bdddc629c7a1b/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/54d6f32848334dc89c1bdddc629c7a1b/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/artifacts/73debaa360df48d78e9f4501c9498220/decision",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/turns",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/turns/3d78de84f1bc4456aa81952c8277cb59/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/turns/3d78de84f1bc4456aa81952c8277cb59/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/6f29fc9ef1e94abc9127461080b37d4e/turns/3d78de84f1bc4456aa81952c8277cb59/execute",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/artifacts/f53112869dd949d4b2b725037cd0400c/decision",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/e82808ae711246ec857db5f1c902c953/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/artifacts/b9e97af0e055476d9423141d944a2f0b/decision",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/d980551ba99d4cc1a2ea6f2b9506d394/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/artifacts/db8d69314db245ca88a5ba63492ff250/decision",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/runs",
+      "method": "POST"
+    },
+    {
+      "path": "/api/artifacts/f53112869dd949d4b2b725037cd0400c/decision",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/ddebf113fa934d868e51ac398a9fc1cc/runs",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "root-flat-plan-before-nesting.png",
+    "nested-preview-desktop.png",
+    "nested-parent-and-own-plan.png",
+    "grandchild-inherited-prerequisite-blocked.png",
+    "nested-read-failure-blocks-execution.png",
+    "a1-execution-response-lost.png",
+    "successful-child-still-awaits-human-review.png",
+    "children-accepted-container-needs-integration.png",
+    "reviewed-integration-unlocks-upper-dependent.png",
+    "withdrawn-child-current-gate-and-original-admission.png",
+    "nested-neutral-light.png",
+    "nested-neutral-dark.png",
+    "nested-zira-light.png",
+    "nested-zira-dark.png",
+    "nested-y2k-light.png",
+    "nested-y2k-dark.png"
+  ],
+  "geometry": [
+    {
+      "style": "neutral",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "root": {
+        "color": "rgb(0, 0, 0)",
+        "background": "rgb(255, 255, 255)",
+        "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+      },
+      "button": {
+        "color": "rgb(0, 0, 0)",
+        "background": "rgba(0, 0, 0, 0)",
+        "radius": "6px",
+        "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+      },
+      "items": [
+        {
+          "x": 266,
+          "y": 992.28125,
+          "width": 715.609375,
+          "height": 165,
+          "top": 992.28125,
+          "right": 981.609375,
+          "bottom": 1157.28125,
+          "left": 266
+        },
+        {
+          "x": 266,
+          "y": 1157.28125,
+          "width": 715.609375,
+          "height": 186,
+          "top": 1157.28125,
+          "right": 981.609375,
+          "bottom": 1343.28125,
+          "left": 266
+        }
+      ]
+    },
+    {
+      "style": "neutral",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "root": {
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(28, 31, 34)",
+        "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+      },
+      "button": {
+        "color": "rgb(255, 255, 255)",
+        "background": "rgba(0, 0, 0, 0)",
+        "radius": "6px",
+        "font": "Figtree, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+      },
+      "items": [
+        {
+          "x": 40,
+          "y": 1149.859375,
+          "width": 332,
+          "height": 213,
+          "top": 1149.859375,
+          "right": 372,
+          "bottom": 1362.859375,
+          "left": 40
+        },
+        {
+          "x": 40,
+          "y": 1362.859375,
+          "width": 332,
+          "height": 234,
+          "top": 1362.859375,
+          "right": 372,
+          "bottom": 1596.859375,
+          "left": 40
+        }
+      ]
+    },
+    {
+      "style": "zira",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "root": {
+        "color": "rgb(23, 43, 77)",
+        "background": "rgb(255, 255, 255)",
+        "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+      },
+      "button": {
+        "color": "rgb(23, 43, 77)",
+        "background": "rgba(0, 0, 0, 0)",
+        "radius": "6px",
+        "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+      },
+      "items": [
+        {
+          "x": 266,
+          "y": 1024.671875,
+          "width": 715.609375,
+          "height": 165,
+          "top": 1024.671875,
+          "right": 981.609375,
+          "bottom": 1189.671875,
+          "left": 266
+        },
+        {
+          "x": 266,
+          "y": 1189.671875,
+          "width": 715.609375,
+          "height": 186,
+          "top": 1189.671875,
+          "right": 981.609375,
+          "bottom": 1375.671875,
+          "left": 266
+        }
+      ]
+    },
+    {
+      "style": "zira",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "root": {
+        "color": "rgb(230, 233, 239)",
+        "background": "rgb(22, 26, 34)",
+        "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+      },
+      "button": {
+        "color": "rgb(230, 233, 239)",
+        "background": "rgba(0, 0, 0, 0)",
+        "radius": "6px",
+        "font": "\"Inter var\", Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", system-ui, \"PingFang SC\", \"Microsoft YaHei\", \"Noto Sans SC\", sans-serif"
+      },
+      "items": [
+        {
+          "x": 40,
+          "y": 1149.859375,
+          "width": 332,
+          "height": 213,
+          "top": 1149.859375,
+          "right": 372,
+          "bottom": 1362.859375,
+          "left": 40
+        },
+        {
+          "x": 40,
+          "y": 1362.859375,
+          "width": 332,
+          "height": 270,
+          "top": 1362.859375,
+          "right": 372,
+          "bottom": 1632.859375,
+          "left": 40
+        }
+      ]
+    },
+    {
+      "style": "y2k",
+      "mode": "light",
+      "locale": "en",
+      "width": 1440,
+      "scroll": 1440,
+      "root": {
+        "color": "rgb(45, 36, 27)",
+        "background": "rgb(255, 255, 255)",
+        "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+      },
+      "button": {
+        "color": "rgb(45, 36, 27)",
+        "background": "rgba(0, 0, 0, 0)",
+        "radius": "0px",
+        "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+      },
+      "items": [
+        {
+          "x": 266,
+          "y": 1029.984375,
+          "width": 715.609375,
+          "height": 169,
+          "top": 1029.984375,
+          "right": 981.609375,
+          "bottom": 1198.984375,
+          "left": 266
+        },
+        {
+          "x": 266,
+          "y": 1198.984375,
+          "width": 715.609375,
+          "height": 190,
+          "top": 1198.984375,
+          "right": 981.609375,
+          "bottom": 1388.984375,
+          "left": 266
+        }
+      ]
+    },
+    {
+      "style": "y2k",
+      "mode": "dark",
+      "locale": "zh",
+      "width": 390,
+      "scroll": 390,
+      "root": {
+        "color": "rgb(237, 239, 252)",
+        "background": "rgb(22, 24, 43)",
+        "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+      },
+      "button": {
+        "color": "rgb(237, 239, 252)",
+        "background": "rgba(0, 0, 0, 0)",
+        "radius": "0px",
+        "font": "Poppins, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif"
+      },
+      "items": [
+        {
+          "x": 40,
+          "y": 1224.171875,
+          "width": 332,
+          "height": 221,
+          "top": 1224.171875,
+          "right": 372,
+          "bottom": 1445.171875,
+          "left": 40
+        },
+        {
+          "x": 40,
+          "y": 1445.171875,
+          "width": 332,
+          "height": 242,
+          "top": 1445.171875,
+          "right": 372,
+          "bottom": 1687.171875,
+          "left": 40
+        }
+      ]
+    }
+  ],
+  "executionReconciliation": {
+    "task_id": "6f29fc9ef1e94abc9127461080b37d4e",
+    "turn_id": "3d78de84f1bc4456aa81952c8277cb59",
+    "request_id": "nested-a1-original-turn",
+    "candidate_hash": "734df7516b651ffba9e93de62bf92a563c956dd2c9ea8b4663e63c62dc61c1ba",
+    "run_id": "40d016e9298b4c58ab859f752f117527",
+    "execute_posts": 1
+  },
+  "actual": {
+    "root_task_id": "776581c5df2b4fcbb49926529f972813",
+    "ancestor_task_id": "54d6f32848334dc89c1bdddc629c7a1b",
+    "container_task_id": "d980551ba99d4cc1a2ea6f2b9506d394",
+    "first_task_id": "6f29fc9ef1e94abc9127461080b37d4e",
+    "second_task_id": "e82808ae711246ec857db5f1c902c953",
+    "dependent_task_id": "ddebf113fa934d868e51ac398a9fc1cc",
+    "run_ids": [
+      "cc6b3ff72cae490b986f46aeca9921ed",
+      "40d016e9298b4c58ab859f752f117527",
+      "4ed58ff2ed944d3c9c37c3b076dc963f",
+      "320ed766c0fe4efd8363d1e0284fb100",
+      "20ab02b4b41b416c885d664ad45d244a"
+    ],
+    "creation_request_id": "158d2691-886b-4d88-ab9c-6a75be473836",
+    "creation_posts": 1,
+    "integration_completion_scope_hash": "f5e876ca77bafbda0e99855418d84b865f3a3739d794ad5d1e41df166a8a79ea",
+    "final_counts": {
+      "tasks": 6,
+      "runs": 5,
+      "calls": 20,
+      "artifacts": 15,
+      "plans": 2,
+      "plan_versions": 0,
+      "nested_roots": 1
+    },
+    "model_calls": 20,
+    "initial_hashes": {
+      "README.md": "74414d372272889f083970448edf9122ecfd1221955010eac042c2da90a5e588"
+    },
+    "current_hashes": {
+      "README.md": "74414d372272889f083970448edf9122ecfd1221955010eac042c2da90a5e588"
+    }
+  }
+}

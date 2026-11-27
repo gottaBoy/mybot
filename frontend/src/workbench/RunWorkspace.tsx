@@ -40,7 +40,8 @@ import {
 import './coding-results.css'
 import { runStageTitle } from './run-stages'
 import { parseArtifactSources } from './task-artifacts'
-import { parseDependencyGate } from './task-plans'
+import { parseAnyDependencyGate } from './task-plans'
+import { parseTaskPlanScope } from './task-plan-scope'
 import { TaskDependencyFacts } from './TaskPlanPanel'
 import { pushWorkbenchNavigation } from './navigation-guard'
 import {
@@ -131,7 +132,12 @@ export function RunWorkspace({
           parseArtifactSources(next.run.context.artifacts, next.task.id)
         recordedCodingCandidate(next.run.context, next.task.id)
         if (next.run.context.task_dependencies !== undefined)
-          parseDependencyGate(next.run.context.task_dependencies, next.task.id)
+          parseAnyDependencyGate(
+            next.run.context.task_dependencies,
+            next.task.id,
+          )
+        if (next.run.context.task_plan_scope !== undefined)
+          parseTaskPlanScope(next.run.context.task_plan_scope, next.task.id)
       } catch (reason) {
         setDetail(null)
         throw reason
@@ -802,7 +808,9 @@ export function RunWorkspace({
                     showReceipts
                   />
                   <code className="wb-wrap">
-                    {run.context.task_dependencies.plan_hash}
+                    {'schema_version' in run.context.task_dependencies
+                      ? run.context.task_dependencies.scope_hash
+                      : run.context.task_dependencies.plan_hash}
                   </code>
                 </details>
               )}

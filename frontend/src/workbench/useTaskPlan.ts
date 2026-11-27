@@ -7,6 +7,7 @@ export function useTaskPlan(
   enabled: boolean,
   revision: number,
   revisionsEnabled = false,
+  nestedEnabled = false,
 ) {
   const [local, setLocal] = useState(0)
   const [state, setState] = useState<{
@@ -15,23 +16,36 @@ export function useTaskPlan(
     error?: string
     busy: boolean
     revisionsEnabled: boolean
-  }>({ taskId, busy: enabled, revisionsEnabled })
+    nestedEnabled: boolean
+  }>({ taskId, busy: enabled, revisionsEnabled, nestedEnabled })
   const version = useRef(0)
   useEffect(() => {
     const generation = ++version.current
     if (!enabled) return
     const controller = new AbortController()
-    setState({ taskId, busy: true, revisionsEnabled })
-    void fetchTaskPlan(taskId, controller.signal, revisionsEnabled)
+    setState({ taskId, busy: true, revisionsEnabled, nestedEnabled })
+    void fetchTaskPlan(
+      taskId,
+      controller.signal,
+      revisionsEnabled,
+      nestedEnabled,
+    )
       .then((value) => {
         if (!controller.signal.aborted && generation === version.current)
-          setState({ taskId, value, busy: false, revisionsEnabled })
+          setState({
+            taskId,
+            value,
+            busy: false,
+            revisionsEnabled,
+            nestedEnabled,
+          })
       })
       .catch((reason) => {
         if (!controller.signal.aborted && generation === version.current)
           setState({
             taskId,
             revisionsEnabled,
+            nestedEnabled,
             busy: false,
             error:
               reason instanceof ApiError &&
@@ -41,11 +55,12 @@ export function useTaskPlan(
           })
       })
     return () => controller.abort()
-  }, [taskId, enabled, revisionsEnabled, revision, local])
+  }, [taskId, enabled, revisionsEnabled, nestedEnabled, revision, local])
   const current =
     enabled &&
     state.taskId === taskId &&
-    state.revisionsEnabled === revisionsEnabled
+    state.revisionsEnabled === revisionsEnabled &&
+    state.nestedEnabled === nestedEnabled
       ? state
       : undefined
   return {

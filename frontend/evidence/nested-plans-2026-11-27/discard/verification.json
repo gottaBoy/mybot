@@ -1,0 +1,353 @@
+{
+  "fixture": true,
+  "modelGeneration": "No model generation; configured deterministic FakeProvider remains unused",
+  "actualExecution": "Application HTTP and SQLite preparation/discard; no Run or model call",
+  "checks": [
+    "A real flat Task and immutable prepared message persist with zero Runs and zero model calls",
+    "The secondary discard confirmation cancels with Escape, preserves the candidate and restores trigger focus",
+    "One real discard POST applies while its lost response leaves the original prepared identity locked and unresolved",
+    "The original wizard reconciles the same discarded Turn by GET without resending a mutation",
+    "Reload retains the discarded immutable message and candidate, clears its prepared lock and fits Chinese mobile presentation",
+    "A new message can be saved and prepared after lock release; its Chinese mobile confirmation cancels with no second discard or execution"
+  ],
+  "errors": [],
+  "external": [],
+  "reads": [
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/02703eef71ee403dae88b0e2c07a7da0/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns/requests/turn-discard-original-request",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns/0508579039584e8685b80a6db6fc480e",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns/0508579039584e8685b80a6db6fc480e",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/02703eef71ee403dae88b0e2c07a7da0/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/02703eef71ee403dae88b0e2c07a7da0/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns/0508579039584e8685b80a6db6fc480e",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns/0508579039584e8685b80a6db6fc480e",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/02703eef71ee403dae88b0e2c07a7da0/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns/requests/turn-discard-next-request",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns/5534b77d01e0457ca209d4700c3729e3",
+      "method": "GET"
+    }
+  ],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns/0508579039584e8685b80a6db6fc480e/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns/0508579039584e8685b80a6db6fc480e/prepare",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns/0508579039584e8685b80a6db6fc480e/discard",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns/5534b77d01e0457ca209d4700c3729e3/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/c6c43924f9ce40449e556e1472fd83a9/turns/5534b77d01e0457ca209d4700c3729e3/prepare",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "discard-confirmation-desktop.png",
+    "discard-response-lost.png",
+    "discarded-message-chinese-mobile.png",
+    "discard-confirmation-chinese-mobile.png"
+  ],
+  "geometry": [
+    {
+      "name": "Chinese discarded terminal at 390px",
+      "width": 390,
+      "scroll": 390,
+      "rect": {
+        "x": 18,
+        "y": 640.4375,
+        "width": 354,
+        "height": 109.1875,
+        "top": 640.4375,
+        "right": 372,
+        "bottom": 749.625,
+        "left": 18
+      },
+      "client": 354,
+      "content": 354
+    },
+    {
+      "name": "Chinese discard confirmation at 390px",
+      "width": 390,
+      "scroll": 390,
+      "rect": {
+        "x": 16,
+        "y": 327,
+        "width": 358,
+        "height": 190,
+        "top": 327,
+        "right": 374,
+        "bottom": 517,
+        "left": 16
+      },
+      "client": 358,
+      "content": 358
+    }
+  ],
+  "actual": {
+    "task_id": "c6c43924f9ce40449e556e1472fd83a9",
+    "original_turn_id": "0508579039584e8685b80a6db6fc480e",
+    "original_request_id": "turn-discard-original-request",
+    "original_candidate_hash": "1bed4c2a47252fd0b8f8b2564df8796ba6bf8bac596941fe6ff2385fec6ac5c0",
+    "next_turn_id": "5534b77d01e0457ca209d4700c3729e3",
+    "next_request_id": "turn-discard-next-request",
+    "next_candidate_hash": "3c2b3b2eb13225a5bab7ffb175d0c80a47bcc7da65b2f67d31c5f3a4d8610dff",
+    "discard_posts": 1,
+    "final_counts": {
+      "tasks": 1,
+      "runs": 0,
+      "calls": 0,
+      "artifacts": 0,
+      "plans": 0,
+      "plan_versions": 0,
+      "nested_roots": 0
+    },
+    "model_calls": 0,
+    "initial_hashes": {
+      "README.md": "74414d372272889f083970448edf9122ecfd1221955010eac042c2da90a5e588"
+    },
+    "current_hashes": {
+      "README.md": "74414d372272889f083970448edf9122ecfd1221955010eac042c2da90a5e588"
+    }
+  },
+  "summary": {
+    "status": "passed",
+    "checks": 6,
+    "screenshots": 4,
+    "discard_posts": 1,
+    "runs": 0,
+    "model_calls": 0,
+    "page_errors": 0,
+    "external_requests": 0
+  }
+}

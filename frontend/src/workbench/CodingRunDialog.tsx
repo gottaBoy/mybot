@@ -48,6 +48,7 @@ import {
   type CodingResolutionDrafts,
 } from './CodingBaselineResolution'
 import './task-artifacts.css'
+import { sameTaskPlanScope, type TaskPlanScope } from './task-plan-scope'
 
 export function CodingRunDialog({
   task,
@@ -57,6 +58,9 @@ export function CodingRunDialog({
   reconciliationEnabled = false,
   pytestEnabled = false,
   nodeEnabled = false,
+  nestedEnabled = false,
+  currentTaskPlanScope,
+  taskPlanScopeKnown = true,
   t,
   onClose,
   onStarted,
@@ -68,6 +72,9 @@ export function CodingRunDialog({
   reconciliationEnabled?: boolean
   pytestEnabled?: boolean
   nodeEnabled?: boolean
+  nestedEnabled?: boolean
+  currentTaskPlanScope?: TaskPlanScope
+  taskPlanScopeKnown?: boolean
   t: Copy
   onClose: () => void
   onStarted: (id: string) => void
@@ -110,6 +117,7 @@ export function CodingRunDialog({
   const bindingIdentity = JSON.stringify([
     task,
     models.find((model) => model.id === config.model_id),
+    currentTaskPlanScope,
   ])
   const mounted = useRef(true),
     internal = useRef(false),
@@ -126,6 +134,9 @@ export function CodingRunDialog({
     continuationEnabled,
     pytestEnabled,
     nodeEnabled,
+    nestedEnabled,
+    currentTaskPlanScope,
+    taskPlanScopeKnown,
     reconciliationEnabled,
     comparison,
     comparisonStale,
@@ -144,6 +155,9 @@ export function CodingRunDialog({
     continuationEnabled,
     pytestEnabled,
     nodeEnabled,
+    nestedEnabled,
+    currentTaskPlanScope,
+    taskPlanScopeKnown,
     reconciliationEnabled,
     comparison,
     comparisonStale,
@@ -214,6 +228,38 @@ export function CodingRunDialog({
       setConsent(false)
     }
   }, [bindingIdentity, comparison])
+  useEffect(() => {
+    if (
+      candidate &&
+      !job &&
+      (!sameTaskPlanScope(
+        candidate.snapshot.task_plan_scope,
+        currentTaskPlanScope,
+      ) ||
+        (candidate.snapshot.task_plan_scope &&
+          (!nestedEnabled || !taskPlanScopeKnown)))
+    ) {
+      setCandidate(undefined)
+      setConsent(false)
+      setPhase('edit')
+    }
+    if (
+      job?.candidate.snapshot.task_plan_scope &&
+      (!nestedEnabled ||
+        !taskPlanScopeKnown ||
+        !sameTaskPlanScope(
+          job.candidate.snapshot.task_plan_scope,
+          currentTaskPlanScope,
+        ))
+    )
+      setConsent(false)
+  }, [
+    currentTaskPlanScope?.scope_hash,
+    taskPlanScopeKnown,
+    nestedEnabled,
+    candidate,
+    job,
+  ])
   const errorCode = (reason: unknown) =>
     reason instanceof ApiError &&
     reason.details &&
@@ -447,6 +493,15 @@ export function CodingRunDialog({
   }
   async function preview() {
     if (operation.current || latest.current.pending) return
+    if (latest.current.nestedEnabled && !latest.current.taskPlanScopeKnown) {
+      setError(
+        t(
+          '任务树条件尚未核对，请刷新任务后重试。',
+          'Task tree conditions are unverified. Refresh the task and retry.',
+        ),
+      )
+      return
+    }
     if (
       latest.current.config.profile === 'python-pytest' &&
       !latest.current.pytestEnabled
@@ -536,6 +591,25 @@ export function CodingRunDialog({
       const value = await previewCoding(task.id, validated, controller.signal)
       if (!mounted.current || controller.signal.aborted) return
       if (
+        !sameTaskPlanScope(
+          value.snapshot.task_plan_scope,
+          latest.current.currentTaskPlanScope,
+        ) ||
+        (value.snapshot.task_plan_scope &&
+          (!latest.current.nestedEnabled || !latest.current.taskPlanScopeKnown))
+      ) {
+        setCandidate(undefined)
+        setConsent(false)
+        setPhase('edit')
+        setError(
+          t(
+            '任务树条件已变化，请刷新任务并重新核对。',
+            'Task tree conditions changed. Refresh the task and review again.',
+          ),
+        )
+        return
+      }
+      if (
         validated.continuation?.reconciliation &&
         !latest.current.job &&
         (!latest.current.comparison ||
@@ -604,6 +678,14 @@ export function CodingRunDialog({
         state.candidate.snapshot.profile === 'node-test' &&
         !state.nodeEnabled) ||
       (action === 'execute' &&
+        ((state.nestedEnabled && !state.taskPlanScopeKnown) ||
+          !sameTaskPlanScope(
+            state.candidate.snapshot.task_plan_scope,
+            state.currentTaskPlanScope,
+          ) ||
+          (state.candidate.snapshot.task_plan_scope &&
+            (!state.nestedEnabled || !state.taskPlanScopeKnown)))) ||
+      (action === 'execute' &&
         state.candidate.snapshot.reconciliation &&
         !state.reconciliationEnabled) ||
       (action === 'execute' &&
@@ -643,6 +725,27 @@ export function CodingRunDialog({
       ) {
         setPhase('prepared')
         setError(pytestUnavailableMessage())
+        return
+      }
+      if (
+        action === 'execute' &&
+        ((latest.current.nestedEnabled && !latest.current.taskPlanScopeKnown) ||
+          !sameTaskPlanScope(
+            registered.candidate.snapshot.task_plan_scope,
+            latest.current.currentTaskPlanScope,
+          ) ||
+          (registered.candidate.snapshot.task_plan_scope &&
+            (!latest.current.nestedEnabled ||
+              !latest.current.taskPlanScopeKnown)))
+      ) {
+        setPhase('prepared')
+        setConsent(false)
+        setError(
+          t(
+            '任务树条件已变化，原候选保留，只能核对或放弃。',
+            'Task tree conditions changed. The original candidate is retained for reconciliation or discard.',
+          ),
+        )
         return
       }
       if (
@@ -754,6 +857,16 @@ export function CodingRunDialog({
     (displayed?.snapshot.reconciliation || resolutionMode) &&
     !reconciliationEnabled,
   )
+  const taskPlanScopeBlocked = Boolean(
+    displayed &&
+    ((nestedEnabled && !taskPlanScopeKnown) ||
+      !sameTaskPlanScope(
+        displayed.snapshot.task_plan_scope,
+        currentTaskPlanScope,
+      ) ||
+      (displayed.snapshot.task_plan_scope &&
+        (!nestedEnabled || !taskPlanScopeKnown))),
+  )
   const staleUnpreparedReconciliation = Boolean(
     displayed?.snapshot.reconciliation &&
     !job &&
@@ -806,6 +919,14 @@ export function CodingRunDialog({
           {unsupportedNode && (
             <p role="alert" className="wb-error">
               {nodeCapabilityMessage()}
+            </p>
+          )}
+          {taskPlanScopeBlocked && (
+            <p role="alert" className="wb-error">
+              {t(
+                '任务树条件已变化或不可核对，原候选保留，不能执行；可继续按原ID核对或放弃准备。',
+                'Task tree conditions changed or cannot be verified. The original candidate cannot execute; check its original ID or discard the preparation.',
+              )}
             </p>
           )}
           {unsupportedReconciliation && (
@@ -1013,6 +1134,7 @@ export function CodingRunDialog({
                   busy ||
                   unsupportedPytest ||
                   unsupportedNode ||
+                  taskPlanScopeBlocked ||
                   unsupportedReconciliation
                 }
                 onClick={() => void preview()}
@@ -1190,6 +1312,7 @@ export function CodingRunDialog({
                   unsupportedContinuation ||
                   unsupportedPytest ||
                   unsupportedNode ||
+                  taskPlanScopeBlocked ||
                   unsupportedReconciliation ||
                   staleUnpreparedReconciliation
                 }

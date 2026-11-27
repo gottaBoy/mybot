@@ -1,0 +1,98 @@
+{
+  "fixture": true,
+  "modelGeneration": "No model generation; configured deterministic FakeProvider remains unused",
+  "actualExecution": "Application HTTP and SQLite preparation/discard; no Run or model call",
+  "checks": [
+    "A real flat Task and immutable prepared message persist with zero Runs and zero model calls"
+  ],
+  "errors": [],
+  "external": [],
+  "reads": [
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/auth/state",
+      "method": "GET"
+    },
+    {
+      "path": "/api/bootstrap",
+      "method": "GET"
+    },
+    {
+      "path": "/api/project-references",
+      "method": "GET"
+    },
+    {
+      "path": "/api/workspace/counts",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/b2c1858cb48f45ed9eefffad0041ebd5/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/b2c1858cb48f45ed9eefffad0041ebd5/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/b2c1858cb48f45ed9eefffad0041ebd5/coding",
+      "method": "GET"
+    },
+    {
+      "path": "/api/projects/b12d01780208404ca53f03575197d94b/detail",
+      "method": "GET"
+    },
+    {
+      "path": "/api/tasks/b2c1858cb48f45ed9eefffad0041ebd5/turns",
+      "method": "GET"
+    }
+  ],
+  "writes": [
+    {
+      "path": "/api/auth",
+      "method": "POST"
+    },
+    {
+      "path": "/api/projects",
+      "method": "POST"
+    },
+    {
+      "path": "/api/models",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/b2c1858cb48f45ed9eefffad0041ebd5/turns",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/b2c1858cb48f45ed9eefffad0041ebd5/turns/1cf3456e51564fcaaec9ffe55a5ecc2a/preview",
+      "method": "POST"
+    },
+    {
+      "path": "/api/tasks/b2c1858cb48f45ed9eefffad0041ebd5/turns/1cf3456e51564fcaaec9ffe55a5ecc2a/prepare",
+      "method": "POST"
+    }
+  ],
+  "screenshots": [
+    "failure.png"
+  ],
+  "geometry": [],
+  "failure": "page.waitForFunction: Timeout 15000ms exceeded.\n    at openPrepared (/home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-task-turn-discard.mjs:147:14)\n    at async file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-task-turn-discard.mjs:240:3",
+  "summary": {
+    "status": "failed",
+    "checks": 1,
+    "screenshots": 0,
+    "page_errors": 0,
+    "external_requests": 0
+  }
+}

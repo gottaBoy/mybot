@@ -83,7 +83,7 @@ export type DeviceMessage = {
   request_id: string
   content: string
   created_at: string
-  state: 'saved' | 'prepared' | 'applied'
+  state: 'saved' | 'prepared' | 'applied' | 'discarded'
   run_id: string | null
 }
 export type DeviceMessageInput = { request_id: string; content: string }
@@ -353,7 +353,9 @@ export function parseDeviceMessage(
     !requestId(value.request_id) ||
     !named(value.content, 8000) ||
     !timestamp(value.created_at) ||
-    !['saved', 'prepared', 'applied'].includes(value.state as string) ||
+    !['saved', 'prepared', 'applied', 'discarded'].includes(
+      value.state as string,
+    ) ||
     (value.run_id !== null && !isTaskReadIdentifier(value.run_id)) ||
     (value.state === 'applied'
       ? value.run_id === null
@@ -1021,7 +1023,9 @@ function parseExecutionSummary(value: unknown): ExecutionSummary {
       !isTaskReadIdentifier(model.id) ||
       !named(model.name, 80) ||
       !named(model.model, 150) ||
-      !['chat_completions', 'codex_cli', 'pi_sdk'].includes(model.kind as string)
+      !['chat_completions', 'codex_cli', 'pi_sdk'].includes(
+        model.kind as string,
+      )
     )
       throw new DeviceResponseError()
   return value as unknown as ExecutionSummary

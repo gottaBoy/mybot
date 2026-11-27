@@ -1231,14 +1231,22 @@ export function PairPortal() {
                                 item.state === 'applied' ? 'info' : 'neutral'
                               }
                             >
-                              {item.state === 'applied'
-                                ? t('已关联运行', 'Run linked')
-                                : item.state === 'prepared'
-                                  ? t(
-                                      '已准备，待确认',
-                                      'Prepared, awaiting confirmation',
-                                    )
-                                  : t('已保存，未执行', 'Saved, not executed')}
+                              {item.state === 'discarded'
+                                ? t(
+                                    '准备已放弃，消息保留',
+                                    'Preparation discarded; message retained',
+                                  )
+                                : item.state === 'applied'
+                                  ? t('已关联运行', 'Run linked')
+                                  : item.state === 'prepared'
+                                    ? t(
+                                        '已准备，待确认',
+                                        'Prepared, awaiting confirmation',
+                                      )
+                                    : t(
+                                        '已保存，未执行',
+                                        'Saved, not executed',
+                                      )}
                             </AppBadge>
                             <time>{when(item.created_at)}</time>
                           </header>

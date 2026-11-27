@@ -6,6 +6,17 @@ import {
   type PlanRevisionReceipt,
   type PlanRevisionPreview,
 } from './task-plan-revisions'
+import {
+  parseNestedTaskPlan,
+  parseNestedGate,
+  parseNestedCreatePreview,
+  parseNestedReceipt,
+  type NestedTaskPlanRead,
+  type NestedGate,
+  type NestedCreatePreview,
+  type NestedRevisionPreview,
+  type NestedPlanReceipt,
+} from './task-plan-nesting'
 
 export const dependencyCriterion = 'latest-successful-run-reviewed-reports-v1'
 export type PlanItemInput = {
@@ -67,7 +78,7 @@ export type PublishedPlan = {
     gate: DependencyGate
   }>
 }
-export type TaskPlanRead = {
+export type LegacyTaskPlanRead = {
   schema_version: 1 | 2
   unit: 'task_plan'
   task_id: string
@@ -75,6 +86,11 @@ export type TaskPlanRead = {
   gate: DependencyGate | null
   plan: PublishedPlan | null
 }
+export type TaskPlanRead = LegacyTaskPlanRead | NestedTaskPlanRead
+export type AnyDependencyGate = DependencyGate | NestedGate
+export type AnyCreatePreview = PlanPreview | NestedCreatePreview
+export type AnyPlanPreview =
+  AnyCreatePreview | PlanRevisionPreview | NestedRevisionPreview
 export type PlanReceipt = {
   request_id: string
   task_id: string
@@ -82,7 +98,8 @@ export type PlanReceipt = {
   state: 'applied'
   result: TaskPlanRead
 }
-export type AnyPlanReceipt = PlanReceipt | PlanRevisionReceipt
+export type AnyPlanReceipt =
+  PlanReceipt | PlanRevisionReceipt | NestedPlanReceipt
 function fail(): never {
   throw new Error('task_plan_response_invalid')
 }
@@ -404,6 +421,12 @@ export function parseTaskPlan(value: unknown, taskId: string): TaskPlanRead {
   if (
     value &&
     typeof value === 'object' &&
+    (value as { schema_version?: unknown }).schema_version === 3
+  )
+    return parseNestedTaskPlan(value, taskId)
+  if (
+    value &&
+    typeof value === 'object' &&
     (value as { schema_version?: unknown }).schema_version === 2
   )
     return parseRevisionTaskPlan(value, taskId)
@@ -596,8 +619,16 @@ export async function fetchTaskPlan(
   taskId: string,
   signal?: AbortSignal,
   revisionsEnabled = false,
+  nestedEnabled = false,
 ) {
   const value = await request(root(taskId), undefined, signal)
+  if (
+    !nestedEnabled &&
+    value &&
+    typeof value === 'object' &&
+    (value as { schema_version?: unknown }).schema_version === 3
+  )
+    throw new Error('nested_task_plans_unsupported')
   if (
     !revisionsEnabled &&
     value &&
@@ -611,21 +642,49 @@ export async function previewTaskPlan(
   parent: Task,
   definition: PlanDefinition,
   signal?: AbortSignal,
+  nestedEnabled = false,
 ) {
   const admitted = parsePlanDefinition(definition)
-  return parsePlanPreview(
-    await request(`${root(parent.id)}/preview`, admitted, signal),
-    parent,
-    admitted,
-  )
+  const value = await request(`${root(parent.id)}/preview`, admitted, signal)
+  if (
+    value &&
+    typeof value === 'object' &&
+    (value as { schema_version?: unknown }).schema_version === 3
+  ) {
+    if (!nestedEnabled) throw new Error('nested_task_plans_unsupported')
+    return parseNestedCreatePreview(value, parent, admitted)
+  }
+  return parsePlanPreview(value, parent, admitted)
 }
 export async function createTaskPlan(
   parent: Task,
   id: string,
-  preview: PlanPreview,
+  preview: AnyCreatePreview,
   signal?: AbortSignal,
+  nestedEnabled = false,
 ) {
   if (!requestId(id)) throw new Error('task_plan_input_invalid')
+  if ('schema_version' in preview) {
+    if (!nestedEnabled) throw new Error('nested_task_plans_unsupported')
+    const admitted = parseNestedCreatePreview(preview, parent)
+    if (admitted.impact.blockers.length)
+      throw new Error('task_plan_nested_busy')
+    return parseNestedReceipt(
+      await request(
+        root(parent.id),
+        {
+          ...admitted.definition,
+          request_id: id,
+          preview_hash: admitted.preview_hash,
+          consent: true,
+        },
+        signal,
+      ),
+      parent.id,
+      id,
+      admitted,
+    )
+  }
   const admitted = parsePlanPreview(preview, parent)
   return parsePlanReceipt(
     await request(
@@ -647,7 +706,7 @@ export async function fetchPlanOperation(
   taskId: string,
   id: string,
   signal?: AbortSignal,
-  expected?: PlanPreview | PlanRevisionPreview,
+  expected?: AnyPlanPreview,
 ): Promise<AnyPlanReceipt> {
   if (!requestId(id)) throw new Error('task_plan_input_invalid')
   const value = await request(
@@ -655,6 +714,27 @@ export async function fetchPlanOperation(
     undefined,
     signal,
   )
+  if (
+    value &&
+    typeof value === 'object' &&
+    (value as { schema_version?: unknown }).schema_version === 3
+  ) {
+    if (
+      expected &&
+      (!('schema_version' in expected) || expected.schema_version !== 3)
+    )
+      fail()
+    return parseNestedReceipt(
+      value,
+      taskId,
+      id,
+      expected && 'schema_version' in expected && expected.schema_version === 3
+        ? expected
+        : undefined,
+    )
+  }
+  if (expected && 'schema_version' in expected && expected.schema_version === 3)
+    fail()
   if (
     value &&
     typeof value === 'object' &&
@@ -670,6 +750,18 @@ export async function fetchPlanOperation(
   }
   if (expected && 'schema_version' in expected) fail()
   return parsePlanReceipt(value, taskId, id, expected)
+}
+export function parseAnyDependencyGate(
+  value: unknown,
+  taskId?: string,
+): AnyDependencyGate {
+  if (
+    value &&
+    typeof value === 'object' &&
+    (value as { schema_version?: unknown }).schema_version === 3
+  )
+    return parseNestedGate(value, taskId)
+  return parseDependencyGate(value, taskId)
 }
 
 export {

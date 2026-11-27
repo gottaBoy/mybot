@@ -3,6 +3,11 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { TaskPlanEditor } from '../src/workbench/TaskPlanEditor'
 import { ApiError } from '../src/workbench/api'
+import {
+  containerTask,
+  nestedPreview,
+  nestedReceipt,
+} from './task-plan-nesting-fixture'
 const m = vi.hoisted(() => ({
   states: [] as any[],
   refs: [] as any[],
@@ -392,6 +397,114 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 describe('Task breakdown creation controller', () => {
+  it('keeps one create editor for nested planning and displays whole-tree blockers before publication', async () => {
+    props.task = containerTask
+    props.nestedEnabled = true
+    props.currentScopeHash = 'a'.repeat(64)
+    m.preview.mockImplementation(async (parent, definition) => ({
+      ...nestedPreview,
+      parent_snapshot: parent,
+      definition,
+      impact: {
+        ...nestedPreview.impact,
+        blockers: [{ task_id: 'root-a', reasons: ['prepared_turn'] }],
+      },
+    }))
+    render()
+    fill()
+    await button('Review task breakdown').onClick()
+    const html = await settleAndHtml()
+    expect(html).toContain('Nested breakdown impact')
+    expect(html).toContain('Prepared task message')
+    expect(m.preview.mock.calls[0][3]).toBe(true)
+    m.checks.at(-1).onChange(true)
+    render()
+    expect(button('Confirm subtask creation').disabled).toBe(true)
+    await button('Confirm subtask creation').onClick()
+    expect(m.create).not.toHaveBeenCalled()
+  })
+  it('invalidates a reviewed nested candidate when its ancestor scope changes while preserving the draft', async () => {
+    props.task = containerTask
+    props.nestedEnabled = true
+    props.currentScopeHash = 'a'.repeat(64)
+    m.preview.mockImplementation(async (parent, definition) => ({
+      ...nestedPreview,
+      parent_snapshot: parent,
+      definition,
+    }))
+    render()
+    fill()
+    await button('Review task breakdown').onClick()
+    await settle()
+    m.checks.at(-1).onChange(true)
+    render()
+    const staleConfirm = button('Confirm subtask creation').onClick
+    props.currentScopeHash = 'b'.repeat(64)
+    render()
+    await staleConfirm()
+    await settle()
+    expect(m.inputs[0].value).toBe('Work 1')
+    expect(button('Confirm subtask creation')).toBeUndefined()
+    expect(m.create).not.toHaveBeenCalled()
+    expect(m.guard.getState().dirty).toBe(true)
+  })
+  it('rejects late nested previews after an ancestor identity change', async () => {
+    props.task = containerTask
+    props.nestedEnabled = true
+    props.currentScopeHash = 'a'.repeat(64)
+    let finish: ((value: any) => void) | undefined
+    m.preview.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve
+        }),
+    )
+    render()
+    fill()
+    const pending = button('Review task breakdown').onClick()
+    await settle()
+    props.currentScopeHash = 'b'.repeat(64)
+    render()
+    finish?.(nestedPreview)
+    await pending
+    await settle()
+    expect(button('Confirm subtask creation')).toBeUndefined()
+    expect(m.inputs[0].value).toBe('Work 1')
+    expect(m.create).not.toHaveBeenCalled()
+  })
+  it('retains nested unknown identity after capability loss and reconciles only its original GET', async () => {
+    props.task = containerTask
+    props.nestedEnabled = true
+    m.preview.mockImplementation(async (parent, definition) => ({
+      ...nestedPreview,
+      parent_snapshot: parent,
+      definition,
+    }))
+    m.create.mockRejectedValueOnce(new Error('lost response'))
+    render()
+    fill()
+    await button('Review task breakdown').onClick()
+    await settle()
+    m.checks.at(-1).onChange(true)
+    render()
+    await button('Confirm subtask creation').onClick()
+    await settle()
+    const id = m.create.mock.calls[0][1]
+    props.nestedEnabled = false
+    props.enabled = false
+    render()
+    await button('Check original creation request').onClick()
+    await settle()
+    expect(m.read.mock.calls[0][1]).toBe(id)
+    expect(m.create).toHaveBeenCalledOnce()
+    expect(m.guard.getState().busy).toBe(true)
+    m.read.mockResolvedValue({ ...nestedReceipt, request_id: id })
+    await button('Check original creation request').onClick()
+    await settle()
+    expect(props.onCreated).toHaveBeenCalledWith(
+      expect.objectContaining({ request_id: id, operation: 'create' }),
+    )
+  })
   it('does not preview or mutate on open and closes pristine settings directly', () => {
     render()
     m.dialog.onClose()

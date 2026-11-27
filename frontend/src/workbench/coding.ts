@@ -6,6 +6,7 @@ import {
   type CodingReconciliation,
   type CodingReconciliationSnapshot,
 } from './coding-reconciliation'
+import { parseTaskPlanScope, type TaskPlanScope } from './task-plan-scope'
 
 export type CodingProfile = 'python-unittest' | 'python-pytest' | 'node-test'
 const codingProfileNames: Record<CodingProfile, string> = {
@@ -54,6 +55,7 @@ export type CodingCandidate = {
     origin_files?: CodingFiles
     continuation?: CodingProvenance
     reconciliation?: CodingReconciliationSnapshot
+    task_plan_scope?: TaskPlanScope
     model: {
       id: string
       name: string
@@ -238,7 +240,7 @@ export function parseCodingCandidate(
     !optionalObject(
       value.snapshot,
       ['task_id', 'goal', 'acceptance', 'notes', 'files', 'profile', 'model'],
-      ['origin_files', 'continuation', 'reconciliation'],
+      ['origin_files', 'continuation', 'reconciliation', 'task_plan_scope'],
     )
   )
     throw new CodingResponseError()
@@ -338,6 +340,14 @@ export function parseCodingCandidate(
         ? { origin_files: originFiles, continuation: provenance }
         : {}),
       ...(reconciliation ? { reconciliation } : {}),
+      ...(Object.hasOwn(snapshot, 'task_plan_scope')
+        ? {
+            task_plan_scope: parseTaskPlanScope(
+              snapshot.task_plan_scope,
+              taskId,
+            ),
+          }
+        : {}),
       profile: snapshot.profile as CodingProfile,
       model: snapshot.model as CodingCandidate['snapshot']['model'],
     },

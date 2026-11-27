@@ -151,6 +151,10 @@ def reviewed_run(db, task_id):
 
 
 def dependency_state(db, task_id):
+    from .task_plan_nesting import nested_gate
+    nested = nested_gate(db, task_id)
+    if nested is not None:
+        return nested
     from .task_plan_revisions import revised_dependency_state
     revised, state = revised_dependency_state(db, task_id)
     if revised:
@@ -196,6 +200,10 @@ class TaskPlanService:
             yield db
 
     def read_in(self, db, task_id):
+        from .task_plan_nesting import nested_read
+        nested = nested_read(db, task_id)
+        if nested is not None:
+            return nested
         from .task_plan_revisions import revised_read
         revised = revised_read(db, task_id)
         if revised is not None:
@@ -230,9 +238,12 @@ class TaskPlanService:
 
     def candidate(self, db, task_id, definition):
         from .task_plan_revisions import membership
+        from .task_plan_nesting import NestedSnapshot
         task = task_record(db, task_id)
+        NestedSnapshot(db).lineage(task_id)
         if membership(db, task_id) is not None:
-            raise TaskPlanError("task_plan_nested_unsupported", 422)
+            from .task_plan_nesting import nested_creation_candidate
+            return nested_creation_candidate(db, task_id, definition)
         if db.execute("SELECT 1 FROM task_plans WHERE parent_task_id=?", (task_id,)).fetchone():
             raise TaskPlanError("task_plan_already_created")
         if any(not set(item.files) <= set(task["files"]) for item in definition.items):
@@ -282,6 +293,9 @@ class TaskPlanService:
             ).fetchone():
                 raise TaskPlanError("task_plan_request_conflict")
             candidate = self.candidate(db, task_id, definition)
+            nested = candidate.get("schema_version") == 3
+            if nested and candidate["impact"]["blockers"]:
+                raise TaskPlanError("task_plan_nested_busy")
             if candidate["preview_hash"] != body.preview_hash:
                 raise TaskPlanError("task_plan_preview_changed")
             at, ids = now(), {item.key: uid() for item in body.items}
@@ -305,7 +319,11 @@ class TaskPlanService:
                 for dependency in item.depends_on:
                     db.execute("INSERT INTO task_plan_dependencies VALUES(?,?)",
                                (ids[item.key], ids[dependency]))
-            receipt = {"request_id": body.request_id, "task_id": task_id,
+            if nested:
+                db.execute("INSERT OR IGNORE INTO task_plan_nested_roots VALUES(?,?)",
+                           (candidate["impact"]["root_task_id"], at))
+            receipt = {**({"schema_version": 3, "operation": "create"} if nested else {}),
+                       "request_id": body.request_id, "task_id": task_id,
                        "preview_hash": body.preview_hash, "state": "applied", "result": self.read_in(db, task_id)}
             db.execute("INSERT INTO task_plan_operations VALUES(?,?,?,?,?)",
                        (body.request_id, task_id, command_hash, dump(receipt), at))

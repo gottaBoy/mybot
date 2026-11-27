@@ -45,7 +45,7 @@ class DeviceExecutionService:
         state = (
             "applied" if row["run_id"] is not None else
             "revoked" if row["revoked_at"] is not None else
-            "superseded" if turn["state"] == "applied" else
+            "superseded" if turn["state"] == "applied" or turn["discarded_at"] is not None else
             "expired" if row["expires_at"] <= now() else "authorized"
         )
         if row["run_id"] is not None:
@@ -145,7 +145,9 @@ class DeviceExecutionService:
                 raise DeviceError("device_execution_not_prepared")
             if json.loads(row["candidate"])["candidate_hash"] != body.candidate_hash:
                 raise DeviceError("device_execution_candidate_changed")
-            self.turns.require_ready(db, device["task_id"], body.turn_id)
+            dependencies = self.turns.require_ready(db, device["task_id"], body.turn_id)
+            from .task_plan_scope import require_scope
+            require_scope(json.loads(row["candidate"])["snapshot"].get("task_plan_scope"), dependencies)
             for grant in db.execute(
                 "SELECT * FROM device_execution_grants WHERE (device_id=? OR turn_id=?)"
                 " AND revoked_at IS NULL AND run_id IS NULL AND expires_at>?",

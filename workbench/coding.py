@@ -22,6 +22,7 @@ from .recovery import fingerprint
 from .store import decode, dump, now, uid
 from .task_turns import EXECUTION_MODEL_FIELDS, TaskTurnService
 from .task_artifacts import ArtifactReference
+from .task_plan_scope import current_scope, require_scope
 
 
 class CodingContinuation(BaseModel):
@@ -161,6 +162,9 @@ class CodingService:
             "notes": project["notes"], "files": records, "profile": config.test_profile,
             "model": {key: model[key] for key in ("id", "name", "kind", "model", "endpoint")},
         }
+        scope = current_scope(db, task_id)
+        if scope is not None:
+            snapshot["task_plan_scope"] = scope
         if config.continuation is not None:
             choices = config.continuation.reconciliation
             if choices is None:
@@ -268,6 +272,7 @@ class CodingService:
                 raise CodingError("coding_candidate_discarded")
             dependencies = TaskTurnService.require_ready(db, task_id, own_coding_id=request_id)
             candidate = json.loads(row["candidate"])
+            require_scope(candidate["snapshot"].get("task_plan_scope"), dependencies)
             config = CodingConfig.model_validate(candidate["config"])
             validate_frozen_reconciliation(candidate, config)
             if candidate["snapshot"]["profile"] != config.test_profile:
@@ -287,6 +292,8 @@ class CodingService:
                 "evidence": [{"path": f["path"], "bytes": f["bytes"]} for f in candidate["snapshot"]["files"]],
                 "models": {model["id"]: candidate["model"]},
             }
+            if "task_plan_scope" in candidate["snapshot"]:
+                context["task_plan_scope"] = candidate["snapshot"]["task_plan_scope"]
             if dependencies is not None:
                 context["task_dependencies"] = dependencies
             resources = {

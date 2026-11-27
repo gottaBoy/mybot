@@ -1,4 +1,5 @@
 import type { Model, RunDetail } from './api'
+import type { TaskPlanScope } from './task-plan-scope'
 
 export type RecoveryConfig = {
   coordinator_model: string
@@ -17,6 +18,7 @@ export const recoveryRoles = [
   ['reviewer', 'reviewer_model'],
 ] as const
 export type RecoveryPreview = {
+  task_plan_scope?: TaskPlanScope
   source_run_id: string
   source_status: string
   allowed: boolean

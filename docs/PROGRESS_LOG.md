@@ -2,6 +2,29 @@
 
 规则：每个工作项完成后追加一条。这里记录交付和证据，不把计划写成完成事实。
 
+## 2026-11-27：有界嵌套任务
+
+用户继续上一批核心交付；起点73191b1。backend交树/聚合/CAS/退役和discard测试，
+frontend交schema3/同一界面/scope/二次确认，verification交ADR/fixture/browser与独审，
+root交所有执行scope、实际验收和本机启用。root→child→grandchild最多73当前Task；
+外部祖先门禁与自身children门禁分开；父收尾需新scope绑定、实际成功和人工接受。
+旧schema/版本/回执/Run保留，不自动运行或发送子报告。
+
+新增nestedroot marker与TaskTurn两archive列；owner可明确放弃knownprepared，
+原消息/候选/hash不丢，未知原ID GET，device旧grantreceipt不改而当前superseded。
+独审发现marker/绑定/member缺失的3种结构绕过已修；严格scope阻止旧输出换新证据。
+root命名冲突一度影响SavedViews，已alias修复并通过311旧功能复验。
+最终1565Python/2526前端87files、tsc/build通过，旧httpx/chunkwarning保留。
+9nested/16PNG+6discard/4PNG+58综合/61PNG+8主GET共81检查/81最终fixturePNG；
+实际6Task/5Run/20FakeCalls、撤回后阻新执行且旧事实不改，原源hash保持。
+
+主4180空闲369142经备份/副本演练/原行比对/优雅停止启动896247；
+5173保持，8只读后原行再次一致，无正式候选、计划、Run或调用新增。
+119/9/110与Bootstrap全量保持。下一核心为AI建议拆解与人工发布。
+[计划](CORE_NESTED_PLAN_2026-11-27.md)、
+[ADR-0036](decisions/ADR-0036-bounded-nested-task-plans.md)、
+[证据](../frontend/evidence/nested-plans-2026-11-27/README.md)。
+
 ## 2026-11-27：固定 Node.js 研发验证
 
 用户继续既有多Agent核心交付；起点688c232，backend负责固定执行器、frontend负责配置/

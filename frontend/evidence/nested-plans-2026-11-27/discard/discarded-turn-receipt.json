@@ -1,0 +1,79 @@
+{
+  "id": "0508579039584e8685b80a6db6fc480e",
+  "task_id": "c6c43924f9ce40449e556e1472fd83a9",
+  "request_id": "turn-discard-original-request",
+  "content": "Keep this immutable supplemental requirement and its original context receipt after discarding preparation.",
+  "created_at": "2026-11-27T17:55:08.740420+00:00",
+  "state": "discarded",
+  "run_id": null,
+  "candidate": {
+    "candidate_hash": "1bed4c2a47252fd0b8f8b2564df8796ba6bf8bac596941fe6ff2385fec6ac5c0",
+    "config": {
+      "coordinator_model": "06e2c15ab0294ef69397ce2c435f370c",
+      "researcher_model": "06e2c15ab0294ef69397ce2c435f370c",
+      "reviewer_model": "06e2c15ab0294ef69397ce2c435f370c",
+      "max_calls": 4,
+      "parallel": 2,
+      "minutes": 10,
+      "max_output_tokens": 1800
+    },
+    "snapshot": {
+      "goal": "Inspect the supplied README only after a separately confirmed execution.\n\n补充要求（仅本条消息）：\nKeep this immutable supplemental requirement and its original context receipt after discarding preparation.",
+      "acceptance": "Preserve message identity, original candidate and unknown-outcome reconciliation.",
+      "notes": "Disposable fixture; no external provider or execution.",
+      "text": "FILE README.md\n# Nested task plan acceptance\nThis disposable source supports explicit research, integration, and review.\nIts contents are not modified by planning or research execution.\n\nEND FILE",
+      "evidence": [
+        {
+          "path": "README.md",
+          "bytes": 171
+        }
+      ],
+      "bytes": 195,
+      "context_hash": "4dcc6cd8a11ba9be630abcc92af991a39fe5f98cf37bca8808b729620486db04",
+      "access": "read_only",
+      "tools": [],
+      "supplement": {
+        "id": "0508579039584e8685b80a6db6fc480e",
+        "content": "Keep this immutable supplemental requirement and its original context receipt after discarding preparation."
+      },
+      "workflow": {
+        "workflow_id": "local-research",
+        "version": null,
+        "definition_hash": "5c20f6ea4e8d7e6cb74909f62738290091dcf513bf4f146bc0cad9ec7f8ff66a",
+        "definition": {
+          "schema_version": 1,
+          "name": "Local research",
+          "harness": "local-superagent",
+          "stages": [
+            {
+              "id": "planning",
+              "role": "coordinator",
+              "model_id": "06e2c15ab0294ef69397ce2c435f370c",
+              "instructions": ""
+            },
+            {
+              "id": "research",
+              "role": "researcher",
+              "model_id": "06e2c15ab0294ef69397ce2c435f370c",
+              "instructions": ""
+            },
+            {
+              "id": "synthesis",
+              "role": "reviewer",
+              "model_id": "06e2c15ab0294ef69397ce2c435f370c",
+              "instructions": ""
+            }
+          ],
+          "limits": {
+            "max_calls": 4,
+            "parallel": 2,
+            "minutes": 10,
+            "max_output_tokens": 1800,
+            "research_tasks": 2
+          },
+          "review": "human"
+        }
+      }
+    }
+  }
+}

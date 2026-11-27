@@ -3,12 +3,18 @@ import { ArrowRight, GitBranch, RefreshCw, History, Pencil } from 'lucide-react'
 import { AppBadge, AppButton, AppLoading } from '../components/ui'
 import { taskWorkspaceHref } from './task-workspace-location'
 import { type Copy } from './state'
-import type { ReviewState, TaskPlanRead, DependencyGate } from './task-plans'
+import type { TaskPlanRead, AnyDependencyGate } from './task-plans'
+import type { OutcomeState } from './task-plan-nesting'
+import { NestedChildrenSummary, NestedGateFacts } from './NestedTaskPlanFacts'
 import { TaskPlanHistory } from './TaskPlanHistory'
 import './task-plans.css'
 
-export function reviewLabel(state: ReviewState, t: Copy) {
-  const labels: Record<ReviewState, string> = {
+const directPrerequisites = (gate: AnyDependencyGate) =>
+  'schema_version' in gate
+    ? (gate.external_scopes[0]?.prerequisites ?? [])
+    : gate.prerequisites
+export function reviewLabel(state: OutcomeState, t: Copy) {
+  const labels: Record<OutcomeState, string> = {
     no_run: t('尚未运行', 'Not run'),
     run_unfinished: t('运行尚未结束', 'Run unfinished'),
     run_failed: t('最近运行未成功', 'Latest run did not succeed'),
@@ -17,6 +23,12 @@ export function reviewLabel(state: ReviewState, t: Copy) {
     review_pending: t('等待报告验收', 'Awaiting report review'),
     changes_requested: t('报告要求修改', 'Changes requested'),
     accepted: t('最近报告已接受', 'Latest report accepted'),
+    children_pending: t('等待直接子任务验收', 'Awaiting direct child reviews'),
+    integration_stale: t(
+      '需按当前子任务证据重新收尾验收',
+      'Integration review does not match current child evidence',
+    ),
+    retired: t('分支已退役', 'Retired branch'),
   }
   return labels[state]
 }
@@ -24,11 +36,23 @@ export function TaskDependencyFacts({
   gate,
   t,
   showReceipts = false,
+  showOwnChildren = true,
 }: {
-  gate: DependencyGate
+  gate: AnyDependencyGate
   t: Copy
   showReceipts?: boolean
+  showOwnChildren?: boolean
 }) {
+  if ('schema_version' in gate)
+    return (
+      <NestedGateFacts
+        gate={gate}
+        t={t}
+        label={(state) => reviewLabel(state, t)}
+        showReceipts={showReceipts}
+        showOwnChildren={showOwnChildren}
+      />
+    )
   return (
     <div className="wb-task-dependency-facts" data-testid="task-dependencies">
       <div className="wb-inline">
@@ -91,6 +115,7 @@ export function TaskPlanPanel({
   canCreate,
   revisionsEnabled = false,
   onRevise,
+  nestedEnabled = false,
 }: {
   value?: TaskPlanRead
   busy: boolean
@@ -101,6 +126,7 @@ export function TaskPlanPanel({
   canCreate: boolean
   revisionsEnabled?: boolean
   onRevise?: () => void
+  nestedEnabled?: boolean
 }) {
   const [historyOpen, setHistoryOpen] = useState(false)
   return (
@@ -133,15 +159,37 @@ export function TaskPlanPanel({
       ) : (
         <>
           {value.parent && (
-            <a
-              className="wb-inline"
-              href={taskWorkspaceHref(value.parent.task_id)}
+            <nav
+              className="wb-plan-ancestry"
+              aria-label={t('任务层级导航', 'Task ancestry')}
             >
-              <GitBranch size={16} />
-              {value.parent.title}
-            </a>
+              {value.schema_version === 3 && value.depth === 2 && (
+                <>
+                  <a
+                    className="wb-text-link"
+                    href={taskWorkspaceHref(value.root_task_id)}
+                  >
+                    {t('根任务', 'Root task')} · {value.root_task_id}
+                  </a>
+                  <ArrowRight size={13} aria-hidden />
+                </>
+              )}
+              <a
+                className="wb-inline"
+                href={taskWorkspaceHref(value.parent.task_id)}
+              >
+                <GitBranch size={16} />
+                {value.parent.title}
+              </a>
+            </nav>
           )}
-          {value.gate && <TaskDependencyFacts gate={value.gate} t={t} />}
+          {value.gate && (
+            <TaskDependencyFacts
+              gate={value.gate}
+              t={t}
+              showOwnChildren={!value.plan}
+            />
+          )}
           {value.plan ? (
             <>
               <div className="wb-task-plan-heading">
@@ -198,19 +246,30 @@ export function TaskPlanPanel({
                       <dd>{item.task.acceptance}</dd>
                       <dt>{t('前置任务', 'Prerequisites')}</dt>
                       <dd>
-                        {item.gate.prerequisites.length
-                          ? item.gate.prerequisites
+                        {directPrerequisites(item.gate).length
+                          ? directPrerequisites(item.gate)
                               .map((dependency) => dependency.title)
                               .join(' · ')
                           : t('无', 'None')}
                       </dd>
                     </dl>
+                    {'kind' in item.review && item.review.own_plan && (
+                      <NestedChildrenSummary
+                        plan={item.review.own_plan}
+                        t={t}
+                      />
+                    )}
                     {!item.gate.ready && (
                       <span className="wb-muted">
-                        {t(
-                          '等待前置任务的成功运行及报告验收',
-                          'Waiting for successful prerequisite runs and accepted reports',
-                        )}
+                        {'schema_version' in item.gate
+                          ? t(
+                              '等待本层或上层执行条件，打开任务查看原因。',
+                              'Waiting for local or ancestor conditions. Open the task for the reasons.',
+                            )
+                          : t(
+                              '等待前置任务的成功运行及报告验收',
+                              'Waiting for successful prerequisite runs and accepted reports',
+                            )}
                       </span>
                     )}
                   </li>
@@ -226,15 +285,36 @@ export function TaskPlanPanel({
               )}
             </>
           ) : (
-            !value.parent && (
+            (!value.parent ||
+              (nestedEnabled &&
+                value.schema_version === 3 &&
+                value.gate.membership === 'current') ||
+              (nestedEnabled &&
+                value.schema_version !== 3 &&
+                value.gate?.membership !== 'retired')) && (
               <AppButton
                 label={t('拆分任务', 'Break down task')}
                 icon={<GitBranch size={16} />}
-                disabled={!canCreate || busy}
+                disabled={
+                  !canCreate ||
+                  busy ||
+                  (value.schema_version === 3 && value.depth >= 2)
+                }
                 onClick={onCreate}
               />
             )
           )}
+          {nestedEnabled &&
+            value.schema_version === 3 &&
+            value.depth >= 2 &&
+            !value.plan && (
+              <p className="wb-muted">
+                {t(
+                  '此任务已达到最大拆解层级。',
+                  'This task is at the maximum breakdown depth.',
+                )}
+              </p>
+            )}
         </>
       )}
     </section>

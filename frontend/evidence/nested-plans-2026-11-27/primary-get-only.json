@@ -1,0 +1,16 @@
+{
+  "checks": [
+    "1440/en: explicit nested/discard capabilities and original counts",
+    "1440/en: real plan editor renders without a preview or publication",
+    "1440/en: pristine draft closes without source reads or model calls",
+    "1440/en: original Run does not acquire nested admission or test facts",
+    "390/zh: explicit nested/discard capabilities and original counts",
+    "390/zh: real plan editor renders without a preview or publication",
+    "390/zh: pristine draft closes without source reads or model calls",
+    "390/zh: original Run does not acquire nested admission or test facts"
+  ],
+  "writes": [],
+  "external": [],
+  "errors": [],
+  "screenshots": false
+}

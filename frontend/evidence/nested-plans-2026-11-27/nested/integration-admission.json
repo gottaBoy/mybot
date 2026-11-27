@@ -1,0 +1,92 @@
+{
+  "schema_version": 3,
+  "task_id": "d980551ba99d4cc1a2ea6f2b9506d394",
+  "parent_task_id": "776581c5df2b4fcbb49926529f972813",
+  "root_task_id": "776581c5df2b4fcbb49926529f972813",
+  "depth": 1,
+  "membership": "current",
+  "ready": true,
+  "external_scopes": [
+    {
+      "task_id": "d980551ba99d4cc1a2ea6f2b9506d394",
+      "parent_task_id": "776581c5df2b4fcbb49926529f972813",
+      "plan_version": 1,
+      "plan_hash": "a7fd931c057082de86803b445d9fa701c2043ca7cf996c3a705a6ff2873ca023",
+      "membership": "current",
+      "prerequisites": [
+        {
+          "task_id": "54d6f32848334dc89c1bdddc629c7a1b",
+          "title": "X - Establish the source boundary",
+          "latest_run": {
+            "id": "cc6b3ff72cae490b986f46aeca9921ed",
+            "task_id": "54d6f32848334dc89c1bdddc629c7a1b",
+            "status": "succeeded",
+            "created_at": "2026-11-27T17:55:12.844866+00:00"
+          },
+          "state": "accepted",
+          "reports": [
+            {
+              "id": "73debaa360df48d78e9f4501c9498220",
+              "decision": "accepted",
+              "sha256": "dc0188cb3a3f52b7c34a706c54c6e0b92a5c0ef5549b0441702495977e3f5e4e"
+            }
+          ],
+          "kind": "run",
+          "own_plan": null,
+          "completion_hash": "e9d093859eb1882e974c8f8090c81cd8d0b83966ed41bf523f789dba66741eb1"
+        }
+      ]
+    }
+  ],
+  "own_plan": {
+    "version": 1,
+    "plan_hash": "0968e33e6f8576143d4a8e8fb6ca5688095ea5f069fef09137881cd20e79fda1",
+    "completion_scope_hash": "f5e876ca77bafbda0e99855418d84b865f3a3739d794ad5d1e41df166a8a79ea",
+    "ready": true,
+    "children": [
+      {
+        "task_id": "6f29fc9ef1e94abc9127461080b37d4e",
+        "title": "A1 - Inspect explicit source assumptions",
+        "latest_run": {
+          "id": "40d016e9298b4c58ab859f752f117527",
+          "task_id": "6f29fc9ef1e94abc9127461080b37d4e",
+          "status": "succeeded",
+          "created_at": "2026-11-27T17:55:14.196798+00:00"
+        },
+        "state": "accepted",
+        "reports": [
+          {
+            "id": "f53112869dd949d4b2b725037cd0400c",
+            "decision": "accepted",
+            "sha256": "ecd57bd5c4f5aa01974887042821ed3a920f0d7639fc2e655a99e003cffa2330"
+          }
+        ],
+        "kind": "run",
+        "own_plan": null,
+        "completion_hash": "5e4ddc1d9c0575a9b4a60bc82ebb5ee499d586aa84615ccb9bb34dafd5e98139"
+      },
+      {
+        "task_id": "e82808ae711246ec857db5f1c902c953",
+        "title": "A2 - Validate the reviewed first analysis",
+        "latest_run": {
+          "id": "4ed58ff2ed944d3c9c37c3b076dc963f",
+          "task_id": "e82808ae711246ec857db5f1c902c953",
+          "status": "succeeded",
+          "created_at": "2026-11-27T17:55:15.621035+00:00"
+        },
+        "state": "accepted",
+        "reports": [
+          {
+            "id": "b9e97af0e055476d9423141d944a2f0b",
+            "decision": "accepted",
+            "sha256": "e1729a6fd38654a044c8370ecf3d21706fe5fa3b64092150f89dfa953914f20a"
+          }
+        ],
+        "kind": "run",
+        "own_plan": null,
+        "completion_hash": "cf0c6ecd52af8e822838598ac08a23e4d81ac060e499c75a3b998215a4da24b6"
+      }
+    ]
+  },
+  "scope_hash": "af2ad9ece91f5920dd214a4b0a398bb9b8734528fddf2f13fd4b69656d258690"
+}

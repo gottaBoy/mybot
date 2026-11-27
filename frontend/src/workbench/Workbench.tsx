@@ -95,6 +95,7 @@ import {
   resetWorkbenchNavigation,
   WORKBENCH_NAVIGATION_EVENT,
 } from './navigation-guard'
+import { admitTaskPlanScope } from './task-plan-scope'
 
 const RunWorkspace = lazy(() =>
   import('./RunWorkspace').then((module) => ({ default: module.RunWorkspace })),
@@ -432,7 +433,10 @@ export function Workbench() {
     setActionBusy(task.id)
     setError('')
     try {
-      const snapshot = await post<Snapshot>(`/tasks/${task.id}/preview`)
+      const snapshot = admitTaskPlanScope(
+        await post<Snapshot>(`/tasks/${task.id}/preview`),
+        task.id,
+      )
       setForm({ kind: 'run', task, snapshot })
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : String(reason))

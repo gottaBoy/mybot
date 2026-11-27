@@ -273,6 +273,52 @@ beforeEach(() => {
 
 describe('Task workspace composition', () => {
   it.each([undefined, false, true])(
+    'passes only explicit nested capability to current plan admission %j',
+    (nested_task_plans) => {
+      render({
+        data: {
+          ...data,
+          capabilities: {
+            ...data.capabilities,
+            task_plans: true,
+            nested_task_plans,
+          },
+        },
+      })
+      expect(mocks.planReads.at(-1)?.[4]).toBe(nested_task_plans === true)
+    },
+  )
+  it('lets a blocked child plan its work without enabling execution', () => {
+    mocks.plans = {
+      ...mocks.plans,
+      enabled: true,
+      blocked: true,
+      value: {
+        schema_version: 1,
+        task_id: task.id,
+        parent: { task_id: 'parent-task', title: 'Parent' },
+        gate: { ready: false, prerequisites: [], membership: 'current' },
+        plan: null,
+      },
+    }
+    render({
+      data: {
+        ...data,
+        capabilities: {
+          ...data.capabilities,
+          task_plans: true,
+          nested_task_plans: true,
+        },
+      },
+    })
+    expect(button('Break down task').disabled).toBe(false)
+    button('Break down task').onClick()
+    expect(
+      mocks.updates.some((value: any) => value?.task?.id === task.id),
+    ).toBe(true)
+    expect(button('Arrange execution').disabled).toBe(true)
+  })
+  it.each([undefined, false, true])(
     'passes only explicit Node test capability to the implementation dialog: %j',
     (coding_node_test) => {
       mocks.location = {

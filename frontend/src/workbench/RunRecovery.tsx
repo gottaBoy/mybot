@@ -24,6 +24,7 @@ import {
   type RecoveryConfig,
   type RecoveryPreview,
 } from './recovery'
+import { admitTaskPlanScope } from './task-plan-scope'
 import {
   abandonRecoveryIntent,
   executeRecoveryIntent,
@@ -103,6 +104,7 @@ export function RunRecovery({
     ])
     if (detail.run.id !== sourceId || preview.source_run_id !== sourceId)
       throw new Error(t('恢复来源不匹配', 'Recovery source does not match'))
+    admitTaskPlanScope(preview, detail.task.id)
     return { detail, preview, models: bootstrap.models, ledger }
   }
   function adopt(next: RecoveryState, receipt: RecoveryIntent | null) {

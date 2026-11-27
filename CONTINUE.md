@@ -1,5 +1,59 @@
 # 下次从这里继续
 
+更新：2026-11-27（America/Los_Angeles），有界嵌套任务已验收、本机启用。
+用户继续既有多Agent/核心交付/提交push授权，起点73191b1已push且干净。
+[实施计划](docs/CORE_NESTED_PLAN_2026-11-27.md)、
+[最新ADR-0036](docs/decisions/ADR-0036-bounded-nested-task-plans.md)、
+[证据](frontend/evidence/nested-plans-2026-11-27/README.md)。
+backend交树/聚合/CAS/退役与discard测试，frontend交schema3/同一页面/scope/明确放弃，
+verification交ADR/fixture/browser脚本及独立审计，root交全部执行scope/整体验收/启用。
+提交push以Git回执为准。
+
+nested_task_plans显式cap，root→child→grandchild最多2父边/73当前Task、每层2–8同级DAG；
+child继承本层+全部祖先外部前置/currentness，不继承ancestorchildren门禁。
+container需当前childcompletion全accepted才可自己新收尾Run，最新Run成功+报告人工接受、
+own_plan.completion_scope_hash仍相等才供上层依赖用。当前证据语义不等于永久撤回日志，
+相同accepted证据恢复可恢复旧scope；外部仍直接依赖，不自动递归撤所有历史报告。
+子报告/代码不隐式送父模型或合并；只是启动条件与来源证据，不是自动记忆/调度。
+永久task_plan_nested_roots新表；oldflat/schema1/2/版本/receipt/hash不改。
+首次nested及nested修订要求wholecurrenttree idle；preview绑定lineage/treeheads/impact，
+txn重算；换container退役整current子树，新Task不复制旧subplan。
+严格验证marker/定义-绑定-Task-member双射/有界树，损坏不降flat。
+
+newtask_plan_scope只nested进普通context_hash/Turn/coding候选hash；prepare/execute/
+workerclaim/resume/retry/recovery/devicegrant均核当前scope，ready仍true但证据变也拒；
+旧输出不能换新scope，新Run须重新确认。task_turn_discard仅knownprepared owner明确操作，
+两nullable列discarded_at/discarded_candidate精确归档，内部saved/candidateNULL满足旧CHECK，
+publicdiscarded仍带原候选；同输入prepare重播可返终态，preview/execute拒。
+原ID GET核对unknown/404不解锁；当前grant superseded、旧grant操作回执不改。
+
+最终1565Python全量（MYBOT_REQUIRE_PI_RUNTIME=1）/2526前端87file/tsc/build通过。
+82结构回归、17discard、112执行/设备/恢复相关及311旧查询/保存视图等复验通过；
+最终nested9/16PNG+discard6/4PNG+综合58/61PNG+主GET-only8，共81check/81最终PNG。
+pageerror0，专项externalHTTP0。最终a9aj4kyz实际6Task/2plan/1nestedroot/
+5Run/20FakeCalls/15Artifact，X接受→A1→A2→A收尾+人工接受→B；
+撤A1后未来B阻，旧context/report不改。p2cv2xzm discard实测1POST丢响应原GET，
+1Task/0Run/0Call，2条不可变消息与新prepared证明锁解。模型fixture，HTTP/SQLite/
+Worker/门禁/审查真实，无付费模型效果认证。新源文件hash保持。
+保留三种结构failopen的修复、root名称冲突导致SavedViews回归（已alias修）、seed表清单、
+scope测试helper/consent、浏览器原保存回执核对、临时服务中断与旧mock漏关新cap等失败，
+没有拼接早期部分画面。app241.22/gzip75.21kB、初始CSS39.89/7.50；
+lazyPlanEditor16.23/6.00、PlanPanel26.85/8.82、Coding31.17/10.10、
+Run27.17/9.86、Task37.83/12.46。旧httpx/chunkwarning、Bootstrap全量及119/9/110保持。
+
+主4180空闲PID369142经身份/cwd/env内存核验、一致backup/Store副本演练/原行比对/
+SIGTERM锁释放，同command/cwd/env启动896247；5173原进程保持，两新captrue。
+8只读后再次原行一致：1Project/1Task/6Run/1model/18Agent/17Call/6Artifact/157Event，
+原Workflow保留，coding_jobs/TaskTurns/model_tests/plan_versions/nestedroots0；
+无正式新候选/模型/测试/计划或discard。私有备份
+`.runtime/backups/before-devices-20261127T180601Z/`700/DBlog600，不进Git；
+无原正文/截图/环境/原摘要导出，旧PID脚本不可重跑，不热覆盖回退。
+临时4187/4188/4189/5176/5177/5178已停，主4180/5173保留。
+
+下一核心：**AI建议拆解（显式模型/预算/资料确认、建议草稿、人工发布）**，
+再推进更多项目依赖/runtime、Pi受限工具Harness；没有自动AI规划/执行链、跨层依赖、
+通用Task完成状态、原项目应用/合并/部署或真实模型规模验收。
+
 更新：2026-11-27，固定 Node.js 研发验证已验收、本机启用。
 用户“继续”沿既有多Agent/核心交付/提交push授权，起点688c232已push且干净。
 [实施计划](docs/CORE_NODE_PLAN_2026-11-27.md)、

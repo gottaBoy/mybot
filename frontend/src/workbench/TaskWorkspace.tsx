@@ -134,6 +134,7 @@ export function TaskWorkspace({
     data.capabilities.task_plans === true,
     refreshRevision,
     data.capabilities.task_plan_revisions === true,
+    data.capabilities.nested_task_plans === true,
   )
   const [planEditor, setPlanEditor] = useState<{
     task: Task
@@ -243,6 +244,25 @@ export function TaskWorkspace({
   }
   const canNavigate = () =>
     admission.current.taskId === taskId && admission.current.navigate
+  const planStructureAllowed = Boolean(
+    plans.enabled &&
+    plans.value &&
+    !plans.busy &&
+    !plans.error &&
+    !planRefresh &&
+    !composerLocked &&
+    !preparing &&
+    !codingOpen &&
+    !planEditor &&
+    !location.error &&
+    !location.pendingRequestId &&
+    !location.codingRequestId &&
+    !location.planRequestId &&
+    (plans.value.schema_version === 3
+      ? plans.value.gate.membership === 'current' && plans.value.depth < 2
+      : plans.value.gate?.membership !== 'retired') &&
+    (data.capabilities.nested_task_plans === true || !plans.value.parent),
+  )
   const prepare = () => {
     if (
       !item ||
@@ -551,6 +571,19 @@ export function TaskWorkspace({
             }
             pytestEnabled={data.capabilities.coding_pytest === true}
             nodeEnabled={data.capabilities.coding_node_test === true}
+            nestedEnabled={data.capabilities.nested_task_plans === true}
+            currentTaskPlanScope={
+              plans.value?.schema_version === 3
+                ? {
+                    schema_version: 1,
+                    task_id: taskId,
+                    scope_hash: plans.value.gate.scope_hash,
+                  }
+                : undefined
+            }
+            taskPlanScopeKnown={
+              !plans.busy && !plans.error && Boolean(plans.value)
+            }
             key={taskId}
             task={item.task}
             models={data.models}
@@ -593,7 +626,13 @@ export function TaskWorkspace({
             task={planEditor?.task ?? item!.task}
             baseline={planEditor?.baseline}
             revisionsEnabled={data.capabilities.task_plan_revisions === true}
+            nestedEnabled={data.capabilities.nested_task_plans === true}
             currentPlanHash={plans.value?.plan?.plan_hash}
+            currentScopeHash={
+              plans.value?.schema_version === 3
+                ? plans.value.gate.scope_hash
+                : undefined
+            }
             initial={location.planRequestId}
             enabled={plans.enabled && !plans.busy && !plans.error}
             t={t}
@@ -607,7 +646,7 @@ export function TaskWorkspace({
               try {
                 await onChanged?.()
                 setPlanNotice(
-                  'operation' in receipt
+                  'operation' in receipt && receipt.operation === 'revise'
                     ? t(
                         '计划修订已发布，旧任务与运行记录已保留。',
                         'Plan revision published. Old tasks and runs are retained.',
@@ -898,38 +937,32 @@ export function TaskWorkspace({
                     revisionsEnabled={
                       data.capabilities.task_plan_revisions === true
                     }
+                    nestedEnabled={data.capabilities.nested_task_plans === true}
                     canCreate={
-                      !planRefresh &&
-                      !conversationLocked &&
-                      !composerLocked &&
+                      planStructureAllowed &&
                       canNavigate() &&
-                      !preparing &&
-                      !location.error
+                      canOpenWorkbenchForm()
                     }
                     onCreate={() => {
                       if (
-                        !planRefresh &&
-                        !conversationLocked &&
+                        planStructureAllowed &&
                         !composerLock.current &&
                         canNavigate() &&
                         canOpenWorkbenchForm() &&
                         plans.value &&
-                        !plans.value.plan &&
-                        !plans.value.parent
+                        !plans.value.plan
                       )
                         setPlanEditor({ task: structuredClone(item.task) })
                     }}
                     onRevise={() => {
                       if (
                         data.capabilities.task_plan_revisions === true &&
-                        !planRefresh &&
-                        !conversationLocked &&
+                        planStructureAllowed &&
                         !composerLock.current &&
                         canNavigate() &&
                         canOpenWorkbenchForm() &&
                         !location.error &&
-                        plans.value?.plan &&
-                        !plans.value.parent
+                        plans.value?.plan
                       )
                         setPlanEditor({
                           task: structuredClone(item.task),
@@ -1690,11 +1723,19 @@ export function TaskConversation({
                               : 'neutral'
                         }
                       >
-                        {turn.state === 'saved'
-                          ? t('已保存，未执行', 'Saved, not executed')
-                          : turn.state === 'prepared'
-                            ? t('已准备，待确认', 'Prepared, awaiting consent')
-                            : t('已关联运行', 'Run linked')}
+                        {turn.state === 'discarded'
+                          ? t(
+                              '准备已放弃，消息保留',
+                              'Preparation discarded; message retained',
+                            )
+                          : turn.state === 'saved'
+                            ? t('已保存，未执行', 'Saved, not executed')
+                            : turn.state === 'prepared'
+                              ? t(
+                                  '已准备，待确认',
+                                  'Prepared, awaiting consent',
+                                )
+                              : t('已关联运行', 'Run linked')}
                       </AppBadge>
                       <time dateTime={turn.created_at}>
                         {when(turn.created_at)}
@@ -1731,17 +1772,9 @@ export function TaskConversation({
                         <AppButton
                           label={t('继续确认下一轮', 'Continue prepared run')}
                           icon={<ArrowRight size={15} />}
-                          disabled={
-                            !canUseTurn(turn) ||
-                            !onOpenPreparedTurn ||
-                            executionBlocked
-                          }
+                          disabled={!canUseTurn(turn) || !onOpenPreparedTurn}
                           onClick={() => {
-                            if (
-                              canUseTurn(turn) &&
-                              onOpenPreparedTurn &&
-                              !executionBlocked
-                            )
+                            if (canUseTurn(turn) && onOpenPreparedTurn)
                               onOpenPreparedTurn(task, turn)
                           }}
                         />

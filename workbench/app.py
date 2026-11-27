@@ -348,6 +348,8 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "pi_sdk": pi_sdk_available(),
                                  "task_plans": True,
                                  "task_plan_revisions": True,
+                                 "nested_task_plans": True,
+                                 "task_turn_discard": True,
                                  "task_artifact_references": True,
                                  "workspace_counts": True,
                                  "workspace_search": True,
@@ -730,10 +732,14 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
         task = store.get("tasks", identifier)
         project = store.get("projects", task["project_id"])
         text, evidence = snapshot(settings.workspace, project, task["files"])
+        from .task_plan_scope import current_scope
+        with task_plans.reader() as db:
+            scope = current_scope(db, identifier)
         return {"goal": task["goal"], "acceptance": task["acceptance"], "notes": project["notes"],
                 "text": text, "evidence": evidence, "bytes": len(text.encode()),
                 "access": "read_only", "tools": [],
-                "context_hash": hashlib.sha256(json_bytes(task, project, text)).hexdigest()}
+                "context_hash": hashlib.sha256(json_bytes(task, project, text, scope)).hexdigest(),
+                **({"task_plan_scope": scope} if scope is not None else {})}
 
     @app.get("/api/tasks/{identifier}/plan")
     def task_plan_read(identifier: str, request: Request):
@@ -907,6 +913,12 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
             raise TaskTurnError("task_turn_parameters_invalid", 422)
         return task_turns.execute(identifier, turn_id, body)
 
+    @app.post("/api/tasks/{identifier}/turns/{turn_id}/discard")
+    def task_turn_discard(identifier: str, turn_id: str, body: TaskTurnExecute, request: Request):
+        if request.query_params:
+            raise TaskTurnError("task_turn_parameters_invalid", 422)
+        return task_turns.discard(identifier, turn_id, body)
+
     @app.get("/api/tasks/{identifier}/detail")
     def task_detail(
         identifier: str,
@@ -941,11 +953,16 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                 raise HTTPException(422, f"Missing environment key for {model['name']}")
             models[model["id"]] = model
         text, evidence = snapshot(settings.workspace, project, task["files"])
-        if not secrets.compare_digest(body.context_hash, hashlib.sha256(json_bytes(task, project, text)).hexdigest()):
+        from .task_plan_scope import current_scope
+        with task_plans.reader() as db:
+            scope = current_scope(db, identifier)
+        if not secrets.compare_digest(body.context_hash, hashlib.sha256(json_bytes(task, project, text, scope)).hexdigest()):
             raise HTTPException(409, "Context changed after preview; inspect and confirm the latest snapshot")
         context = {"text": text, "evidence": evidence, "notes": project["notes"],
                    "goal": task["goal"], "acceptance": task["acceptance"], "models": models,
                    "hash": body.context_hash}
+        if scope is not None:
+            context["task_plan_scope"] = scope
         try:
             return store.create_run(identifier, body.request_id, config, context, body.workflow_version)
         except ValueError as exc:
@@ -1126,6 +1143,9 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     return app
 
 
-def json_bytes(task, project, text):
+def json_bytes(task, project, text, task_plan_scope=None):
     import json
-    return json.dumps([task["goal"], task["acceptance"], project["notes"], text], ensure_ascii=False).encode()
+    value = [task["goal"], task["acceptance"], project["notes"], text]
+    if task_plan_scope is not None:
+        value.append(task_plan_scope)
+    return json.dumps(value, ensure_ascii=False).encode()

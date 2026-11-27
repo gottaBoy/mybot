@@ -1,0 +1,172 @@
+{
+  "fixture": true,
+  "scenario": "full",
+  "base": "http://127.0.0.1:5178/",
+  "checks": [
+    {
+      "name": "Token login through same-origin proxy; token not persisted",
+      "passed": true
+    },
+    {
+      "name": "Project creation persists through API, without model invocation",
+      "passed": true
+    },
+    {
+      "name": "Task survives refresh; missing model prevents starting a run",
+      "passed": true
+    },
+    {
+      "name": "Local model preset and default selection save without connection tests",
+      "passed": true
+    },
+    {
+      "name": "Model test requires confirmation; Escape restores trigger focus",
+      "passed": true
+    },
+    {
+      "name": "Task workspace uses explicit snapshot consent and budget, starts one fixture Run, stays in Task Agent view and reaches completion",
+      "passed": true
+    },
+    {
+      "name": "Human review persists; call usage and diagnostics are real fixture facts",
+      "passed": true
+    },
+    {
+      "name": "Artifact download and dedicated artifact view work",
+      "passed": true
+    },
+    {
+      "name": "Read-only work graph, inspector, zoom, Agent avatars and real transcript",
+      "passed": true
+    },
+    {
+      "name": "Backend save, explicitly consented MockTransport health check and revoke",
+      "passed": true
+    },
+    {
+      "name": "Task-first list renders one latest-state row per task; optional inspector retains both real fixture runs",
+      "passed": true
+    },
+    {
+      "name": "Run history keeps both attempts with real rows, sorting, column visibility and density",
+      "passed": true
+    },
+    {
+      "name": "Grouped command palette keyboard navigation and persisted project/task/run hierarchy",
+      "passed": true
+    },
+    {
+      "name": "Inbox, documentation, progress and alert rail share persisted business projections",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "writes": [
+    "/api/auth",
+    "/api/projects",
+    "/api/tasks",
+    "/api/models",
+    "/api/settings/default-model",
+    "/api/tasks/ebebb7ab9c81407db6717353f8b74bf7/preview",
+    "/api/tasks/ebebb7ab9c81407db6717353f8b74bf7/runs",
+    "/api/artifacts/0d1fa66b93204089a97d8ca263002a20/decision",
+    "/api/backends",
+    "/api/backends/e0fb71ba45214436861ed3af16581b04/check",
+    "/api/backends/e0fb71ba45214436861ed3af16581b04/revoke",
+    "/api/tasks/ebebb7ab9c81407db6717353f8b74bf7/preview",
+    "/api/tasks/ebebb7ab9c81407db6717353f8b74bf7/runs",
+    "/api/tasks"
+  ],
+  "screenshots": [
+    "login-desktop.png",
+    "task-goal-desktop.png",
+    "run-desktop-light.png",
+    "work-graph-desktop.png",
+    "task-board-desktop.png",
+    "overview-desktop.png",
+    "audit-overview-1440.png",
+    "audit-workbench-1440.png",
+    "audit-inbox-1440.png",
+    "audit-projects-1440.png"
+  ],
+  "initialScriptResources": [
+    "http://127.0.0.1:5178/assets/app-CFDMOCjg.js",
+    "http://127.0.0.1:5178/assets/react-vendor-BJeFkKaq.js",
+    "http://127.0.0.1:5178/assets/playground-C1JKBspj.js",
+    "http://127.0.0.1:5178/assets/FocusedWorkbench-Bmrm0PKn.js",
+    "http://127.0.0.1:5178/assets/DataTable-CCrVk_CG.js",
+    "http://127.0.0.1:5178/assets/useTableTreeState-BR5wj3ON.js",
+    "http://127.0.0.1:5178/assets/useScrollableArea-URFbJoMG.js",
+    "http://127.0.0.1:5178/assets/Table-DFhnlEZ7.js",
+    "http://127.0.0.1:5178/assets/scrollKeyboardDelegation-Cvyh_BBr.js",
+    "http://127.0.0.1:5178/assets/scrollGeometry-B7jAdN05.js",
+    "http://127.0.0.1:5178/assets/MenuBottomSheetActionList-Cjflov9C.js",
+    "http://127.0.0.1:5178/assets/List-C4cy4U5d.js",
+    "http://127.0.0.1:5178/assets/listLayoutUpdates-lW4LfmfP.js",
+    "http://127.0.0.1:5178/assets/animatedLayout-COtlo6yJ.js",
+    "http://127.0.0.1:5178/assets/LayoutChangeSnapshot-CWqOmSUx.js",
+    "http://127.0.0.1:5178/assets/ListItem-DZou70t0.js",
+    "http://127.0.0.1:5178/assets/menuItemRoles-Dx6Khe-i.js",
+    "http://127.0.0.1:5178/assets/useMenuDrillIn-D96lfHw9.js",
+    "http://127.0.0.1:5178/assets/useMenuHover-Dr23Fn7t.js",
+    "http://127.0.0.1:5178/assets/clampInlineSize-C6G3hOHP.js",
+    "http://127.0.0.1:5178/assets/EmptyState-C2_auVQ5.js",
+    "http://127.0.0.1:5178/assets/useTableSortableState-B6Jw3Iz1.js",
+    "http://127.0.0.1:5178/assets/useTableSortable-DYuGis5S.js",
+    "http://127.0.0.1:5178/assets/ComponentIcon-CdWZQhBi.js",
+    "http://127.0.0.1:5178/assets/useIcon-BeiPdpfg.js",
+    "http://127.0.0.1:5178/assets/DropdownMenu-CLCbJpvF.js",
+    "http://127.0.0.1:5178/assets/accessibleName-C1nHDYs1.js",
+    "http://127.0.0.1:5178/assets/menuTouchAction.stylex-Bjo3-Llu.js",
+    "http://127.0.0.1:5178/assets/DropdownMenuRadioItem-BTagGMvc.js",
+    "http://127.0.0.1:5178/assets/DropdownMenuGroup-2OsFpmB9.js",
+    "http://127.0.0.1:5178/assets/table-2-DCP99NtS.js",
+    "http://127.0.0.1:5178/assets/MultiSelector-CwsuEReQ.js",
+    "http://127.0.0.1:5178/assets/arrow-up-B6nlBkyd.js",
+    "http://127.0.0.1:5178/assets/copy-C-PR5bMc.js",
+    "http://127.0.0.1:5178/assets/download-CHw3qyEH.js",
+    "http://127.0.0.1:5178/assets/task-detail-Cpd9nfuc.js",
+    "http://127.0.0.1:5178/assets/file-search-DxFKnacg.js",
+    "http://127.0.0.1:5178/assets/history-DNRvxYpu.js",
+    "http://127.0.0.1:5178/assets/circle-alert-DhEW_Rb8.js",
+    "http://127.0.0.1:5178/assets/circle-check-CBbRlxBE.js"
+  ],
+  "pageAudit": [
+    {
+      "page": "overview",
+      "width": 1440,
+      "title": "工作总览 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "workbench",
+      "width": 1440,
+      "title": "工作台 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "inbox",
+      "width": 1440,
+      "title": "待处理 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    },
+    {
+      "page": "projects",
+      "width": 1440,
+      "title": "项目 · mybot",
+      "viewportWidth": 1440,
+      "scrollWidth": 1440,
+      "h1Count": 1
+    }
+  ],
+  "failure": {
+    "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('heading', { name: 'mybot 研发协作 · 隔离验收', exact: true }) to be visible\u001b[22m\n",
+    "stack": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('heading', { name: 'mybot 研发协作 · 隔离验收', exact: true }) to be visible\u001b[22m\n\n    at verifyPageInventory (/home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-workbench.mjs:1207:71)\n    at async verifyFullWorkbench (/home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-workbench.mjs:2764:3)\n    at async file:///home/my/workspace/ainfra/mywork/mybot/frontend/scripts/verify-workbench.mjs:3189:5"
+  }
+}

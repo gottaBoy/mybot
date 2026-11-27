@@ -16,7 +16,13 @@ import {
   type PlanDefinition,
   type PublishedPlan,
   type TaskPlanRead,
+  type LegacyTaskPlanRead,
 } from './task-plans'
+import {
+  parseNestedRevisionPreview,
+  parseNestedReceipt,
+  type NestedRevisionPreview,
+} from './task-plan-nesting'
 
 export type PlanVersion = {
   version: number
@@ -90,7 +96,11 @@ const identifiers = (value: unknown, max = 8): value is string[] =>
   new Set(value).size === value.length &&
   value.every(isTaskReadIdentifier)
 
-export function planVersionFromCurrent(plan: PublishedPlan): PlanVersion {
+export function planVersionFromCurrent(
+  plan: Omit<PublishedPlan, 'items'> & {
+    items: Array<{ key: string; task: Task }>
+  },
+): PlanVersion {
   return parsePlanVersion(
     {
       version: plan.version,
@@ -170,7 +180,7 @@ export function parsePlanVersion(
 export function parseRevisionTaskPlan(
   value: unknown,
   taskId: string,
-): TaskPlanRead {
+): LegacyTaskPlanRead {
   if (
     !planObject(value, [
       'schema_version',
@@ -188,7 +198,7 @@ export function parseRevisionTaskPlan(
   const gate =
     value.gate === null ? null : parseDependencyGate(value.gate, taskId)
   if (gate && gate.plan_version === undefined) fail()
-  let parent: TaskPlanRead['parent'] = null
+  let parent: LegacyTaskPlanRead['parent'] = null
   if (value.parent !== null) {
     if (
       !planObject(value.parent, ['task_id', 'title']) ||
@@ -491,31 +501,65 @@ export async function previewPlanRevision(
   baseline: PlanVersion,
   definition: PlanDefinition,
   signal?: AbortSignal,
+  nestedEnabled = false,
 ) {
   const admitted = parsePlanDefinition(definition)
   const saved = parsePlanVersion(baseline, parent.id)
-  return parsePlanRevisionPreview(
-    await planRequest(
-      `${planRoot(parent.id)}/revisions/preview`,
-      {
-        expected_version: saved.version,
-        expected_plan_hash: saved.plan_hash,
-        ...admitted,
-      },
-      signal,
-    ),
-    parent,
-    saved,
-    admitted,
+  const value = await planRequest(
+    `${planRoot(parent.id)}/revisions/preview`,
+    {
+      expected_version: saved.version,
+      expected_plan_hash: saved.plan_hash,
+      ...admitted,
+    },
+    signal,
   )
+  if (
+    value &&
+    typeof value === 'object' &&
+    (value as { schema_version?: unknown }).schema_version === 3
+  ) {
+    if (!nestedEnabled) throw new Error('nested_task_plans_unsupported')
+    return parseNestedRevisionPreview(value, parent, saved, admitted)
+  }
+  return parsePlanRevisionPreview(value, parent, saved, admitted)
 }
 export async function publishPlanRevision(
   parent: Task,
   id: string,
-  preview: PlanRevisionPreview,
+  preview: PlanRevisionPreview | NestedRevisionPreview,
   signal?: AbortSignal,
+  nestedEnabled = false,
 ) {
   if (!planRequestId(id)) throw new Error('task_plan_input_invalid')
+  if (preview.schema_version === 3) {
+    if (!nestedEnabled) throw new Error('nested_task_plans_unsupported')
+    const admitted = parseNestedRevisionPreview(
+      preview,
+      parent,
+      preview.baseline,
+      preview.definition,
+    )
+    if (admitted.impact.blockers.length)
+      throw new Error('task_plan_nested_busy')
+    return parseNestedReceipt(
+      await planRequest(
+        `${planRoot(parent.id)}/revisions`,
+        {
+          expected_version: admitted.expected_version,
+          expected_plan_hash: admitted.expected_plan_hash,
+          ...admitted.definition,
+          request_id: id,
+          preview_hash: admitted.preview_hash,
+          consent: true,
+        },
+        signal,
+      ),
+      parent.id,
+      id,
+      admitted,
+    )
+  }
   const admitted = parsePlanRevisionPreview(
     preview,
     parent,

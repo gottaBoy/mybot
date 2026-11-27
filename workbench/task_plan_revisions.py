@@ -230,8 +230,10 @@ def revision_impact(db, baseline, definition):
 
 class TaskPlanRevisionService(TaskPlanService):
     def candidate(self, db, task_id, body):
+        from .task_plan_nesting import NestedSnapshot, nested_structure
         parent = task_record(db, task_id)
-        if membership(db, task_id) is not None:
+        nested = NestedSnapshot(db).nested(task_id) is not None
+        if membership(db, task_id) is not None and not nested:
             raise TaskPlanError("task_plan_nested_unsupported", 422)
         baseline = current_version(db, task_id)
         if baseline["version"] != body.expected_version or baseline["plan_hash"] != body.expected_plan_hash:
@@ -249,6 +251,23 @@ class TaskPlanRevisionService(TaskPlanService):
             "baseline": baseline, "parent_snapshot": parent, "definition": definition.model_dump(),
             "impact": revision_impact(db, baseline, definition),
         }
+        if nested:
+            structure = nested_structure(
+                db, task_id,
+                added_tasks=len(value["impact"]["added_keys"]) + len(value["impact"]["replaced_keys"]),
+                retired_task_ids=value["impact"]["retired_task_ids"],
+            )
+            value.update({
+                "schema_version": 3, "lineage": structure["lineage"],
+                "tree_heads": structure["tree_heads"],
+                "impact": {
+                    **value["impact"],
+                    **{key: structure["impact"][key] for key in (
+                        "root_task_id", "depth", "current_task_count", "blockers",
+                    )},
+                    "subtree_retired_task_ids": structure["impact"]["retired_task_ids"],
+                },
+            })
         return {**value, "preview_hash": fingerprint(value)}
 
     def preview(self, task_id, body):
@@ -274,7 +293,9 @@ class TaskPlanRevisionService(TaskPlanService):
                 raise TaskPlanError("task_plan_request_conflict")
             candidate = self.candidate(db, task_id, body)
             if candidate["impact"]["blockers"]:
-                raise TaskPlanError("task_plan_revision_blocked")
+                raise TaskPlanError(
+                    "task_plan_nested_busy" if candidate["schema_version"] == 3 else "task_plan_revision_blocked",
+                )
             if candidate["preview_hash"] != body.preview_hash:
                 raise TaskPlanError("task_plan_preview_changed")
             baseline = candidate["baseline"]
@@ -311,7 +332,7 @@ class TaskPlanRevisionService(TaskPlanService):
                  dump(candidate["parent_snapshot"]), dump(bindings), at),
             )
             receipt = {
-                "schema_version": 2, "operation": "revise", "request_id": body.request_id,
+                "schema_version": candidate["schema_version"], "operation": "revise", "request_id": body.request_id,
                 "task_id": task_id, "preview_hash": body.preview_hash, "state": "applied",
                 "result": self.read_in(db, task_id),
             }

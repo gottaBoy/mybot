@@ -18,7 +18,8 @@ from .saved_views import (
     SavedViewCreate, SavedViewError, SavedViewUpdate, public_saved_view,
     require_identifier, require_scope, saved_view_delete_receipt,
 )
-from .task_plans import require_dependencies, TaskPlanError
+from .task_plans import dependency_state, require_dependencies, TaskPlanError
+from .task_plan_scope import current_scope, require_scope as require_task_plan_scope, require_run_scope
 
 
 def now() -> str:
@@ -263,6 +264,9 @@ CREATE TABLE IF NOT EXISTS task_plan_revision_operations (
  request_id TEXT PRIMARY KEY, task_id TEXT NOT NULL REFERENCES tasks(id),
  command_hash TEXT NOT NULL, receipt TEXT NOT NULL, created_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS task_plan_nested_roots (
+ root_task_id TEXT PRIMARY KEY REFERENCES tasks(id), created_at TEXT NOT NULL
+);
 """
 
 
@@ -298,6 +302,10 @@ class Store:
             for column, kind in (("messages_checked_at", "TEXT"), ("messages_has_more", "INTEGER")):
                 if column not in ref_columns:
                     db.execute(f"ALTER TABLE conversation_refs ADD COLUMN {column} {kind}")
+            turn_columns = {row["name"] for row in db.execute("PRAGMA table_info(task_turns)")}
+            for column in ("discarded_at", "discarded_candidate"):
+                if column not in turn_columns:
+                    db.execute(f"ALTER TABLE task_turns ADD COLUMN {column} TEXT")
         os.chmod(self.path, 0o600)
 
     @contextmanager
@@ -777,6 +785,7 @@ class Store:
                     raise ValueError("Request ID was already used with different input")
                 return existing
             dependencies = self._require_no_task_turn(db, task_id)
+            require_task_plan_scope(context.get("task_plan_scope"), dependencies)
             active = db.execute(
                 "SELECT id FROM runs WHERE task_id=? AND status NOT IN ('succeeded','failed','canceled') "
                 "AND NOT EXISTS(SELECT 1 FROM runs child WHERE child.source_run_id=runs.id)",
@@ -818,7 +827,12 @@ class Store:
             [decode(row) for row in db.execute(f"SELECT * FROM {table} WHERE run_id=?", (identifier,))]
             for table in ("agents", "calls", "artifacts")
         ]
-        return run, facts, retry_preview(run, *facts)
+        preview = retry_preview(run, *facts)
+        scope = current_scope(db, run["task_id"])
+        if scope is not None:
+            preview["task_plan_scope"] = scope
+            preview["snapshot_hash"] = fingerprint([preview["snapshot_hash"], scope])
+        return run, facts, preview
 
     def retry_preview(self, identifier):
         with self.transaction() as db:
@@ -866,6 +880,8 @@ class Store:
 
     @staticmethod
     def _recovery_candidate(db, source, facts, preview, mode, config):
+        dependencies = dependency_state(db, source["task_id"])
+        require_run_scope(source["context"], dependencies)
         return recovery_candidate(
             source, facts, preview, mode, config,
             lambda identifier: decode(db.execute(
@@ -1067,6 +1083,7 @@ class Store:
         self._require_no_recovery_intent(db, identifier, own_intent_id)
         source, facts, preview = self._retry_state(db, identifier)
         dependencies = self._require_no_task_turn(db, source["task_id"])
+        require_run_scope(source["context"], dependencies)
         if not preview["allowed"]:
             raise ValueError("retry_source_not_ready")
         if preview["snapshot_hash"] != snapshot_hash:
@@ -1137,16 +1154,17 @@ class Store:
 
     def claim(self) -> dict | None:
         with self.transaction() as db:
-            row = db.execute("SELECT id,task_id FROM runs WHERE status='queued' ORDER BY created_at LIMIT 1").fetchone()
+            row = db.execute("SELECT id,task_id,context FROM runs WHERE status='queued' ORDER BY created_at LIMIT 1").fetchone()
             if not row:
                 return None
             try:
                 dependencies = require_dependencies(db, row["task_id"])
+                require_run_scope(json.loads(row["context"]), dependencies)
             except TaskPlanError as error:
                 db.execute("UPDATE runs SET status='failed',error=?,ended_at=? WHERE id=?",
-                           ("task_dependencies_blocked", now(), row["id"]))
+                           (error.code, now(), row["id"]))
                 self.event(db, "run.failed", {
-                    "error": "task_dependencies_blocked", "task_dependencies": error.dependencies,
+                    "error": error.code, "task_dependencies": error.dependencies,
                 }, row["id"])
                 return None
             db.execute("UPDATE runs SET status='running',started_at=COALESCE(started_at,?),error=NULL WHERE id=?", (now(), row["id"]))
@@ -1253,6 +1271,7 @@ class Store:
         if action == "resume":
             self._require_no_recovery_intent(db, identifier, own_intent_id)
             dependencies = self._require_no_task_turn(db, row["task_id"])
+            require_run_scope(json.loads(row["context"]), dependencies)
         src = row["status"]
         if action == "pause" and src in {"queued", "running"}:
             dst = "paused" if src == "queued" else "pause_requested"

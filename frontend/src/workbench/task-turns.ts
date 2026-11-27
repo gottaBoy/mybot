@@ -12,6 +12,7 @@ import {
   sameArtifactRefs,
   type ArtifactRef,
 } from './task-artifacts'
+import { parseTaskPlanScope } from './task-plan-scope'
 
 export type TurnConfig = {
   coordinator_model: string
@@ -33,7 +34,7 @@ export type TaskTurn = {
   request_id: string
   content: string
   created_at: string
-  state: 'saved' | 'prepared' | 'applied'
+  state: 'saved' | 'prepared' | 'applied' | 'discarded'
   run_id: string | null
   candidate: {
     candidate_hash: string
@@ -182,7 +183,7 @@ export function parseTurnSnapshot(
         'tools',
         'supplement',
       ],
-      ['workflow', 'artifacts'],
+      ['workflow', 'artifacts', 'task_plan_scope'],
     ) ||
     !hash(value.context_hash) ||
     !text(value.goal, 20_000) ||
@@ -254,6 +255,9 @@ export function parseTurnSnapshot(
     },
     ...(workflow ? { workflow } : {}),
     ...(artifacts ? { artifacts } : {}),
+    ...(Object.hasOwn(value, 'task_plan_scope')
+      ? { task_plan_scope: parseTaskPlanScope(value.task_plan_scope) }
+      : {}),
   }
 }
 
@@ -273,7 +277,9 @@ export function parseTaskTurn(
     !requestId(value.request_id) ||
     !content(value.content) ||
     !timestamp(value.created_at) ||
-    !['saved', 'prepared', 'applied'].includes(value.state as string) ||
+    !['saved', 'prepared', 'applied', 'discarded'].includes(
+      value.state as string,
+    ) ||
     (value.run_id !== null && !isTaskReadIdentifier(value.run_id)) ||
     (expected !== undefined &&
       (value.task_id !== expected.taskId ||
@@ -315,7 +321,13 @@ export function parseTaskTurn(
     (value.state === 'saved' &&
       (candidate !== null || value.run_id !== null)) ||
     (value.state === 'prepared' && (!candidate || value.run_id !== null)) ||
+    (value.state === 'discarded' && (!candidate || value.run_id !== null)) ||
     (value.state === 'applied' && (!candidate || value.run_id === null))
+  )
+    throw new TaskTurnResponseError()
+  if (
+    candidate?.snapshot.task_plan_scope?.task_id !== undefined &&
+    candidate.snapshot.task_plan_scope.task_id !== value.task_id
   )
     throw new TaskTurnResponseError()
   return {
@@ -348,7 +360,8 @@ export function assertTaskTurnReceipt(
       JSON.stringify(receipt.candidate) !==
         JSON.stringify(previous.candidate)) ||
     (previous.state === 'applied' &&
-      (receipt.state !== 'applied' || receipt.run_id !== previous.run_id))
+      (receipt.state !== 'applied' || receipt.run_id !== previous.run_id)) ||
+    (previous.state === 'discarded' && receipt.state !== 'discarded')
   )
     throw new TaskTurnResponseError()
   if (pendingPreparation !== undefined) {
@@ -584,6 +597,8 @@ export async function previewTaskTurn(
     { id: turnId },
   )
   if (
+    (result.task_plan_scope !== undefined &&
+      result.task_plan_scope.task_id !== taskId) ||
     result.artifacts?.some((item) => item.task_id !== taskId) ||
     (refs !== undefined &&
       !sameArtifactRefs(artifactRefs(result.artifacts), refs))
@@ -698,4 +713,26 @@ export async function executeTaskTurn(
   )
     throw new TaskTurnResponseError()
   return turn
+}
+export async function discardTaskTurn(
+  taskId: string,
+  known: TaskTurn,
+  signal?: AbortSignal,
+) {
+  const admitted = parseTaskTurn(known, { taskId, turnId: known.id })
+  if (admitted.state !== 'prepared' || !admitted.candidate)
+    throw new TaskTurnInputError()
+  const result = assertTaskTurnReceipt(
+    await mutation(
+      `${turnPath(taskId, admitted.id)}/discard`,
+      {
+        candidate_hash: admitted.candidate.candidate_hash,
+        consent: true,
+      },
+      signal,
+    ),
+    admitted,
+  )
+  if (result.state !== 'discarded') throw new TaskTurnResponseError()
+  return result
 }

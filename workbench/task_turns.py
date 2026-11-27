@@ -18,6 +18,7 @@ from .task_query import MAX_PAGE
 from .task_artifacts import ArtifactReference, artifact_page, select_artifacts
 from .task_plans import require_dependencies
 from .workflows import MAX_INTEGER, run_workflow
+from .task_plan_scope import current_scope, require_scope
 
 
 TURN_ORDER = "turns-created-v1"
@@ -87,7 +88,10 @@ class TaskTurnExecute(TurnInput):
 
 def public_turn(row) -> dict:
     value = dict(row)
-    candidate = json.loads(value["candidate"]) if value["candidate"] is not None else None
+    if value.get("discarded_at") is not None:
+        value["state"] = "discarded"
+    raw_candidate = value.get("discarded_candidate") if value.get("discarded_at") is not None else value["candidate"]
+    candidate = json.loads(raw_candidate) if raw_candidate is not None else None
     return {
         key: value[key]
         for key in ("id", "task_id", "request_id", "content", "created_at", "state", "run_id")
@@ -226,6 +230,9 @@ class TaskTurnService:
         ]
         if artifacts:
             content.append(artifacts)
+        scope = current_scope(db, task["id"])
+        if scope is not None:
+            content.append(scope)
         context_hash = hashlib.sha256(
             json.dumps(content, ensure_ascii=False, separators=(",", ":")).encode(),
         ).hexdigest()
@@ -236,6 +243,7 @@ class TaskTurnService:
             "context_hash": context_hash, "access": "read_only", "tools": [],
             "supplement": supplement,
             **({"artifacts": artifacts} if artifacts else {}),
+            **({"task_plan_scope": scope} if scope is not None else {}),
         }
 
     def artifacts(self, task_id, page=1):
@@ -248,6 +256,8 @@ class TaskTurnService:
     def preview(self, task_id, turn_id, references=()):
         with self.reader() as db:
             row = self.turn(db, task_id, turn_id)
+            if row["discarded_at"] is not None:
+                raise TaskTurnError("task_turn_discarded")
             if row["candidate"] is not None:
                 selected = json.loads(row["candidate"])["snapshot"]
                 if references and [ref.model_dump() for ref in references] != [
@@ -304,8 +314,9 @@ class TaskTurnService:
         config = body.model_dump(exclude={"context_hash", "workflow_version", "artifact_refs"})
         with self.store.transaction() as db:
             row = self.turn(db, task_id, turn_id)
-            if row["candidate"] is not None:
-                candidate = json.loads(row["candidate"])
+            frozen = row["candidate"] or row["discarded_candidate"]
+            if frozen is not None:
+                candidate = json.loads(frozen)
                 if (
                     candidate["config"] != config
                     or candidate["snapshot"]["context_hash"] != body.context_hash
@@ -336,6 +347,8 @@ class TaskTurnService:
                     "hash": selected["context_hash"], "supplement": selected["supplement"],
                     "workflow": selected["workflow"],
                     **({"artifacts": selected["artifacts"]} if "artifacts" in selected else {}),
+                    **({"task_plan_scope": selected["task_plan_scope"]}
+                       if "task_plan_scope" in selected else {}),
                 },
             }
             db.execute(
@@ -361,6 +374,8 @@ class TaskTurnService:
         if not body.consent:
             raise TaskTurnError("task_turn_consent_required", 422)
         row = self.turn(db, task_id, turn_id)
+        if row["discarded_at"] is not None:
+            raise TaskTurnError("task_turn_discarded")
         candidate = json.loads(row["candidate"]) if row["candidate"] is not None else None
         if candidate is None:
             raise TaskTurnError("task_turn_not_prepared")
@@ -376,6 +391,7 @@ class TaskTurnService:
         if row["state"] != "prepared":
             raise TaskTurnError("task_turn_not_prepared")
         dependencies = self.require_ready(db, task_id, turn_id)
+        require_scope(candidate["snapshot"].get("task_plan_scope"), dependencies)
         current_models = self.models(db, candidate["config"])
         if any(
             {key: model.get(key) for key in EXECUTION_MODEL_FIELDS}
@@ -413,3 +429,27 @@ class TaskTurnService:
             "candidate_hash": body.candidate_hash, "execution_success": False,
         }, run_id, entity_id=turn_id, actor=actor)
         return public_turn(self.turn(db, task_id, turn_id))
+
+    def discard(self, task_id, turn_id, body):
+        if not body.consent:
+            raise TaskTurnError("task_turn_discard_consent_required", 422)
+        with self.store.transaction() as db:
+            row = self.turn(db, task_id, turn_id)
+            frozen = row["candidate"] or row["discarded_candidate"]
+            candidate = json.loads(frozen) if frozen else None
+            if candidate is None or candidate["candidate_hash"] != body.candidate_hash:
+                raise TaskTurnError("task_turn_candidate_conflict")
+            if row["discarded_at"] is not None:
+                return public_turn(row)
+            if row["state"] != "prepared":
+                raise TaskTurnError("task_turn_discard_conflict")
+            db.execute(
+                "UPDATE task_turns SET state='saved',discarded_at=?,discarded_candidate=candidate,candidate=NULL"
+                " WHERE id=? AND state='prepared'",
+                (now(), turn_id),
+            )
+            self.store.event(db, "task.turn.discarded", {
+                "task_id": task_id, "turn_id": turn_id, "candidate_hash": body.candidate_hash,
+                "execution_started": False,
+            }, entity_id=turn_id, actor="user")
+            return public_turn(self.turn(db, task_id, turn_id))

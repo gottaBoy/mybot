@@ -30,7 +30,7 @@ import {
   parsePlanDefinition,
   previewTaskPlan,
   type PlanDefinition,
-  type PlanPreview,
+  type AnyPlanPreview,
   type AnyPlanReceipt,
 } from './task-plans'
 import {
@@ -39,6 +39,10 @@ import {
   type PlanRevisionPreview,
   type PlanVersion,
 } from './task-plan-revisions'
+import type {
+  NestedCreatePreview,
+  NestedRevisionPreview,
+} from './task-plan-nesting'
 import type { Copy } from './state'
 import { taskWorkspaceHref } from './task-workspace-location'
 import './task-plans.css'
@@ -58,6 +62,8 @@ export function TaskPlanEditor({
   baseline: initialBaseline,
   revisionsEnabled = false,
   currentPlanHash,
+  nestedEnabled = false,
+  currentScopeHash,
   t,
   onClose,
   onCreated,
@@ -68,6 +74,8 @@ export function TaskPlanEditor({
   baseline?: PlanVersion
   revisionsEnabled?: boolean
   currentPlanHash?: string
+  nestedEnabled?: boolean
+  currentScopeHash?: string
   t: Copy
   onClose: () => void
   onCreated: (receipt: AnyPlanReceipt) => void
@@ -79,7 +87,7 @@ export function TaskPlanEditor({
       ? structuredClone(baseline.definition)
       : { items: [blank('step1'), blank('step2')] },
   )
-  const [preview, setPreview] = useState<PlanPreview | PlanRevisionPreview>()
+  const [preview, setPreview] = useState<AnyPlanPreview>()
   const [pending, setPending] = useState(initial)
   const [phase, setPhase] = useState<
     'edit' | 'preview' | 'sending' | 'unknown'
@@ -94,10 +102,20 @@ export function TaskPlanEditor({
     released = useRef(false)
   const request = useRef<AbortController | undefined>(undefined)
   const initialDraft = useRef(JSON.stringify(definition))
+  const previewScope = useRef(currentScopeHash)
   const stale = Boolean(
     baseline && currentPlanHash && baseline.plan_hash !== currentPlanHash,
   )
-  const allowed = enabled && (!baseline || revisionsEnabled) && !stale
+  const allowed =
+    enabled &&
+    (!baseline || revisionsEnabled) &&
+    !stale &&
+    (!(
+      preview &&
+      'schema_version' in preview &&
+      preview.schema_version === 3
+    ) ||
+      nestedEnabled)
   const latest = useRef({
     definition,
     preview,
@@ -105,8 +123,19 @@ export function TaskPlanEditor({
     phase,
     consent,
     allowed,
+    currentScopeHash,
+    nestedEnabled,
   })
-  latest.current = { definition, preview, pending, phase, consent, allowed }
+  latest.current = {
+    definition,
+    preview,
+    pending,
+    phase,
+    consent,
+    allowed,
+    currentScopeHash,
+    nestedEnabled,
+  }
   const dirty =
     JSON.stringify(definition) !== initialDraft.current || Boolean(preview)
   const busy = phase === 'sending' || phase === 'unknown'
@@ -148,6 +177,19 @@ export function TaskPlanEditor({
   useEffect(() => {
     if (!allowed) setConsent(false)
   }, [allowed])
+  useEffect(() => {
+    if (preview && currentScopeHash !== previewScope.current && !pending) {
+      setPreview(undefined)
+      setConsent(false)
+      setPhase('edit')
+      setError(
+        t(
+          '任务树条件已变化，编辑已保留，请重新核对。',
+          'Task tree conditions changed. Edits are retained; review again.',
+        ),
+      )
+    }
+  }, [currentScopeHash, preview, pending])
   function stamp(id?: string) {
     const url = new URL(window.location.href),
       params = new URLSearchParams(url.hash.split('?')[1] ?? '')
@@ -199,11 +241,33 @@ export function TaskPlanEditor({
     setConsent(false)
     const controller = new AbortController()
     request.current = controller
+    const sentScope = latest.current.currentScopeHash
     try {
       const result = baseline
-        ? await previewPlanRevision(task, baseline, admitted, controller.signal)
-        : await previewTaskPlan(task, admitted, controller.signal)
+        ? await previewPlanRevision(
+            task,
+            baseline,
+            admitted,
+            controller.signal,
+            latest.current.nestedEnabled,
+          )
+        : await previewTaskPlan(
+            task,
+            admitted,
+            controller.signal,
+            latest.current.nestedEnabled,
+          )
       if (!mounted.current || controller.signal.aborted) return
+      if (
+        sentScope !== latest.current.currentScopeHash ||
+        !latest.current.allowed
+      ) {
+        setPhase('edit')
+        setConsent(false)
+        setPreview(undefined)
+        return
+      }
+      previewScope.current = sentScope
       setPreview(result)
       setPhase('preview')
     } catch (reason) {
@@ -232,10 +296,20 @@ export function TaskPlanEditor({
                   '该计划已达到100个版本的上限。',
                   'This plan has reached the limit of 100 versions.',
                 )
-              : t(
-                  '拆解候选未核对成功。请检查父任务资料、文件范围或已保存计划。',
-                  'The breakdown could not be verified. Check the parent context, file scope or existing plan.',
-                ),
+              : code === 'task_plan_depth_limit'
+                ? t(
+                    '已达到两层子任务的深度上限。',
+                    'The two-level subtask depth limit has been reached.',
+                  )
+                : code === 'task_plan_tree_limit'
+                  ? t(
+                      '当前任务树将超过73个任务的上限。',
+                      'The current tree would exceed 73 tasks.',
+                    )
+                  : t(
+                      '拆解候选未核对成功。请检查父任务资料、文件范围或已保存计划。',
+                      'The breakdown could not be verified. Check the parent context, file scope or existing plan.',
+                    ),
       )
     } finally {
       if (mounted.current) operation.current = false
@@ -249,6 +323,11 @@ export function TaskPlanEditor({
       !state.preview ||
       !state.consent ||
       !state.allowed ||
+      (state.preview &&
+        'schema_version' in state.preview &&
+        state.preview.schema_version === 3 &&
+        !state.nestedEnabled) ||
+      state.currentScopeHash !== previewScope.current ||
       ('schema_version' in state.preview &&
         state.preview.impact.blockers.length > 0)
     )
@@ -264,14 +343,21 @@ export function TaskPlanEditor({
     request.current = controller
     try {
       const receipt =
-        'schema_version' in state.preview
+        'expected_version' in state.preview
           ? await publishPlanRevision(
               task,
               id,
               state.preview,
               controller.signal,
+              state.nestedEnabled,
             )
-          : await createTaskPlan(task, id, state.preview, controller.signal)
+          : await createTaskPlan(
+              task,
+              id,
+              state.preview,
+              controller.signal,
+              state.nestedEnabled,
+            )
       if (!mounted.current || controller.signal.aborted) return
       complete(receipt)
     } catch (reason) {
@@ -620,9 +706,14 @@ export function TaskPlanEditor({
                     ))}
                     <code className="wb-wrap">{preview.preview_hash}</code>
                   </section>
-                  {'schema_version' in preview && (
+                  {'expected_version' in preview && (
                     <PlanRevisionImpact preview={preview} t={t} />
                   )}
+                  {'schema_version' in preview &&
+                    preview.schema_version === 3 &&
+                    !('expected_version' in preview) && (
+                      <NestedCreationImpact preview={preview} t={t} />
+                    )}
                   <AppCheckbox
                     label={
                       baseline
@@ -704,7 +795,7 @@ function PlanRevisionImpact({
   preview,
   t,
 }: {
-  preview: PlanRevisionPreview
+  preview: PlanRevisionPreview | NestedRevisionPreview
   t: Copy
 }) {
   const title = (key: string) =>
@@ -767,6 +858,18 @@ function PlanRevisionImpact({
           </ul>
         </>
       )}
+      {preview.schema_version === 3 && (
+        <p className="wb-wrap">
+          {t('连同退役的后代任务', 'Retired tasks including descendants')} ·{' '}
+          {preview.impact.subtree_retired_task_ids.length}
+          {preview.impact.subtree_retired_task_ids.map((id) => (
+            <span key={id}>
+              {' '}
+              · <code>{id}</code>
+            </span>
+          ))}
+        </p>
+      )}
       {preview.impact.blockers.length > 0 && (
         <div className="wb-error" role="alert">
           <strong>
@@ -777,6 +880,65 @@ function PlanRevisionImpact({
               <code>{item.task_id}</code>
               {' · '}
               {item.reasons.map((reason) => reasons[reason]).join(' · ')}
+            </p>
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
+function NestedCreationImpact({
+  preview,
+  t,
+}: {
+  preview: NestedCreatePreview
+  t: Copy
+}) {
+  const reasons = {
+    unfinished_run: t('有未结束的运行', 'Unfinished Run'),
+    prepared_turn: t('有已准备的任务消息', 'Prepared task message'),
+    prepared_coding: t('有已准备的研发执行', 'Prepared implementation'),
+    unresolved_recovery: t('有未解决的恢复请求', 'Unresolved recovery request'),
+    unconsumed_grant: t(
+      '有尚未使用的执行委托',
+      'Unconsumed execution delegation',
+    ),
+  }
+  return (
+    <section
+      className="wb-plan-confirm"
+      aria-label={t('嵌套拆解影响', 'Nested breakdown impact')}
+    >
+      <dl className="wb-details">
+        <dt>{t('根任务', 'Root task')}</dt>
+        <dd>
+          <code>{preview.impact.root_task_id}</code>
+        </dd>
+        <dt>{t('当前树内任务', 'Current tasks in tree')}</dt>
+        <dd>{preview.impact.current_task_count}</dd>
+        <dt>{t('本次新增', 'Tasks added')}</dt>
+        <dd>{preview.impact.added_tasks}</dd>
+      </dl>
+      <p>
+        {t(
+          '子任务验收完成后仍需本任务的新收尾运行及人工报告验收。不会自动启动模型。',
+          'After child reviews, this task still needs a fresh integration Run and human report acceptance. No model starts automatically.',
+        )}
+      </p>
+      {preview.impact.blockers.length > 0 && (
+        <div className="wb-error" role="alert">
+          <strong>
+            {t(
+              '任务树仍有未结束的操作，暂不能发布。',
+              'The task tree has unresolved work. Publication is blocked.',
+            )}
+          </strong>
+          {preview.impact.blockers.map((blocker) => (
+            <p key={blocker.task_id}>
+              <code>{blocker.task_id}</code>
+              {' · '}
+              {blocker.reasons.map((reason) => reasons[reason]).join(' · ')}
             </p>
           ))}
         </div>
