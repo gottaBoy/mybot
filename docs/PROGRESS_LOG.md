@@ -1549,6 +1549,22 @@ PID2447464，5173保持。8GET后原行再一致，无正式比较/candidate/tes
 [证据](../frontend/evidence/coding-reconciliation-2026-11-27/README.md)。
 提交push以Git回执为准；下一核心为其他runtime、嵌套/AI分解。
 
+## 2026-11-28 AI建议拆解
+
+按ADR-0037完成AI建议拆解闭环。三Agent分别交付后端建议服务/严格输出合同、Task工作区
+lazy对话框与草稿导入、独立测试审查；root整合Run类型隔离、Store迁移、Engine单次调用、
+API和依赖/结构锁。预览与准备不调用模型；执行需二次确认，固定一次
+`plan-suggestion-v1`调用，失败/unknown按原request_id GET核对，不自动重发。
+
+建议结果保存为独立`plan_suggestion` Artifact，带Task/文件/模型/候选/预算哈希；
+不创建Task、不发布计划、不进入报告验收或Task最新完成投影。导入只复制到现有
+TaskPlanEditor本地草稿，仍走原计划preview/CAS/consent发布链。新增`run_kind`和
+`plan_suggestion_jobs`均为兼容性增量，旧Run默认`execution`，旧数据不改写。
+
+验证：建议专项15项通过；Task计划/嵌套/查询/详情/运行历史和项目引用定向回归通过；
+前端`tsc --noEmit`通过。Fixture provider用于严格JSON行为验证，未调用真实付费模型，
+未自动创建子任务或发布计划。完整Python/前端全量、浏览器和主入口只读复验在提交前继续。
+
 ## 维护说明
 
 上游研究证据写入 `docs/OPEN_SOURCE_RESEARCH.md` 和对应 REA 文档；本日志只记录 mybot 的工作项，不能替代上游 Evidence。

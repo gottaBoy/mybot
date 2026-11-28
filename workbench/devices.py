@@ -324,7 +324,7 @@ class DeviceService:
             task = db.execute("SELECT id,title,goal,acceptance FROM tasks WHERE id=?", (task_id,)).fetchone()
             latest = db.execute(
                 "SELECT id,task_id,status,created_at FROM runs WHERE task_id=?"
-                " ORDER BY created_at DESC,rowid ASC LIMIT 1", (task_id,),
+                " AND run_kind='execution' ORDER BY created_at DESC,rowid ASC LIMIT 1", (task_id,),
             ).fetchone()
             messages = [public_message(row) for row in db.execute(
                 "SELECT * FROM task_turns WHERE task_id=? ORDER BY created_at DESC,rowid ASC LIMIT 20",
@@ -353,12 +353,13 @@ class DeviceService:
             device = self.active(db, token)
             self.require_identity(device, expected_device_id)
             total = db.execute(
-                "SELECT COUNT(*) FROM runs WHERE task_id=?", (device["task_id"],),
+                "SELECT COUNT(*) FROM runs WHERE task_id=? AND run_kind='execution'",
+                (device["task_id"],),
             ).fetchone()[0]
             total_pages = max(1, (total + 19) // 20)
             current = min(page, total_pages)
             items = [dict(row) for row in db.execute(
-                "SELECT id,task_id,status,created_at FROM runs WHERE task_id=?"
+                "SELECT id,task_id,status,created_at FROM runs WHERE task_id=? AND run_kind='execution'"
                 " ORDER BY created_at DESC,rowid ASC LIMIT 20 OFFSET ?",
                 (device["task_id"], (current - 1) * 20),
             )]

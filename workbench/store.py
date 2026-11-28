@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS runs (
  id TEXT PRIMARY KEY, task_id TEXT NOT NULL REFERENCES tasks(id),
  request_id TEXT NOT NULL UNIQUE, status TEXT NOT NULL, config TEXT NOT NULL,
  context TEXT NOT NULL, plan TEXT NOT NULL DEFAULT '[]',
+ run_kind TEXT NOT NULL DEFAULT 'execution' CHECK(run_kind IN ('execution','plan_suggestion')),
  source_run_id TEXT REFERENCES runs(id),
  error TEXT, started_at TEXT, ended_at TEXT, created_at TEXT NOT NULL
 );
@@ -267,6 +268,17 @@ CREATE TABLE IF NOT EXISTS task_plan_revision_operations (
 CREATE TABLE IF NOT EXISTS task_plan_nested_roots (
  root_task_id TEXT PRIMARY KEY REFERENCES tasks(id), created_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS plan_suggestion_jobs (
+ request_id TEXT PRIMARY KEY, task_id TEXT NOT NULL REFERENCES tasks(id),
+ candidate_hash TEXT NOT NULL, input_hash TEXT NOT NULL, candidate TEXT NOT NULL,
+ state TEXT NOT NULL CHECK(state IN ('prepared','applying','applied','discarded','unknown','rejected')),
+ run_id TEXT UNIQUE REFERENCES runs(id), artifact_id TEXT REFERENCES artifacts(id),
+ created_at TEXT NOT NULL, updated_at TEXT NOT NULL,
+ CHECK((state='applied' AND run_id IS NOT NULL) OR
+       (state IN ('prepared','applying','discarded','unknown','rejected') AND run_id IS NULL))
+);
+CREATE UNIQUE INDEX IF NOT EXISTS plan_suggestion_jobs_prepared
+ ON plan_suggestion_jobs(task_id) WHERE state IN ('prepared','applying','unknown');
 """
 
 
@@ -294,6 +306,13 @@ class Store:
                 names = {row["name"] for row in db.execute(f"PRAGMA table_info({table})")}
                 if column not in names:
                     db.execute(f"ALTER TABLE {table} ADD COLUMN {column} TEXT REFERENCES {reference}(id)")
+            run_columns = {row["name"] for row in db.execute("PRAGMA table_info(runs)")}
+            if "run_kind" not in run_columns:
+                db.execute("ALTER TABLE runs ADD COLUMN run_kind TEXT NOT NULL DEFAULT 'execution'")
+            db.execute(
+                "CREATE INDEX IF NOT EXISTS runs_task_kind_created "
+                "ON runs(task_id,run_kind,created_at DESC)"
+            )
             backend_columns = {row["name"] for row in db.execute("PRAGMA table_info(backend_connections)")}
             for column in ("tested_at", "test_status"):
                 if column not in backend_columns:
@@ -771,20 +790,26 @@ class Store:
             return decode(db.execute("SELECT * FROM backend_connections WHERE id=?", (identifier,)).fetchone())
 
     def create_run(self, task_id: str, request_id: str, config: dict, context: dict,
-                   workflow_version=None) -> dict:
+                   workflow_version=None, run_kind: str = "execution",
+                   own_suggestion_id: str | None = None) -> dict:
+        if run_kind not in {"execution", "plan_suggestion"}:
+            raise ValueError("run_kind_invalid")
         with self.transaction() as db:
             if db.execute("SELECT 1 FROM coding_jobs WHERE request_id=?", (request_id,)).fetchone():
                 raise ValueError("coding_request_conflict")
             if db.execute("SELECT 1 FROM task_turns WHERE request_id=?", (request_id,)).fetchone():
                 raise ValueError("task_turn_request_conflict")
+            if db.execute("SELECT 1 FROM plan_suggestion_jobs WHERE request_id=?", (request_id,)).fetchone():
+                raise ValueError("plan_suggestion_request_conflict")
             existing = decode(db.execute("SELECT * FROM runs WHERE request_id=?", (request_id,)).fetchone())
             if existing:
                 if (existing.get("source_run_id") or existing["task_id"] != task_id or existing["config"] != config
                         or existing["context"].get("hash") != context.get("hash")
-                        or existing["context"].get("workflow", {}).get("version") != workflow_version):
+                        or existing["context"].get("workflow", {}).get("version") != workflow_version
+                        or existing.get("run_kind", "execution") != run_kind):
                     raise ValueError("Request ID was already used with different input")
                 return existing
-            dependencies = self._require_no_task_turn(db, task_id)
+            dependencies = self._require_no_task_turn(db, task_id, own_suggestion_id=own_suggestion_id)
             require_task_plan_scope(context.get("task_plan_scope"), dependencies)
             active = db.execute(
                 "SELECT id FROM runs WHERE task_id=? AND status NOT IN ('succeeded','failed','canceled') "
@@ -793,23 +818,36 @@ class Store:
             ).fetchone()
             if active:
                 raise ValueError("This task already has an unfinished run")
-            from .workflows import run_workflow
-            context = {**context, "workflow": run_workflow(db, config, workflow_version)}
+            if run_kind == "plan_suggestion":
+                context = {**context, "mode": "plan-suggestion-v1"}
+            else:
+                from .workflows import run_workflow
+                context = {**context, "workflow": run_workflow(db, config, workflow_version)}
             if dependencies is not None:
                 context["task_dependencies"] = dependencies
             identifier = uid()
-            db.execute("INSERT INTO runs(id,task_id,request_id,status,config,context,created_at) VALUES(?,?,?,'queued',?,?,?)",
-                       (identifier, task_id, request_id, dump(config), dump(context), now()))
+            db.execute(
+                "INSERT INTO runs(id,task_id,request_id,status,config,context,run_kind,created_at) "
+                "VALUES(?,?,?,'queued',?,?,?,?)",
+                (identifier, task_id, request_id, dump(config), dump(context), run_kind, now()),
+            )
             self.event(db, "run.queued", {"context_files": context["evidence"], "access": "read_only",
                                        "model_ids": config, "consent": True}, identifier, actor="user")
         return self.get("runs", identifier)
 
     @staticmethod
-    def _require_no_task_turn(db, task_id):
+    def _require_no_task_turn(db, task_id, own_suggestion_id=None):
         if db.execute(
             "SELECT 1 FROM coding_jobs WHERE task_id=? AND state='prepared'", (task_id,),
         ).fetchone():
             raise ValueError("coding_prepared_pending")
+        if db.execute(
+            "SELECT 1 FROM plan_suggestion_jobs WHERE task_id=? "
+            "AND state IN ('prepared','applying','unknown') "
+            "AND (? IS NULL OR request_id != ?)",
+            (task_id, own_suggestion_id, own_suggestion_id),
+        ).fetchone():
+            raise ValueError("plan_suggestion_prepared_pending")
         if db.execute(
             "SELECT 1 FROM task_turns WHERE task_id=? AND state='prepared'", (task_id,),
         ).fetchone():
@@ -1247,6 +1285,26 @@ class Store:
             self.event(db, "artifact.created", {"title": title, "kind": kind}, run_id, identifier)
         return identifier
 
+    def set_plan_suggestion_artifact(self, run_id: str, artifact_id: str):
+        with self.transaction() as db:
+            row = db.execute(
+                "SELECT request_id FROM plan_suggestion_jobs WHERE run_id=?", (run_id,),
+            ).fetchone()
+            if row is None:
+                raise ValueError("plan_suggestion_job_unavailable")
+            artifact = db.execute(
+                "SELECT id,kind,run_id FROM artifacts WHERE id=?", (artifact_id,),
+            ).fetchone()
+            if artifact is None or artifact["run_id"] != run_id or artifact["kind"] != "plan_suggestion":
+                raise ValueError("plan_suggestion_artifact_invalid")
+            db.execute(
+                "UPDATE plan_suggestion_jobs SET artifact_id=?,updated_at=? WHERE run_id=?",
+                (artifact_id, now(), run_id),
+            )
+            self.event(db, "plan_suggestion.artifact.bound", {
+                "request_id": row["request_id"], "artifact_id": artifact_id,
+            }, run_id, artifact_id)
+
     def finish_run(self, identifier: str, status: str, error=None):
         with self.transaction() as db:
             current = db.execute("SELECT status FROM runs WHERE id=?", (identifier,)).fetchone()
@@ -1316,6 +1374,10 @@ class Store:
                 self._settle_recovery_intent(
                     db, decode(row), "unknown", error_code="recovery_intent_interrupted_outcome_unknown",
                 )
+            db.execute(
+                "UPDATE plan_suggestion_jobs SET state='unknown',updated_at=? "
+                "WHERE state='applying'", (now(),),
+            )
             tests = db.execute("SELECT * FROM model_tests WHERE state='running'").fetchall()
             for row in tests:
                 db.execute(

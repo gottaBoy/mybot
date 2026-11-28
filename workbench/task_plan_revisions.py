@@ -171,6 +171,9 @@ def task_blockers(db, task_id):
          " AND child.status IN ('succeeded','failed','canceled'))) LIMIT 1"),
         ("prepared_turn", "SELECT 1 FROM task_turns WHERE task_id=? AND state='prepared' LIMIT 1"),
         ("prepared_coding", "SELECT 1 FROM coding_jobs WHERE task_id=? AND state='prepared' LIMIT 1"),
+        ("prepared_plan_suggestion",
+         "SELECT 1 FROM plan_suggestion_jobs WHERE task_id=? "
+         "AND state IN ('prepared','applying','unknown') LIMIT 1"),
         ("unresolved_recovery",
          "SELECT 1 FROM recovery_intents i JOIN runs r ON r.id=i.source_run_id"
          " WHERE r.task_id=? AND i.state IN ('prepared','applying','unknown') LIMIT 1"),

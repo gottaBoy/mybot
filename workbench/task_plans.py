@@ -106,7 +106,7 @@ def task_record(db, task_id):
 def latest_run(db, task_id):
     row = db.execute(
         "SELECT id,task_id,status,created_at FROM runs WHERE task_id=?"
-        " ORDER BY created_at DESC,rowid ASC LIMIT 1", (task_id,),
+        " AND run_kind='execution' ORDER BY created_at DESC,rowid ASC LIMIT 1", (task_id,),
     ).fetchone()
     return dict(row) if row else None
 

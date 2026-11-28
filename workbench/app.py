@@ -50,6 +50,10 @@ from .task_board import EMPTY_PAGES, TaskBoardError, parse_task_board, read_task
 from .task_detail import TaskDetailError, parse_task_detail, read_task_detail
 from .task_plans import PlanCreate, PlanDefinition, TaskPlanError, TaskPlanService
 from .task_plan_revisions import PlanRevisionCreate, PlanRevisionPreview, TaskPlanRevisionService
+from .plan_suggestions import (
+    PlanSuggestionConfig, PlanSuggestionError, PlanSuggestionExecute,
+    PlanSuggestionPrepare, PlanSuggestionService,
+)
 from .task_query import EMPTY_QUERY, MAX_PAGE, TaskQueryError, parse_task_query, read_task_page
 from .task_turns import (
     TaskTurnCreate, TaskTurnError, TaskTurnExecute, TaskTurnPrepare, TaskTurnPreview, TaskTurnService, TurnInput,
@@ -75,6 +79,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     coding = CodingService(store, settings.workspace)
     task_plans = TaskPlanService(store)
     task_plan_revisions = TaskPlanRevisionService(store)
+    plan_suggestions = PlanSuggestionService(store, settings.workspace)
     sessions = {}
     login_attempts = {}
     claim_attempts = {}
@@ -106,6 +111,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     app.state.coding = coding
     app.state.task_plans = task_plans
     app.state.task_plan_revisions = task_plan_revisions
+    app.state.plan_suggestions = plan_suggestions
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=list(settings.allowed_hosts))
 
     def loopback(request):
@@ -234,6 +240,10 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     async def task_plan_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
 
+    @app.exception_handler(PlanSuggestionError)
+    async def plan_suggestion_error(request, exc):
+        return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
+
     @app.exception_handler(TaskTurnError)
     async def task_turn_error(request, exc):
         return JSONResponse({"detail": {"code": exc.code}}, status_code=exc.status)
@@ -321,7 +331,9 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                 if exc.code != "backend_revoked":
                     raise
         return {"projects": store.list("projects"), "models": [public_model(m) for m in store.list("models")],
-                "tasks": store.list("tasks"), "runs": store.list("runs"),
+                "tasks": store.list("tasks"),
+                "runs": [run for run in store.list("runs")
+                         if run.get("run_kind", "execution") == "execution"],
                 "backends": connections,
                 "backend_conversations": cached,
                 "workspace": str(settings.workspace), "access": "read_only",
@@ -349,6 +361,7 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
                                  "task_plans": True,
                                  "task_plan_revisions": True,
                                  "nested_task_plans": True,
+                                 "task_plan_suggestions": True,
                                  "task_turn_discard": True,
                                  "task_artifact_references": True,
                                  "workspace_counts": True,
@@ -794,6 +807,49 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
             raise TaskPlanError("task_plan_version_invalid", 422)
         return task_plan_revisions.version(identifier, int(version))
 
+    def plan_suggestion_parameters(request):
+        if request.query_params:
+            raise PlanSuggestionError("plan_suggestion_parameters_invalid", 422)
+
+    @app.post("/api/tasks/{identifier}/plan-suggestions/preview")
+    def plan_suggestion_preview(identifier: str, body: PlanSuggestionConfig, request: Request):
+        plan_suggestion_parameters(request)
+        return plan_suggestions.preview(identifier, body)
+
+    @app.post("/api/tasks/{identifier}/plan-suggestions/prepare")
+    def plan_suggestion_prepare(identifier: str, body: PlanSuggestionPrepare, request: Request):
+        plan_suggestion_parameters(request)
+        return plan_suggestions.prepare(identifier, body)
+
+    @app.get("/api/tasks/{identifier}/plan-suggestions")
+    def plan_suggestion_prepared(identifier: str, request: Request):
+        plan_suggestion_parameters(request)
+        return plan_suggestions.read(identifier)
+
+    @app.get("/api/tasks/{identifier}/plan-suggestions/{request_id}")
+    def plan_suggestion_read(identifier: str, request_id: str, request: Request):
+        plan_suggestion_parameters(request)
+        return plan_suggestions.read(identifier, request_id)
+
+    @app.post("/api/tasks/{identifier}/plan-suggestions/{request_id}/execute")
+    async def plan_suggestion_execute(
+        identifier: str, request_id: str, body: PlanSuggestionExecute, request: Request,
+    ):
+        plan_suggestion_parameters(request)
+        if request_id != body.request_id:
+            raise PlanSuggestionError("plan_suggestion_request_conflict")
+        result = plan_suggestions.execute(identifier, body)
+        return result
+
+    @app.post("/api/tasks/{identifier}/plan-suggestions/{request_id}/discard")
+    def plan_suggestion_discard(
+        identifier: str, request_id: str, body: PlanSuggestionExecute, request: Request,
+    ):
+        plan_suggestion_parameters(request)
+        if request_id != body.request_id:
+            raise PlanSuggestionError("plan_suggestion_request_conflict")
+        return plan_suggestions.discard(identifier, body)
+
     def coding_parameters(request):
         if request.query_params:
             raise CodingError("coding_parameters_invalid", 422)
@@ -997,8 +1053,11 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
         return {"run": run, "task": task, "project": store.get("projects", task["project_id"]),
                 "agents": agents, "calls": calls, "artifacts": artifacts, "events": events,
                 "retry_runs": store.retry_children(identifier),
-                "harness": (CodingHarness if run["context"].get("mode") == "coding-v1"
-                            else LocalSuperagentHarness).describe(run, agents, calls, artifacts, events)}
+                "harness": (
+                    CodingHarness if run["context"].get("mode") == "coding-v1"
+                    else engine.plan_suggestions if run["context"].get("mode") == "plan-suggestion-v1"
+                    else LocalSuperagentHarness
+                ).describe(run, agents, calls, artifacts, events)}
 
     @app.get("/api/runs/{identifier}/events")
     async def run_events(identifier: str, after: int = 0):
@@ -1043,13 +1102,19 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
 
     @app.get("/api/runs/{identifier}/retry-preview")
     async def run_retry_preview(identifier: str):
-        if store.get("runs", identifier)["context"].get("mode") == "coding-v1":
+        run = store.get("runs", identifier)
+        if run.get("run_kind") == "plan_suggestion":
+            raise HTTPException(409, "plan_suggestion_recovery_unsupported")
+        if run["context"].get("mode") == "coding-v1":
             raise HTTPException(409, "coding_recovery_requires_new_attempt")
         return store.retry_preview(identifier)
 
     @app.post("/api/runs/{identifier}/retry", status_code=201)
     async def run_retry(identifier: str, body: RunRetry):
-        if store.get("runs", identifier)["context"].get("mode") == "coding-v1":
+        run = store.get("runs", identifier)
+        if run.get("run_kind") == "plan_suggestion":
+            raise HTTPException(409, "plan_suggestion_recovery_unsupported")
+        if run["context"].get("mode") == "coding-v1":
             raise HTTPException(409, "coding_recovery_requires_new_attempt")
         if not body.consent:
             raise HTTPException(422, "retry_send_confirmation_required")
@@ -1119,6 +1184,9 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
     async def run_control(identifier: str, action: str, body: Resume):
         if action not in {"pause", "cancel", "resume"}:
             raise HTTPException(404, "Action not found")
+        run = store.get("runs", identifier)
+        if run.get("run_kind") == "plan_suggestion" and action in {"pause", "resume"}:
+            raise HTTPException(409, "plan_suggestion_control_unsupported")
         try:
             result = store.control(identifier, action, body.acknowledge_replay)
         except ValueError as exc:
@@ -1129,6 +1197,9 @@ def create_app(settings=None, provider=None, backend_adapter=None) -> FastAPI:
 
     @app.post("/api/artifacts/{identifier}/decision")
     async def artifact_decision(identifier: str, body: ArtifactDecision):
+        artifact = store.get("artifacts", identifier)
+        if artifact["kind"] == "plan_suggestion":
+            raise HTTPException(409, "plan_suggestion_review_unsupported")
         store.decide(identifier, body.decision)
         return store.get("artifacts", identifier)
 

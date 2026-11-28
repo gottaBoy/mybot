@@ -133,6 +133,7 @@ def read_workspace_counts(database: Path, request: WorkspaceCountsRequest):
                        PARTITION BY r.task_id ORDER BY r.created_at DESC,r.rowid ASC
                    ) AS latest_rank
             FROM runs r JOIN candidates t ON t.id=r.task_id
+            WHERE r.run_kind='execution'
         ), task_states AS (
             SELECT CASE WHEN r.id IS NULL THEN 'pending'
                         WHEN r.status IN ('queued','running','pause_requested','cancel_requested')
@@ -200,6 +201,7 @@ def read_workspace_search(database: Path, request: WorkspaceSearchRequest):
             SELECT r.rowid AS source_order,r.id AS run_id,r.status AS run_status,r.created_at,
                    t.task_id,t.task_title,t.project_id,t.project_name
             FROM runs r JOIN task_candidates t ON t.task_id=r.task_id
+            WHERE r.run_kind='execution'
         ), matched AS (
             SELECT 0 AS kind_order,'project' AS kind,source_order,created_at,project_id,project_name,
                    NULL AS task_id,NULL AS task_title,NULL AS run_id,NULL AS run_status

@@ -13,6 +13,13 @@
 [证据](../frontend/evidence/nested-plans-2026-11-27/README.md)。
 下一核心为有明确模型/预算/资料确认的AI建议拆解与人工发布。
 
+2026-11-28按ADR-0037完成AI建议拆解首个闭环：显式选择模型、可选文件、单次预算和
+超时，预览/准备冻结候选，执行一次严格JSON规划调用；建议Run与`plan_suggestion`
+Artifact独立保存，不覆盖Task最新执行证据或依赖门禁。结果只能导入现有TaskPlanEditor
+本地草稿，仍需人工修改/预览/CAS/确认发布。支持原请求GET核对、unknown不换ID、放弃准备
+和结构锁；前端入口为同一Task工作区的lazy建议对话框。模型响应为fixture，真实Provider
+质量与自动发布仍未认证。
+
 2026-11-27继续其他语言研发验证，ADR-0035新增固定Node.js node:test：
 明确.mjs/.cjs不变测试、同候选与检查点链路、真实失败/修正/通过，
 Python↔Node重新验证，不把历史通过当作新框架证据。固定Node/native身份与双阶段

@@ -7,6 +7,7 @@ export type TaskWorkspaceLocation = {
   pendingRequestId?: string
   codingRequestId?: string
   planRequestId?: string
+  suggestionRequestId?: string
   error?:
     | 'tab_invalid'
     | 'run_invalid'
@@ -20,6 +21,7 @@ export type TaskWorkspaceDestination = {
   pendingRequestId?: string
   codingRequestId?: string
   planRequestId?: string
+  suggestionRequestId?: string
 }
 
 export function taskWorkspaceHref(
@@ -40,7 +42,13 @@ export function taskWorkspaceHref(
     (destination.planRequestId !== undefined &&
       (!/^[A-Za-z0-9_-]{8,100}$/.test(destination.planRequestId) ||
         destination.pendingRequestId !== undefined ||
-        destination.codingRequestId !== undefined))
+        destination.codingRequestId !== undefined ||
+        destination.suggestionRequestId !== undefined)) ||
+    (destination.suggestionRequestId !== undefined &&
+      (!/^[A-Za-z0-9_-]{8,100}$/.test(destination.suggestionRequestId) ||
+        destination.pendingRequestId !== undefined ||
+        destination.codingRequestId !== undefined ||
+        destination.planRequestId !== undefined))
   )
     throw new Error('task_workspace_location_invalid')
   const params = new URLSearchParams()
@@ -53,6 +61,8 @@ export function taskWorkspaceHref(
     params.set('codingRequest', destination.codingRequestId)
   if (destination.planRequestId !== undefined)
     params.set('taskPlanRequest', destination.planRequestId)
+  if (destination.suggestionRequestId !== undefined)
+    params.set('taskSuggestionRequest', destination.suggestionRequestId)
   return `#task/${encodeURIComponent(taskId)}${params.size ? `?${params}` : ''}`
 }
 
@@ -144,11 +154,29 @@ export function readTaskWorkspaceLocation(href: string): TaskWorkspaceLocation {
         coding[0] !== undefined))
   )
     return { tab: selectedTab, error: 'plan_invalid' }
+  let suggestions: string[]
+  try {
+    suggestions = values('taskSuggestionRequest')
+  } catch {
+    return { tab: selectedTab, error: 'request_invalid' }
+  }
+  if (
+    suggestions.length > 1 ||
+    (suggestions[0] !== undefined &&
+      (!/^[A-Za-z0-9_-]{8,100}$/.test(suggestions[0]) ||
+        pendingRequestId !== undefined ||
+        coding[0] !== undefined ||
+        plans[0] !== undefined))
+  )
+    return { tab: selectedTab, error: 'request_invalid' }
   return {
     tab: selectedTab,
     ...(runId === undefined ? {} : { runId }),
     ...(pendingRequestId === undefined ? {} : { pendingRequestId }),
     ...(coding[0] === undefined ? {} : { codingRequestId: coding[0] }),
     ...(plans[0] === undefined ? {} : { planRequestId: plans[0] }),
+    ...(suggestions[0] === undefined
+      ? {}
+      : { suggestionRequestId: suggestions[0] }),
   }
 }

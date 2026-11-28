@@ -8,6 +8,7 @@ from .harness import LocalSuperagentHarness, Paused, parse_plan
 from .store import Store
 from .coding import CodingHarness, CODING_SYSTEM
 from .coding_runner import PythonTestRunner, CodingError
+from .plan_suggestions import PlanSuggestionHarness
 
 
 SYSTEM = """你是研发工作台中的受限 AI。仅分析提供的目标与资料。
@@ -27,6 +28,7 @@ class Engine:
         self.loop_task = None
         self.harness = LocalSuperagentHarness(store)
         self.coding = CodingHarness(store, PythonTestRunner())
+        self.plan_suggestions = PlanSuggestionHarness(store)
 
     def start(self):
         self.store.recover()
@@ -124,6 +126,11 @@ class Engine:
                 if run["context"].get("mode") == "coding-v1":
                     await self.coding.execute(
                         run, lambda agent, prompt: self.invoke(run, agent, prompt, CODING_SYSTEM),
+                        self.checkpoint,
+                    )
+                elif run["context"].get("mode") == "plan-suggestion-v1":
+                    await self.plan_suggestions.execute(
+                        run, lambda agent, prompt: self.invoke(run, agent, prompt, self.plan_suggestions.system),
                         self.checkpoint,
                     )
                 else:

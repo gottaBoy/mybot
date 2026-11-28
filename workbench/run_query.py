@@ -60,7 +60,7 @@ def read_run_page(database: Path, request: RunQueryRequest):
     projects = query["projects"]
     arguments = list(projects)
     project_where = (
-        f"WHERE p.id IN ({','.join('?' for _ in projects)})" if projects else ""
+        f"AND p.id IN ({','.join('?' for _ in projects)})" if projects else ""
     )
     conditions = []
     if query["text"]:
@@ -85,7 +85,8 @@ def read_run_page(database: Path, request: RunQueryRequest):
                         WHEN r.status='succeeded' THEN 'completed'
                         ELSE 'other' END AS state_category
             FROM runs r JOIN tasks t ON t.id=r.task_id
-            JOIN projects p ON p.id=t.project_id {project_where}
+                JOIN projects p ON p.id=t.project_id
+                WHERE r.run_kind='execution' {project_where}
         ), filtered AS (SELECT * FROM run_states {where})
     """
     order = [

@@ -58,6 +58,8 @@ const blank = (key: string) => ({
 export function TaskPlanEditor({
   task: initialTask,
   initial,
+  initialDefinition,
+  suggestionSource,
   enabled,
   baseline: initialBaseline,
   revisionsEnabled = false,
@@ -70,6 +72,12 @@ export function TaskPlanEditor({
 }: {
   task: Task
   initial?: string
+  initialDefinition?: PlanDefinition
+  suggestionSource?: {
+    artifact_id: string
+    run_id: string
+    candidate_hash: string
+  }
   enabled: boolean
   baseline?: PlanVersion
   revisionsEnabled?: boolean
@@ -83,10 +91,13 @@ export function TaskPlanEditor({
   const task = useRef(initialTask).current
   const baseline = useRef(initialBaseline).current
   const [definition, setDefinition] = useState<PlanDefinition>(() =>
-    baseline
+    initialDefinition
+      ? structuredClone(initialDefinition)
+      : baseline
       ? structuredClone(baseline.definition)
       : { items: [blank('step1'), blank('step2')] },
   )
+  const [draftSource, setDraftSource] = useState(suggestionSource)
   const [preview, setPreview] = useState<AnyPlanPreview>()
   const [pending, setPending] = useState(initial)
   const [phase, setPhase] = useState<
@@ -208,6 +219,7 @@ export function TaskPlanEditor({
   function edit(next: PlanDefinition) {
     if (operation.current || latest.current.pending) return
     setDefinition(next)
+    setDraftSource(undefined)
     setPreview(undefined)
     setConsent(false)
     setError('')
@@ -452,6 +464,15 @@ export function TaskPlanEditor({
               {' · '}
               <code>{baseline.plan_hash}</code>
             </p>
+          )}
+          {draftSource && (
+            <div className="wb-notice">
+              {t(
+                '已从模型建议复制到本地草稿；编辑后将按人工计划重新核对。',
+                'Copied from a model suggestion into this local draft. Editing requires a fresh plan review.',
+              )}{' '}
+              <code>{draftSource.artifact_id}</code>
+            </div>
           )}
           {stale && (
             <p role="alert" className="wb-error">

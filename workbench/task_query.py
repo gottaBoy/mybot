@@ -159,6 +159,7 @@ def task_query_sql(query):
                    ) AS latest_rank,
                    COUNT(*) OVER (PARTITION BY r.task_id) AS attempts
             FROM runs r JOIN candidates t ON t.id=r.task_id
+            WHERE r.run_kind='execution'
         ), task_states AS (
             SELECT t.*,r.id AS run_id,r.status AS run_status,
                    COALESCE(r.status,'pending') AS status,

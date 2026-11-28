@@ -85,11 +85,13 @@ def read_task_detail(database: Path, request: TaskDetailRequest):
         ):
             raise TaskDetailError("task_detail_unavailable", 404)
         total = db.execute(
-            "SELECT COUNT(*) FROM runs WHERE task_id=?", (request.identifier,),
+            "SELECT COUNT(*) FROM runs WHERE task_id=? AND run_kind='execution'",
+            (request.identifier,),
         ).fetchone()[0]
         latest = db.execute(
-            "SELECT id,task_id,status,created_at FROM runs WHERE task_id=? "
-            "ORDER BY created_at DESC,rowid ASC LIMIT 1", (request.identifier,),
+            "SELECT id,task_id,status,created_at FROM runs WHERE task_id=? AND run_kind='execution' "
+            "AND run_kind='execution' ORDER BY created_at DESC,rowid ASC LIMIT 1",
+            (request.identifier,),
         ).fetchone()
         latest = dict(latest) if latest is not None else None
         total_pages = max(1, (total + request.page_size - 1) // request.page_size)

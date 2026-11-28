@@ -55,6 +55,10 @@ import { stripQueryWhitespace } from './task-query'
 import { pairedWorkspaceHref } from './pair-location'
 import './task-workspace.css'
 import { fetchPreparedCoding, type CodingJob } from './coding'
+import {
+  fetchPreparedPlanSuggestion,
+  type PlanSuggestionJob,
+} from './plan-suggestions'
 import { useTaskPlan } from './useTaskPlan'
 import { TaskPlanPanel, TaskDependencyFacts } from './TaskPlanPanel'
 import type { AnyPlanReceipt } from './task-plans'
@@ -73,6 +77,11 @@ const CodingRunDialog = lazy(() =>
 const TaskPlanEditor = lazy(() =>
   import('./TaskPlanEditor').then((module) => ({
     default: module.TaskPlanEditor,
+  })),
+)
+const TaskPlanSuggestionDialog = lazy(() =>
+  import('./TaskPlanSuggestionDialog').then((module) => ({
+    default: module.TaskPlanSuggestionDialog,
   })),
 )
 
@@ -139,6 +148,12 @@ export function TaskWorkspace({
   const [planEditor, setPlanEditor] = useState<{
     task: Task
     baseline?: PlanVersion
+    initialDefinition?: import('./task-plans').PlanDefinition
+    suggestionSource?: {
+      artifact_id: string
+      run_id: string
+      candidate_hash: string
+    }
   }>()
   const [planNotice, setPlanNotice] = useState('')
   const [planRefresh, setPlanRefresh] = useState(false)
@@ -146,6 +161,15 @@ export function TaskWorkspace({
   const [codingOpen, setCodingOpen] = useState(
     Boolean(location.codingRequestId),
   )
+  const [suggestionOpen, setSuggestionOpen] = useState(
+    Boolean(location.suggestionRequestId),
+  )
+  const [suggestionVersion, setSuggestionVersion] = useState(0)
+  const [suggestionRead, setSuggestionRead] = useState<{
+    taskId: string
+    prepared: PlanSuggestionJob | null
+    error: boolean
+  }>()
   const [codingVersion, setCodingVersion] = useState(0)
   const [codingRead, setCodingRead] = useState<{
     taskId: string
@@ -167,6 +191,29 @@ export function TaskWorkspace({
       })
     return () => controller.abort()
   }, [taskId, codingEnabled, codingVersion, refreshRevision])
+  const suggestionsEnabled =
+    data.capabilities.task_plan_suggestions === true
+  useEffect(() => {
+    if (!suggestionsEnabled) return
+    const controller = new AbortController()
+    setSuggestionRead(undefined)
+    void fetchPreparedPlanSuggestion(taskId, controller.signal)
+      .then((value) => {
+        if (!controller.signal.aborted)
+          setSuggestionRead({ taskId, prepared: value.prepared, error: false })
+      })
+      .catch(() => {
+        if (!controller.signal.aborted)
+          setSuggestionRead({ taskId, prepared: null, error: true })
+      })
+    return () => controller.abort()
+  }, [taskId, refreshRevision, suggestionsEnabled, suggestionVersion])
+  useEffect(() => {
+    if (location.suggestionRequestId) setSuggestionOpen(true)
+  }, [location.suggestionRequestId])
+  useEffect(() => {
+    setSuggestionOpen(Boolean(location.suggestionRequestId))
+  }, [taskId])
   const codingBlocked = Boolean(
     location.codingRequestId ||
     (codingEnabled &&
@@ -174,6 +221,11 @@ export function TaskWorkspace({
         codingRead.taskId !== taskId ||
         codingRead.error ||
         codingRead.job)),
+  )
+  const suggestionBlocked = Boolean(
+    location.suggestionRequestId ||
+      suggestionOpen ||
+      (suggestionRead?.taskId === taskId && suggestionRead.prepared),
   )
   const tab = location.tab
   const runId = location.runId ?? item?.run?.id
@@ -201,6 +253,7 @@ export function TaskWorkspace({
     location.planRequestId ||
     codingBlocked ||
     location.pendingRequestId ||
+    suggestionBlocked ||
     (turns.remote &&
       (turns.busy || turns.error || !turns.value || turns.value.prepared)),
   )
@@ -253,11 +306,14 @@ export function TaskWorkspace({
     !composerLocked &&
     !preparing &&
     !codingOpen &&
+    !suggestionOpen &&
     !planEditor &&
     !location.error &&
     !location.pendingRequestId &&
     !location.codingRequestId &&
     !location.planRequestId &&
+    !location.suggestionRequestId &&
+    !(suggestionRead?.taskId === taskId && suggestionRead.prepared) &&
     (plans.value.schema_version === 3
       ? plans.value.gate.membership === 'current' && plans.value.depth < 2
       : plans.value.gate?.membership !== 'retired') &&
@@ -289,6 +345,7 @@ export function TaskWorkspace({
           pendingRequestId: location.pendingRequestId,
           codingRequestId: location.codingRequestId,
           planRequestId: location.planRequestId,
+          suggestionRequestId: location.suggestionRequestId,
         }),
       )
     } finally {
@@ -625,6 +682,8 @@ export function TaskWorkspace({
             key={taskId}
             task={planEditor?.task ?? item!.task}
             baseline={planEditor?.baseline}
+            initialDefinition={planEditor?.initialDefinition}
+            suggestionSource={planEditor?.suggestionSource}
             revisionsEnabled={data.capabilities.task_plan_revisions === true}
             nestedEnabled={data.capabilities.nested_task_plans === true}
             currentPlanHash={plans.value?.plan?.plan_hash}
@@ -666,6 +725,66 @@ export function TaskWorkspace({
               } finally {
                 setPlanRefresh(false)
               }
+            }}
+          />
+        </Suspense>
+      )}
+      {(suggestionOpen || (location.suggestionRequestId && item)) && item && (
+        <Suspense
+          fallback={
+            <AppLoading
+              label={t('正在读取AI建议设置', 'Loading AI suggestion settings')}
+            />
+          }
+        >
+          <TaskPlanSuggestionDialog
+            task={item.task}
+            models={data.models}
+            initial={location.suggestionRequestId}
+            t={t}
+            onRequestId={(requestId) => {
+              pushWorkbenchNavigation(
+                taskWorkspaceHref(taskId, {
+                  tab: location.tab,
+                  runId: location.runId,
+                  suggestionRequestId: requestId,
+                }),
+                { replace: true },
+              )
+            }}
+            onClose={() => {
+              setSuggestionOpen(false)
+              setSuggestionVersion((value) => value + 1)
+              pushWorkbenchNavigation(
+                taskWorkspaceHref(taskId, {
+                  tab: location.tab,
+                  runId: location.runId,
+                }),
+                { replace: true },
+              )
+            }}
+            onUseSuggestion={(definition, source) => {
+              setSuggestionOpen(false)
+              setSuggestionVersion((value) => value + 1)
+              pushWorkbenchNavigation(
+                taskWorkspaceHref(taskId, {
+                  tab: location.tab,
+                  runId: location.runId,
+                }),
+                { replace: true },
+              )
+              setPlanEditor({
+                task: structuredClone(item.task),
+                initialDefinition: structuredClone(definition),
+                baseline: plans.value?.plan
+                  ? planVersionFromCurrent(plans.value.plan)
+                  : undefined,
+                suggestionSource: {
+                  artifact_id: source.artifact_id,
+                  run_id: source.run_id,
+                  candidate_hash: source.candidate_hash,
+                },
+              })
             }}
           />
         </Suspense>
@@ -943,6 +1062,46 @@ export function TaskWorkspace({
                       canNavigate() &&
                       canOpenWorkbenchForm()
                     }
+                    canSuggest={
+                      suggestionsEnabled &&
+                      planStructureAllowed &&
+                      !suggestionRead?.prepared &&
+                      (!plans.value?.plan ||
+                        data.capabilities.task_plan_revisions === true) &&
+                      canNavigate() &&
+                      canOpenWorkbenchForm() &&
+                      data.models.length > 0 &&
+                      !suggestionBlocked
+                    }
+                    onSuggest={() => {
+                      if (
+                        suggestionsEnabled &&
+                        planStructureAllowed &&
+                        (!plans.value?.plan ||
+                          data.capabilities.task_plan_revisions === true) &&
+                        canNavigate() &&
+                        canOpenWorkbenchForm() &&
+                        data.models.length > 0
+                      )
+                        setSuggestionOpen(true)
+                    }}
+                    suggestionPrepared={
+                      suggestionRead?.taskId === taskId &&
+                      Boolean(suggestionRead.prepared)
+                    }
+                    onContinueSuggest={() => {
+                      const prepared = suggestionRead?.prepared
+                      if (!prepared || prepared.task_id !== taskId) return
+                      setSuggestionOpen(true)
+                      pushWorkbenchNavigation(
+                        taskWorkspaceHref(taskId, {
+                          tab: location.tab,
+                          runId: location.runId,
+                          suggestionRequestId: prepared.request_id,
+                        }),
+                        { replace: true },
+                      )
+                    }}
                     onCreate={() => {
                       if (
                         planStructureAllowed &&

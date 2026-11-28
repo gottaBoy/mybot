@@ -1,5 +1,12 @@
 import { useState } from 'react'
-import { ArrowRight, GitBranch, RefreshCw, History, Pencil } from 'lucide-react'
+import {
+  ArrowRight,
+  GitBranch,
+  History,
+  Pencil,
+  RefreshCw,
+  Sparkles,
+} from 'lucide-react'
 import { AppBadge, AppButton, AppLoading } from '../components/ui'
 import { taskWorkspaceHref } from './task-workspace-location'
 import { type Copy } from './state'
@@ -115,6 +122,10 @@ export function TaskPlanPanel({
   canCreate,
   revisionsEnabled = false,
   onRevise,
+  onSuggest,
+  canSuggest = false,
+  suggestionPrepared = false,
+  onContinueSuggest,
   nestedEnabled = false,
 }: {
   value?: TaskPlanRead
@@ -126,6 +137,10 @@ export function TaskPlanPanel({
   canCreate: boolean
   revisionsEnabled?: boolean
   onRevise?: () => void
+  onSuggest?: () => void
+  canSuggest?: boolean
+  suggestionPrepared?: boolean
+  onContinueSuggest?: () => void
   nestedEnabled?: boolean
 }) {
   const [historyOpen, setHistoryOpen] = useState(false)
@@ -213,6 +228,22 @@ export function TaskPlanPanel({
                     />
                   </div>
                 )}
+                {canSuggest && onSuggest && (
+                  <AppButton
+                    label={t('获取AI建议', 'Get AI suggestion')}
+                    icon={<Sparkles size={15} />}
+                    disabled={busy}
+                    onClick={onSuggest}
+                  />
+                )}
+                {suggestionPrepared && onContinueSuggest && (
+                  <AppButton
+                    label={t('继续AI建议', 'Continue AI suggestion')}
+                    icon={<Sparkles size={15} />}
+                    disabled={busy}
+                    onClick={onContinueSuggest}
+                  />
+                )}
               </div>
               <ol className="wb-task-plan-items">
                 {value.plan.items.map((item) => (
@@ -292,16 +323,34 @@ export function TaskPlanPanel({
               (nestedEnabled &&
                 value.schema_version !== 3 &&
                 value.gate?.membership !== 'retired')) && (
-              <AppButton
-                label={t('拆分任务', 'Break down task')}
-                icon={<GitBranch size={16} />}
-                disabled={
-                  !canCreate ||
-                  busy ||
-                  (value.schema_version === 3 && value.depth >= 2)
-                }
-                onClick={onCreate}
-              />
+              <div className="wb-inline">
+                <AppButton
+                  label={t('拆分任务', 'Break down task')}
+                  icon={<GitBranch size={16} />}
+                  disabled={
+                    !canCreate ||
+                    busy ||
+                    (value.schema_version === 3 && value.depth >= 2)
+                  }
+                  onClick={onCreate}
+                />
+                {canSuggest && onSuggest && (
+                  <AppButton
+                    label={t('获取AI建议', 'Get AI suggestion')}
+                    icon={<Sparkles size={15} />}
+                    disabled={busy}
+                    onClick={onSuggest}
+                  />
+                )}
+                {suggestionPrepared && onContinueSuggest && (
+                  <AppButton
+                    label={t('继续AI建议', 'Continue AI suggestion')}
+                    icon={<Sparkles size={15} />}
+                    disabled={busy}
+                    onClick={onContinueSuggest}
+                  />
+                )}
+              </div>
             )
           )}
           {nestedEnabled &&

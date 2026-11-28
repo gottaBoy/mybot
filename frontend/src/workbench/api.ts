@@ -37,6 +37,7 @@ export type Run = {
   task_id: string
   status: string
   created_at: string
+  run_kind?: 'execution' | 'plan_suggestion'
   error?: string
   source_run_id?: string
 }
@@ -90,6 +91,7 @@ export type Bootstrap = {
     task_plans?: boolean
     task_plan_revisions?: boolean
     nested_task_plans?: boolean
+    task_plan_suggestions?: boolean
   }
 }
 export type Snapshot = {
