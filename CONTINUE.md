@@ -9,6 +9,14 @@ backend交树/聚合/CAS/退役与discard测试，frontend交schema3/同一页�
 verification交ADR/fixture/browser脚本及独立审计，root交全部执行scope/整体验收/启用。
 提交push以Git回执为准。
 
+更新：2026-11-28（Asia/Singapore），AI建议拆解首版已实现、验证、提交并本机启用。
+最新提交为`832fd89`，已推送`origin/main`。见[ADR-0037](docs/decisions/ADR-0037-ai-plan-suggestions.md)、
+[证据](frontend/evidence/plan-suggestions-2026-11-28/README.md)。预览/准备冻结显式模型、
+资料和预算；执行只允许一次严格规划调用，独立`plan_suggestion`成果不改变Task最新执行
+证据。前端同一Task工作区可核对原ID并把结果复制到原计划编辑草稿，仍需人工CAS发布。
+全量Python1580、前端2526、tsc/build及浏览器fixture已通过；主4180重启后原业务行保持
+1Project/1Task/6Run/1Model/18Agent/17Call/6Artifact/157Event，新增空建议表。
+
 nested_task_plans显式cap，root→child→grandchild最多2父边/73当前Task、每层2–8同级DAG；
 child继承本层+全部祖先外部前置/currentness，不继承ancestorchildren门禁。
 container需当前childcompletion全accepted才可自己新收尾Run，最新Run成功+报告人工接受、
